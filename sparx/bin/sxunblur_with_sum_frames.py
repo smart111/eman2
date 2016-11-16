@@ -33,7 +33,7 @@ import subprocess
 import global_def
 from global_def import SPARXVERSION, ERROR
 from optparse import OptionParser, SUPPRESS_HELP
-
+from sxsumframes import sum_images
 
 def main():
 
@@ -107,6 +107,8 @@ def main():
     parser.add_option('--dont_restore_noise',      action='store_true', default=False,     help='do not restore noise power')
     parser.add_option('--verbose',            action='store_true', default=False,     help='verbose output')
     parser.add_option('--nr_threads',         type='int',          default=1,         help='not an unblur option: Number of threads unblur is allowed to use. The higher the faster, but it also needs a higher amount of memory.')
+    parser.add_option('--first',        type='int',  default=0,      help=SUPPRESS_HELP)
+    parser.add_option('--dose',       type='float', default=-1, help=SUPPRESS_HELP)
     parser.add_option('--unblur_ready',        action='store_true', default=False,      help=SUPPRESS_HELP)
 
     # list of the options and the arguments
@@ -324,30 +326,13 @@ def run_unblur(
 
 
         # First build the unblur command
-        if not options.skip_dose_filter:
-            unblur_command = create_unblur_command(
-                temp_name,
-                micrograph_name,
-                shift_name,
-                frames_name,
-                options
-                )
-            unblur_command_skip = create_unblur_command(
-                temp_name,
-                micrograph_name_skip,
-                shift_name,
-                frames_name_skip,
-                options,
-                skip=True
-                )
-        else:
-            unblur_command = create_unblur_command(
-                temp_name,
-                micrograph_name,
-                shift_name,
-                frames_name,
-                options
-                )
+        unblur_command = create_unblur_command(
+            temp_name,
+            micrograph_name,
+            shift_name,
+            frames_name,
+            options
+            )
 
 
         # Export the number of threads
@@ -377,48 +362,21 @@ def run_unblur(
             e2proc3d_command = r' '.join(e2proc3d_command)
         export_threads_command = r' '.join(export_threads_command)
         unblur_command = '\n'.join(unblur_command)
-        if not options.skip_dose_filter:
-            unblur_command_skip = '\n'.join(unblur_command_skip)
 
         # Build full command
         if not options.unblur_ready:
-            if not options.skip_dose_filter:
-                full_command = r'{0}; {1}; echo "{2}" | {3}'.format(
-                        export_threads_command,
-                        e2proc3d_command,
-                        unblur_command,
-                        unblur_path
-                        )
-                full_command_skip = r'{0}; echo "{1}" | {2}'.format(
-                        export_threads_command,
-                        unblur_command_skip,
-                        unblur_path
-                        )
-            else:
-                full_command = r'{0}; {1}; echo "{2}" | {3}'.format(
-                        export_threads_command,
-                        e2proc3d_command,
-                        unblur_command,
-                        unblur_path
-                        )
+            full_command = r'{0}; {1}; echo "{2}" | {3}'.format(
+                    export_threads_command,
+                    e2proc3d_command,
+                    unblur_command,
+                    unblur_path
+                    )
         else:
-            if not options.skip_dose_filter:
-                full_command = r'{0}; echo "{1}" | {2}'.format(
-                        export_threads_command,
-                        unblur_command,
-                        unblur_path
-                        )
-                full_command_skip = r'{0}; echo "{1}" | {2}'.format(
-                        export_threads_command,
-                        unblur_command_skip,
-                        unblur_path
-                        )
-            else:
-                full_command = r'{0}; echo "{1}" | {2}'.format(
-                        export_threads_command,
-                        unblur_command,
-                        unblur_path
-                        )
+            full_command = r'{0}; echo "{1}" | {2}'.format(
+                    export_threads_command,
+                    unblur_command,
+                    unblur_path
+                    )
 
         # Remove temp unblur files
         temp_unblur_files = glob('.UnBlur*')
@@ -428,34 +386,29 @@ def run_unblur(
         with open(log_name, 'w') as f:
             with open(error_name, 'w') as e:
                 # Execute Command
-                if not options.skip_dose_filter:
-                    subprocess.Popen(
-                        [full_command], shell=True,
-                        stdout=f,
-                        stderr=e
-                        ).wait()
-
-                    # Remove temp unblur files
-                    temp_unblur_files = glob('.UnBlur*')
-                    for entry in temp_unblur_files:
-                        remove(entry)
-
-                    subprocess.Popen(
-                        [full_command_skip], shell=True,
-                        stdout=f,
-                        stderr=e
-                        ).wait()
-                else:
-                    subprocess.Popen(
-                        [full_command], shell=True,
-                        stdout=f,
-                        stderr=e
-                        ).wait()
+                subprocess.Popen(
+                    [full_command], shell=True,
+                    stdout=f,
+                    stderr=e
+                    ).wait()
 
         # Remove temp unblur files
         temp_unblur_files = glob('.UnBlur*')
         for entry in temp_unblur_files:
             remove(entry)
+
+        # Sum frames with sxsumframes.py
+        option_dict = {}
+        # Shift file
+        option_dict['shift_file'] = shift_name
+        option_dict['pixel_size'] = options.pixel_size
+        option_dict['skip_alignment'] = False
+        option_dict['first'] = 0
+        option_dict['last'] = -1
+        # Call the function
+        sum_images(temp_name, micrograph_name_skip, option_dict)
+
+        # Remove if necessary and possible
         if not options.unblur_ready:
             if path.exists(temp_name):
                 # Remove temp file
