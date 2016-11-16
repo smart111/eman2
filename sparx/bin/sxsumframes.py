@@ -54,8 +54,9 @@ def main():
     parser.add_option('--shift_file', type=str, default='', help='Shift file for alignment (default "")')
     parser.add_option('--pixel_size', type=float, default=-1, help='Pixel size [A] (default -1)')
     parser.add_option('--first', type=int, default=0, help='First frame to use (default 0)')
-    parser.add_option('--last', type=int, default=-1, help='Last frame to use (default -1)')
+    parser.add_option('--last', type=int, default=-1, help='Last frame to use (default -1). Can not be used together with the --dose option.')
     parser.add_option('--skip_alignment', action='store_true', default=False, help='Skip the alignment and just sum the frames (default False)')
+    parser.add_option('--dose', type=float, default=-1, help='Total electron dose for summing. Can not be used together with the --last option.')
     (options, args) = parser.parse_args(argv[1:])
 
     global_def.BATCH = True
@@ -84,7 +85,16 @@ def main():
             1
             )
 
-    sum_images(input_name, output_name, options)
+    options_dict = {
+            'shift_file': options.shift_file,
+            'pixel_size': options.pixel_size,
+            'first': options.first,
+            'last': options.last,
+            'skip_alignment': options.skip_alignment,
+            'dose': options.dose
+            }
+
+    sum_images(input_name, output_name, options_dict)
 
     print('All Done!')
 
@@ -101,47 +111,47 @@ def sum_images(input_name, output_name, options):
     nz = input_stack['nz']
 
     # Check how many frames to use
-    if nz < abs(options.last):
+    if nz < abs(options['last']):
         ERROR(
                 "Last option {0} is out of range: maximum |{1}|".format(
-                options.last, nz-1
+                options['last'], nz-1
                 ), 
             1)
 
-    if nz < abs(options.first):
+    if nz < abs(options['first']):
         ERROR(
                 "First option {0} is out of range: maximum |{1}|".format(
-                options.last, nz-1
+                options['last'], nz-1
                 ), 
             1)
 
     # Get real indices
-    if options.first < 0:
-        first = nz + options.first
+    if options['first'] < 0:
+        first = nz + options['first']
     else:
-        first = options.first
+        first = options['first']
 
-    if options.last < 0:
-        last = nz + options.last + 1
+    if options['last'] < 0:
+        last = nz + options['last'] + 1
     else:
-        last = options.last + 1
+        last = options['last'] + 1
 
     if first >= last:
         ERROR("First option {0}={1} muss be smaller equals last option {2}={3}".format(
-            options.first, first, options.last, last-1
+            options['first'], first, options['last'], last-1
             ),
             1)
 
     # Import shift files
-    shifts = read_text_row(options.shift_file)
+    shifts = read_text_row(options['shift_file'])
     sx, sy = shifts[-2], shifts[-1]
     # Transform shifts in angstrom to pixels
     for i in range(len(sx)):
-        sx[i] /= options.pixel_size
-        sy[i] /= options.pixel_size
+        sx[i] /= options['pixel_size']
+        sy[i] /= options['pixel_size']
 
     # If one wants to perform the alignment
-    if not options.skip_alignment:
+    if not options['skip_alignment']:
         # Create an output image container in fourier space
         output_image = EMData(nx, ny, 1, False)
         # Loop over all frames
