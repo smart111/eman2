@@ -53,7 +53,7 @@ containing their distribution on a hemisphere."""
 	parser.add_option('--particle_radius',     		type='int',          	default=175,         	help='particle radius [Pixels] (default 175)')
 	parser.add_option('--cylinder_width',      		type='int',          	default=1,           	help='width of the cylinder (default 1)')
 	parser.add_option('--cylinder_length',     		type='int',          	default=10000,       	help='length of the cylinder (default 10000)')
-	parser.add_option('--pixel_size',     		type='int',          	default=1,       	help='pixel_size (default 1)')
+	parser.add_option('--pixel_size',     		type='float',          	default=1.0,       	help='pixel_size (default 1.0)')
 	parser.add_option('--sym',     		type='str',          	default='c1',       	help='symmetry (default c1)')
 
 	(options, args) = parser.parse_args()

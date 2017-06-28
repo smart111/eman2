@@ -566,13 +566,13 @@ def plot_angles_3d(angles, output, acc, box_size, particle_radius, width, length
 			vec_sphere[idx_y] = np.sin(vector['theta']) * np.sin(vector['phi'])
 			vec_sphere[idx_z] = np.cos(vector['theta'])
 
-			vec_1 = 0.5 * np.array([box_size, box_size, box_size])
-			vec_2 = 0.5 * np.array([box_size, box_size, box_size])
+			vec_1 = 0.5 * float(pixel_size) * np.array([box_size, box_size, box_size])
+			vec_2 = 0.5 * float(pixel_size) * np.array([box_size, box_size, box_size])
 			vec_1 = vec_1 + \
-				particle_radius * vec_sphere / float(pixel_size)
+				particle_radius * vec_sphere * float(pixel_size)
 			vec_2 = vec_2 + \
 				(
-					particle_radius / float(pixel_size) +
+					particle_radius * float(pixel_size) +
 					0.01 + vector['radius'] * length
 				) * \
 				vec_sphere
