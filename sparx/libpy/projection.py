@@ -391,7 +391,7 @@ def gen_rings_ctf( prjref, nx, ctf, numr):
 
 # plot angles, map on half-sphere
 # agls: [[phi0, theta0, psi0], [phi1, theta1, psi1], ..., [phin, thetan, psin]]
-def plot_angles(agls, nx = 256):
+def plot_angles(agls, nx=256):
 	from math      import cos, sin, fmod, pi, radians
 	from utilities import model_blank
 
@@ -445,6 +445,152 @@ def plot_angles(agls, nx = 256):
 		im.set_value_at(px, py, 1.0 + im.get_value_at(px, py))
 
 	return im
+
+def plot_angles_histogram(angles, output):
+	"""Create 1D plot of all angles"""
+	import numpy as np
+	import matplotlib.pyplot as plt
+
+	print('Plot histograms')
+	# Plot phi
+	phi = {}
+	phi['name'] = 'Phi'
+	phi['idx'] = 0
+	phi['range_max'] = 360
+	# Plot theta
+	theta = {}
+	theta['name'] = 'Theta'
+	theta['idx'] = 1
+	theta['range_max'] = 180
+	# Plot Psi
+	psi = {}
+	psi['name'] = 'Psi'
+	psi['idx'] = 2
+	psi['range_max'] = 360
+
+	for entry in [phi, theta, psi]:
+		print('Plot histogram of {0}'.format(entry['name']))
+		array = np.empty(len(angles))
+		for idx in range(len(angles)):
+			array[idx] = angles[idx][entry['idx']]
+		n, bins, patches = plt.hist(
+			array,
+			entry['range_max']
+			)
+		plt.grid()
+		plt.xlim([0,entry['range_max']])
+		plt.xlabel('{0} / degree'.format(entry['name']))
+		plt.ylabel('Counts')
+		plt.title(entry['name'])
+		output_name = '{0}_{1}.png'.format(output, entry['name'])
+		plt.savefig(output_name)
+		plt.clf()
+		print('Saved output to: {0}.'.format(output_name))
+	print('Plot histogram done!')
+	print('')
+
+def plot_angles_3d(angles, output, acc, box_size, particle_radius, width, length, pixel_size):
+	import numpy as np
+	print('Plot 3D')
+
+	# Create array for the angles
+	dtype = [
+		('phi', '<f8'),
+		('theta', '<f8')
+	]
+	angle_arr = np.empty(len(angles), dtype=dtype)
+	idx_phi = 0
+	idx_theta = 1
+	for idx in range(len(angles)):
+		angle_arr['phi'][idx] = np.round(angles[idx][idx_phi], acc) * np.pi / 180
+		angle_arr['theta'][idx] = np.round(angles[idx][idx_theta], acc) * np.pi / 180
+
+	# Cast to radians
+	angle_arr['phi'] = angle_arr['phi']
+	angle_arr['theta'] = angle_arr['theta']
+
+	# Create length of the vectors. One angstrom is one particle.
+	unique_arr, all_arr = np.unique(
+		angle_arr, return_inverse=True
+	)
+	radius_arr = np.histogram(all_arr, bins=len(unique_arr))[0]
+
+	# Calculate the overall number of particles for the normalisation.
+	# Normalise the radius and calculate
+	# how many times there is the same radius.
+	nr_particles = len(angle_arr)
+	radius_arr = radius_arr / float(nr_particles)
+	unique_radius, indicesRadius = np.unique(
+		radius_arr, return_index=True
+	)
+
+	# Set the right colour to the right radius
+	nr_radius = len(unique_radius)
+	range_green = np.linspace(0, 1, nr_radius)
+	range_blue = np.linspace(1, 0, nr_radius)
+
+	sorted_radius = np.sort(unique_radius)
+	dict_color = {}
+	for number, radius in enumerate(sorted_radius):
+		dict_color.update(
+			{
+				radius:
+				str(range_green[number]) +
+				' ' +
+				str(range_blue[number])
+			}
+		)
+
+	# Merge all unique data and the related radius into one array
+	dtype = [
+		('phi', '<f8'),
+		('theta', '<f8'),
+		('radius', '<f8')
+	]
+	angles_radius_arr = np.empty(len(unique_arr['phi']), dtype=dtype)
+	angles_radius_arr['phi'] = unique_arr['phi']
+	angles_radius_arr['theta'] = unique_arr['theta']
+	angles_radius_arr['radius'] = radius_arr
+
+	# Create vectors for chimera
+	with open(output, 'w') as f:
+		idx_x = 0
+		idx_y = 1
+		idx_z = 2
+		for vector in angles_radius_arr:
+			vec_1 = np.empty(3)
+			vec_2 = np.empty(3)
+			vec_sphere = np.empty(3)
+
+			vec_sphere[idx_x] = np.sin(vector['theta']) * np.cos(vector['phi'])
+			vec_sphere[idx_y] = np.sin(vector['theta']) * np.sin(vector['phi'])
+			vec_sphere[idx_z] = np.cos(vector['theta'])
+
+			vec_1 = 0.5 * np.array([box_size, box_size, box_size])
+			vec_2 = 0.5 * np.array([box_size, box_size, box_size])
+			vec_1 = vec_1 + \
+				particle_radius * vec_sphere / float(pixel_size)
+			vec_2 = vec_2 + \
+				(
+					particle_radius / float(pixel_size) +
+					0.01 + vector['radius'] * length
+				) * \
+				vec_sphere
+			f.write('.color 0 {:s} \n'.format(dict_color[vector['radius']]))
+			f.write(
+				'.cylinder {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} {:.3f} \n'.format(
+					vec_1[idx_x],
+					vec_1[idx_y],
+					vec_1[idx_z],
+					vec_2[idx_x],
+					vec_2[idx_y],
+					vec_2[idx_z],
+					width
+				)
+			)
+	print('Saved output to: {0}'.format(output))
+	print('Plot 3D done!')
+
 
 # interface between the simplex function to refine the angles and the function to compute the discrepancy
 # not used yet

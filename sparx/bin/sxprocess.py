@@ -311,10 +311,6 @@ def main():
 		
    15. Window stack file -reduce the size of images without changing the pixel size.
 
-   16. Create angular distribution .build file
-        sxprocess.py --angular_distribution  inputfile=example/path/params.txt --pixel_size=1.0  --round_digit=5  --box_size=500  --particle_radius=175  --cylinder_width=1  --cylinder_length=10000
-        
-
 """
 
 	parser = OptionParser(usage,version=SPARXVERSION)
@@ -385,14 +381,6 @@ def main():
 	# 
 	parser.add_option("--window_stack",         action="store_true",                      help="window stack images using a smaller window size", default=False)
 	parser.add_option("--box",                  type="int",		      default= 0,         help="the new window size ")
-	
-	# Options for angular distribution
-	parser.add_option('--angular_distribution',    	action="store_true",  	default=False,        	help='create an angular distribution file based on a project3d.txt')
-	parser.add_option('--round_digit',             	type='int',          	default=5,           	help='accuracy of the loaded angle (default 5)')
-	parser.add_option('--box_size',                	type='int',          	default=500,         	help='box size in pixel used for calculating the center of the particle [px] (default 500)')
-	parser.add_option('--particle_radius',     		type='int',          	default=175,         	help='particle radius [Pixels] (default 175)')
-	parser.add_option('--cylinder_width',      		type='int',          	default=1,           	help='width of the cylinder (default 1)')
-	parser.add_option('--cylinder_length',     		type='int',          	default=10000,       	help='length of the cylinder (default 10000)')
 	(options, args) = parser.parse_args()
 
 	global_def.BATCH = True
@@ -1281,19 +1269,6 @@ def main():
 			from utilities import get_im
 			for i in xrange(nimage): window2d(get_im(inputstack,i),options.box,options.box).write_image(output_stack_name,i)
 
-	elif options.angular_distribution:
-		from utilities import angular_distribution
-		nargs = len(args)
-		if nargs > 1:
-			print 'Too many inputs are given, see usage and restart the program!'
-		else:
-			if not os.path.exists(args[0]):
-				ERROR(
-					'Params file does not exists! Please rename and restart the program.', 1
-					)
-			strInput = args[0]
-			strOutput = strInput[:-len(strInput.split('/')[-1])] + 'distribution.bild'
-			angular_distribution(inputfile=strInput, options=options, output=strOutput)
 	else:  ERROR("Please provide option name","sxprocess.py",1)
 
 if __name__ == "__main__":

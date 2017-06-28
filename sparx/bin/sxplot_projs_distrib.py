@@ -45,7 +45,16 @@ def main():
 Read projection angles from 2Dprojections file or from a text file and write a 2D image file
 containing their distribution on a hemisphere."""
 	parser = OptionParser(usage,version=SPARXVERSION)
-	parser.add_option("--wnx",       type="int",  default=256,             help="plot image size (default = 256)")
+	parser.add_option("--wnx",       type="int",  default=256,             help="plot image size (default 256)")
+	parser.add_option('--skip_hist',    	action="store_true",  	default=False,        	help='skip histogram for each angle')
+	parser.add_option('--skip_dim_2',    	action="store_true",  	default=False,        	help='skip create 2D angular distribution plot')
+	parser.add_option('--skip_dim_3',    	action="store_true",  	default=False,        	help='skip create 3D angular distribution plot')
+	parser.add_option('--acc',             	type='int',          	default=6,           	help='accuracy of the loaded angle (default 5)')
+	parser.add_option('--particle_radius',     		type='int',          	default=175,         	help='particle radius [Pixels] (default 175)')
+	parser.add_option('--cylinder_width',      		type='int',          	default=1,           	help='width of the cylinder (default 1)')
+	parser.add_option('--cylinder_length',     		type='int',          	default=10000,       	help='length of the cylinder (default 10000)')
+	parser.add_option('--pixel_size',     		type='int',          	default=1,       	help='pixel_size (default 1)')
+	parser.add_option('--sym',     		type='str',          	default='c1',       	help='symmetry (default c1)')
 
 	(options, args) = parser.parse_args()
     	if len(args) != 2:
@@ -57,7 +66,20 @@ containing their distribution on a hemisphere."""
 			disable_bdb_cache()
 		from applications import plot_projs_distrib
 		global_def.BATCH = True
-		plot_projs_distrib(args[0], args[1], options.wnx)
+		plot_projs_distrib(
+			args[0],
+			args[1],
+			wnx=options.wnx,
+			plot_hist=bool(options.skip_hist == False),
+			plot_2d=bool(options.skip_dim_2 == False),
+			plot_3d=bool(options.skip_dim_3 == False),
+			acc=options.acc,
+			particle_radius=options.particle_radius,
+			width=options.cylinder_width,
+			length=options.cylinder_length,
+			pixel_size=options.pixel_size,
+			sym=options.sym
+			)
 		global_def.BATCH = False
 
 if __name__ == "__main__":

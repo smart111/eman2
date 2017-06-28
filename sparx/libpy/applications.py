@@ -17148,8 +17148,21 @@ def k_means_groups(stack, out_file, maskname, opt_method, K1, K2, rand_seed, max
 
 # 2008-12-08 12:46:11 JB
 # Plot angles distribution on a hemisphere from a list of given projection
-def plot_projs_distrib(stack, outplot, wnx = 256):
-	from projection import plot_angles
+def plot_projs_distrib(
+		stack,
+		outplot,
+		wnx,
+		plot_hist,
+		plot_2d,
+		plot_3d,
+		acc,
+		particle_radius,
+		width,
+		length,
+		pixel_size,
+		sym
+		):
+	from projection import plot_angles, plot_angles_histogram, plot_angles_3d
 	from utilities  import get_params_proj, file_type, read_text_row
 	import sys
 
@@ -17173,7 +17186,30 @@ def plot_projs_distrib(stack, outplot, wnx = 256):
 
 		if ext == 'bdb': DB.close()
 
-	plot_angles(agls, wnx).write_image(outplot, 0)
+	output_hist = '{0}_hist'.format(outplot)
+	output_2d = '{0}_2d.jpg'.format(outplot)
+	output_3d = '{0}_3d.bild'.format(outplot)
+
+	# Copy angles
+	idx_phi = 0
+	idx_theta = 1
+	idx_psi = 2
+	angles = [[[], [], []] for i in range(len(agls))]
+	for idx, entry in enumerate(agls):
+		angles[idx][idx_phi] = entry[idx_phi]
+		angles[idx][idx_theta] = entry[idx_theta]
+		angles[idx][idx_psi] = entry[idx_psi]
+
+	if plot_hist:
+		plot_angles_histogram(angles=agls, output=output_hist)
+	if plot_2d:
+		print('Plot 2D')
+		plot_angles(angles, nx=wnx).write_image(output_2d, 0)
+		print('Saved output to: {0}'.format(output_2d))
+		print('Plot 2D done!')
+		print('')
+	if plot_3d:
+		plot_angles_3d(angles=agls, output=output_3d, acc=acc, box_size=wnx, particle_radius=particle_radius, width=width, length=length, pixel_size=pixel_size)
 
 # 2008-12-08 12:46:46 JB
 # Wrap for the HAC part of py_cluster in the statistics.py file
