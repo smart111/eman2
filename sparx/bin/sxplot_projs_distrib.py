@@ -45,10 +45,10 @@ def main():
 Read projection angles from 2Dprojections file or from a text file and write a 2D image file
 containing their distribution on a hemisphere."""
 	parser = OptionParser(usage,version=SPARXVERSION)
-	parser.add_option("--wnx",       type="int",  default=256,             help="plot image size (default 256)")
-	parser.add_option('--skip_hist',    	action="store_true",  	default=False,        	help='skip histogram for each angle')
-	parser.add_option('--skip_dim_2',    	action="store_true",  	default=False,        	help='skip create 2D angular distribution plot')
-	parser.add_option('--skip_dim_3',    	action="store_true",  	default=False,        	help='skip create 3D angular distribution plot')
+	parser.add_option("--wnx",       type="int",  default=256,             help="plot image size / particle box size (default 256)")
+	parser.add_option('--do_hist',    	action="store_true",  	default=False,        	help='create a histogram for each angle (not created by default)')
+	parser.add_option('--skip_dim_2',    	action="store_true",  	default=False,        	help='skip creating a 2D angular distribution plot (created by default)')
+	parser.add_option('--skip_dim_3',    	action="store_true",  	default=False,        	help='skip creating a 3D angular distribution plot (created by default)')
 	parser.add_option('--acc',             	type='int',          	default=6,           	help='accuracy of the loaded angle (default 5)')
 	parser.add_option('--particle_radius',     		type='int',          	default=175,         	help='particle radius [Pixels] (default 175)')
 	parser.add_option('--cylinder_width',      		type='int',          	default=1,           	help='width of the cylinder (default 1)')
@@ -70,7 +70,7 @@ containing their distribution on a hemisphere."""
 			args[0],
 			args[1],
 			wnx=options.wnx,
-			plot_hist=bool(options.skip_hist == False),
+			plot_hist=options.do_hist,
 			plot_2d=bool(options.skip_dim_2 == False),
 			plot_3d=bool(options.skip_dim_3 == False),
 			acc=options.acc,
