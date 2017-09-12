@@ -322,20 +322,8 @@ namespace EMAN
 		 * @param yy The y coordinate value.
 		 * @param zz The z coordinate value.
 		 */
-		FloatPoint(float xx, float yy, float zz)
-		{
-			data[0] = xx;
-			data[1] = yy;
-			data[2] = zz;
-			ndim = 3;
-		}
-		
-		/** Construct a 3D point.
-		 * @param xx The x coordinate value.
-		 * @param yy The y coordinate value.
-		 * @param zz The z coordinate value.
-		 */
-		FloatPoint(int xx, int yy, int zz)
+		template <class T>
+		FloatPoint(T xx, T yy, T zz)
 		{
 			data[0] = (float)xx;
 			data[1] = (float)yy;
@@ -343,19 +331,6 @@ namespace EMAN
 			ndim = 3;
 		}
 		
-		/** Construct a 3D point.
-		 * @param xx The x coordinate value.
-		 * @param yy The y coordinate value.
-		 * @param zz The z coordinate value.
-		 */
-		FloatPoint(double xx, double yy, double zz)
-		{
-			data[0] = (float)xx;
-			data[1] = (float)yy;
-			data[2] = (float)zz;
-			ndim = 3;
-		}
-
 		FloatPoint(const FloatPoint & fp)
 		{
 			data[0] = fp.data[0];
