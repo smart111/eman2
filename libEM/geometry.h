@@ -518,9 +518,10 @@ namespace EMAN
 			size = FloatSize(xsize);
 		}
 
-		/** Construct a 2D integer region.
+		/** Construct a 2D region.
 		 */
-		Region(int x, int y, int xsize, int ysize)
+		template <class T>
+		Region(T x, T y, T xsize, T ysize)
 		{
 			origin = FloatPoint (x, y);
 			size = FloatSize(xsize, ysize);
@@ -533,14 +534,6 @@ namespace EMAN
 			origin = FloatPoint(x, y, z);
 			size = FloatSize(xsize, ysize, zsize);
 		}
-
-		/** Construct a 2D floating-number region.
-		 */
-		Region(float x, float y, float xsize, float ysize)
-		{
-			origin = FloatPoint (x, y);
-			size = FloatSize(xsize, ysize);
-		}
 		
 		/** Construct a 3D floating-number region.
 		 */
@@ -549,15 +542,6 @@ namespace EMAN
 			origin = FloatPoint(x, y, z);
 			size = FloatSize(xsize, ysize, zsize);
 		}
-
-		/** Construct a 2D floating-number region.
-		 */
-		Region(double x, double y, double xsize, double ysize)
-		{
-			origin = FloatPoint (x, y);
-			size = FloatSize(xsize, ysize);
-		}
-
 		/** Construct a 3D floating-number region.
 		 */
 		Region(double x, double y, double z, double xsize, double ysize, double zsize)
