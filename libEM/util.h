@@ -736,31 +736,10 @@ namespace EMAN
 		 * @param[in] z The third number.
 		 * @return sqrt(x*x + y*y + z*z);
 		 */
-		static inline float hypot3(int x, int y, int z)
+		template <class T>
+		static inline T hypot3(T x, T y, T z)
 		{
-			return sqrtf((float)(x * x + y * y + z * z));
-		}
-
-		/** Euclidean distance function in 3D: f(x,y,z) = sqrt(x*x + y*y + z*z);
-		 * @param[in] x The first number.
-		 * @param[in] y The second number.
-		 * @param[in] z The third number.
-		 * @return sqrt(x*x + y*y + z*z);
-		 */
-		static inline float hypot3(float x, float y, float z)
-		{
-			return sqrtf(x * x + y * y + z * z);
-		}
-
-		/** Euclidean distance function in 3D: f(x,y,z) = sqrt(x*x + y*y + z*z);
-		 * @param[in] x The first number.
-		 * @param[in] y The second number.
-		 * @param[in] z The third number.
-		 * @return sqrt(x*x + y*y + z*z);
-		 */
-		static inline double hypot3(double x, double y, double z)
-		{
-			return (double) sqrt(x * x + y * y + z * z);
+			return sqrt(x * x + y * y + z * z);
 		}
 
 		/** Euclidean distance in 2D for integers computed fast using a cached lookup table
