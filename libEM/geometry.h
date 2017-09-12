@@ -529,22 +529,8 @@ namespace EMAN
 
 		/** Construct a 3D integer region.
 		 */
-		Region(int x, int y, int z, int xsize, int ysize, int zsize)
-		{
-			origin = FloatPoint(x, y, z);
-			size = FloatSize(xsize, ysize, zsize);
-		}
-		
-		/** Construct a 3D floating-number region.
-		 */
-		Region(float x, float y, float z, float xsize, float ysize, float zsize)
-		{
-			origin = FloatPoint(x, y, z);
-			size = FloatSize(xsize, ysize, zsize);
-		}
-		/** Construct a 3D floating-number region.
-		 */
-		Region(double x, double y, double z, double xsize, double ysize, double zsize)
+		template <class T>
+		Region(T x, T y, T z, T xsize, T ysize, T zsize)
 		{
 			origin = FloatPoint(x, y, z);
 			size = FloatSize(xsize, ysize, zsize);
