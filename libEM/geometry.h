@@ -114,31 +114,15 @@ namespace EMAN
 		 * @param yy The y direction size. Default is 0.
 		 * @param zz The z direction size. Default is 0.
 		 */
-		explicit FloatSize(float xx=0, float yy=0, float zz=0)
+		FloatSize()
 		{
-			data[0] = xx;
-			data[1] = yy;
-			data[2] = zz;
+			data[0] = 0.0f;
+			data[1] = 0.0f;
+			data[2] = 0.0f;
 		}
 
-		/** Construct a FloatSize object.
-		 * @param xx The x direction size. Default is 0.
-		 * @param yy The y direction size. Default is 0.
-		 * @param zz The z direction size. Default is 0.
-		 */
-		FloatSize(int xx, int yy=0, int zz=0)
-		{
-			data[0] = (float)xx;
-			data[1] = (float)yy;
-			data[2] = (float)zz;
-		}
-
-		/** Construct a FloatSize object.
-		 * @param xx The x direction size. Default is 0.
-		 * @param yy The y direction size. Default is 0.
-		 * @param zz The z direction size. Default is 0.
-		 */
-		FloatSize(double xx, double yy=0, double zz=0)
+		template <class T>
+		FloatSize(T xx, T yy=0, T zz=0)
 		{
 			data[0] = (float)xx;
 			data[1] = (float)yy;
