@@ -295,9 +295,10 @@ namespace EMAN
 		/** Construct a 1D point.
 		 * @param xx The x coordinate value.
 		 */
-		explicit FloatPoint(float xx)
+		template <class T>
+		explicit FloatPoint(T xx)
 		{
-			data[0] = xx;
+			data[0] = (float)xx;
 			data[1] = 0;
 			data[2] = 0;
 			ndim = 1;
@@ -328,17 +329,6 @@ namespace EMAN
 			ndim = 3;
 		}
 		
-		/** Construct a 1D point.
-		 * @param xx The x coordinate value.
-		 */
-		explicit FloatPoint(int xx)
-		{
-			data[0] = (float)xx;
-			data[1] = 0;
-			data[2] = 0;
-			ndim = 1;
-		}
-		
 		/** Construct a 2D point.
 		 * @param xx The x coordinate value.
 		 * @param yy The y coordinate value.
@@ -362,17 +352,6 @@ namespace EMAN
 			data[1] = (float)yy;
 			data[2] = (float)zz;
 			ndim = 3;
-		}
-			
-		/** Construct a 1D point.
-		 * @param xx The x coordinate value.
-		 */
-		explicit FloatPoint(double xx)
-		{
-			data[0] = (float)xx;
-			data[1] = 0;
-			data[2] = 0;
-			ndim = 1;
 		}
 		
 		/** Construct a 2D point.
