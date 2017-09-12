@@ -664,21 +664,13 @@ namespace EMAN
 		}
 
 		/** Calculate a number's square.
-		 * @param[in] n Given number.
-		 * @return (n*n).
-		 */
-		static inline int square(int n)
-		{
-			return (n * n);
-		}
-
-		/** Calculate a number's square.
 		 * @param[in] x Given number.
 		 * @return (x*x).
 		 */
-		static inline float square(float x)
+		template <class T>
+		static inline T square(T x)
 		{
-			return (x * x);
+			return x * x;
 		}
 
 		/** Calculate a number's square.
