@@ -1,4 +1,5 @@
 FILE(GLOB e2programs "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
+FILE(GLOB e2programs_cpp "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
 FILE(GLOB exclusion_list
 			e2plotFSC.py
@@ -30,6 +31,17 @@ FILE(GLOB exclusion_list
 add_custom_target(Programs
 				  COMMAND ${CMAKE_COMMAND} -DCOMPONENT=Programs -P cmake_install.cmake
 				  )
+
+add_executable(e2c11 e2c11.cpp)
+target_link_libraries(e2c11 EM2)
+add_custom_target(Programs-CPP
+				  COMMAND ${CMAKE_COMMAND} -DCOMPONENT=Programs-CPP -P cmake_install.cmake
+				  DEPENDS e2c11
+				  )
+INSTALL(TARGETS  e2c11
+		DESTINATION    bin #${SP_DIR}
+		COMPONENT Programs-CPP
+		)
 
 LIST(REMOVE_ITEM e2programs ${exclusion_list})
 INSTALL(PROGRAMS ${e2programs}
