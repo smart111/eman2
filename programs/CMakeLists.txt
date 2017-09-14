@@ -39,6 +39,7 @@ add_custom_target(Programs-CPP
 				  COMMAND ${CMAKE_COMMAND} -DCOMPONENT=Programs-CPP -P cmake_install.cmake
 				  DEPENDS e2c11
 				  )
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 INSTALL(TARGETS  e2c11
 		DESTINATION    bin #${SP_DIR}
 		COMPONENT Programs-CPP
