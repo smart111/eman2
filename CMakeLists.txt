@@ -1,7 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.7)
 PROJECT(EMAN
 		VERSION 2.2
-		LANGUAGES CXX
+		LANGUAGES CXX CUDA
 		)
 
 IF(COMMAND cmake_policy)
@@ -282,6 +282,7 @@ ADD_SUBDIRECTORY(programs)
 ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(images)
 ADD_SUBDIRECTORY(recipes)
+add_subdirectory(libEM/cuda)
 
 add_custom_target(PythonFiles
 				  COMMAND ${CMAKE_COMMAND} -DCOMPONENT=PythonFiles -P cmake_install.cmake
