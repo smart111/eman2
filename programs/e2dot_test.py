@@ -36,6 +36,7 @@ def main():
     nums.extend(range(100,251,50))
 
     im = test_image(0, size=(8, 8))
+    py_gpu_kernel([im], im)
 
     print "# ss \t num \t Cpp \t Cuda"
     
