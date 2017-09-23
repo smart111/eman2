@@ -1,11 +1,10 @@
 set(CMAKE_CUDA_FLAGS "-arch=sm_30")
+add_library(dot STATIC dot.cu)
+set_target_properties(dot PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
-add_library(pyCuda SHARED "")
+add_library(pyCuda SHARED libpyCuda.cu)
+target_link_libraries(pyCuda dot)
 
-target_sources(pyCuda PRIVATE
-			   dot.cu
-			   libpyCuda.cu
-			   )
 
 if(WIN32)
 	set(suffix .pyd)
@@ -28,12 +27,12 @@ set_target_properties(Boost::python
 
 target_link_libraries(pyCuda Boost::python)
 
-install(TARGETS pyCuda
+install(TARGETS pyCuda dot
 		DESTINATION ${SP_DIR}
 		COMPONENT Cuda
 		)
 
 add_custom_target(Cuda
 				  COMMAND ${CMAKE_COMMAND} -DCOMPONENT=Cuda -P cmake_install.cmake
-				  DEPENDS pyCuda
+				  DEPENDS pyCuda dot
 				  )
