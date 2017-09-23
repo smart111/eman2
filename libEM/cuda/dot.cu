@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <vector>
 
+#define THREADSPERBLOCK 1024
+
 using namespace std;
 
 typedef vector<float> VF;
@@ -30,8 +32,64 @@ float cpp_dot(EMData &obj1, EMData &obj2) {
 
 __global__
 void kernel_dot(float *v1, float *v2, int N, float *sum) {
+    __shared__ float cc[THREADSPERBLOCK];
+    int i = blockDim.x * blockIdx.x + threadIdx.x;
+    if(i<N) {
+        float mm = v1[i] * v2[i];
+        cc[threadIdx.x] = v1[i] * v2[i];
+    }
+    __syncthreads();
+
+    for(int stride = blockDim.x/2; threadIdx.x < stride && stride>0; stride /=2) {
+        cc[threadIdx.x] += cc[threadIdx.x + stride];
+        __syncthreads();
+    }
+    
+    if(threadIdx.x == 0)
+        sum[blockIdx.x] = cc[0];
 }
 
 float cuda_dot(EMData &obj1, EMData &obj2) {
-    return 0;
+    float * h_v1 = obj1.get_data();
+    float * h_v2 = obj2.get_data();
+    int N = obj1.get_size();
+
+    float * d_v1, * d_v2, * d_o;
+    cudaMallocManaged(&d_v1, N*sizeof(float));
+    cudaMallocManaged(&d_v2, N*sizeof(float));
+
+    cudaMemcpy(d_v1, h_v1, N*sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_v2, h_v2, N*sizeof(float), cudaMemcpyHostToDevice);
+
+    int threads = THREADSPERBLOCK;
+    int blocks = (N+threads-1)/threads;
+
+    float *sum_ptr;
+    cudaError_t er = cudaMallocManaged(&sum_ptr, blocks*sizeof(float));
+    if (er != cudaSuccess)
+    {
+        printf("1 %s\n",cudaGetErrorString(er));
+        exit(1);
+    }
+
+    kernel_dot<<<blocks,threads>>>(d_v1, d_v2, N, sum_ptr);
+    cudaDeviceSynchronize();
+    cudaError_t error;
+    error = cudaGetLastError();
+    if (error != cudaSuccess)
+    {
+        printf("0 %s\n",cudaGetErrorString(error));
+        exit(1);
+    }
+
+    float sum = 0.0;
+    for (int i = 0; i < blocks; ++i) {
+        sum += sum_ptr[i];
+    }
+
+    cudaFree(d_v1);
+    cudaFree(d_v2);
+    cudaFree(sum_ptr);
+
+    return sum;
 }
