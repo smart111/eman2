@@ -1,3 +1,5 @@
+set(CMAKE_CUDA_FLAGS "-arch=sm_30")
+
 add_library(pyCuda SHARED "")
 
 target_sources(pyCuda PRIVATE
