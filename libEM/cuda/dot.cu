@@ -27,3 +27,11 @@ float cpp_dot(EMData &obj1, EMData &obj2) {
 
     return sum;
 }
+
+__global__
+void kernel_dot(float *v1, float *v2, int N, float *sum) {
+}
+
+float cuda_dot(EMData &obj1, EMData &obj2) {
+    return 0;
+}

@@ -23,6 +23,11 @@ def py_cpp_dot(ims, ref_im):
     for i in range(len(ims)):
         libpyCuda.cpp_dot(ims[i], ref_im)
 
+@time_decorator
+def py_gpu_kernel(ims, ref_im):
+    for i in range(len(ims)):
+        libpyCuda.cuda_dot(ims[i], ref_im)
+
 
 def main():
     ss = [256, 512]
@@ -32,7 +37,7 @@ def main():
 
     im = test_image(0, size=(8, 8))
 
-    print "# ss \t num \t Cpp"
+    print "# ss \t num \t Cpp \t Cuda"
     
     for s in ss:
         ref_im = test_image(0, size=(s, s))
@@ -44,8 +49,9 @@ def main():
                 images.append(im)
         
             t1 = py_cpp_dot(images, ref_im)
+            t2 = py_gpu_kernel(images, ref_im)
         
-            print s, num, t1
+            print s, num, t1, t2
             
         print "\n"
 

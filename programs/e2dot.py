@@ -12,4 +12,4 @@ im2 = test_image(7, size=(s,s))
 print "im1.size: %s" % im1.get_size()
 print "im2.size: %s" % im2.get_size()
 
-print libpyCuda.cpp_dot(im1, im2)
+print libpyCuda.cuda_dot(im1, im2), libpyCuda.cpp_dot(im1, im2)
