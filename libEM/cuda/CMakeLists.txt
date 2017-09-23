@@ -1,6 +1,7 @@
 set(CMAKE_CUDA_FLAGS "-arch=sm_30")
 add_library(dot STATIC dot.cu)
 set_target_properties(dot PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+target_link_libraries(dot EM2)
 
 add_library(pyCuda SHARED libpyCuda.cu)
 target_link_libraries(pyCuda dot)
