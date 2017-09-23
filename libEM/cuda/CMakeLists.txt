@@ -6,6 +6,10 @@ target_link_libraries(dot EM2)
 add_library(pyCuda SHARED libpyCuda.cu)
 target_link_libraries(pyCuda dot -lcublas)
 
+add_executable(e2dot main.cu)
+set_target_properties(e2dot PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+
+target_link_libraries(e2dot dot)
 
 if(WIN32)
 	set(suffix .pyd)
@@ -33,7 +37,12 @@ install(TARGETS pyCuda dot
 		COMPONENT Cuda
 		)
 
+install(TARGETS e2dot
+		DESTINATION bin
+		COMPONENT Cuda
+		)
+
 add_custom_target(Cuda
 				  COMMAND ${CMAKE_COMMAND} -DCOMPONENT=Cuda -P cmake_install.cmake
-				  DEPENDS pyCuda dot
+				  DEPENDS pyCuda dot e2dot
 				  )
