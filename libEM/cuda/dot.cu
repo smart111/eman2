@@ -3,11 +3,18 @@
 #include <stdio.h>
 #include <vector>
 
+#include <thrust/host_vector.h>
+#include <thrust/device_vector.h>
+#include <thrust/inner_product.h>
+
 #define THREADSPERBLOCK 1024
 
 using namespace std;
 
 typedef vector<float> VF;
+
+typedef thrust::host_vector<float> HV;
+typedef thrust::device_vector<float> DV;
 
 __global__
 void kernel_hello() {
@@ -92,4 +99,16 @@ float cuda_dot(EMData &obj1, EMData &obj2) {
     cudaFree(sum_ptr);
 
     return sum;
+}
+
+float thrust_inner_product(EMData &obj1, EMData &obj2) {
+    int N = obj1.get_size();
+    float * d_ptr_1 = obj1.get_data();
+    float * d_ptr_2 = obj2.get_data();
+    DV d_v1(d_ptr_1, d_ptr_1+N);
+    DV d_v2(d_ptr_2, d_ptr_2+N);
+    
+    return thrust::inner_product(d_v1.begin(),d_v1.end(),
+                                 d_v2.begin(),
+                                 0.0f);
 }

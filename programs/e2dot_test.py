@@ -28,6 +28,11 @@ def py_gpu_kernel(ims, ref_im):
     for i in range(len(ims)):
         libpyCuda.cuda_dot(ims[i], ref_im)
 
+@time_decorator
+def py_thrust_inner_product(ims, ref_im):
+    for i in range(len(ims)):
+        libpyCuda.thrust_inner_product(ims[i], ref_im)
+
 
 def main():
     ss = [256, 512]
@@ -38,7 +43,7 @@ def main():
     im = test_image(0, size=(8, 8))
     py_gpu_kernel([im], im)
 
-    print "# ss \t num \t Cpp \t Cuda"
+    print "# ss \t num \t Cpp \t Cuda \t Thrust"
     
     for s in ss:
         ref_im = test_image(0, size=(s, s))
@@ -51,8 +56,9 @@ def main():
         
             t1 = py_cpp_dot(images, ref_im)
             t2 = py_gpu_kernel(images, ref_im)
+            t3 = py_thrust_inner_product(images, ref_im)
         
-            print s, num, t1, t2
+            print s, num, t1, t2, t3
             
         print "\n"
 
