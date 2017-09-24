@@ -47,6 +47,10 @@ void kernel_dot(float *v1, float *v2, int N, float *sum) {
     if(i<N) {
         float mm = v1[i] * v2[i];
         cc[threadIdx.x] = v1[i] * v2[i];
+//        printf(" %d %f %f %d %d %d\n", i, ss, *sum, blockDim.x, blockIdx.x, threadIdx.x);
+//        atomicAdd(sum, mm);
+//        *su += ss;
+//        printf("sum= %f", *sum);
     }
     __syncthreads();
 
