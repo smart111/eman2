@@ -9,6 +9,9 @@ s = 256
 im1 = test_image(0, size=(s,s))
 im2 = test_image(7, size=(s,s))
 
+im3 = im1 + im2
+im3.write_image("im0plus1.hdf")
+
 print "im1.size: %s" % im1.get_size()
 print "im2.size: %s" % im2.get_size()
 
