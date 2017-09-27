@@ -11,4 +11,5 @@ BOOST_PYTHON_MODULE(libpyCuda)
             def("cuda_dot", cuda_dot);
             def("thrust_inner_product", thrust_inner_product);
             def("thrust_transform_reduce", thrust_transform_reduce);
+            def("cuda_cublas", cuda_cublas);
         };

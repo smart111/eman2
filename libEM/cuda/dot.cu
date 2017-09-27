@@ -8,6 +8,7 @@
 #include <thrust/inner_product.h>
 #include <thrust/iterator/zip_iterator.h>
 #include <thrust/tuple.h>
+#include "cublas_v2.h"
 
 #define THREADSPERBLOCK 1024
 
@@ -129,4 +130,40 @@ float thrust_transform_reduce(EMData &obj1, EMData &obj2) {
                       thrust::multiplies<float>());
     
     return thrust::reduce(d_o.begin(), d_o.end());
+}
+
+float cuda_cublas(EMData &obj1, EMData &obj2) {
+    cublasHandle_t handle;
+    float * h_v1 = obj1.get_data();
+    float * h_v2 = obj2.get_data();
+    int N = obj1.get_size();
+
+    float * d_v1, * d_v2, * d_o;
+    cudaMallocManaged(&d_v1, N*sizeof(float));
+    cudaMallocManaged(&d_v2, N*sizeof(float));
+
+    cudaMemcpy(d_v1, h_v1, N*sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_v2, h_v2, N*sizeof(float), cudaMemcpyHostToDevice);
+    float *sum_ptr;
+    cudaError_t er = cudaMallocManaged(&sum_ptr, sizeof(float));
+    if (er != cudaSuccess)
+    {
+        printf("1 %s\n",cudaGetErrorString(er));
+        exit(1);
+    }
+
+    *sum_ptr = 0.0f;
+
+
+//    cublasSdot (handle, N,
+//                d_v1, 1,
+//                d_v2, 1,
+//                sum_ptr);
+
+    cublasDestroy(handle);
+
+    float sum = *sum_ptr;
+    cudaFree(sum_ptr);
+
+    return sum;
 }

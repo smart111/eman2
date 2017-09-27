@@ -4,7 +4,7 @@ set_target_properties(dot PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_link_libraries(dot EM2)
 
 add_library(pyCuda SHARED libpyCuda.cu)
-target_link_libraries(pyCuda dot)
+target_link_libraries(pyCuda dot -lcublas)
 
 
 if(WIN32)
