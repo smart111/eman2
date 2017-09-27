@@ -16,5 +16,6 @@ __global__
 void kernel_dot(float *v1, float *v2, int N, float *);
 float cuda_dot(EMData &obj1, EMData &obj2);
 float thrust_inner_product(EMData &obj1, EMData &obj2);
+float thrust_transform_reduce(EMData &obj1, EMData &obj2);
 
 #endif //EMAN_DOT_H

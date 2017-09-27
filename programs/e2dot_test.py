@@ -33,6 +33,11 @@ def py_thrust_inner_product(ims, ref_im):
     for i in range(len(ims)):
         libpyCuda.thrust_inner_product(ims[i], ref_im)
 
+@time_decorator
+def py_thrust_transform_reduce(ims, ref_im):
+    for i in range(len(ims)):
+        libpyCuda.thrust_transform_reduce(ims[i], ref_im)
+
 
 def main():
     ss = [256, 512]
@@ -57,8 +62,9 @@ def main():
             t1 = py_cpp_dot(images, ref_im)
             t2 = py_gpu_kernel(images, ref_im)
             t3 = py_thrust_inner_product(images, ref_im)
+            t4 = py_thrust_transform_reduce(images, ref_im)
         
-            print s, num, t1, t2, t3
+            print s, num, t1, t2, t3, t4
             
         print "\n"
 
