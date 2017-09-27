@@ -6,6 +6,8 @@
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include <thrust/inner_product.h>
+#include <thrust/iterator/zip_iterator.h>
+#include <thrust/tuple.h>
 
 #define THREADSPERBLOCK 1024
 
@@ -111,4 +113,20 @@ float thrust_inner_product(EMData &obj1, EMData &obj2) {
     return thrust::inner_product(d_v1.begin(),d_v1.end(),
                                  d_v2.begin(),
                                  0.0f);
+}
+
+float thrust_transform_and_reduce(EMData &obj1, EMData &obj2) {
+    int  N = obj1.get_size();
+    float * d_ptr_1 = obj1.get_data();
+    float * d_ptr_2 = obj2.get_data();
+    DV d_v1(d_ptr_1, d_ptr_1+N);
+    DV d_v2(d_ptr_2, d_ptr_2+N);
+    DV d_o(N);
+
+    thrust::transform(d_v1.begin(),d_v1.end(),
+                      d_v2.begin(),
+                      d_o.begin(),
+                      thrust::multiplies<float>());
+    
+    return thrust::reduce(d_o.begin(), d_o.end());
 }
