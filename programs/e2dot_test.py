@@ -17,6 +17,15 @@ def time_decorator(func):
         return t1 - t0
     
     return wrapper
+    
+@time_decorator
+def dot_cpu(ims, ref_im):
+    vref = ref_im.get_data_as_vector()
+    for i in range(len(ims)):
+        v1 = ims[i].get_data_as_vector()
+        sum = 0
+        for j in range(len(vref)):
+            sum += vref[j]*v1[j]
 
 @time_decorator
 def py_cpp_dot(ims, ref_im):
