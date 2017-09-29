@@ -130,3 +130,28 @@ float thrust_transform_and_reduce(EMData &obj1, EMData &obj2) {
     
     return thrust::reduce(d_o.begin(), d_o.end());
 }
+
+typedef thrust::tuple<float, float> Tuple;
+
+struct tuple_dot {
+    __host__ __device__
+    float operator()(const Tuple & t) {
+        return thrust::get<0>(t) * thrust::get<1>(t);
+    }
+};
+
+float thrust_transform_reduce(EMData &obj1, EMData &obj2) {
+    int  N = obj1.get_size();
+    float * d_ptr_1 = obj1.get_data();
+    float * d_ptr_2 = obj2.get_data();
+    DV d_v1(d_ptr_1, d_ptr_1+N);
+    DV d_v2(d_ptr_2, d_ptr_2+N);
+    DV d_o(N);
+
+    return thrust::transform_reduce(
+            thrust::make_zip_iterator(thrust::make_tuple(d_v1.begin(), d_v2.begin())),
+            thrust::make_zip_iterator(thrust::make_tuple(d_v1.end(), d_v2.end())),
+            tuple_dot(),
+            0.f,
+            thrust::plus<float>());
+}

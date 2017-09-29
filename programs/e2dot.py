@@ -15,4 +15,5 @@ print "im2.size: %s" % im2.get_size()
 print libpyCuda.cuda_dot(im1, im2),\
     libpyCuda.cpp_dot(im1, im2),\
     libpyCuda.thrust_inner_product(im1, im2),\
-    libpyCuda.thrust_transform_and_reduce(im1, im2)
+    libpyCuda.thrust_transform_and_reduce(im1, im2),\
+    libpyCuda.thrust_transform_reduce(im1, im2)
