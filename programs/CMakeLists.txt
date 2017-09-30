@@ -33,6 +33,7 @@ add_custom_target(Programs
 				  )
 
 add_executable(e2c11 e2c11.cpp)
+set_property(TARGET e2c11 PROPERTY CXX_STANDARD 14)
 target_link_libraries(e2c11 EM2)
 add_custom_target(Programs-CPP
 				  COMMAND ${CMAKE_COMMAND} -DCOMPONENT=Programs-CPP -P cmake_install.cmake
