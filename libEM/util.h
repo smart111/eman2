@@ -742,6 +742,11 @@ namespace EMAN
 			return sqrt(x * x + y * y + z * z);
 		}
 
+		static inline float hypot3(int x, int y, int z)
+		{
+			return hypot3<int>(x, y, z);
+		}
+
 		/** Euclidean distance in 2D for integers computed fast using a cached lookup table
 		 * @param[in] x The first number
 		 * @param[in] y The second number
