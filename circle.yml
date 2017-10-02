@@ -2,6 +2,13 @@ machine:
   environment:
     MINICONDA_FILE: "Miniconda2-latest-Linux-x86_64.sh"
 
+dependencies:
+  pre:
+    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+    - sudo apt-get -q update -y
+    - sudo apt-get -q install gcc-5 g++-5 -y
+    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 1 --slave /usr/bin/g++ g++ /usr/bin/g++-5
+
 test:
   override:
     - bash:
