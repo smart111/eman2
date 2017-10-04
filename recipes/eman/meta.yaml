@@ -7,28 +7,25 @@ source:
 
 requirements:
     {% set reqs_common = [
-            "msinttypes",  # [win]
-            "python 2.7.*",
             "boost 1.63.*",
-            "fftw-mpi",
-            "numpy x.x",  # [linux]
-            "numpy",      # [not linux]
-            "ftgl",
-            "freetype",
-            "gsl",
-            "hdf5",
-            "jpeg",
-            "libtiff",
-            "libpng",
-            "zlib",
-            "matplotlib",
-            "ipython",
-            "pyqt 4.*",
-            "pyopengl 3.1.0",
-            "theano",
-            "scikit-learn",
-            "bsddb",       # [not win]
-            "pydusa",      # [not win]
+            "msinttypes",       # [win]
+            "python 3.5.*",     # [win]
+            "fftw",             # [win]
+            "numpy",            # [win]
+            "ftgl",             # [win]
+            "freetype",         # [win]
+            "gsl",              # [win]
+            "hdf5",             # [win]
+            "jpeg",             # [win]
+            "libtiff",          # [win]
+            "libpng",           # [win]
+            "zlib",             # [win]
+            "matplotlib",       # [win]
+            "ipython",          # [win]
+            "pyqt 4.*",         # [win]
+            "pyopengl 3.1.0",   # [win]
+            "theano",           # [win]
+            "scikit-learn",     # [win]
     ] %}
     
     build:
