@@ -7,9 +7,11 @@ source:
 
 requirements:
     {% set reqs_common = [
-            "boost 1.63.*",
+            "eman-deps * *np18*",        # [linux]
+            "eman-deps",        # [osx]
             "msinttypes",       # [win]
             "python 3.5.*",     # [win]
+            "boost 1.61.*",     # [win]
             "fftw",             # [win]
             "numpy",            # [win]
             "ftgl",             # [win]
