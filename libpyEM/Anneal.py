@@ -71,16 +71,16 @@ def main():
     x0 = [0 for i in range(10)]
     fx0 = testfunc(x0)
     print("ANALYTIC:")
-    print("argmin:\t{}\nminval:\t{}\n".format(x0,fx0))
+    print(("argmin:\t{}\nminval:\t{}\n".format(x0,fx0)))
 
     print("ANNEALED:")
     bounds = [(low,high) for i in x0]
     sa = SimpleAnnealer(testfunc,bounds)
     params = {'t_step':options.tstep,'nt':options.nt,'n_steps':options.nsteps,'n_limit':options.nlimit}
     x1,fx1,err1,iters1=sa.anneal(**params)
-    print("argmin:\t{}\nminval:\t{}\n".format(x1,fx1))
+    print(("argmin:\t{}\nminval:\t{}\n".format(x1,fx1)))
     error1 = np.abs(fx1 - fx0)
-    print("Iterations:\t\t{}\nEstimated Error:\t{}\nActual Error:\t\t{}\n\n".format(iters1,err1*0.01,error1))
+    print(("Iterations:\t\t{}\nEstimated Error:\t{}\nActual Error:\t\t{}\n\n".format(iters1,err1*0.01,error1)))
 
     print("Traveling Sales Person Problem:")
     example_tsp_problem()
@@ -102,9 +102,9 @@ def example_tsp_problem():
     np.random.shuffle(init_state)
     # create a distance matrix
     distance_matrix = {}
-    for ka, va in cities.items():
+    for ka, va in list(cities.items()):
         distance_matrix[ka] = {}
-        for kb, vb in cities.items():
+        for kb, vb in list(cities.items()):
             if kb == ka: distance_matrix[ka][kb] = 0.0
             else: distance_matrix[ka][kb] = geodesic_distance(va, vb)
     tsps = TSPSolver(init_state, distance_matrix)
@@ -113,9 +113,9 @@ def example_tsp_problem():
     state, e = tsps.anneal()
     while state[0] != 'New York City':
         state = state[1:] + state[:1]  # rotate NYC to start
-    print("%i mile route:" % e)
+    print(("%i mile route:" % e))
     for city in state:
-        print("\t"+city)
+        print(("\t"+city))
 
 class SimpleAnnealer:
 
@@ -178,10 +178,10 @@ class SimpleAnnealer:
         for i in range(10):
             xnew = self.variator(x)
             Es.append(self.objective(xnew))
-        T = 2*max(map(lambda E,E0=E0: abs(E-E0),Es))
+        T = 2*max(list(map(lambda E,E0=E0: abs(E-E0),Es)))
         return T
 
-class BaseAnnealer(object):
+class BaseAnnealer(object, metaclass=abc.ABCMeta):
 
     # This software is maintained by perrygeo and is available at:
     #     https://github.com/perrygeo/simanneal/blob/master/simanneal/anneal.py
@@ -192,8 +192,6 @@ class BaseAnnealer(object):
     energy and make moves on a state.  The temperature schedule for
     annealing may be provided manually or estimated automatically.
     """
-
-    __metaclass__ = abc.ABCMeta
     Tmax = 25000.0
     Tmin = 2.5
     steps = 50000
@@ -232,7 +230,7 @@ class BaseAnnealer(object):
         if not fname:
             date = datetime.datetime.now().isoformat().split(".")[0]
             fname = date + "_energy_" + str(self.energy()) + ".state"
-        print("Saving state to: %s" % fname)
+        print(("Saving state to: %s" % fname))
         with open(fname, "w") as fh:
             pickle.dump(self.state, fh)
 

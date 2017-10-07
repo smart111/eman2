@@ -29,7 +29,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307 USA
 
 import sys
-from cPickle import dumps,loads
+from pickle import dumps,loads
 from zlib import compress,decompress
 from struct import pack,unpack
 
@@ -55,7 +55,7 @@ def mpi_din(msg):
 	elif msg[0]=="Z" : return loads(decompress((msg[1:]).tostring()))
 	elif msg[0]=="O" : return loads((msg[1:]).tostring())
 	else :
-		print "ERROR: Invalid MPI message. Please contact developers. (%s)"%str(msg[:20])
+		print("ERROR: Invalid MPI message. Please contact developers. (%s)"%str(msg[:20]))
 		sys.exit(1)
 
 

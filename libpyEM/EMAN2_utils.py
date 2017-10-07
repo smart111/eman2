@@ -7,7 +7,7 @@ import numpy as np
 import os
 
 amino_dict= {0: 'ALA', 1: 'ARG', 2: 'ASN', 3: 'ASP', 4: 'CYS', 5: 'GLU', 6: 'GLN', 7: 'GLY', 8: 'HIS', 9: 'ILE', 10: 'LEU', 11: 'LYS', 12: 'MET', 13: 'PHE', 14: 'PRO', 15: 'SER', 16: 'THR', 17: 'TRP', 18: 'TYR', 19: 'VAL', 20: 'ASX', 21:'GLX'}
-amino_dict.update(dict((v, k) for k, v in amino_dict.iteritems()))
+amino_dict.update(dict((v, k) for k, v in amino_dict.items()))
 amino_dict.update({'A': 0, 'C': 4, 'E': 5, 'D': 3, 'G': 7, 'F': 13, 'I': 9, 'H': 8, 'K': 11, 'M': 12, 'L': 10, 'N': 2, 'Q': 6, 'P': 14, 'S': 15, 'R': 1, 'T': 16, 'W': 17, 'V': 19, 'Y': 18, 'X':20})
 
 def pdb2numpy(fname, readres=False, readocc=False, readbfac=False):
@@ -199,7 +199,7 @@ def makepath(options, stem='e2dir'):
 	
 	if not options.path:
 		if options.verbose:
-			print "\n(EMAN2_utils)(makepath), stem is", stem
+			print("\n(EMAN2_utils)(makepath), stem is", stem)
 	
 	#if options.path and ("/" in options.path or "#" in options.path):
 	#	print "Path specifier should be the name of a subdirectory to use in the current directory. Neither '/' or '#' can be included. "
@@ -240,7 +240,7 @@ def cmponetomany(reflist,target,align=None,alicmp=("dot",{}),cmp=("dot",{}), ral
 		if align[0] :
 			r[0].del_attr("xform.align2d")
 			ta=r[0].align(align[0],target,align[1],alicmp[0],alicmp[1])
-			if verbose>3: print ta.get_attr("xform.align2d")
+			if verbose>3: print(ta.get_attr("xform.align2d"))
 			#ta.debug_print_params()
 
 			if ralign and ralign[0]:
@@ -258,7 +258,7 @@ def cmponetomany(reflist,target,align=None,alicmp=("dot",{}),cmp=("dot",{}), ral
 					r[0].del_attr("xform.align2d")
 					ta = r[0].align(ralign[0],target,ralign[1],alircmp[0],alircmp[1])
 
-				if verbose>3: print ta.get_attr("xform.align2d")
+				if verbose>3: print(ta.get_attr("xform.align2d"))
 
 
 			t =  ta.get_attr("xform.align2d")
@@ -277,8 +277,8 @@ def cmponetomany(reflist,target,align=None,alicmp=("dot",{}),cmp=("dot",{}), ral
 				try:
 					ret[i]=(target.cmp(cmp[0],ta,cmp[1]),scale_correction*p["tx"],scale_correction*p["ty"],p["alpha"],p["mirror"],p["scale"])
 				except:
-					print "ERROR: CMP FAILURE. See err.hdf"
-					print cmp
+					print("ERROR: CMP FAILURE. See err.hdf")
+					print(cmp)
 					target.write_image("err.hdf",0)
 					ta.write_image("err.hdf",1)
 					sys.exit(1)
@@ -296,9 +296,9 @@ def cmponetomany(reflist,target,align=None,alicmp=("dot",{}),cmp=("dot",{}), ral
 		else :
 			ret[i]=(target.cmp(cmp[0],r[0],cmp[1]),0,0,0,1.0,False)
 
-		if verbose==3 : print ret[i][0],
+		if verbose==3 : print(ret[i][0], end=' ')
 
-	if verbose==3 : print ""
+	if verbose==3 : print("")
 	if verbose==2 :
-		print "Best: ",sorted([(ret[i][0],i) for i in range(len(ret))])[0]
+		print("Best: ",sorted([(ret[i][0],i) for i in range(len(ret))])[0])
 	return ret
