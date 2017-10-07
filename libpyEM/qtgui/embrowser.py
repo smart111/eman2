@@ -33,7 +33,6 @@
 from EMAN2 import *
 from EMAN2jsondb import js_open_dict
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QChar, QString, Qt
 from emapplication import EMApp
 from emimage2d import *
 from emimagemx import *
@@ -44,7 +43,6 @@ from emplot3d import *
 from expand_string import expand_string
 from libpyUtils2 import EMUtil
 from matching import matches_pats
-from string import lower
 from valslider import StringBox
 import os
 import re
@@ -54,6 +52,17 @@ import traceback
 import weakref
 
 
+try:
+	from PyQt4.QtCore import QString
+except ImportError:
+	# we are using Python3 so QString is not defined
+	QString = type("")
+
+try:
+	from PyQt4.QtCore import QChar
+except ImportError:
+	# we are using Python3 so QChar is not defined
+	QChar = type(str)
 
 #---------------------------------------------------------------------------
 def display_error(msg) :
