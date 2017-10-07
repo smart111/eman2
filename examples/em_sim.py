@@ -654,16 +654,16 @@ class Microscope(QtOpenGL.QGLWidget):
 	def mouseReleaseEvent(self, QMouseEvent):
 		if self.drag_lens>=0:
 			l=self.lens[self.drag_lens]
-			print "lens {:d}: py={:.3f}, f={:.3f}".format(
-				self.drag_lens, l[0], l[1])
+			print("lens {:d}: py={:.3f}, f={:.3f}".format(
+				self.drag_lens, l[0], l[1]))
 			self.drag_lens=-1
 			
 			if self.imgwindow:
 				img=self.draw_wave()
 	
 	def closeEvent(self, event):
-		print self.lens
-		print "Exit.."
+		print(self.lens)
+		print("Exit..")
 		exit()
 
 class MainWindow(QtGui.QMainWindow):

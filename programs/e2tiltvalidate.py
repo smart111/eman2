@@ -429,7 +429,7 @@ def run(command):
 		pass		    
 #		print "Segfault running %s\nNormal on some platforms, ignoring"%command
 	elif error : 
-		print("Error running:\n%s"%command)		    
+		print(("Error running:\n%s"%command))		    
 		exit(1)
 
 # In some cases it is impossible to import PyQT4, particularly on clusters

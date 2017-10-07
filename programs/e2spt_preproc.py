@@ -124,7 +124,7 @@ def main():
 			else:
 				print("\n(e2spt_preproc)(main) ERROR: '.hdf' must be the last four characters of the output filename.")
 			
-		print("\n(e2spt_preproc)(main) output stack will be %s" %( preprocstack))
+		print(("\n(e2spt_preproc)(main) output stack will be %s" %( preprocstack)))
 
 		n = 0
 		try:
@@ -133,7 +133,7 @@ def main():
 			print("\n(e2spt_preproc)(main) ERROR: --input stack seems to be invalid")
 			sys.exit()
 		
-		print("\n(e2spt_preproc)(main) number of particles is %d" %( n)) 
+		print(("\n(e2spt_preproc)(main) number of particles is %d" %( n))) 
 		
 		
 		c = os.getcwd()
@@ -149,7 +149,7 @@ def main():
 				dimg.write_image( preprocstack, i )
 		
 		else:
-			print("\n(e2spt_preproc)(main) WARNING: a file with the name of the output stack %s is already in the current directory and will be DELETED" %( preprocstack ))
+			print(("\n(e2spt_preproc)(main) WARNING: a file with the name of the output stack %s is already in the current directory and will be DELETED" %( preprocstack )))
 			os.remove( preprocstack )
 			
 			dimg = EMData(8,8,8)
@@ -173,7 +173,7 @@ def main():
 		#dimglarge.write_image(preprocstack,n-1)
 
 		if options.verbose:
-			print("\n(e2spt_preproc)(main) wrote dummy ptcls to %s" %( preprocstack))
+			print(("\n(e2spt_preproc)(main) wrote dummy ptcls to %s" %( preprocstack)))
 	
 		
 		print("\n(e2spt_preproc)(main) - INITIALIZING PARALLELISM!\n")
@@ -213,7 +213,7 @@ def main():
 		if options.parallel and tasks:
 			tids = etc.send_tasks(tasks)
 			if options.verbose: 
-				print("\n(e2spt_preproc)(main) preprocessing %d tasks queued" % (len(tids))) 
+				print(("\n(e2spt_preproc)(main) preprocessing %d tasks queued" % (len(tids)))) 
 
 	
 			results = get_results( etc, tids, options )
@@ -259,18 +259,18 @@ class Preproc3DTask(JSTask):
 		i = self.classoptions['ptclnum']
 		#image=self.data["image"]
 		#print "simage is", simagefile
-		print("ptclnum is i",i)
+		print(("ptclnum is i",i))
 		
 		if isinstance(self.data["image"],EMData):
 			simage=self.data["image"]
 		else: 
 			simage=EMData(self.data["image"][1],self.data["image"][2])
-			print("image was actually file",image)
+			print(("image was actually file",image))
 			
 		#simage = self.data['image']
 		
 		if options.verbose:
-			print("in class, outname %s and i=%d " %(outname, i))
+			print(("in class, outname %s and i=%d " %(outname, i)))
 		
 		
 		preprocfunc( simage, options, i, outname )
@@ -287,7 +287,7 @@ def preprocfunc( simage, options, i, outname, simulation=False, resizeonly=False
 	#	simage = fyle.copy()
 
 	if options.verbose:
-		print("\n(e2spt_preproc) preprocessing particle", i)
+		print(("\n(e2spt_preproc) preprocessing particle", i))
 
 	
 	
@@ -297,13 +297,13 @@ def preprocfunc( simage, options, i, outname, simulation=False, resizeonly=False
 		apix = simage['apix_x']
 	
 		if options.verbose > 9:
-			print("\n(e2spt_preproc)(preprocfunc)apix is %f" % (apix))
+			print(("\n(e2spt_preproc)(preprocfunc)apix is %f" % (apix)))
 	
 		'''
 		Make the mask first 
 		'''
 		if options.verbose > 9:
-			print("\n(e2spt_preproc)(preprocfunc) masking particle", i)
+			print(("\n(e2spt_preproc)(preprocfunc) masking particle", i))
 	
 		maskimg = EMData( int(simage["nx"]), int(simage["ny"]), int(simage["nz"]) )
 		maskimg.to_one()
@@ -392,21 +392,21 @@ def preprocfunc( simage, options, i, outname, simulation=False, resizeonly=False
 	
 		if options.lowpass:
 			if options.verbose > 9:
-				print("lowpassing particle",i)
+				print(("lowpassing particle",i))
 			#print "\n(e2spt_preproc)(preprocfunc) --lowpass provided: %s, %s" %( options.lowpass[0],options.lowpass[1]) 
 			simage.process_inplace(options.lowpass[0],options.lowpass[1])
 			#fimage.write_image(options.path + '/imgPrepLp.hdf',-1)
 
 		if options.highpass:
 			if options.verbose > 9:
-				print("highpassing particle",i) 
+				print(("highpassing particle",i)) 
 			#print "\n(e2spt_preproc)(preprocfunc) --highpass provided: %s, %s" %( options.highpass[0],options.highpass[1]) 
 			simage.process_inplace(options.highpass[0],options.highpass[1])
 			#fimage.write_image(options.path + '/imgPrepLpHp.hdf',-1)
 
 		if options.preprocess:
 			if options.verbose > 9:
-				print("preprocessing particle",i)
+				print(("preprocessing particle",i))
 			#print "\n(e2spt_preproc)(preprocfunc) --preprocess provided: %s, %s" %( options.preprocess[0],options.preprocess[1])
 			simage.process_inplace(options.preprocess[0],options.preprocess[1])
 			#fimage.write_image(options.path + '/imgPrep.hdf',-1)
@@ -437,7 +437,7 @@ def preprocfunc( simage, options, i, outname, simulation=False, resizeonly=False
 	
 	if options.shrink and int( options.shrink  ) > 1:
 		if options.verbose > 9:
-			print("shrinking particle", i)
+			print(("shrinking particle", i))
 		#print "\n(e2spt_preproc)(preprocfunc)--shrink provided: %d" %(options.shrink)
 		simage.process_inplace("math.fft.resample",{"n":options.shrink })
 	
@@ -445,15 +445,15 @@ def preprocfunc( simage, options, i, outname, simulation=False, resizeonly=False
 	try:
 		if options.output:
 			if options.verbose > 9:
-				print("\n(e2spt_preproc)(preprocfunc) outname  %s and i=%d"  % (options.output, i))
+				print(("\n(e2spt_preproc)(preprocfunc) outname  %s and i=%d"  % (options.output, i)))
 			simage.write_image( outname, i )
 		else:
 			if options.verbose > 9:
-				print("\n(e2spt_preproc)(preprocfunc) no --output provided. Default outname %s and i=%d  " % ( outname, i)) 
+				print(("\n(e2spt_preproc)(preprocfunc) no --output provided. Default outname %s and i=%d  " % ( outname, i))) 
 			simage.write_image( outname, i )
 	except:
 		if options.verbose > 9:	
-			print("\n(e2spt_preproc)(preprocfunc) parameter --output probably doesn't exist in program calling this function. default outname %s and i=%d " %( outname , i)) 
+			print(("\n(e2spt_preproc)(preprocfunc) parameter --output probably doesn't exist in program calling this function. default outname %s and i=%d " %( outname , i))) 
 		
 		if outname:
 			simage.write_image( outname, i )
@@ -478,7 +478,7 @@ def clip3D( vol, sizex, sizey=0, sizez=0 ):
 	volyc = vol['ny']/2
 	volzc = vol['nz']/2
 	
-	print("clipping volume to size", sizex, sizey, sizez)
+	print(("clipping volume to size", sizex, sizey, sizez))
 	
 	Rvol =  Region( (2*volxc - sizex)/2, (2*volyc - sizey)/2, (2*volzc - sizez)/2, sizex , sizey , sizez)
 	vol.clip_inplace( Rvol )

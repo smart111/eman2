@@ -108,7 +108,7 @@ def main():
 		nps=ps[:p1+5]+str(num-len(helix))+ps[p2:]
 		options.process=nps
 		
-		print("Existing helix length: "+ str(len(helix)))
+		print(("Existing helix length: "+ str(len(helix))))
 		#print helix[0]
 		
 	

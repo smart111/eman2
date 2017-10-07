@@ -68,11 +68,11 @@ from EMAN2 import *
 import sys
 from emshape import *
 import weakref
-from cPickle import dumps,loads
+from pickle import dumps,loads
 import struct, math
 from numpy import *
 from valslider import *
-from cStringIO import StringIO
+from io import StringIO
 import re
 import emimage2d
 
@@ -257,7 +257,7 @@ class EMPlot2DWidget(EMGLWidget):
 			if not quiet: self.updateGL()
 			return
 
-		if self.data.has_key(key) : oldkey=True
+		if key in self.data : oldkey=True
 		else: oldkey=False
 
 		if isinstance(input_data,EMData):
@@ -283,7 +283,7 @@ class EMPlot2DWidget(EMGLWidget):
 				else : self.axes[key]=(0,1,-2,-2)
 			else : self.axes[key]=(-1,0,-2,-2)
 		except:
-			print "Data error:", data
+			print("Data error:", data)
 			return
 
 		if oldkey:
@@ -344,7 +344,7 @@ class EMPlot2DWidget(EMGLWidget):
 				im = im[0]
 				l = [i for i in range(im.get_size())]
 				k = im.get_data_as_vector()
-				if self.data.has_key(filename) : filename="{}.{}".format(filename,len(self.data))
+				if filename in self.data : filename="{}.{}".format(filename,len(self.data))
 				self.set_data([l,k],filename,quiet=quiet)
 			elif im[0].get_attr_default("isvector",0):
 #				all=[i.get_data_as_vector() for i in im]
@@ -392,7 +392,7 @@ class EMPlot2DWidget(EMGLWidget):
 				self.set_data(data,remove_directories_from_name(filename,1),quiet=quiet,comments=comments)
 			except:
 				traceback.print_exc()
-				print "couldn't read",filename
+				print("couldn't read",filename)
 				return False
 
 		return True
@@ -447,7 +447,7 @@ class EMPlot2DWidget(EMGLWidget):
 				data=[[array([rdata[j][i]]) for j in range(ny)] for i in range(nx)]
 
 			except:
-				print "couldn't read",filename
+				print("couldn't read",filename)
 
 		return data
 
@@ -519,7 +519,7 @@ class EMPlot2DWidget(EMGLWidget):
 		GL.glPushMatrix()
 		# overcome depth issues
 		glTranslate(0,0,5)
-		for k,s in self.shapes.items():
+		for k,s in list(self.shapes.items()):
 #			print k,s
 			s.draw(self.scr2plot)
 
@@ -535,7 +535,7 @@ class EMPlot2DWidget(EMGLWidget):
 			ax.tick_params(axis='y', labelsize="x-large")
 			canvas=FigureCanvasAgg(fig)
 
-			for i in self.axes.keys():
+			for i in list(self.axes.keys()):
 				if not self.visibility[i]: continue
 				j=self.axes[i]
 #				print j
@@ -566,7 +566,7 @@ class EMPlot2DWidget(EMGLWidget):
 					parm=linetypes[self.pparm[i][2]]
 					try: ax.plot(x,y,parm,linewidth=self.pparm[i][3],color=colortypes[self.pparm[i][0]])
 					except:
-						print "Error: Plot failed\n%d %s\n%d %s"%(len(x),x,len(y),y)
+						print("Error: Plot failed\n%d %s\n%d %s"%(len(x),x,len(y),y))
 
 
 			canvas.draw()
@@ -579,7 +579,7 @@ class EMPlot2DWidget(EMGLWidget):
 				try: # this should work for matplotlib 0.91
 					self.scrlim=(ax.get_window_extent().xmin(),ax.get_window_extent().ymin(),ax.get_window_extent().xmax()-ax.get_window_extent().xmin(),ax.get_window_extent().ymax()-ax.get_window_extent().ymin())
 				except:
-					print 'there is a problem with your matplotlib'
+					print('there is a problem with your matplotlib')
 					return
 			self.plotlim=(ax.get_xlim()[0],ax.get_ylim()[0],ax.get_xlim()[1]-ax.get_xlim()[0],ax.get_ylim()[1]-ax.get_ylim()[0])
 
@@ -748,7 +748,7 @@ lc is the cursor selection point in plot coords"""
 
 		j=0
 		# we find the first displayed axis in the list
-		for ak in self.axes.keys():
+		for ak in list(self.axes.keys()):
 			if not self.visibility[ak]: continue
 			j=self.axes[ak]
 			break
@@ -775,7 +775,7 @@ lc is the cursor selection point in plot coords"""
 
 		# We select one point if it's within 5 pixels, then up to 4 more points within 3 pixels
 		self.selected=[srt[0]]
-		for i in xrange(1,5) :
+		for i in range(1,5) :
 			if r[srt[i]]<3 : self.selected.append(srt[i])
 
 		y0=35
@@ -785,7 +785,7 @@ lc is the cursor selection point in plot coords"""
 			try:
 				cmts = comments[p].split(";")
 
-				for i in xrange(len(cmts)/2):
+				for i in range(len(cmts)/2):
 					imn = int(cmts[2*i])
 					imf = cmts[2*i+1]
 					ptclim=EMData(imf,imn)
@@ -932,7 +932,7 @@ lc is the cursor selection point in plot coords"""
 		if force or self.xlimits==None or self.xlimits[1]<=self.xlimits[0] :
 			xmin=1.0e38
 			xmax=-1.0e38
-			for k in self.axes.keys():
+			for k in list(self.axes.keys()):
 				if not self.visibility[k]: continue
 				xmin=min(xmin,min(self.data[k][self.axes[k][0]]))
 				xmax=max(xmax,max(self.data[k][self.axes[k][0]]))
@@ -945,7 +945,7 @@ lc is the cursor selection point in plot coords"""
 		if force or self.ylimits==None or self.ylimits[1]<=self.ylimits[0] :
 			ymin=1.0e38
 			ymax=-1.0e38
-			for k in self.axes.keys():
+			for k in list(self.axes.keys()):
 				if not self.visibility[k]: continue
 				ymin=min(ymin,min(self.data[k][self.axes[k][1]]))
 				ymax=max(ymax,max(self.data[k][self.axes[k][1]]))
@@ -958,7 +958,7 @@ lc is the cursor selection point in plot coords"""
 		if force or self.climits==None or self.climits[1]<=self.climits[0] :
 			cmin=1.0e38
 			cmax=-1.0e38
-			for k in self.axes.keys():
+			for k in list(self.axes.keys()):
 				if not self.visibility[k]: continue
 				cmin=min(cmin,min(self.data[k][self.axes[k][2]]))
 				cmax=max(cmax,max(self.data[k][self.axes[k][2]]))
@@ -967,7 +967,7 @@ lc is the cursor selection point in plot coords"""
 		if force or self.slimits==None or self.slimits[1]<=self.slimits[0] :
 			smin=1.0e38
 			smax=-1.0e38
-			for k in self.axes.keys():
+			for k in list(self.axes.keys()):
 				if not self.visibility[k]: continue
 				smin=min(smin,min(self.data[k][self.axes[k][3]]))
 				smax=max(smax,max(self.data[k][self.axes[k][3]]))
@@ -1117,7 +1117,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 		elif event.buttons()&Qt.RightButton:
 			best = self.find_image(self._computeTheta(x,y), self._computeRadius(x,y))
 			if best == -1:
-				print "No Point Selected"
+				print("No Point Selected")
 			else:
 				data = self.data["data"]
 				self.valradius=4.0
@@ -1126,7 +1126,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 				self.updateGL()
 #				self.emit(QtCore.SIGNAL("clusterStats"), [meanAngle,meanRad,rmsdAngle,rmsdRad,pcount])
 				if event.modifiers()&Qt.ShiftModifier:
-						print "Shift Clicked!"
+						print("Shift Clicked!")
 						#if self.particle_viewer == None:
 							#first = True
 							#self.particle_viewer = EMImage2DWidget(data=None, application=get_application())
@@ -1200,7 +1200,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 			statsArray = []
 			data = self.data["data"]
 			# Compute mean angle and radius
-			for i in xrange(len(data[0])):
+			for i in range(len(data[0])):
 				dist = data[1][i]**2 + self.clusterorigin_rad**2 - 2*data[1][i]*self.clusterorigin_rad*math.cos(data[0][i] - self.clusterorigin_theta)
 				if dist < self.clusterradius:
 					# We need to compute mean of angle
@@ -1241,7 +1241,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 		else:
 			filename = "%s.%s"%(filename,format)
 			image.save(filename, format)
-		print "Saved %s to disk"%os.path.basename(str(filename))
+		print("Saved %s to disk"%os.path.basename(str(filename)))
 
 	def base_set_data(self,input_data,key="data",replace=False,quiet=False,color=-1,linewidth=1,linetype=0,symtype=-1,symsize=4):
 		"""Set a keyed data set. The key should generally be a string describing the data.
@@ -1355,7 +1355,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 		GL.glPushMatrix()
 		# overcome depth issues
 		glTranslate(0,0,5)
-		for k,s in self.shapes.items():
+		for k,s in list(self.shapes.items()):
 #			print k,s
 			s.draw(self.scr2plot)
 
@@ -1372,7 +1372,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 			if not self.xticklabels: ax.set_xticklabels([])
 			canvas=FigureCanvasAgg(fig)
 
-			for i in self.axes.keys():
+			for i in list(self.axes.keys()):
 				if not self.visibility[i]: continue
 				j=self.axes[i]
 				theta=self.data[i][self.axes[i][0]]
@@ -1400,7 +1400,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 				ax.set_rmax(self.pparm[i][7])
 
 			if self.datap:
-				for i in xrange(len(theta)):
+				for i in range(len(theta)):
 					ax.annotate(" "+str(self.datap[i]),(theta[i],r[i]),color=self.datalabelscolor,weight='bold',horizontalalignment='left')
 
 			canvas.draw()
@@ -1413,7 +1413,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 				try: # this should work for matplotlib 0.91
 					self.scrlim=(ax.get_window_extent().xmin(),ax.get_window_extent().ymin(),ax.get_window_extent().xmax()-ax.get_window_extent().xmin(),ax.get_window_extent().ymax()-ax.get_window_extent().ymin())
 				except:
-					print 'there is a problem with your matplotlib'
+					print('there is a problem with your matplotlib')
 					return
 			self.plotlim=(ax.get_xlim()[0],ax.get_ylim()[0],ax.get_xlim()[1]-ax.get_xlim()[0],ax.get_ylim()[1]-ax.get_ylim()[0])
 			self.plotdims = ax.get_position()
@@ -1686,7 +1686,7 @@ class EMPlot2DStatsInsp(QtGui.QWidget):
 			result = np.corrcoef(x,rowvar=False) #result = ["\t".join([str(round(j,2)) for j in i]) for i in corrcoef]
 
 		else:
-			print("{} not yet implemented!".format(stat))
+			print(("{} not yet implemented!".format(stat)))
 			return
 
 		self.table.setRowCount(result.shape[0])
@@ -1792,11 +1792,11 @@ class EMPlot2DRegrInsp(QtGui.QWidget):
 		# perform actual regression
 		coefs, _, _, _ = np.linalg.lstsq(A, y) #coefs, residuals, rank, svals
 
-		print("Polynomial Regression (Degree {})".format(degree))
-		print("X: {}\tY: {}".format(xs,ys))
+		print(("Polynomial Regression (Degree {})".format(degree)))
+		print(("X: {}\tY: {}".format(xs,ys)))
 		print("Coefficients:")
 		for i,c in enumerate(coefs):
-			print("{}:\t{}".format(i,c))
+			print(("{}:\t{}".format(i,c)))
 
 		# construct interpolated polynomial
 		xmin = np.min(x)
@@ -1937,14 +1937,14 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 				QtGui.QMessageBox.warning(self,"Error", "No filenames stored in {}".format(name))
 				return
 
-			for r in xrange(len(comments)):
+			for r in range(len(comments)):
 				try: imn,imf=comments[r].split(";")[:2]
 				except:
 					QtGui.QMessageBox.warning(self,"Error", "Invalid filename {} in {}, line {}".format(comments[r],name,r))
 					return
 
 				imn=int(imn)
-				if not lsx.has_key(imf) : lsx[imf]=LSXFile(imf,True)	# open the LSX file for reading
+				if imf not in lsx : lsx[imf]=LSXFile(imf,True)	# open the LSX file for reading
 				val=lsx[imf][imn]
 				out[r]=val
 
@@ -1964,7 +1964,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		nrow=len(data[0])
 
 		if axes=="all":
-			axes=range(ncol)
+			axes=list(range(ncol))
 		else:
 			try:
 				axes=[int(i) for i in axes.split(",")]
@@ -1975,7 +1975,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 
 		# Sometimes one axis dominates the classification improperly, this makes each axis equally weighted
 		if axnorm:
-			print "Normalize Axes"
+			print("Normalize Axes")
 			datafix=[i.copy()/std(i) for i in data]
 		else: datafix=data
 
@@ -1998,7 +1998,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		resultc=[[] for j in range(nseg)]							# nseg lists of comments
 		for r in range(nrow):
 			s=imdata[r]["class_id"]
-			for c in xrange(ncol):
+			for c in range(ncol):
 				results[s][c].append(data[c][r])
 			if comments!=None: resultc[s].append(comments[r])
 
@@ -2022,7 +2022,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		nrow=len(data[0])
 
 		if axes == "all":
-			axes=range(ncol)
+			axes=list(range(ncol))
 		else:
 			try:
 				axes=[int(i) for i in axes.split(",")]
@@ -2088,7 +2088,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		resultc=[[] for j in range(nseg)]							# nseg lists of comments
 		for r in range(nrow):
 			s=imdata[r]["class_id"]
-			for c in xrange(ncol):
+			for c in range(ncol):
 				results[s][c].append(data[c][r])
 			if comments!=None: resultc[s].append(comments[r])
 
@@ -2104,7 +2104,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		try:
 			if sel==None: sel=self.target().selected
 		except:
-			print "imgSelect with no selection"
+			print("imgSelect with no selection")
 			return
 
 		try:
@@ -2171,18 +2171,18 @@ class DragListWidget(QtGui.QListWidget):
 
 				if data==None:					# first good line
 					n=len(rex.findall(s))		# count numbers on the line
-					data=[ [] for i in xrange(n)]		# initialize empty data arrays
+					data=[ [] for i in range(n)]		# initialize empty data arrays
 
 				# parses out each number from each line and puts it in our list of lists
 				for i,f in enumerate(rex.findall(s)):
 					try: data[i].append(float(f))
-					except: print "Error (%d): %s"%(i,f)
+					except: print("Error (%d): %s"%(i,f))
 
 			# Find an unused name for the data set
 			trgplot=self.datasource().target()
 			name="Dropped"
 			nn=1
-			while trgplot.data.has_key(name) :
+			while name in trgplot.data :
 				name="Dropped_%d"%nn
 				nn+=1
 
@@ -2221,9 +2221,9 @@ class DragListWidget(QtGui.QListWidget):
 
 		# create the string representation of the data set
 		sdata=StringIO()		# easier to write as if to a file
-		for y in xrange(len(data[0])):
+		for y in range(len(data[0])):
 			sdata.write("%1.8g"%data[axes[0]][y])
-			for x in xrange(1,len(axes)):
+			for x in range(1,len(axes)):
 				sdata.write("\t%1.8g"%data[axes[x]][y])
 			sdata.write("\n")
 
@@ -2617,7 +2617,7 @@ class EMPlot2DInspector(QtGui.QWidget):
 		rngn0=int(val)
 		rngn1=int(self.nbox.getValue())
 		rngstp=int(self.stepbox.getValue())
-		rng=range(rngn0,rngn0+rngstp*rngn1,rngstp)
+		rng=list(range(rngn0,rngn0+rngstp*rngn1,rngstp))
 		for i,k in enumerate(sorted(self.target().visibility.keys())) :
 			self.target().visibility[k]=i in rng
 		self.target().full_refresh()
@@ -2628,13 +2628,13 @@ class EMPlot2DInspector(QtGui.QWidget):
 		self.target().updateGL()
 
 	def selAll(self):
-		for k in self.target().visibility.keys() : self.target().visibility[k]=True
+		for k in list(self.target().visibility.keys()) : self.target().visibility[k]=True
 		self.target().full_refresh()
 		self.target().updateGL()
 		self.datachange()
 
 	def selNone(self):
-		for k in self.target().visibility.keys() : self.target().visibility[k]=False
+		for k in list(self.target().visibility.keys()) : self.target().visibility[k]=False
 		self.target().full_refresh()
 		self.target().updateGL()
 		self.datachange()
@@ -2675,10 +2675,10 @@ class EMPlot2DInspector(QtGui.QWidget):
 
 		f = open(fname,"w")
 
-		for i in xrange(0,len(lines)):
+		for i in range(0,len(lines)):
 			lines[i] = lines[i].strip()
 
-		for i in xrange(len(lines)-1,-1,-1):
+		for i in range(len(lines)-1,-1,-1):
 			if lines[i] in names:
 				lines.pop(i)
 
@@ -2698,7 +2698,7 @@ class EMPlot2DInspector(QtGui.QWidget):
 			lines = []
 		f = open(fname,"w")
 
-		for i in xrange(0,len(lines)):
+		for i in range(0,len(lines)):
 			lines[i] = lines[i].strip()
 
 		for name in names:
@@ -2748,11 +2748,11 @@ class EMPlot2DInspector(QtGui.QWidget):
 		for name in names :
 			data=self.target().data[name]
 
-			for i in xrange(len(data[0])):
+			for i in range(len(data[0])):
 				out.write("%g\t%g\n"%(data[xcol][i],data[ycol][i]))
 
 		out=None
-		print "Wrote ",name2
+		print("Wrote ",name2)
 
 
 	def savePlot(self):
@@ -2775,10 +2775,10 @@ class EMPlot2DInspector(QtGui.QWidget):
 			out=file(name2,"w")
 			xcol=self.slidex.value()
 			ycol=self.slidey.value()
-			for i in xrange(len(data[0])):
+			for i in range(len(data[0])):
 				out.write("%g\t%g\n"%(data[xcol][i],data[ycol][i]))
 
-			print "Wrote ",name2
+			print("Wrote ",name2)
 
 	def savePdf(self):
 		"""Saves the contents of the current plot to a pdf"""
@@ -2993,7 +2993,7 @@ class EMPlot2DInspector(QtGui.QWidget):
 
 		flags= Qt.ItemFlags(Qt.ItemIsSelectable)|Qt.ItemFlags(Qt.ItemIsEnabled)|Qt.ItemFlags(Qt.ItemIsUserCheckable)|Qt.ItemFlags(Qt.ItemIsDragEnabled)
 
-		keys=self.target().data.keys()
+		keys=list(self.target().data.keys())
 		visible = self.target().visibility
 		keys.sort()
 		parms = self.target().pparm # get the colors from this
@@ -3003,11 +3003,11 @@ class EMPlot2DInspector(QtGui.QWidget):
 			a.setFlags(flags)
 			try: a.setTextColor(qt_color_map[colortypes[parms[j][0]]])
 			except:
-				print "Color error"
-				print list(sorted(parms.keys()))
-				print parms[j][0]
-				print colortypes[parms[j][0]]
-				print qt_color_map[colortypes[parms[j][0]]]
+				print("Color error")
+				print(list(sorted(parms.keys())))
+				print(parms[j][0])
+				print(colortypes[parms[j][0]])
+				print(qt_color_map[colortypes[parms[j][0]]])
 			if visible[j]: a.setCheckState(Qt.Checked)
 			else: a.setCheckState(Qt.Unchecked)
 

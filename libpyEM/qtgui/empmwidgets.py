@@ -43,6 +43,7 @@ from emselector import EMSelectorDialog	# This will be replaced by something mor
 import re, os, glob
 from embrowser import EMBrowserWidget
 from empmtabwidgets import *
+from functools import reduce
 
 class PMComboBox(QtGui.QComboBox):
 	""" Reimplment the QComboBox to remove wheel widget activation """
@@ -521,7 +522,7 @@ class PMDirectoryWidget(PMBaseWidget):
 		self.setValue(default)
 
 	def updateDirs(self):
-		for idx in xrange(self.combobox.count()):
+		for idx in range(self.combobox.count()):
 			self.combobox.removeItem(self.combobox.count()-1)
 		# This extra code allows use to have more than one type of directory
 		patterns = self.dirbasename.split("|")
@@ -778,7 +779,7 @@ class PMAutoMask3DWidget(PMBaseWidget):
 		if not self.automask3dbool.isChecked(): return ""
 		value = ""
 		# concatenate things
-		for i in xrange(len(self.params)):
+		for i in range(len(self.params)):
 			value = value+","+str(self.params[i].getValue())
 		value = value[1:]
 		return value
@@ -864,7 +865,7 @@ class PMFSCTableWidget(PMTableBase):
 		""" display the FSC curve. This is a callback for double clicking"""
 		if not self.tablewidget.item(row, 1):
 			msg = "Rubbish!!! No FSC curves to plot."
-			print msg
+			print(msg)
 			self.emit(QtCore.SIGNAL("pmmessage(QString)"),"Rubbish!!! No FSC curves to plot.")
 			return
 		
@@ -876,7 +877,7 @@ class PMFSCTableWidget(PMTableBase):
 		
 		# Now load the FSC curves
 		msg = "Loading FSC curves, please wait..."
-		print msg
+		print(msg)
 		self.emit(QtCore.SIGNAL("pmmessage(QString)"),msg)
 		subprocess.Popen(fsccmd, shell=True)
 
@@ -904,7 +905,7 @@ class PMFSCTableWidget(PMTableBase):
 				# We use a running average of 5 points to compute the threshold
 				xyd=XYData()
 				xyd.read_file("{}/{}".format(directory,fscs[-1]))
-				for ii in xrange(2,xyd.get_size()-2):
+				for ii in range(2,xyd.get_size()-2):
 					v=(xyd.get_y(ii-2)+xyd.get_y(ii-1)+xyd.get_y(ii)+xyd.get_y(ii+1)+xyd.get_y(ii+2))/5.0
 					if v<0.143 : break
 				
@@ -916,7 +917,7 @@ class PMFSCTableWidget(PMTableBase):
 				# We use a running average of 5 points to compute the threshold
 				xyd=XYData()
 				xyd.read_file("{}/fsc_un{}".format(directory,fscs[-1][4:]))
-				for ii in xrange(2,xyd.get_size()-2):
+				for ii in range(2,xyd.get_size()-2):
 					v=(xyd.get_y(ii-2)+xyd.get_y(ii-1)+xyd.get_y(ii)+xyd.get_y(ii+1)+xyd.get_y(ii+2))/5.0
 					if v<0.143 : break
 				

@@ -50,7 +50,7 @@ try:
 	import matplotlib.pyplot as plt
 	pltcolors=["k","b","g","r","m","c","darkblue","darkgreen","darkred","darkmagenta","darkcyan","0.5"]
 except:
-	print "Matplotlib not available, plotting options will not be available"
+	print("Matplotlib not available, plotting options will not be available")
 
 
 def main():
@@ -78,7 +78,7 @@ def main():
 				options.iter=int(jsparm["last_map"][0].split("_")[-2][:2])
 				options.sym=jsparm["sym"]
 			except:
-				print "Could not find a completed iteration in ",args[0]
+				print("Could not find a completed iteration in ",args[0])
 				sys.exit(1)
 	
 	try:
@@ -91,10 +91,10 @@ def main():
 		cmxmirror=EMData(pathmx,5)
 	except:
 		traceback.print_exc()
-		print "====\nError reading classification matrix. Must be full classification matrix with alignments"
+		print("====\nError reading classification matrix. Must be full classification matrix with alignments")
 		sys.exit(1)
 	
-	if options.verbose: print "{} particles in classmx".format(nptcl)
+	if options.verbose: print("{} particles in classmx".format(nptcl))
 
 	# path to the even/odd particles used for the refinement
 	cptcl=str(jsparm["input"])
@@ -129,7 +129,7 @@ def main():
 		# this becomes the new maximum mask radius
 		act=0
 		mv=0,0
-		for i in xrange(rmax):
+		for i in range(rmax):
 			if md[i]>mv[0] : mv=md[i],i		# find the radius of the  max val in range
 			if not act and md[i]<0.9*vmax : continue
 			act=True
@@ -153,23 +153,23 @@ def main():
 		masks.append(mask)
 	
 	rings=[int(2*nx*apix/res) for res in (100,30,15,8,4)]
-	print rings
+	print(rings)
 	nbands = len(rings)-1
 
 	fout=open("ptclfsc_multi_{}.txt".format(args[0][-2:]),"w")
 	# generate a projection for each particle so we can compare
 
 	pj = 0
-	for i in xrange(nref):
-		if options.verbose>1 : print "--- Class %d/%d"%(i,nref-1)
+	for i in range(nref):
+		if options.verbose>1 : print("--- Class %d/%d"%(i,nref-1))
 		
 		phi=eulers[i].get_rotation("eman")["phi"]
 		alt=eulers[i].get_rotation("eman")["alt"]
 		az=eulers[i].get_rotation("eman")["az"]
 
-		for j in xrange(nptcl):
+		for j in range(nptcl):
 			if classmx[0,j]!=i : continue	# only proceed if the particle is in this class
-			if options.verbose > 6: print "{}\t{}".format(i,j)
+			if options.verbose > 6: print("{}\t{}".format(i,j))
 
 			#from IPython import embed
 			#embed()
@@ -177,7 +177,7 @@ def main():
 			# the particle itself
 			try: ptcl=EMData(cptcl,j)
 			except:
-				print "Unable to read particle: {} ({})".format(cptcl,j)
+				print("Unable to read particle: {} ({})".format(cptcl,j))
 				sys.exit(1)
 			try: defocus=ptcl["ctf"].defocus
 			except: defocus=-1.0
@@ -201,12 +201,12 @@ def main():
 	
 				third = len(fsc)/3
 				fsc=array(fsc[third:third*2])
-				for k in xrange(nbands): # sum the fsc into 5 range values
+				for k in range(nbands): # sum the fsc into 5 range values
 					s = sum(fsc[rings[k]:rings[k+1]])/(rings[k+1]-rings[k])
 					data.append(str(s))
 			
 			# to which model does this particle belong according to similarity at each resolution range
-			best = [np.argmax(data[k::nbands]) for k in xrange(nbands)]
+			best = [np.argmax(data[k::nbands]) for k in range(nbands)]
 			
 			# which model "wins" majority of times?
 			counts = [0,0,0,0]
@@ -226,7 +226,7 @@ def main():
 			
 			pj+=1
 
-	print "Results in ptclfsc_multi_{}.txt".format(args[0][-2:])
+	print("Results in ptclfsc_multi_{}.txt".format(args[0][-2:]))
 	sys.exit(0)
 
 if __name__ == "__main__":

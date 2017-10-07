@@ -178,7 +178,7 @@ for option1 in optionList:
 					elif micrograph_attrib == "fileName":
 						micrograph_filename = item.attrib['fileName']
 					else:
-						print("Unknown tag: " + micrograph_attrib)
+						print(("Unknown tag: " + micrograph_attrib))
 				for item2 in item:
 					if item2.tag == "acceleratingVoltage":
 						voltage = item2.text #in kilovolts
@@ -213,7 +213,7 @@ for option1 in optionList:
 								apix_z = float(item3.text)
 								temp_dict['apix_z']=apix_z
 					else:
-						print("Unknown tag: " + item2.tag)
+						print(("Unknown tag: " + item2.tag))
 				micro_dict[micrograph_filename] = temp_dict
 				ctf=EMAN2Ctf()
 				ctf.from_dict({"defocus":(float(defocus1)+float(defocus2))/2000,"dfang":float(defocus_angle),"dfdiff":abs(float(defocus1)-float(defocus2))/1000,"voltage":float(voltage),"cs":float(cs),"ampcont":float(ampcont),"apix":float(apix_x)})
@@ -232,7 +232,7 @@ for option1 in optionList:
 						particle = item.attrib['index']
 						temp_dict['index']=particle
 					else:
-						print("Unknown tag: " + particle_attrib)
+						print(("Unknown tag: " + particle_attrib))
 				for item2 in item:
 					if item2.tag == "defocusU":
 						temp_dict['defocusU'] = float(item2.text) / 1000 # in nm
@@ -252,7 +252,7 @@ for option1 in optionList:
 								particle_micrograph_index = item2.attrib['index']
 								temp_dict['index']=particle_micrograph_index
 							else:
-								print("Unknown tag: " + micrograph_attrib)
+								print(("Unknown tag: " + micrograph_attrib))
 					elif item2.tag == "pixelSpacing":
 						for item3 in item2:
 							if item3.tag == "X":
@@ -265,7 +265,7 @@ for option1 in optionList:
 								foundapix = True
 								apix_z = float(item3.text)
 							else:
-								print("Unknown Tag: " + item3.tag)
+								print(("Unknown Tag: " + item3.tag))
 					elif item2.tag == "boxSize":
 						for item3 in item2:
 							if item3.tag == "X":
@@ -340,7 +340,7 @@ for option1 in optionList:
 		if not os.path.exists("particles"):
 			os.mkdir("particles")
 		for item in list(micro_dict.keys()):
-			print("e2proc2d.py {} particles/{}_ptcls.hdf --threed2twod --first {} --last {}".format(micro_dict[item]['stack'],base_name(item),micro_dict[item]['first_index'],micro_dict[item]['last_index']))
+			print(("e2proc2d.py {} particles/{}_ptcls.hdf --threed2twod --first {} --last {}".format(micro_dict[item]['stack'],base_name(item),micro_dict[item]['first_index'],micro_dict[item]['last_index'])))
 			launch_childprocess("e2proc2d.py {} particles/{}_ptcls.hdf --threed2twod --first {} --last {}".format(micro_dict[item]['stack'],base_name(item),micro_dict[item]['first_index'],micro_dict[item]['last_index']))
 			launch_childprocess("e2ctf.py particles/{}_ptcls.hdf --voltage {} --cs {} --ac {} --apix {} --autofit --zerook --storeparm --astigmatism {} -v {}".format(base_name(item),micro_dict[item]['voltage'],micro_dict[item]['cs'],micro_dict[item]['ampcont'],micro_dict[item]['apix_x'],dfopt,options.verbose-1))
 		if twod_xform:

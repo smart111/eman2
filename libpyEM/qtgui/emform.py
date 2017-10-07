@@ -299,9 +299,9 @@ class EMFileTable(QtGui.QTableWidget):
 		
 		stime=time.time()	
 		self.busy = 1
-		for key,value in self.animated_columns.items():
+		for key,value in list(self.animated_columns.items()):
 			if value == -1:
-				for i in xrange(0,self.columnCount()):
+				for i in range(0,self.columnCount()):
 					if (str(self.horizontalHeaderItem(i).text())) == key:
 						self.animated_columns[key] = i
 						break
@@ -313,9 +313,9 @@ class EMFileTable(QtGui.QTableWidget):
 					return
 				
 		
-		for key,value in self.animated_columns.items():
+		for key,value in list(self.animated_columns.items()):
 			cd = self.column_data[value-1]
-			for i in xrange(0,len(self.listed_names)):
+			for i in range(0,len(self.listed_names)):
 				
 				item = self.item(i,value)
 				item.setText(cd.function(self.convert_text(str(self.item(i,0).text()))))
@@ -333,7 +333,7 @@ class EMFileTable(QtGui.QTableWidget):
 		Sometimes the first column displays a shortened version of the name of a file on
 		disk, but it occurs that you want to recall the full name. This function does that
 		'''
-		for key,value in self.name_conversions.items():
+		for key,value in list(self.name_conversions.items()):
 			if value == name:
 				return key
 		return None
@@ -363,7 +363,7 @@ class EMFileTable(QtGui.QTableWidget):
 		for these "action-functions"
 		'''
 		self.context_menu_refs.append(context_menu_data)
-		for key,value in context_menu_data.items():
+		for key,value in list(context_menu_data.items()):
 			self.add_context_menu_action(key,value)
 
 	def add_column_data(self,column_data):
@@ -375,7 +375,7 @@ class EMFileTable(QtGui.QTableWidget):
 			self.column_data.append(column_data)
 		else:
 			self.column_data_refs.append(column_data)
-			for key,value in column_data.column_data.items():
+			for key,value in list(column_data.column_data.items()):
 				self.column_data.append(EMFileTable.EMColumnData(key,value,""))
 	def remove_column_data(self,column_data_name):
 		'''
@@ -422,7 +422,7 @@ class EMFileTable(QtGui.QTableWidget):
 		Internally caches the originally name in a dictionary so it can be recovered
 		Redefine self.convert_name to achieve your custom-desired display name
 		'''
-		if not self.name_conversions.has_key(name):
+		if name not in self.name_conversions:
 			converted = self.convert_name(name) 
 			self.name_conversions[name] = converted
 			return converted # for efficiency
@@ -482,7 +482,7 @@ class EMFileTable(QtGui.QTableWidget):
 			item.setToolTip(cd.tooltip)
 			
 			self.setHorizontalHeaderItem(col,item)
-			for i in xrange(0,len(self.listed_names)):
+			for i in range(0,len(self.listed_names)):
 				try : item = QtGui.QTableWidgetItem(cd.function(self.listed_names[i]))
 				except : item = QtGui.QTableWidgetItem("-")
 				item.setTextAlignment(QtCore.Qt.AlignHCenter)
@@ -511,7 +511,7 @@ class EMFileTable(QtGui.QTableWidget):
 		flag3 = Qt.ItemFlags(Qt.ItemIsEnabled)
 		flag4 = Qt.ItemFlags(Qt.ItemIsEditable)
 		new_items = []
-		for i in xrange(0,len(list_of_names)):
+		for i in range(0,len(list_of_names)):
 			if self.icon != None: item = QtGui.QTableWidgetItem(self.icon,self.display_name(list_of_names[i]))
 			else: item = QtGui.QTableWidgetItem(self.display_name(list_of_names[i]))
 			item.setFlags(flag2|flag3)
@@ -547,7 +547,7 @@ class EMFileTable(QtGui.QTableWidget):
 		'''
 		menu = QtGui.QMenu()
 		cmenu = self.context_menu_data
-		for k in cmenu.keys():
+		for k in list(cmenu.keys()):
 			menu.addAction(k)
 		QtCore.QObject.connect(menu,QtCore.SIGNAL("triggered(QAction*)"),self.menu_action_triggered)
 		menu.exec_(event.globalPos())
@@ -855,7 +855,7 @@ class EM2DStackExamineTable(EM2DStackTable):
 		'''
 		See EMFileTable.table_item_double_clicked for comments
 		'''
-		print "X"
+		print("X")
 		if item.column() != 0: return # only can display files from the first column
 		filename = self.convert_text(str(item.text()))
 		if not file_exists(filename): return # this happens sometimes when there is filtered data but no raw data
@@ -868,7 +868,7 @@ class EM2DStackExamineTable(EM2DStackTable):
 		
 		self.display_module.set_data(filename,filename) #  I know this looks stupid, but c'est la vie
 		self.display_module.updateGL()
-		if self.name_map.has_key(filename):
+		if filename in self.name_map:
 			self.display_module.set_single_active_set(self.name_map[filename])
 		else:
 			self.display_module.clear_sets()
@@ -924,7 +924,7 @@ def get_table_items_in_column(table_widget,column):
 	'''
 	r = table_widget.rowCount()
 	entries = []
-	for i in xrange(0,r):
+	for i in range(0,r):
 		entries.append(table_widget.item(i,column))
 		
 	return entries
@@ -948,7 +948,7 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		self.strategy_output = {}
 		self.current_strategy = None
 		
-		for key in self.dumped_dict.keys():
+		for key in list(self.dumped_dict.keys()):
 			self.strategy_widget[key] = None
 		
 		self.current_widget = None
@@ -969,7 +969,7 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		
 		self.main_combo = QtGui.QComboBox()
 		start_idx = None
-		dumped_dict_keys = self.dumped_dict.keys()
+		dumped_dict_keys = list(self.dumped_dict.keys())
 		dumped_dict_keys.sort()
 		for i,key in enumerate(dumped_dict_keys):
 			if key == self.defaultunits:
@@ -1022,10 +1022,10 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		widget.setToolTip(data[0])
 		params = []
 		tmp_params = []
-		for i in xrange(1,len(data),3):
+		for i in range(1,len(data),3):
 			vartype = data[i+1]
 			
-			if self.auto_incorporate.has_key(vartype):
+			if vartype in self.auto_incorporate:
 				name = data[i]
 				desc_long = data[i+2]
 				p = ParamDef(name=name,vartype=vartype,desc_short=name,desc_long=desc_long,defaultunits="")
@@ -1035,7 +1035,7 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 					params.append(tmp_params)
 					tmp_params = []
 			
-			else: print "ignoring",vartype
+			else: print("ignoring",vartype)
 				
 		if len(tmp_params) != 0:
 			params.append(tmp_params)
@@ -1063,7 +1063,7 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		
 		result = self.current_strategy
 		
-		for key,val in d.items():
+		for key,val in list(d.items()):
 			if isinstance(val,str):
 				if len(val) > 0:
 					result += ":"+key+"="+val
@@ -1391,7 +1391,7 @@ class IncorpParamTable:
 				num_choices = len(param.choices)
 			else:
 				if len(param.choices) != num_choices:
-					print "error, the number of choices is not consistent in __incorporate_paramtable"
+					print("error, the number of choices is not consistent in __incorporate_paramtable")
 					return
 		
 		vbl=QtGui.QVBoxLayout()
@@ -1612,7 +1612,7 @@ class IncorpDict:
 		hbl.setMargin(0)
 		hbl.setSpacing(2)
 		
-		keys = param.choices.keys()
+		keys = list(param.choices.keys())
 		keys.sort() # yes this is somewhat restrictive but it was my only way around something
 #		label = QtGui.QLabel(param.desc_short+":",target)
 #		label.setToolTip(param.desc_long)
@@ -1821,7 +1821,7 @@ class DictParamWriter:
 	
 		# get value1
 		idx1 = self.combo1.currentIndex()
-		keys = self.param.choices.keys()
+		keys = list(self.param.choices.keys())
 		keys.sort() # because it was sorted above 
 		value1 = keys[idx1] # this preserves the type - overkill, well, foolproof, yes a bit more so
 		
@@ -1864,7 +1864,7 @@ class EMParamTableEventHandler:
 	def contextMenuEvent(self,event):
 		if hasattr(self.table_widget,"context_menu"):
 			menu = QtGui.QMenu()
-			for k in self.table_widget.context_menu.keys():
+			for k in list(self.table_widget.context_menu.keys()):
 				menu.addAction(k)
 			QtCore.QObject.connect(menu,QtCore.SIGNAL("triggered(QAction*)"),self.menu_action_triggered)
 			menu.exec_(event.globalPos())
@@ -1939,7 +1939,7 @@ class DictEventHandler:
 	
 	def combo1_index_changed(self,i):
 		
-		keys = self.dict.keys()
+		keys = list(self.dict.keys())
 		keys.sort() # because the keys are sorted in the display
 		key = keys[i]
 		values = self.dict[key]
@@ -2106,10 +2106,10 @@ def get_example_table_form_params():
 	return par
 
 def on_ok(dict):
-	print "got the ok signal, the return dictionary is",dict
+	print("got the ok signal, the return dictionary is",dict)
 	
 def on_cancel():
-	print "got the cancel signal"
+	print("got the cancel signal")
 
 
 # This is just for testing, of course

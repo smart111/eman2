@@ -9,7 +9,7 @@ a = model_circle(30,300,300)
 #cimage=aft.rot_scale_conv(0.0, 0.0, 0.0, kb)
 #info(cimage)
 
-for i in xrange(100000):
+for i in range(100000):
 	f = fft(a)
 	b = fft(a)
 
@@ -17,13 +17,13 @@ for i in xrange(100000):
 refm = []
 img = []
 
-for i in xrange(20):
+for i in range(20):
 	refm.append(a.copy())
 
-for i in xrange(2000):
+for i in range(2000):
 	img.append(a.copy())
 
-print  "START      ",ttime()
+print("START      ",ttime())
 start = time()
 apmqs(img, refm, 1, 5, 2, 2, 1, 1, mode)
-print  "apmq   ",time() - start
+print("apmq   ",time() - start)

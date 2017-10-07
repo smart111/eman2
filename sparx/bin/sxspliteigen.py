@@ -55,13 +55,13 @@ def main():
 	(options, args) = parser.parse_args( arglist[1:] )
 
 	if( len(args) != 2):
-		print "usage: " + usage
+		print("usage: " + usage)
 		return None
 
 	from math import sqrt
 	nimage = EMUtil.get_image_count( args[0] )
 
-	for i in xrange(nimage) :
+	for i in range(nimage) :
 	        data = EMData()
 	        data.read_image( args[0], i )
 

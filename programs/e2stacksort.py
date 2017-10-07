@@ -198,7 +198,7 @@ def sortstackiter(stack,cmptype,cmpopts,align,alignopts,nsort,shrink,useali,cent
 				im.set_attr("align_target",at)
 				changes+=1
 
-		print(changes, "changed")
+		print((changes, "changed"))
 
 	# a list for each particle of particles aligning to this particle
 	br=[[] for i in stack]
@@ -261,7 +261,7 @@ def sortstackrev(stack,cmptype,cmpopts,align,alignopts,nsort,shrink,useali,cente
 	else : check_rep=0
 	del stack[0]
 	del stackshrink[0]
-	print("nsort=",nsort)
+	print(("nsort=",nsort))
 	while (len(stack)>0 and len(ret)<nsort) :
 		best=(0,-1)
 		for i in range(len(stackshrink)):
@@ -286,7 +286,7 @@ def sortstackrev(stack,cmptype,cmpopts,align,alignopts,nsort,shrink,useali,cente
 			rets.append(stackshrink[best[1]])
 		del stack[best[1]]
 		del stackshrink[best[1]]
-		print("%d.\t%d  (%1.4f)"%(len(ret)-1,best[1],best[0]))
+		print(("%d.\t%d  (%1.4f)"%(len(ret)-1,best[1],best[0])))
 
 	return ret
 
@@ -324,7 +324,7 @@ def sortstack(stack,stack2,cmptype,cmpopts,align,alignopts,nsort,shrink,useali,c
 			del stack2[best[1]]
 		del stack[best[1]]
 		del stackshrink[best[1]]
-		print("%d.\t%d  (%1.4f)"%(len(ret)-1,best[1],best[0]))
+		print(("%d.\t%d  (%1.4f)"%(len(ret)-1,best[1],best[0])))
 
 	return ret,ret2
 

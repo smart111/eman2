@@ -5,7 +5,7 @@ from math import sqrt
 def readstack(n):
 	"read the data for the nth particle. Return ref,ptclframes,psref"
 	ref=EMAN2.EMData("tmp2.hdf",n*33)
-	ptcls=EMAN2.EMData.read_images("tmp2.hdf",range(n*33+1,(n+1)*33))
+	ptcls=EMAN2.EMData.read_images("tmp2.hdf",list(range(n*33+1,(n+1)*33)))
 	ctfim=ref.do_fft()
 	ctf=ref["ctf"]
 	ctf.compute_2d_complex(ctfim,EMAN2.Ctf.CtfType.CTF_POWEVAL)
@@ -17,11 +17,11 @@ def readstack(n):
 
 def seqavg(stack):
 	"return progressive averages of frames in stack"
-	return [sum(stack[:i+1])*(1.0/(sqrt(i+1.0))) for i in xrange(len(stack))]
+	return [sum(stack[:i+1])*(1.0/(sqrt(i+1.0))) for i in range(len(stack))]
 
 def runavg(stack,n):
 	"return running averages by n "
-	return [sum(stack[i:i+n])*(1.0/sqrt(n)) for i in xrange(len(stack)-n+1)]
+	return [sum(stack[i:i+n])*(1.0/sqrt(n)) for i in range(len(stack)-n+1)]
 
 def ccfs(ref,stack):
 	"compute and center CCFs between ref and each member of stack"
@@ -62,8 +62,8 @@ def localali(im1,im2,psref,maxdx):
 
 	maxdx=int(maxdx)
 	out=EMAN2.EMData(2*maxdx+1,2*maxdx+1,1)
-	for dx in xrange(-maxdx,maxdx+1):
-		for dy in xrange(-maxdx,maxdx+1):
+	for dx in range(-maxdx,maxdx+1):
+		for dy in range(-maxdx,maxdx+1):
 			av=im1+im2.process("xform.translate.int",{"trans":(dx,dy,0)})
 			av.mult(mask)	# to prevent edge effects and slightly smooth the powspec
 			avf=av.do_fft()
@@ -107,7 +107,7 @@ def stackaliloccor(ref,stack):
 		pk=ccf.calc_max_location()
 		dx=-(pk[0]-nx/2)
 		dy=-(pk[1]-ny/2)
-		print i,dx,dy
+		print(i,dx,dy)
 
 		try: avg.add(im.process("xform.translate.int",{"trans":(dx,dy)}))
 		except: avg=im.process("xform.translate.int",{"trans":(dx,dy)})
@@ -123,7 +123,7 @@ def stackali(ref,stack,psref,maxdx):
 	# This is the overall alignment of the average without considering psref
 	# just to help us search in the correct neighborhood
 	dx0,dy0=[int(i) for i in ali["xform.align2d"].get_trans_2d()]
-	print "overall: ",dx0,dy0
+	print("overall: ",dx0,dy0)
 
 	# to avoid a lot of gymnastics, and because the edge of the reference is "flat"
 	# we shift the ref off-center for the alignments, then compensate at the end
@@ -135,15 +135,15 @@ def stackali(ref,stack,psref,maxdx):
 		dx,dy=localali(xfref,im,psref,maxdx)
 		try: avg1.add(im.process("xform.translate.int",{"trans":(dx,dy)}))
 		except: avg1=im.process("xform.translate.int",{"trans":(dx,dy)})
-		print i,dx,dy
+		print(i,dx,dy)
 
-	print "------"
+	print("------")
 
 	# now align to the initial average under psref (in case the reference is bad?)
 	for i,im in enumerate(stack):
 		dx,dy=localali(avg1,im,psref,maxdx)
 		try: avg2.add(im.process("xform.translate.int",{"trans":(dx+dx0,dy+dy0)}))
 		except: avg2=im.process("xform.translate.int",{"trans":(dx+dx0,dy+dy0)})
-		print i,dx,dy
+		print(i,dx,dy)
 	
 	return avg1,avg2

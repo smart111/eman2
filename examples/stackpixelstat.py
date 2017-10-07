@@ -35,13 +35,13 @@ for n,i in enumerate(a):
 #		rsumc.mult(ic)
 		frc=icm.calc_fourier_shell_correlation(rsum,16.0)
 		fout=open("frc_{:03d}.txt".format(n),"w")
-		for j in xrange(len(frc)/3):
+		for j in range(len(frc)/3):
 			fout.write("{}\t{}\n".format(frc[j],frc[j+len(frc)//3]))
 			
 		icm.write_image("cmcmp.hdf",n*2)
 		rsum.write_image("cmcmp.hdf",n*2+1)
 
-print "local"
+print("local")
 
 #for x in xrange(-100,150,50):
 	#for y in xrange(-100,150,50):

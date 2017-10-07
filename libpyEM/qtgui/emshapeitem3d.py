@@ -167,7 +167,7 @@ class EMRuler(EMShapeBase):
 		scaledapix = self.getRulerAPix()*self.getRulerScaling()
 		length = self.getLength()*scaledapix
 		smallbar = 2*scaledapix*self.barwidth
-		self.boundingboxsize = 'length='+str(round(length, 2))+u'\u212B'+';  smallbar='+str(round(smallbar, 2))+u'\u212B'+';  apix='+str(round(self.getRulerAPix(), 2))+u'\u212B'
+		self.boundingboxsize = 'length='+str(round(length, 2))+'\u212B'+';  smallbar='+str(round(smallbar, 2))+'\u212B'+';  apix='+str(round(self.getRulerAPix(), 2))+'\u212B'
 		if self.item_inspector: self.item_inspector.updateMetaData()
 		
 	def getRulerAPix(self):
@@ -217,7 +217,7 @@ class EMRuler(EMShapeBase):
 			self.direction = [0.0,0.0,0.0]
 		self.rsinO = self.barwidth*math.sin(angle)
 		self.rcosO = self.barwidth*math.cos(angle)
-		self.smallbars = [[i*self.direction[0],i*self.direction[1]] for i in xrange(0,int(self.pixlen),int(2*self.barwidth))]
+		self.smallbars = [[i*self.direction[0],i*self.direction[1]] for i in range(0,int(self.pixlen),int(2*self.barwidth))]
 		
 	def renderShape(self):        
 		# Material properties of the box
@@ -281,7 +281,7 @@ class EMCube(EMShapeBase):
 		
 	def setSize(self, size):
 		self.size = size
-		self.boundingboxsize = str(round(size, 2))+u'\u00B3'
+		self.boundingboxsize = str(round(size, 2))+'\u00B3'
 		self.xi = -size/2
 		self.yi = -size/2
 		self.zi = -size/2
@@ -387,7 +387,7 @@ class EMSphere(EMShapeBase):
 	
 	def setRadius(self, radius):
 		self.radius = radius
-		self.boundingboxsize = str(round(radius, 2))+u'\u00B3'
+		self.boundingboxsize = str(round(radius, 2))+'\u00B3'
 		self.slices = int(radius)
 		self.stacks = int(radius)
 		if self.item_inspector: self.item_inspector.updateMetaData()
@@ -461,7 +461,7 @@ class EMScatterPlot3D(EMShapeBase):
 		gluQuadricNormals(quadratic, GLU_SMOOTH)    # Create Smooth Normals (NEW) 
 		gluQuadricTexture(quadratic, GL_TRUE)      # Create Texture Coords (NEW)
 		
-		for i in xrange(len(self.data[0])):
+		for i in range(len(self.data[0])):
 			glPushMatrix()
 			
 			glTranslatef(self.data[0][i],self.data[1][i],self.data[2][i])

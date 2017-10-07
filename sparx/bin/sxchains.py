@@ -112,7 +112,7 @@ def tsp(lccc):
 
 
 	# The index table -- the order the cities are visited.
-	city = range(ncity)
+	city = list(range(ncity))
 	# Distance of the travel at the beginning
 	dist = TotalDistance(city, lccc)
 
@@ -253,7 +253,7 @@ def main():
 	if options.dd:
 		nargs = len(args)
 		if nargs != 3:
-			print "must provide name of input and two output files!"
+			print("must provide name of input and two output files!")
 			return
 		stack = args[0]
 		new_stack = args[1]
@@ -265,7 +265,7 @@ def main():
 		lend = EMUtil.get_image_count(stack)
 		lccc = [None]*(lend*(lend-1)/2)
 
-		for i in xrange(lend-1):
+		for i in range(lend-1):
 			v1 = get_im( stack, i )
 			if( i == 0 and nargs == 2):
 				nx = v1.get_xsize()
@@ -277,23 +277,23 @@ def main():
 			else:
 				mask = get_im(args[2])
 				
-			for j in xrange(i+1, lend):
+			for j in range(i+1, lend):
 				lccc[mono(i,j)] = [ccc(v1, get_im( stack, j ), mask), 0]
 
 
 		order = tsp(lccc)
 		if(len(order) != lend):
-			print  " problem with data length"
+			print(" problem with data length")
 			from sys import exit
 			exit()
-		print  "Total sum of cccs :",TotalDistance(order, lccc)
-		print "ordering :",order
-		for i in xrange(lend):  get_im(stack, order[i]).write_image( new_stack, i )
+		print("Total sum of cccs :",TotalDistance(order, lccc))
+		print("ordering :",order)
+		for i in range(lend):  get_im(stack, order[i]).write_image( new_stack, i )
 
 	elif options.align:
 		nargs = len(args)
 		if nargs != 3:
-			print "must provide name of input and two output files!"
+			print("must provide name of input and two output files!")
 			return
 
 		from utilities import get_params2D, model_circle
@@ -338,8 +338,8 @@ def main():
 
 		if  options.pairwiseccc == " " or not os.path.exists(options.pairwiseccc) :
 			st = time()
-			for i in xrange(lend-1):
-				for j in xrange(i+1, lend):
+			for i in range(lend-1):
+				for j in range(i+1, lend):
 					#  j>i meaning mono entry (i,j) or (j,i) indicates T i->j (from smaller index to larger)
 					#alpha, sx, sy, mir, peak = align2d(d[i],d[j], xrng, yrng, step=options.ts, first_ring=options.ir, last_ring=radius, mode = "F")
 					alpha, sx, sy, mir, peak = align2d_scf(d[i],d[j], xrng, yrng, ou=radius)
@@ -355,21 +355,21 @@ def main():
 			del lccc[0]
 
 
-		for i in xrange(len(lccc)):
+		for i in range(len(lccc)):
 			T = Transform({"type":"2D","alpha":lccc[i][1],"tx":lccc[i][2],"ty":lccc[i][3],"mirror":int(lccc[i][4]+0.1)})
 			lccc[i] = [lccc[i][0],T]
 
 		tdummy = Transform({"type":"2D"})
 		maxsum = -1.023
-		for m in xrange(0,lend):#initial, initial+1):
-			indc = range( lend )
+		for m in range(0,lend):#initial, initial+1):
+			indc = list(range( lend))
 			lsnake = [[m, tdummy, 0.0]]
 			del indc[m]
 
 			lsum = 0.0
 			while len(indc) > 1:
 				maxcit = -111.
-				for i in xrange(len(indc)):
+				for i in range(len(indc)):
 						cuc = lccc[mono(indc[i], lsnake[-1][0])][0]
 						if cuc > maxcit:
 								maxcit = cuc
@@ -389,29 +389,29 @@ def main():
 			T = lccc[mono(indc[-1], lsnake[-1][0])][1]
 			if( indc[-1] > lsnake[-1][0]):  T = T.inverse()
 			lsnake.append([indc[-1], T, lccc[mono(indc[-1], lsnake[-1][0])][0]])
-			print  " initial image and lsum  ",m,lsum
+			print(" initial image and lsum  ",m,lsum)
 			#print lsnake
 			if(lsum > maxsum):
 				maxsum = lsum
 				init = m
-				snake = [lsnake[i] for i in xrange(lend)]
-		print  "  Initial image selected : ",init,maxsum,"    ",TotalDistance([snake[m][0] for m in xrange(lend)], lccc)
+				snake = [lsnake[i] for i in range(lend)]
+		print("  Initial image selected : ",init,maxsum,"    ",TotalDistance([snake[m][0] for m in range(lend)], lccc))
 		#for q in snake: print q
 
 		from copy import deepcopy
-		trans=deepcopy([snake[i][1] for i in xrange(len(snake))])
-		print  [snake[i][0] for i in xrange(len(snake))]
+		trans=deepcopy([snake[i][1] for i in range(len(snake))])
+		print([snake[i][0] for i in range(len(snake))])
 		"""
 		for m in xrange(lend):
 			prms = trans[m].get_params("2D")
 			print " %3d   %7.1f   %7.1f   %7.1f   %2d  %6.2f"%(snake[m][0], prms["alpha"], prms["tx"], prms["ty"], prms["mirror"], snake[m][2])
 		"""
-		for k in xrange(lend-2,0,-1):
+		for k in range(lend-2,0,-1):
 			T = snake[k][1]
-			for i in xrange(k+1, lend):
+			for i in range(k+1, lend):
  					trans[i] = T*trans[i]
 		#  To add - apply all transformations and do the overall centering.
-		for m in xrange(lend):
+		for m in range(lend):
 			prms = trans[m].get_params("2D")
 			#print " %3d   %7.1f   %7.1f   %7.1f   %2d  %6.2f"%(snake[m][0], prms["alpha"], prms["tx"], prms["ty"], prms["mirror"], snake[m][2])
 			#rot_shift2D(d[snake[m][0]], prms["alpha"], prms["tx"], prms["ty"], prms["mirror"]).write_image(new_stack, m)
@@ -419,19 +419,19 @@ def main():
 
 		order = tsp(lccc)
 		if(len(order) != lend):
-			print  " problem with data length"
+			print(" problem with data length")
 			from sys import exit
 			exit()
-		print  TotalDistance(order, lccc)
-		print order
+		print(TotalDistance(order, lccc))
+		print(order)
 		ibeg = order.index(init)
-		order = [order[(i+ibeg)%lend] for i in xrange(lend)]
-		print  TotalDistance(order, lccc)
-		print order
+		order = [order[(i+ibeg)%lend] for i in range(lend)]
+		print(TotalDistance(order, lccc))
+		print(order)
 
 
 		snake = [tdummy]
-		for i in xrange(1,lend):
+		for i in range(1,lend):
 			#  Here we need transformation from the current to the previous,
 			#     meaning order[i] -> order[i-1]]
 			T = lccc[mono(order[i], order[i-1])][1]
@@ -441,9 +441,9 @@ def main():
 		assert(len(snake) == lend)
 		from copy import deepcopy
 		trans = deepcopy(snake)
-		for k in xrange(lend-2,0,-1):
+		for k in range(lend-2,0,-1):
 			T = snake[k]
-			for i in xrange(k+1, lend):
+			for i in range(k+1, lend):
  					trans[i] = T*trans[i]
 
 		#  Try to smooth the angles - complicated, I am afraid one would have to use angles forward and backwards
@@ -462,7 +462,7 @@ def main():
 				# calculate predicted angles mb->m 
 		"""
 
-		for m in xrange(lend):
+		for m in range(lend):
 			prms = trans[m].get_params("2D")
 			#rot_shift2D(d[order[m]], prms["alpha"], prms["tx"], prms["ty"], prms["mirror"]).write_image("metro.hdf", m)
 			rot_shift2D(d[order[m]], prms["alpha"], 0.0,0.0, prms["mirror"]).write_image(args[2], m)
@@ -564,7 +564,7 @@ def main():
 	else:
 		nargs = len(args)
 		if nargs != 2:
-			print "must provide name of input and output file!"
+			print("must provide name of input and output file!")
 			return
 		
 		from utilities import get_params2D, model_circle
@@ -578,9 +578,9 @@ def main():
 		
 		d = EMData.read_images(stack)
 		try:
-			print "Using 2D alignment parameters from header."
+			print("Using 2D alignment parameters from header.")
 			ttt = d[0].get_attr('xform.params2d')
-			for i in xrange(len(d)):
+			for i in range(len(d)):
 				alpha, sx, sy, mirror, scale = get_params2D(d[i])
 				d[i] = rot_shift2D(d[i], alpha, sx, sy, mirror)
 		except:
@@ -595,7 +595,7 @@ def main():
 		init = options.initial
 		
 		if init > -1 :
-			print "      initial image: %d" % init
+			print("      initial image: %d" % init)
 			temp = d[init].copy()
 			temp.write_image(new_stack, 0)
 			del d[init]
@@ -603,7 +603,7 @@ def main():
 			lsum = 0.0
 			while len(d) > 1:
 				maxcit = -111.
-				for i in xrange(len(d)):
+				for i in range(len(d)):
 						cuc = ccc(d[i], temp, mask)
 						if cuc > maxcit:
 								maxcit = cuc
@@ -614,15 +614,15 @@ def main():
 				del d[qi]
 				temp.write_image(new_stack, k)
 				k += 1
-			print  lsum
+			print(lsum)
 			d[0].write_image(new_stack, k)
 		else:			
 			if options.circular :
-				print "Using options.circular, no alignment"
+				print("Using options.circular, no alignment")
 				#  figure the "best circular" starting image
 				maxsum = -1.023
-				for m in xrange(len(d)):
-					indc = range(len(d) )
+				for m in range(len(d)):
+					indc = list(range(len(d)))
 					lsnake = [-1]*(len(d)+1)
 					lsnake[0]  = m
 					lsnake[-1] = m
@@ -633,7 +633,7 @@ def main():
 					k = 1
 					while len(indc) > 1:
 						maxcit = -111.
-						for i in xrange(len(indc)):
+						for i in range(len(indc)):
 								cuc = ccc(d[indc[i]], temp, mask)
 								if cuc > maxcit:
 										maxcit = cuc
@@ -642,7 +642,7 @@ def main():
 						lsum += maxcit
 						del indc[indc.index(qi)]
 						direction = -direction
-						for i in xrange( 1,len(d) ):
+						for i in range( 1,len(d) ):
 							if( direction > 0 ):
 								if(lsnake[i] == -1):
 									temp = d[lsnake[i-1]].copy()
@@ -662,23 +662,23 @@ def main():
 					if(lsum > maxsum):
 						maxsum = lsum
 						init = m
-						snake = [lsnake[i] for i in xrange(len(d))]
-				print  "  Initial image selected : ",init,maxsum
-				print lsnake
-				for m in xrange(len(d)):  d[snake[m]].write_image(new_stack, m)
+						snake = [lsnake[i] for i in range(len(d))]
+				print("  Initial image selected : ",init,maxsum)
+				print(lsnake)
+				for m in range(len(d)):  d[snake[m]].write_image(new_stack, m)
 			else:
 				#  figure the "best" starting image
-				print "Straight chain, no alignment"
+				print("Straight chain, no alignment")
 				maxsum = -1.023
-				for m in xrange(len(d)):
-					indc = range(len(d) )
+				for m in range(len(d)):
+					indc = list(range(len(d)))
 					lsnake = [m]
 					del indc[m]
 					temp = d[m].copy()
 					lsum = 0.0
 					while len(indc) > 1:
 						maxcit = -111.
-						for i in xrange(len(indc)):
+						for i in range(len(indc)):
 								cuc = ccc(d[indc[i]], temp, mask)
 								if cuc > maxcit:
 										maxcit = cuc
@@ -694,10 +694,10 @@ def main():
 					if(lsum > maxsum):
 						maxsum = lsum
 						init = m
-						snake = [lsnake[i] for i in xrange(len(d))]
-				print  "  Initial image selected : ",init,maxsum
-				print lsnake
-				for m in xrange(len(d)):  d[snake[m]].write_image(new_stack, m)
+						snake = [lsnake[i] for i in range(len(d))]
+				print("  Initial image selected : ",init,maxsum)
+				print(lsnake)
+				for m in range(len(d)):  d[snake[m]].write_image(new_stack, m)
 		
 
 if __name__ == "__main__":

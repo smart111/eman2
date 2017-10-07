@@ -14,19 +14,19 @@ def paircmp(im1,im2):
 	nx=im1["nx"]/256-1
 	ny=im1["ny"]/256-1
 	vals=[0,0,0]
-	for x in xrange(nx):
-		for y in xrange(ny):
+	for x in range(nx):
+		for y in range(ny):
 			im1a=im1.get_clip(Region(128+x*256,128+y*256,256,256))
 			im2a=im2.get_clip(Region(128+x*256,128+y*256,256,256))
-			for i in xrange(3):
+			for i in range(3):
 				vals[i]-=im1a.cmp("frc",im2a,{"minres":rng[i],"maxres":rng[i+1]})
 
-	for i in xrange(3): vals[i]/=nx*ny
+	for i in range(3): vals[i]/=nx*ny
 	
 	return vals
 
 # read MRC stack even when named ".mrc"
-print "read"
+print("read")
 try: os.unlink("tmp.mrcs")
 except: pass 
 os.symlink(sys.argv[1],"tmp.mrcs")
@@ -45,7 +45,7 @@ ctf=info["ctf_frame"][1]
 #ctf.compute_2d_complex(flipim,Ctf.CtfType.CTF_SIGN)
 
 # we work only with a 3k x 3k region from the middle of the image
-print "preprocess"
+print("preprocess")
 stkf=[]
 for img in stk:
 #	imgf=img.get_clip(Region(512,512,1024*3,1024*3)).process("normalize.edgemean").do_fft()
@@ -63,7 +63,7 @@ avg=sum(stkf)
 # write the quality plot for different resolutions (80-18, 18-10 and 10-4 A)
 out=open(sys.argv[1].split("-")[0]+"_qual.txt","w")
 qlist=[]
-for i in xrange(len(stkf)):
+for i in range(len(stkf)):
 	im=stkf[i]
 	pc=paircmp(im,avg)
 	out.write("{}\t{}\t{}\t{}\n".format(i,pc[0],pc[1],pc[2]))
@@ -86,19 +86,19 @@ sigma=stat.transpose()[3].std()
 
 statgood=stat[stathires>mean-sigma*.5]		# extract the indices of the particles where the high resolution quality is > the average - sigma
 
-print statgood[:,0], len(statgood),len(stat)
-print "Write Output"
+print(statgood[:,0], len(statgood),len(stat))
+print("Write Output")
 
 avr=Averagers.get("mean")
 avr.add_image_list(stk)
 av=avr.finish()
-av["class_ptcl_idxs"]=range(len(stk))
+av["class_ptcl_idxs"]=list(range(len(stk)))
 av.write_image("micrographs/"+base_name(sys.argv[1].split("-")[0]+".mrc")+"__ali.hdf",0)
 
 avr=Averagers.get("mean")
 avr.add_image_list(stk[2:19])
 av=avr.finish()
-av["class_ptcl_idxs"]=range(2,19)
+av["class_ptcl_idxs"]=list(range(2,19))
 av.write_image("micrographs/"+base_name(sys.argv[1].split("-")[0]+".mrc")+"__218.hdf",0)
 
 

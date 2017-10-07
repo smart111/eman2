@@ -60,14 +60,14 @@ def main():
 	ptcls = options.project+'/particles/'+options.average[:-4] + '_ptcls.hdf'
 	prepost = []
 	for b,box in enumerate(boxes[0:5]):
-		print('box {}/{}'.format(b+1,len(boxes)))
+		print(('box {}/{}'.format(b+1,len(boxes))))
 		ptcl = EMData(ptcls,b)
 		ptcl.process_inplace('normalize.edgemean')
 		# iteratively align particle frames to the avg of all of the particle's frames
-		for iter in xrange(options.maxiters):
+		for iter in range(options.maxiters):
 			if iter == 0: bavg=Averagers.get('mean')
 			aavg=Averagers.get('mean')
-			for i in xrange(nfs):
+			for i in range(nfs):
 				r = Region(box[0]-boxsize/2,box[1]-boxsize/2,boxsize,boxsize)
 				d = EMData(options.dddmovie,i,False,r)
 				d.process_inplace('normalize.edgemean')

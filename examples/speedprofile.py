@@ -43,7 +43,7 @@ NTT=100
 
 def init(SIZE=96,NTT=100):
 	data=[]
-	for i in xrange(NTT):
+	for i in range(NTT):
 		data.append(test_image(0,size=(SIZE,SIZE)))
 		data[i].transform(Transform({"type":"2d","alpha":random.uniform(0,360.0),"tx":random.uniform(-5.0,5.0),"ty":random.uniform(-5.0,5.0)}))
 		data[i].add(test_image(1,size=(SIZE,SIZE)))
@@ -57,21 +57,21 @@ def catime(SIZE=96,NTT=100):
 	ref=test_image(0,size=(SIZE,SIZE))
 
 	start=time.time()
-	for i in xrange(NTT):
+	for i in range(NTT):
 		x=data[i].align("rotate_translate_flip",ref,{"maxshift":6.0},"dot",{"normalize":0})
 		x=x.align("refine",ref,{"maxshift":6.0},"dot",{"normalize":0})
 #		y=x.cmp("phase",ref)
 
 	return (time.time()-start)/NTT
 
-print "establishing baseline"
+print("establishing baseline")
 base=catime(SIZE=32,NTT=10000)
 
-print "testing"
+print("testing")
 out=file("profile.txt","w")
-for i in xrange(32,1024):
+for i in range(32,1024):
 	t=catime(i,16000/i)
-	print	"%d\t%1.2f\t%1.3f"%(i,t/base,t)
+	print("%d\t%1.2f\t%1.3f"%(i,t/base,t))
 	out.write("%d\t%1.3f\n"%(i,t/base))
 	out.flush()
 

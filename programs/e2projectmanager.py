@@ -1547,7 +1547,7 @@ class TaskManager(QtGui.QWidget):
 				# The PID Mafia occurs below: # Kill all children and siblings
 				for task in self.tasks:
 					if item.getPPID() == task[5]:
-						print("killing self process", task[1])
+						print(("killing self process", task[1]))
 						os.kill(task[1],signal.SIGTERM)
 						self._recursivekill(task[1])
 				# kill parent (top level item)
@@ -1561,7 +1561,7 @@ class TaskManager(QtGui.QWidget):
 	def _recursivekill(self, pid):
 		for task in self.tasks:
 			if pid == task[5]:
-				print("Killing child process", task[1])
+				print(("Killing child process", task[1]))
 				os.kill(task[1],signal.SIGTERM)
 				self._recursivekill(task[1])
 
@@ -1847,7 +1847,7 @@ class PMGUIWidget(QtGui.QScrollArea):
 
 		posargs = []
 		# now do the widgets which are not listed in the above list
-		for name,widget in widgethash.items():
+		for name,widget in list(widgethash.items()):
 			if isinstance(widget, PMHeaderWidget):
 				continue
 			if isinstance(widget, PMBoolWidget):

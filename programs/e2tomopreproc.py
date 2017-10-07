@@ -128,7 +128,7 @@ def main():
 			if args:
 				print("copying args to infiles")
 				infiles = list(args)
-				print("infiles are", infiles)
+				print(("infiles are", infiles))
 			else:
 				print("\n(e2tomopreproc)(main) ERROR: must provide input files as arguments or via the --input or --tiltseries parameters.")
 
@@ -137,7 +137,7 @@ def main():
 
 
 	if infiles:
-		print("\n(e2tomopreproc)(main) identified --input", options.input)
+		print(("\n(e2tomopreproc)(main) identified --input", options.input))
 		#print " .ali in options.input[:-4]", '.ali' in options.input[-4:]
 		#print "options.input[-4] is", options.input[-4:]
 		
@@ -145,7 +145,7 @@ def main():
 			if '.ali' in infile[-4:] or '.st' in infile[-3:] or '.mrc' in infile[-4:] or '.mrcs' in infile[-5:] or '.hdf' in infile[-4:]:
 				pass
 			else:
-				print("\n(e2tomopreproc)(main) ERROR: invalid image extension %s for image %s. Extension must be .st, .ali, .hdf, .mrc or .mrcs" %(options.input.split('.')[-1], infile))
+				print(("\n(e2tomopreproc)(main) ERROR: invalid image extension %s for image %s. Extension must be .st, .ali, .hdf, .mrc or .mrcs" %(options.input.split('.')[-1], infile)))
 				sys.exit(1)
 	else:
 		print("\n(e2tomopreproc)(main) ERROR: no images found/provided")
@@ -163,7 +163,7 @@ def main():
 		else:
 			f = open( options.tltfile, 'r' )
 			lines = f.readlines()
-			print("\nnumber of lines read from --tltfile", len(lines))
+			print(("\nnumber of lines read from --tltfile", len(lines)))
 			f.close()
 			#print "lines in tlt file are", lines
 			k=0
@@ -174,7 +174,7 @@ def main():
 					angle = float(line)
 					angles.update( { k:angle } )
 					if options.verbose:
-						print("appending angle", angle)
+						print(("appending angle", angle))
 					k+=1
 			if len(angles) < 2:
 				print("\nERROR: something went terribly wrong with parsing the --tltlfile. This program does not work on single images")
@@ -201,16 +201,16 @@ def main():
 	results=[]
 	
 	mrcstacks = []
-	print("there are these many infiles to loop over", len(infiles))
+	print(("there are these many infiles to loop over", len(infiles)))
 
 
 
 	if options.lowpassfrac:
 		hdr = EMData( infiles[0], 0, True )
 		apix = hdr['apix_x']
-		print("\n(e2spt_preproc)(main) apix is",apix)
+		print(("\n(e2spt_preproc)(main) apix is",apix))
 		nyquist = 2.0 * apix
-		print("\n(e2spt_preproc)(main) therefore nyquist resolution is", nyquist)
+		print(("\n(e2spt_preproc)(main) therefore nyquist resolution is", nyquist))
 		print()
 		lowpassres = nyquist/options.lowpassfrac
 		
@@ -218,18 +218,18 @@ def main():
 		if float(options.shrink) > 1.0:
 			options.lowpassfrac /= float(options.shrink)
 			
-			print("there's shrinking", options.shrink)
+			print(("there's shrinking", options.shrink))
 			lowpassres = nyquist/options.lowpassfrac
 
-		print("\n(e2spt_preproc)(main) and final lowpass frequency is", options.lowpassfrac)
+		print(("\n(e2spt_preproc)(main) and final lowpass frequency is", options.lowpassfrac))
 
-		print("corresponding to lowpassres of",lowpassres)
+		print(("corresponding to lowpassres of",lowpassres))
 
 	for infile in infiles:
 	
 		mrcstack = options.path + '/' + infile
-		print("infile is", infile)
-		print("infile[-5:] is ", infile[-5:])
+		print(("infile is", infile))
+		print(("infile[-5:] is ", infile[-5:]))
 		if '.hdf' in infile[-5:]:
 			print("replacing .hdf extension")
 			mrcstack = options.path + '/' + infile.replace('.hdf','.mrc')
@@ -252,7 +252,7 @@ def main():
 	
 		#go = 0
 		#if go:
-		print("mrcstack is",mrcstack)
+		print(("mrcstack is",mrcstack))
 		
 		#outname = outname.replace('.mrc','.mrcs')
 	
@@ -261,7 +261,7 @@ def main():
 		go = 0
 		if options.maskbyangle:
 			outname = mrcstack.replace('.mrc','_UNSTACKED.mrc')
-			print("therefore, outname is", outname)
+			print(("therefore, outname is", outname))
 	
 			cmd = 'e2proc2d.py ' + infile + ' ' + outname + ' --unstacking --threed2twod'
 
@@ -274,9 +274,9 @@ def main():
 
 			if options.verbose:
 				cmd += ' --verbose=' + str(options.verbose)
-				print("\ncommand to unstack original input tiltseries is", cmd)	
+				print(("\ncommand to unstack original input tiltseries is", cmd))	
 
-			print("\n(e2tomopreproc)(main) unstacking command is", cmd)
+			print(("\n(e2tomopreproc)(main) unstacking command is", cmd))
 
 			p = subprocess.Popen( cmd , shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			#p = subprocess.Popen( cmd , shell=True, stdout=subprocess.PIPE)
@@ -299,7 +299,7 @@ def main():
 				c = os.getcwd() + '/' + options.path 
 				findir = os.listdir( os.getcwd() + '/' + options.path )
 
-				print("\n(e2tomopreproc)(main) directory to look for images is", c)	
+				print(("\n(e2tomopreproc)(main) directory to look for images is", c))	
 				for f in findir:
 					#if '.mrcs' in f:
 					if "_UNSTACKED" in f:
@@ -307,7 +307,7 @@ def main():
 
 				kk=0
 				imgs.sort()
-				print("\n(e2spt_preproc)(main) found these many images", len( imgs ))		
+				print(("\n(e2spt_preproc)(main) found these many images", len( imgs )))		
 
 				for img in imgs:
 					#task=None
@@ -341,11 +341,11 @@ def main():
 			
 	tids = etc.send_tasks(tasks)
 	if options.verbose: 
-		print("\n(e2spt_preproc)(main) preprocessing %d tasks queued" % (len(tids))) 
+		print(("\n(e2spt_preproc)(main) preprocessing %d tasks queued" % (len(tids)))) 
 
 	results = get_results( etc, tids, options )
 
-	print("\n(e2tomopreproc)(main) these many images have been processsed",len(results))
+	print(("\n(e2tomopreproc)(main) these many images have been processsed",len(results)))
 
 	
 	imgspreproc = []
@@ -356,14 +356,14 @@ def main():
 
 	for f in findir:
 		if "_preproc.mrc" in f:
-			print("found preprocessed image", f)
+			print(("found preprocessed image", f))
 			imgspreproc.append( options.path + '/' + f )
 		else:
-			print("this file is NOT a preprocessed image", f)
+			print(("this file is NOT a preprocessed image", f))
 
 	imgspreproc.sort()
 
-	print("\n(e2tomopreproc)(main) these many preprocessed images loaded", len(imgspreproc))
+	print(("\n(e2tomopreproc)(main) these many preprocessed images loaded", len(imgspreproc)))
 	
 	finalfiles=[]
 	
@@ -371,10 +371,10 @@ def main():
 		
 		outfile = mrcstack.replace('.mrc','.mrcs')
 		print("for RESTACKING")
-		print("\n\n\noutfile is", outfile)
+		print(("\n\n\noutfile is", outfile))
 
 		for f in imgspreproc:
-			print("appending image %s to outfile %s" %(f,outfile))			
+			print(("appending image %s to outfile %s" %(f,outfile)))			
 			cmd = 'e2proc2d.py ' + f + ' ' + outfile
 			if options.outmode:
 				cmd += ' --outmode=' + options.outmode
@@ -382,8 +382,8 @@ def main():
 			if options.verbose:
 				cmd += ' --verbose ' + str(options.verbose)
 
-			print("\ncmd is with .mrcs outputformat is", cmd)
-			print("becauase outfile is",outfile)	
+			print(("\ncmd is with .mrcs outputformat is", cmd))
+			print(("becauase outfile is",outfile))	
 			p = subprocess.Popen( cmd , shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			text = p.communicate()	
 			p.stdout.close()		
@@ -403,7 +403,7 @@ def main():
 		if options.normalizeimod:
 			try:
 				cmd = 'newstack ' + finalf + ' ' + finalf + ' --float 2'
-				print("normalizeimod cmd is", cmd)
+				print(("normalizeimod cmd is", cmd))
 				p = subprocess.Popen( cmd , shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 				text = p.communicate()	
 				p.wait()
@@ -421,7 +421,7 @@ def main():
 				if options.prenadminite and options.prenadmaxite and options.prenadsigma:
 					cmd = 'preNAD -input ' + finalf + ' -output ' + finalf.replace('.'+originalextension, '_prenad.' + originalextension) + ' -minite ' + str(options.prenadminite) + ' -maxite ' + str(options.prenadmaxite) + ' -sigma ' + str(options.prenadsigma) + ' -angles ' + options.tltfile 
 					if options.verbose:
-						print("\n(e2tomopreproc)(main) prenad cmd to run is", cmd)
+						print(("\n(e2tomopreproc)(main) prenad cmd to run is", cmd))
 					try:
 						p = subprocess.Popen( cmd , shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 						text = p.communicate()	
@@ -486,13 +486,13 @@ class TomoPreproc2DTask(JSTask):
 		image = self.data["image"]
 		
 		if options.verbose:
-			print("\n(e2tomopreproc)(class), image is", image)
+			print(("\n(e2tomopreproc)(class), image is", image))
 		
 		hdr=EMData(image,0,True)
 		nx=hdr['nx']
 		ny=hdr['ny']
 		nz=hdr['nz']
-		print("original nx,ny,nz are",nx,ny,nz)
+		print(("original nx,ny,nz are",nx,ny,nz))
 		
 		#cmd = 'e2proc2d.py ' + image + ' ' + image.replace('.mrc','_preproc.mrc')
 
@@ -543,7 +543,7 @@ class TomoPreproc2DTask(JSTask):
 		if options.clip:
 			print("adding clip")
 			clips = options.clip.split(',')
-			print("clips", clips)
+			print(("clips", clips))
 		
 			clipx = clips[0]
 			cmd += ' --clip ' + clipx
@@ -559,7 +559,7 @@ class TomoPreproc2DTask(JSTask):
 			cmd += ' --process math.fft.resample:n=' + str(options.shrink)
 		
 		if options.verbose:
-			print("\n(e2tomopreproc)(class) cmd", cmd)
+			print(("\n(e2tomopreproc)(class) cmd", cmd))
 		
 		os.system( cmd )
 		

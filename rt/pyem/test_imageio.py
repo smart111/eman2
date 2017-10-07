@@ -104,7 +104,7 @@ class TestEMIO(ImageIOTester):
 		e.to_zero()
 		try:
 			e.write_image(filename, -1)
-		except RuntimeError, runtime_err:
+		except RuntimeError as runtime_err:
 			err_type = exception_type(runtime_err)
 			self.assertEqual(err_type, "ImageWriteException")
 		finally:
@@ -153,7 +153,7 @@ class TestIcosIO(ImageIOTester):
 		e.to_zero()
 		try: 
 			e.write_image(filename, -1)
-		except RuntimeError, runtime_err:
+		except RuntimeError as runtime_err:
 			err_type = exception_type(runtime_err)
 			self.assertEqual(err_type, "ImageWriteException")
 		finally:
@@ -174,7 +174,7 @@ class TestPNGIO(ImageIOTester):
 		e.to_zero()
 		try:
 			e.write_image(filename, -1)	
-		except RuntimeError, runtime_err:
+		except RuntimeError as runtime_err:
 			err_type = exception_type(runtime_err)
 			self.assertEqual(err_type, "ImageWriteException")
 		finally:
@@ -195,7 +195,7 @@ class TestVTKIO(ImageIOTester):
 		e.to_zero()
 		try:
 			e.write_image(filename, -1)
-		except RuntimeError, runtime_err:
+		except RuntimeError as runtime_err:
 			err_type = exception_type(runtime_err)
 			self.assertEqual(err_type, "ImageWriteException")	
 		finally:
@@ -216,7 +216,7 @@ class TestXPLORIO(ImageIOTester):
 		e.to_zero()
 		try: 
 			e.write_image(filename, -1)
-		except RuntimeError, runtime_err:
+		except RuntimeError as runtime_err:
 			err_type = exception_type(runtime_err)
 			self.assertEqual(err_type, "ImageWriteException")
 		finally:
@@ -612,7 +612,7 @@ class TestHdfIO(ImageIOTester):
 			e3.read_image(testimage)
 			try:
 				no_such_attr = e3.get_attr('Grant')
-			except RuntimeError, runtime_err:
+			except RuntimeError as runtime_err:
 				err_type = exception_type(runtime_err)
 				self.assertEqual(err_type, "NotExistingObjectException")		   
 		
@@ -663,7 +663,7 @@ class TestMrcIO(ImageIOTester):
 		e.to_zero()
 		try: 
 			e.write_image(filename, -1)
-		except RuntimeError, runtime_err:
+		except RuntimeError as runtime_err:
 				err_type = exception_type(runtime_err)
 				self.assertEqual(err_type, "ImageWriteException")	
 		finally:
@@ -771,7 +771,7 @@ class TestMrcIO(ImageIOTester):
 		os.unlink(outfile)
 		os.unlink(infile)
 		
-		self.assert_(nlabels > label_i)
+		self.assertTrue(nlabels > label_i)
 		self.assertEqual(d[labelname], label)
 		
 	def no_test_write_transform_mrc(self):

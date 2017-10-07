@@ -85,7 +85,7 @@ will be extracted from the STAR file and will be automatically processed through
 	if options.apix<=0 :
 		try:
 			options.apix=star["rlnDetectorPixelSize"][0]/star["rlnMagnification"][0]*10000.0
-			print("Using {} A/pix from Relion file".format(options.apix))
+			print(("Using {} A/pix from Relion file".format(options.apix)))
 		except:
 			print("A/pix not specified and not found in STAR file")
 			sys.exit(1)
@@ -96,7 +96,7 @@ will be extracted from the STAR file and will be automatically processed through
 		prj["global.microscope_cs"]=star["rlnSphericalAberration"][0]
 		if prj["global.microscope_cs"]<=0.0 : prj["global.microscope_cs"]=0.001
 		prj["global.microscope_voltage"]=star["rlnVoltage"][0]
-		print("V={} Cs={}".format(prj["global.microscope_voltage"],prj["global.microscope_cs"]))
+		print(("V={} Cs={}".format(prj["global.microscope_voltage"],prj["global.microscope_cs"])))
 	except:
 		print("Did not find Voltage and Cs in Relion file")
 		
@@ -113,10 +113,10 @@ will be extracted from the STAR file and will be automatically processed through
 			nx=hdr["nx"]
 			ny=hdr["ny"]
 			oldname=name
-			if options.verbose>0 : print("Particle dimensions: {}x{}".format(nx,ny))
+			if options.verbose>0 : print(("Particle dimensions: {}x{}".format(nx,ny)))
 		
 		if i==0 or star["rlnDefocusU"][i-1]!=star["rlnDefocusU"][i]:
-			if micronum>0 and options.verbose>0 : print("Image {}: {} particles processed, df={}".format(micronum,fnum,ctf.defocus))
+			if micronum>0 and options.verbose>0 : print(("Image {}: {} particles processed, df={}".format(micronum,fnum,ctf.defocus)))
 			micronum+=1
 			fnum=0
 			microname="particles/{}_{:04d}.hdf".format(base_name(name),micronum)

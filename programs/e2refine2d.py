@@ -163,7 +163,7 @@ def main():
 
 		options.initial=options.path+"/classes_%02d.hdf"%fit
 		fit+=1
-		print("starting at iteration ",fit)
+		print(("starting at iteration ",fit))
 
 	total_procs = options.iter*7 + 5 # one for every run command
 	proc_tally = 0.0
@@ -189,7 +189,7 @@ def main():
 		options.input2=options.input
 		nmax=max(2000,options.ncls*10)
 		if n>nmax:
-			print("Making subset of ~%d particles for initial averages"%nmax)
+			print(("Making subset of ~%d particles for initial averages"%nmax))
 			options.input=options.path+"/input_subset.hdf"
 			run("e2proc2d.py %s %s --step=0,%d"%(options.input2,options.input,int(n/nmax)))
 
@@ -235,7 +235,7 @@ def main():
 
 	if not options.initial : options.initial=options.path+"/classes_init.hdf"
 
-	print("Using references from ",options.initial)
+	print(("Using references from ",options.initial))
 	# this is the main refinement loop
 	for it in range(fit,options.iter+1) :
 		# first we sort and align the class-averages from the last step
@@ -328,14 +328,14 @@ def get_classaverage_extras(options):
 def run(command):
 	"Execute a command with optional verbose output"
 	global options
-	if options.verbose>0 : print("***************",command)
+	if options.verbose>0 : print(("***************",command))
 	error = launch_childprocess(command)
 
 	if error==11 :
 		pass
 #	#	print "Segfault running %s\nNormal on some platforms, ignoring"%command
 	elif error :
-		print("Error running:\n%s"%command)
+		print(("Error running:\n%s"%command))
 		exit(1)
 
 def get_simmx_cmd(options,refs,simmx,check=False,nofilecheck=False):

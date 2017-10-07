@@ -150,7 +150,7 @@ def main():
 			if tasks:
 				tids = etc.send_tasks(tasks)
 				if options.verbose:
-					print("\n(erase_gold) %d tasks queued" % (len(tids)))
+					print(("\n(erase_gold) %d tasks queued" % (len(tids))))
 
 				results = get_results( etc, tids, options )
 

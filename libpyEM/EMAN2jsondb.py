@@ -231,7 +231,7 @@ except ImportError:
 					time.sleep(1)
 
 			if i==30 :
-				print("WARNING: Could not lock %s. Continuing without lock.  Please report this as a bug."%fileobj.name)
+				print(("WARNING: Could not lock %s. Continuing without lock.  Please report this as a bug."%fileobj.name))
 
 		def file_unlock(fileobj) :
 			try:
@@ -300,7 +300,7 @@ class JSTaskQueue:
 			task=self.active[tid]
 			if isinstance(task,int) : continue
 			if task==None :
-				print("Missing task ",tid)
+				print(("Missing task ",tid))
 				continue
 			if task.starttime==None:
 				task.starttime=time.time()
@@ -364,8 +364,8 @@ class JSTaskQueue:
 			try:
 				did=self.todid(k[1])
 			except:
-				print("Invalid data item %s: %s"%(str(j),str(k)))
-				print(str(task))
+				print(("Invalid data item %s: %s"%(str(j),str(k))))
+				print((str(task)))
 				os._exit(1)
 			try: k[1]=did
 			except:
@@ -388,7 +388,7 @@ class JSTaskQueue:
 				task=self.complete[tid]
 				return False
 			except:
-				print("ERROR: Progress, No such task : ",tid,percent)
+				print(("ERROR: Progress, No such task : ",tid,percent))
 				return False
 		task.progtime=(time.time(),percent)
 		self.active[tid]=task
@@ -415,7 +415,7 @@ class JSTaskQueue:
 			task=self.active[tid]
 			if task==None: raise Exception
 		except:
-			print("*** Warning, task %d was already complete"%tid)
+			print(("*** Warning, task %d was already complete"%tid))
 			JSTaskQueue.lock.release()
 			return
 
@@ -434,7 +434,7 @@ class JSTaskQueue:
 			task=self.active[taskid]
 			if task==None: raise Exception
 		except:
-			print("Fatal error: Could not find task {} to rerun.".format(taskid))
+			print(("Fatal error: Could not find task {} to rerun.".format(taskid)))
 
 		if task.failcount==MAXTASKFAIL :
 			self.task_aborted(taskid)
@@ -459,7 +459,7 @@ class JSTaskQueue:
 			JSTaskQueue.lock.release()
 			return
 
-		print("Error running task:\n{tid}\t{cls}\t{runtime}\t{endtime}\t{starttime}\t{queuetime}\t{host}".format(tid=tid,cls=task.__class__.__name__,runtime=time.time()-task.starttime,endtime=time.time(),starttime=task.starttime,queuetime=task.queuetime,host=task.exechost))
+		print(("Error running task:\n{tid}\t{cls}\t{runtime}\t{endtime}\t{starttime}\t{queuetime}\t{host}".format(tid=tid,cls=task.__class__.__name__,runtime=time.time()-task.starttime,endtime=time.time(),starttime=task.starttime,queuetime=task.queuetime,host=task.exechost)))
 		#if self.active["min"]==taskid : self.active["min"]=min(self.active.keys())
 		del self.active[taskid]
 		JSTaskQueue.lock.release()
@@ -706,7 +706,7 @@ of the path is stored as self.normpath"""
 				if len(a.strip())==0 : self.data={}		# json.load doesn't like completely empty files
 				else :
 					file_unlock(jfile)					# unlock the file
-					print("Error in file: ",self.path)
+					print(("Error in file: ",self.path))
 					traceback.print_exc()
 					raise Exception("Error reading JSON file : {}".format(self.path))
 			self.filesize=jfile.tell()			# our location after reading the data from the file
@@ -913,7 +913,7 @@ def json_to_obj(jsdata):
 			ret= tmpimg(str(jsdata["__image__"][0]),int(jsdata["__image__"][1]))
 #			ret= EMData(str(jsdata["__image__"][0]),int(jsdata["__image__"][1]))
 		except:
-			print("Error reading image from JSON: ",jsdata["__image__"])
+			print(("Error reading image from JSON: ",jsdata["__image__"]))
 			ret= None
 		return ret
 	elif "__class__" in jsdata : return jsonclasses[jsdata["__class__"]](jsdata)

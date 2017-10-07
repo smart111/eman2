@@ -126,7 +126,7 @@ class GUIctfsim(QtGui.QWidget):
 		else : 
 			self.apply=EMData(apply,0)
 			self.df_apix=self.apply["apix_x"]
-			print("A/pix reset to ",self.df_apix)
+			print(("A/pix reset to ",self.df_apix))
 			self.applyim=EMImage2DWidget(application=self.app())
 
 		QtGui.QWidget.__init__(self,None)
@@ -332,7 +332,7 @@ class GUIctfsim(QtGui.QWidget):
 				if d==0 : avg=curve[:]
 				else:
 					if len(curve)!=len(avg) :
-						print("Number of samples must be fixed to compute an average ({})".format(d+1))
+						print(("Number of samples must be fixed to compute an average ({})".format(d+1)))
 					else:
 						avg+=curve
 			
@@ -465,7 +465,7 @@ class GUIctfsim(QtGui.QWidget):
 		if event.key()==Qt.Key_I:			# if user presses I in this window we invert the stack on disk
 			fsp=self.data[self.curset][0]
 			n=EMUtil.get_image_count(fsp)
-			print("Inverting images in %s"%fsp)
+			print(("Inverting images in %s"%fsp))
 			for i in range(n):
 				img=EMData(fsp,i)
 				img.mult(-1.0)

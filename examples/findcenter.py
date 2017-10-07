@@ -91,7 +91,7 @@ def main():
 			sys.exit(1)
 
 	if options.output.split('.')[-1] != 'hdf':
-		print("Replacing your output file extension ('.{}') with '.hdf'".format(options.output.split('.')[-1]))
+		print(("Replacing your output file extension ('.{}') with '.hdf'".format(options.output.split('.')[-1])))
 		options.output = options.output.split('.')[-2] + '.hdf'
 
 	if os.path.isfile(options.output):
@@ -101,7 +101,7 @@ def main():
 
 	hdr = EMData(options.path,0,True)
 	nx = hdr.get_xsize() # we assume square boxes so we won't bother with ny
-	for i in xrange(options.meanshrink):
+	for i in range(options.meanshrink):
 		nx = nx / 2
 	if nx < 8:
 		print("You're trying to shrink the image a too much. Try using a lower value for the --meanshrink parameter.")
@@ -115,13 +115,13 @@ def main():
 		kernel = np.outer(gauss1d,gauss1d)
 
 	nimgs = EMUtil.get_image_count(options.path)
-	if options.predisplay: display([EMData(options.path,i) for i in xrange(nimgs)])
-	if options.verbose > 2: print("Applying a {} filter {} times to {}.".format(options.filter, options.ntimes, os.path.basename(options.path)))
+	if options.predisplay: display([EMData(options.path,i) for i in range(nimgs)])
+	if options.verbose > 2: print(("Applying a {} filter {} times to {}.".format(options.filter, options.ntimes, os.path.basename(options.path))))
 
 	if not options.nopreprocess:
-		for i in xrange(nimgs):
+		for i in range(nimgs):
 
-			if options.verbose > 5: print("Pre-processing image {}/{}".format(i+1,nimgs))
+			if options.verbose > 5: print(("Pre-processing image {}/{}".format(i+1,nimgs)))
 
 			ptcl = EMData(options.path,i)
 
@@ -152,13 +152,13 @@ def main():
 
 			if not options.nowrite: ptcl.write_image(options.path[:-4]+'_proc.hdf',-1)
 
-		if options.postdisplay: display([EMData(options.output,i) for i in xrange(nimgs)])
+		if options.postdisplay: display([EMData(options.output,i) for i in range(nimgs)])
 
-	theta = 2*np.pi/360 * np.array(range(0, 360, options.step) + [0])
+	theta = 2*np.pi/360 * np.array(list(range(0, 360, options.step)) + [0])
 
 	with PdfPages(options.path[:-4] + '.pdf') as pdf:
-		for i in xrange(nimgs):
-			if options.verbose > 5: print("Centering image {}/{}".format(i+1,nimgs))
+		for i in range(nimgs):
+			if options.verbose > 5: print(("Centering image {}/{}".format(i+1,nimgs)))
 
 			orig = EMData(options.path,i)
 
@@ -199,7 +199,7 @@ def main():
 
 			tx = -(mu[1] - nx)
 			ty = -(mu[0] - nx)
-			if options.verbose > 8: print("Translating image {} by ({},{})".format(i,tx,ty))
+			if options.verbose > 8: print(("Translating image {} by ({},{})".format(i,tx,ty)))
 			t = Transform({'type':'eman','tx':tx,'ty':ty})
 			centered.transform(t)
 			final = ax3.imshow(centered.numpy(),cmap=plt.cm.Greys_r)

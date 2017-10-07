@@ -35,7 +35,7 @@ import os
 import global_def
 from   global_def import *
 from   optparse import OptionParser
-import sys, ConfigParser
+import sys, configparser
 
 def main():
 	progname = os.path.basename(sys.argv[0])
@@ -59,8 +59,8 @@ def main():
 
 	(options, args) = parser.parse_args()
 	if len(args) < 3 or len(args) > 4:
-    		print "usage: " + usage
-    		print "Please run '" + progname + " -h' for detailed options"
+    		print("usage: " + usage)
+    		print("Please run '" + progname + " -h' for detailed options")
 		sys.exit()
 	
 	if len(args) == 4:	mask = args[3]

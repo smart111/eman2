@@ -249,7 +249,7 @@ not need to specify any of the following other than the ones already listed abov
 	if options.threads<=1 :
 		if options.parallel!=None and options.parallel[:6]=="thread" :
 			options.threads=int(options.parallel[7:])
-			print("Note: automatically setting --threads:{}".format(options.threads))
+			print(("Note: automatically setting --threads:{}".format(options.threads)))
 		else: print("WARNING: specifying --threads=<N> (where N is the number of cores to use on a single processor) is strongly recommended, even if already specifying --parallel")
 
 	if options.input!=None and options.model!=None and options.startfrom!=None:
@@ -290,10 +290,10 @@ not need to specify any of the following other than the ones already listed abov
 			apix3=apix1
 
 		if ( xsize3d != xsize or apix3==0 or fabs(fabs(apix1/apix3)-1.0)>.001 ) :
-			print("WARNING: the dimensions of the particles (%d @ %1.4f A/pix) do not match the dimensions of the starting model (%d @ %1.4f A/pix). I will attempt to adjust the model appropriately."%(xsize,apix1,xsize3d,apix3))
+			print(("WARNING: the dimensions of the particles (%d @ %1.4f A/pix) do not match the dimensions of the starting model (%d @ %1.4f A/pix). I will attempt to adjust the model appropriately."%(xsize,apix1,xsize3d,apix3)))
 			try:
 				scale=img3["apix_x"]/img1["apix_x"]
-				print("Reference is {box3} x {box3} x {box3} at {apix3:1.2f} A/pix, particles are {box2} x {box2} at {apix2:1.2f} A/pix. Scaling by {scale:1.3f}".format(box3=img3["nx"],box2=img1["nx"],apix3=img3["apix_x"],apix2=img1["apix_x"],scale=scale))
+				print(("Reference is {box3} x {box3} x {box3} at {apix3:1.2f} A/pix, particles are {box2} x {box2} at {apix2:1.2f} A/pix. Scaling by {scale:1.3f}".format(box3=img3["nx"],box2=img1["nx"],apix3=img3["apix_x"],apix2=img1["apix_x"],scale=scale)))
 			except:
 				print("A/pix unknown, assuming scale same as relative box size")
 				scale=float(xsize)/xsize3d
@@ -346,7 +346,7 @@ used, browse to the 0_refine_parms.json file in the refinement directory. You ca
 			append_html("<p>Using {oldeven} {oldodd} as starting models without additional randomizing. Input particles are from {infile}</p>".format(oldeven=olddb["last_even"],oldodd=["last_odd"],infile=options.input))
 
 		except:
-			print("Error: Cannot find necessary files in ",options.startfrom)
+			print(("Error: Cannot find necessary files in ",options.startfrom))
 			sys.exit(1)
 	else:
 		try:
@@ -590,10 +590,10 @@ important to use an angular step which is 90/integer.</p>")
 	if options.pad<nx :
 		options.pad=good_size(nx*1.7)
 		if options.pad>1024 :
-			print("Warning: padding for Fourier reconstruction is now {}, meaning quite a lot of memory will \
+			print(("Warning: padding for Fourier reconstruction is now {}, meaning quite a lot of memory will \
 be required for reconstructions, and they may be very slow. Padding in Fourier space is largely performed to avoid high-radius \
 Fourier artifacts, and a gradual radial density falloff. If you feel this value is too large, you can manually specify a value \
-with the --pad option.".format(options.pad))
+with the --pad option.".format(options.pad)))
 	else :
 		if options.pad<nx*1.4 :
 			print("Warning: the --pad value you specified is less than 1.4x the box size. We normlly recommend using a --pad \
@@ -679,7 +679,7 @@ are memory concerns, using a smaller pad option may be the only reasonable alter
 	db["astep"]=astep
 	db["apix"]=apix
 
-	print("NOTE: you can check the progress of the refinement at any time by opening this URL in your web-browser:  file://{}/index.html".format(os.path.abspath(output_path)))
+	print(("NOTE: you can check the progress of the refinement at any time by opening this URL in your web-browser:  file://{}/index.html".format(os.path.abspath(output_path))))
 
 	append_html("""<h3>Analysis of Refinement Results</h3>""")
 
@@ -768,7 +768,7 @@ power spectrum of one of the maps to the other. For example <i>e2proc3d.py map_e
 		if makesimmask :
 			av=Averagers.get("minmax",{"max":1})
 			nprj=EMUtil.get_image_count("{path}/projections_{itr:02d}_odd.hdf".format(path=options.path,itr=it))
-			print("Mask from {} projections".format(nprj))
+			print(("Mask from {} projections".format(nprj)))
 			for i in range(nprj):
 				a=EMData("{path}/projections_{itr:02d}_even.hdf".format(path=options.path,itr=it),i)
 				av.add_image(a)
@@ -1164,25 +1164,25 @@ For the final completed iteration, the unmasked even and odd volumes are also re
 
 	E2end(logid)
 
-	print("""
+	print(("""
 ***********************************************************{stars}
 * REFINEMENT COMPLETE - Please look at {path}/report/index.html *
 ***********************************************************{stars}
 
-""".format(path=options.path,stars="*"*len(options.path)))
+""".format(path=options.path,stars="*"*len(options.path))))
 
 
 def run(command):
 	"Mostly here for debugging, allows you to control how commands are executed (os.system is normal)"
 
-	print("{}: {}".format(time.ctime(time.time()),command))
+	print(("{}: {}".format(time.ctime(time.time()),command)))
 	append_html("<p>{}: {}</p>".format(time.ctime(time.time()),command),True)
 
 	ret=launch_childprocess(command)
 
 	# We put the exit here since this is what we'd do in every case anyway. Saves replication of error detection code above.
 	if ret !=0 :
-		print("Error running: ",command)
+		print(("Error running: ",command))
 		sys.exit(1)
 
 	return

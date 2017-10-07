@@ -130,7 +130,7 @@ def list_to_emdata(l):
 def timer(fn,n=1):
 	a=time.time()
 	for i in range(n): fn()
-	print(time.time()-a)
+	print((time.time()-a))
 
 # This is to remove stdio buffering, only line buffering is done. This is what is done for the terminal, but this extends terminal behaviour to redirected stdio
 # try/except is to prevent errors with systems that already redirect stdio
@@ -630,7 +630,7 @@ def parsemodopt(optstr):
 	for p in op2[1:]:
 		try: k,v=p.split("=")
 		except:
-			print("ERROR: Command line parameter parsing failed on ",optstr)
+			print(("ERROR: Command line parameter parsing failed on ",optstr))
 			print("must have the form name:key=value:key=value")
 			return(None,None)
 
@@ -670,18 +670,18 @@ def parsemodopt_logical(optstr):
 	if len(p_1)==0: return (optstr,{})
 	if ( len(p_1) != 2 ):
 		print("ERROR: parsemodopt_logical currently only supports single logical expressions")
-		print("Could not handle %s" %optstr)
+		print(("Could not handle %s" %optstr))
 		return (None,None,None)
 
 	p_2 = re.findall( parseparmobj_logical, optstr )
 
 	if ( len(p_2) != 1 ):
-		print("ERROR: could not find logical expression in %s" %optstr)
+		print(("ERROR: could not find logical expression in %s" %optstr))
 		return (None,None,None)
 
 
 	if ( p_2[0] not in ["==", "<=", ">=", "!=", "~=", "<", ">"] ):
-		print("ERROR: parsemodopt_logical %s could not extract logical expression" %(p_2[0]))
+		print(("ERROR: parsemodopt_logical %s could not extract logical expression" %(p_2[0])))
 		print("Must be one of \"==\", \"<=\", \">=\", \"<\", \">\" \"!=\" or \~=\" ")
 		return (None,None,None)
 
@@ -696,18 +696,18 @@ def parsemodopt_operation(optstr):
 
 	if ( len(p_1) != 2 ):
 		print("ERROR: parsemodopt_logical currently only supports single logical expressions")
-		print("Could not handle %s" %optstr)
+		print(("Could not handle %s" %optstr))
 		return (None,None,None)
 
 	p_2 = re.findall( parseparmobj_op, optstr )
 	if ( len(p_2) != 1 ):
-		print("ERROR: could not find logical expression in %s" %optstr)
+		print(("ERROR: could not find logical expression in %s" %optstr))
 		return (None,None,None)
 
 
 	if ( p_2[0] not in ["+=", "-=", "*=", "/=", "%="]):
-		print("ERROR: parsemodopt_logical %s could not extract logical expression" %(p_2[0]))
-		print("Must be one of", "+=", "-=", "*=", "/=", "%=")
+		print(("ERROR: parsemodopt_logical %s could not extract logical expression" %(p_2[0])))
+		print(("Must be one of", "+=", "-=", "*=", "/=", "%="))
 		return (None,None,None)
 
 	return (p_1[0], p_2[0], p_1[1])
@@ -867,7 +867,7 @@ def plot(data,data2=None,data3=None,show=1,size=(800,600),path="plot.png"):
 					print("List, but data isn't floats")
 					return
 		else :
-			print("I don't know how to plot that type (%s)"%(str(type(data))))
+			print(("I don't know how to plot that type (%s)"%(str(type(data)))))
 			return
 
 		pylab.savefig(path)
@@ -1027,12 +1027,12 @@ def num_cpus():
 				except:pass # mem_used is just -1
 
 		if cores < 1:
-			print("warning, the number of cpus was negative (%i), this means the MAC system command (sysctl) has been updated and EMAN2 has not accommodated for this. Returning 1 for the number of cores." %cores)
+			print(("warning, the number of cpus was negative (%i), this means the MAC system command (sysctl) has been updated and EMAN2 has not accommodated for this. Returning 1 for the number of cores." %cores))
 			cores = 2# just for safety, something could have gone wrong. Maybe we should raise instead
 		return cores
 
 	else:
-		print("error, in num_cpus - uknown platform string:",platform_string," - returning 2")
+		print(("error, in num_cpus - uknown platform string:",platform_string," - returning 2"))
 		return 2
 
 def gimme_image_dimensions2D( imagefilename ):
@@ -1137,7 +1137,7 @@ def remove_file( file_name, img_couples_too=True ):
 	elif db_check_dict(file_name):
 		db_remove_dict(file_name)
 	else:
-		print("Warning, attempt to remove file (%s) that does not exist. No action taken." %file_name)
+		print(("Warning, attempt to remove file (%s) that does not exist. No action taken." %file_name))
 		return False
 
 # returns the local date and time as a string
@@ -1283,7 +1283,7 @@ def strip_file_tag(file_name):
 		if file_name[i] == '.':
 			break
 	else:
-		print("never found the full stop in", file_name)
+		print(("never found the full stop in", file_name))
 		return None
 
 	return file_name[0:i]
@@ -1383,12 +1383,12 @@ def file_exists( file_name ):
 
 		if ( file_tag == 'hed' ):
 			if ( not os.path.exists(name+'img') ):
-				print("Warning - %s does not exist" %(name+'img'))
+				print(("Warning - %s does not exist" %(name+'img')))
 				return False
 			else: return True;
 		elif (file_tag == 'img'):
 			if (not os.path.exists(name+'hed')):
-				print("Warning - %s does not exist" %(name+'hed'))
+				print(("Warning - %s does not exist" %(name+'hed')))
 				return False
 			else: return True;
 		else:
@@ -1461,24 +1461,24 @@ def check_eman2_type(modoptstring, object, objectname, verbose=True):
 	'''
 	if modoptstring == None:
 		if verbose:
-			print("Error: expecting a string but got python None, was looking for a type of %s" %objectname)
+			print(("Error: expecting a string but got python None, was looking for a type of %s" %objectname))
 		return False
 
 	if modoptstring == "":
 		if verbose:
-			print("Error: expecting a string was not empty, was looking for a type of %s" %objectname)
+			print(("Error: expecting a string was not empty, was looking for a type of %s" %objectname))
 		return False
 
 	try:
 		p = parsemodopt(modoptstring)
 		if p[0] == None:
 			if verbose:
-				print("Error: Can't interpret the construction string %s" %(modoptstring))
+				print(("Error: Can't interpret the construction string %s" %(modoptstring)))
 			return False
 		object.get(p[0], p[1])
 	except RuntimeError:
 		if (verbose):
-			print("Error: the specified %s (%s) does not exist or cannot be constructed" %(objectname, modoptstring))
+			print(("Error: the specified %s (%s) does not exist or cannot be constructed" %(objectname, modoptstring)))
 		return False
 
 	return True
@@ -1784,7 +1784,7 @@ def get_3d_font_renderer():
 		elif pfm == "Windows":
 			font_renderer.set_font_file_name("C:\\WINDOWS\\Fonts\\arial.ttf")
 		else:
-			print("unknown platform:",pfm)
+			print(("unknown platform:",pfm))
 		return font_renderer
 	except ImportError:
 		#print "Unable to import EMFTGL. The FTGL library may not be installed. Text on 3D and some 2D viewers may not work."
@@ -1892,7 +1892,7 @@ def clear_dead_cudajobs():
 		try:
 			os.kill(cpid, 0)
 		except OSError:
-			print("removing deadfile ", lock)
+			print(("removing deadfile ", lock))
 			os.unlink(lock)
 
 ### Very odd function, I can't find it used anywhere, so I'm commenting it out.
@@ -1993,7 +1993,7 @@ if the lst file does not exist."""
 		self.filecomment=self.ptr.readline()
 		try: self.linelen=int(self.ptr.readline()[1:])
 		except:
-			print("ERROR: invalid line length in #LSX file {}".format(self.path))
+			print(("ERROR: invalid line length in #LSX file {}".format(self.path)))
 			raise Exception
 		self.seekbase=self.ptr.tell()
 

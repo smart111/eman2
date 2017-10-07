@@ -390,7 +390,7 @@ class EMBootStrappedAverages:
 			current_files = new_files
 			images = new_images
 			iter += 1
-			print(couples,taken)
+			print((couples,taken))
 			
 			
 		if self.logger: E2progress(self.logger,1.0)
@@ -629,7 +629,7 @@ class EMTomoAlignments:
 		n = len(task_customers)
 		while 1:
 			if len(task_customers) == 0: break
-			print(len(task_customers),"tomo averaging tasks left in main loop")
+			print((len(task_customers),"tomo averaging tasks left in main loop"))
 			st_vals = task_customers[0].check_task(tids)
 			for i in range(len(task_customers)-1,-1,-1):
 				st = st_vals[i]
@@ -708,7 +708,7 @@ class EMTomoAlignTask:
 			probe.set_gpu_rw_current()
 			probe.cuda_lock()
 		
-		print(probe.get_xsize())
+		print((probe.get_xsize()))
 		progress = 0.0
 		max_progress = 3
 		progress += 1.0
@@ -824,7 +824,7 @@ def main():
 
 	(options, args) = parser.parse_args()
 	
-	print(options.shrink)
+	print((options.shrink))
 	
 	error_messages = check_options(options,args)
 	if len(error_messages) != 0:

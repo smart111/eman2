@@ -49,7 +49,7 @@ kb = kbt(nx)
 # read images and prepare them for gridding
 data = []
 params = []
-for im in xrange(nima):
+for im in range(nima):
 	if(im>0):
 		temp = EMData()
 		temp.read_image(stack_data,im)
@@ -71,7 +71,7 @@ tave,tvar = ave_var_series_g(data,kb)
 dropImage(tave,"a1.spi")
 dropImage(tvar,"a2.spi")
 a0 = tave.cmp("dot", tave, {"negative":0,"mask":mask})
-print  "initial ",a0
+print("initial ",a0)
 # do the alignment
 # IMAGES ARE SQUARES!
 # load stuff for amoeba
@@ -82,10 +82,10 @@ stuff.insert(2,nima)
 #stuff.insert(3,tave)  # current average
 #stuff.insert(4,data)  # current image in the gridding format
 weights = [1.75]*3  # weights define initial bracketing, so one would have to figure how to set them correctly
-for iter in xrange(20):
-	print " ITERATION #",iter,a0
+for iter in range(20):
+	print(" ITERATION #",iter,a0)
 	again = False
-	for im in xrange(nima):
+	for im in range(nima):
 		# subtract current image from the average
 		psi = data[im].get_attr('psi')
 		sx =  data[im].get_attr('sx')
@@ -109,7 +109,7 @@ for iter in xrange(20):
 		if  mirror: temp = temp.process("mirror",{"axis":'x'})
 		#  Subtract current image from the average
 		tave = refim + temp/nima
-		print  im,tave.cmp("dot", tave, {"negative":0,"mask":mask}),params,outparams[0],outparams[2]
+		print(im,tave.cmp("dot", tave, {"negative":0,"mask":mask}),params,outparams[0],outparams[2])
 
 	# calculate total average using current alignment parameters
 	av1,av2 = ave_oe_series_g(data,kb)
@@ -119,7 +119,7 @@ for iter in xrange(20):
 	# write the current average
 	dropImage(tave,"aam%04d.spi"%iter)
 
-for im in xrange(nima):
+for im in range(nima):
 	temp.read_image(stack_data,im)
 	psi = data[im].get_attr('psi')
 	sx =  data[im].get_attr('sx')

@@ -44,12 +44,12 @@ def boolconv(x):
 	except:
 		if x[0] in ("T","t","Y","y") : return 1
 		if x[0] in ("F","f","N","n") : return 0
-		raise Exception,"Invalid boolean %s"%str(x)
+		raise Exception("Invalid boolean %s"%str(x))
 
 # validation/conversion for text, permitting unicode
 def textconv(x):
 	try: return str(x)
-	except: return unicode(x)
+	except: return str(x)
 
 def datetimeconv(x):
 	return str(x)
@@ -78,20 +78,20 @@ valid_vartypes={
 	"time":("s",timeconv),			# HH:MM:SS
 	"date":("s",dateconv),			# yyyy/mm/dd
 	"datetime":("s",datetimeconv),		# yyyy/mm/dd HH:MM:SS
-	"intlist":(None,lambda y:map(lambda x:int(x),y)),		# list of integers
-	"floatlist":(None,lambda y:map(lambda x:float(x),y)), # list of floats
-	"stringlist":(None,lambda y:map(lambda x:str(x),y)),	# list of enumerated strings
+	"intlist":(None,lambda y:[int(x) for x in y]),		# list of integers
+	"floatlist":(None,lambda y:[float(x) for x in y]), # list of floats
+	"stringlist":(None,lambda y:[str(x) for x in y]),	# list of enumerated strings
 	"url":("s",lambda x:str(x)),			# link to a generic url
 	"hdf":("s",lambda x:str(x)),			# url points to an HDF file
 	"image":("s",lambda x:str(x)),			# url points to a browser-compatible image
-	"binary":("s",lambda y:map(lambda x:str(x),y)),				# url points to an arbitrary binary... ['bdo:....','bdo:....','bdo:....']
+	"binary":("s",lambda y:[str(x) for x in y]),				# url points to an arbitrary binary... ['bdo:....','bdo:....','bdo:....']
 	"binaryimage":("s",lambda x:str(x)),		# non browser-compatible image requiring extra 'help' to display... 'bdo:....'
-	"child":("child",lambda y:map(lambda x:int(x),y)),	# link to dbid/recid of a child record
-	"link":("link",lambda y:map(lambda x:int(x),y)),		# lateral link to related record dbid/recid
+	"child":("child",lambda y:[int(x) for x in y]),	# link to dbid/recid of a child record
+	"link":("link",lambda y:[int(x) for x in y]),		# lateral link to related record dbid/recid
 	"boolean":("d",boolconv),
 	"dict":(None, lambda x:x), 
 	"user":("s",lambda x:str(x)), # ian 09.06.07
-	"userlist":(None,lambda y:map(lambda x:str(x),y))
+	"userlist":(None,lambda y:[str(x) for x in y])
 }
 
 # Valid physical property names
@@ -347,10 +347,10 @@ class ParamDef(DictMixin) :
 		if key in self.attr_all:
 			self.__dict__[key]=value
 		else:
-			raise KeyError,"Invalid key: %s"%key
+			raise KeyError("Invalid key: %s"%key)
 			
 	def __delitem__(self,key):
-		raise KeyError,"Key deletion not allowed"
+		raise KeyError("Key deletion not allowed")
 		
 	def keys(self):
 		return tuple(self.attr_all)
@@ -374,41 +374,41 @@ class ParamDef(DictMixin) :
 	def validate(self):
 		
 		if set(self.__dict__.keys())-self.attr_all:
-			raise AttributeError,"Invalid attributes: %s"%",".join(set(self.__dict__.keys())-self.attr_all)
+			raise AttributeError("Invalid attributes: %s"%",".join(set(self.__dict__.keys())-self.attr_all))
 		
 		if str(self.name) == "":
-			raise ValueError,"name required"
+			raise ValueError("name required")
 
 		if self.vartype != None and not str(self.vartype) in valid_vartypes:
-			raise ValueError,"Invalid vartype; not in valid_vartypes"
+			raise ValueError("Invalid vartype; not in valid_vartypes")
 			
-		if unicode(self.desc_short) == "":
-			raise ValueError,"Short description (desc_short) required"
+		if str(self.desc_short) == "":
+			raise ValueError("Short description (desc_short) required")
 
-		if unicode(self.desc_long) == "":
-			raise ValueError,"Long description (desc_long) required"
+		if str(self.desc_long) == "":
+			raise ValueError("Long description (desc_long) required")
 
 		if self.property != None and str(self.property) not in valid_properties:
 			#raise ValueError,"Invalid property; not in valid_properties"
-			print "Warning: Invalid property; not in valid_properties"
+			print("Warning: Invalid property; not in valid_properties")
 
 		if self.defaultunits != None:
 			a=[]
-			for q in valid_properties.values():
+			for q in list(valid_properties.values()):
 				# ian
-				a.extend(q[1].keys()) 
-				a.extend(q[2].keys())
+				a.extend(list(q[1].keys())) 
+				a.extend(list(q[2].keys()))
 			if not str(self.defaultunits) in a and str(self.defaultunits) != '':
 				#raise ValueError,"Invalid defaultunits; not in valid_properties"
-				print "Warning: Invalid defaultunits; not in valid_properties"
+				print("Warning: Invalid defaultunits; not in valid_properties")
 			
 		if self.choices != None:
 			try:
 				list(self.choices)
 				for i in self.choices:
-					unicode(i)
+					str(i)
 			except:
-				raise ValueError,"choices must be a list of strings"
+				raise ValueError("choices must be a list of strings")
 			#if isinstance(self.choices,basestring):
 			# raise ValueError,"choices must be strings"
 			#for i in self.choices:
@@ -479,7 +479,7 @@ class RecordDef(DictMixin) :
 	def __setstate__(self,dict):
 		"""restore unpickled values to defaults after unpickling"""
 		self.__dict__.update(dict)
-		if not dict.has_key("typicalchld") : self.typicalchld=[]		
+		if "typicalchld" not in dict : self.typicalchld=[]		
 
 
 	#################################		
@@ -493,7 +493,7 @@ class RecordDef(DictMixin) :
 	def stringparams(self):
 		"""returns the params for this recorddef as an indented printable string"""
 		r=["{"]
-		for k,v in self.params.items():
+		for k,v in list(self.params.items()):
 			r.append("\n\t%s: %s"%(k,str(v)))
 		return "".join(r)+" }\n"
 	
@@ -509,10 +509,10 @@ class RecordDef(DictMixin) :
 		if key in self.attr_all:
 			self.__dict__[key]=value
 		else:
-			raise AttributeError,"Invalid key: %s"%key
+			raise AttributeError("Invalid key: %s"%key)
 			
 	def __delitem__(self,key):
-		raise AttributeError,"Key deletion not allowed"
+		raise AttributeError("Key deletion not allowed")
 		
 	def keys(self):
 		return tuple(self.attr_all)
@@ -525,11 +525,11 @@ class RecordDef(DictMixin) :
 	def findparams(self):
 		"""This will update the list of params by parsing the views"""
 		t,d=parseparmvalues(self.mainview)
-		for i in self.views.values():
+		for i in list(self.views.values()):
 			t2,d2=parseparmvalues(i)
 			for j in t2:
 				# ian: fix for: empty default value in a view unsets default value specified in mainview
-				if not d.has_key(j):
+				if j not in d:
 					t.append(j)
 					d[j] = d2[j]
 #			d.update(d2)
@@ -546,7 +546,7 @@ class RecordDef(DictMixin) :
 		
 		
 	def fromdict(self,d):
-		for k,v in d.items():
+		for k,v in list(d.items()):
 			self.__setattr__(k,v)
 		self.validate()
 
@@ -558,38 +558,38 @@ class RecordDef(DictMixin) :
 	def validate(self): 
 		
 		if set(self.__dict__.keys())-self.attr_all:
-			raise AttributeError,"Invalid attributes: %s"%",".join(set(self.__dict__.keys())-self.attr_all)
+			raise AttributeError("Invalid attributes: %s"%",".join(set(self.__dict__.keys())-self.attr_all))
 		
 		try:
 			if str(self.name) == "" or self.name==None:
 				raise Exception
 		except: 
-			raise ValueError,"name required; must be str or unicode"
+			raise ValueError("name required; must be str or unicode")
 
 		try:
 			dict(self.views)
 		except:
-			raise ValueError,"views must be dict"
+			raise ValueError("views must be dict")
 
 		try:
 			list(self.typicalchld)
 		except:
-			raise ValueError,"Invalid value for typicalchld; list of recorddefs required."
+			raise ValueError("Invalid value for typicalchld; list of recorddefs required.")
 						
 		try: 
-			if unicode(self.mainview) == "": raise Exception
+			if str(self.mainview) == "": raise Exception
 		except:
-			raise ValueError,"mainview required; must be str or unicode"
+			raise ValueError("mainview required; must be str or unicode")
 
-		if not dict(self.views).has_key("recname"):
-			print "Warning: recname view strongly suggested"
+		if "recname" not in dict(self.views):
+			print("Warning: recname view strongly suggested")
 
-		for k,v in self.views.items():
-			if not isinstance(k,str) or not isinstance(v,basestring):
-				raise ValueError,"Views names must be strings; view defs may be unicode"
+		for k,v in list(self.views.items()):
+			if not isinstance(k,str) or not isinstance(v,str):
+				raise ValueError("Views names must be strings; view defs may be unicode")
 
 		if self.private not in [0,1]:
-			raise ValueError,"Invalid value for private; must be 0 or 1"
+			raise ValueError("Invalid value for private; must be 0 or 1")
 
 
 class Record(DictMixin):
@@ -723,19 +723,19 @@ class Record(DictMixin):
 		try: 
 			if self.recid != None: int(self.recid)
 		except:
-			raise ValueError,"recid must be positive integer"
+			raise ValueError("recid must be positive integer")
 
 
 	def validate_rectype(self):			
 		if str(self.rectype) == "":
-			raise ValueError,"rectype must not be empty"
+			raise ValueError("rectype must not be empty")
 
 
 	def validate_permissions(self):		
 		try:
 			self.__permissions = tuple((tuple(i) for i in self.__permissions))
 		except:
-			raise ValueError,"permissions must be 4-tuple of tuples"
+			raise ValueError("permissions must be 4-tuple of tuples")
 
 
 	def validate_permissions_users(self):
@@ -744,18 +744,18 @@ class Record(DictMixin):
 		for j in self.__permissions: u|=set(j)
 		u -= set([0,-1,-2,-3])
 		if u-users:
-			print "Warning: undefined users: %s"%",".join(map(str, u-users))
+			print("Warning: undefined users: %s"%",".join(map(str, u-users)))
 			
 			
 
 	def validate_param(self, value, pd):
-		print "___ validate %s ___"%(pd.name)
+		print("___ validate %s ___"%(pd.name))
 		#print "vartype: %s"%pd.vartype
 		#print "property: %s"%pd.property
 		#print "defaultunits: %s"%pd.defaultunits
 
-		if pd.property and isinstance(value,basestring):
-			print "______ checking units __________"
+		if pd.property and isinstance(value,str):
+			print("______ checking units __________")
 			value,units=re.compile("([0-9.,]+)?(.*)").search(value).groups()
 			value=float(value)
 			units=units.strip()
@@ -769,34 +769,34 @@ class Record(DictMixin):
 			if pd.defaultunits != None:
 				defaultunits=pd.defaultunits
 
-			if units in valid_properties[pd.property][1].keys():
+			if units in list(valid_properties[pd.property][1].keys()):
 				pass
 
-			elif units in valid_properties[pd.property][2].keys():
+			elif units in list(valid_properties[pd.property][2].keys()):
 				units=valid_properties[pd.property][2][units]
 
 			elif units == "":
 				units = defaultunits
 
 			else:
-				raise ValueError,"Unknown units: %s"%units
+				raise ValueError("Unknown units: %s"%units)
 
 			try:
 				# convert units
 				value = value * ( valid_properties[pd.property][1][units] / valid_properties[pd.property][1][defaultunits] )
-				print "newval: %s"%value
+				print("newval: %s"%value)
 			except:
-				raise ValueError,"Unable to convert %s = %s; skipping value"%(pd.name,value)
+				raise ValueError("Unable to convert %s = %s; skipping value"%(pd.name,value))
 
 		try:
 			if value != None:
 				value=valid_vartypes[pd.vartype][1](value)
 		except:
-			raise ValueError,"Error converting datatype: %s, %s"%(pd.name,pd.vartype)
+			raise ValueError("Error converting datatype: %s, %s"%(pd.name,pd.vartype))
 	
 		if pd.vartype=="choice" and value!=None:
 			if value.lower() not in [i.lower() for i in pd.choices]:
-				raise ValueError,"%s not in %s"%(value,pd.choices)
+				raise ValueError("%s not in %s"%(value,pd.choices))
 		
 		
 		# Save validated value
@@ -807,28 +807,28 @@ class Record(DictMixin):
 		
 		
 	def validate_params(self):
-		if self.__params.keys():
-			pds=self.__context.db.getparamdefs(self.__params.keys())
-			for i,pd in pds.items():
+		if list(self.__params.keys()):
+			pds=self.__context.db.getparamdefs(list(self.__params.keys()))
+			for i,pd in list(pds.items()):
 				self.validate_param(self[i],pd)
 
 
 	def changedparams(self):
 
-		print "===== changed params ====="
+		print("===== changed params =====")
 
 		cp = set()
-		for k in self.keys():
+		for k in list(self.keys()):
 			if k not in (self.param_special-set(["comments"])) and self[k] != self.__oparams.get(k,None):
 
 				if k == "comments":
-					print "%s : ..."%(k)
+					print("%s : ..."%(k))
 				else:
-					print "%s : %s --> %s"%(k,self.__oparams.get(k,None),self[k])
+					print("%s : %s --> %s"%(k,self.__oparams.get(k,None),self[k]))
 					
 				cp.add(k)
 
-		print "changedparams result: %s"%cp
+		print("changedparams result: %s"%cp)
 		return cp		
 		
 	#################################		
@@ -840,7 +840,7 @@ class Record(DictMixin):
 		odict = self.__dict__.copy() # copy the dict since we change it
 		odict["_Record__oparams"]={}
 		
-		if not odict.has_key("localcpy") :
+		if "localcpy" not in odict :
 			try: del odict['_Record__ptest']
 			except: pass
 		
@@ -884,9 +884,9 @@ class Record(DictMixin):
 	def __unicode__(self):
 		"A string representation of the record"
 		ret=["%s (%s)\n"%(str(self.recid),self.rectype)]
-		for i,j in self.items(): 
-			ret.append(u"%12s:	%s\n"%(str(i),unicode(j)))
-		return u"".join(ret)
+		for i,j in list(self.items()): 
+			ret.append("%12s:	%s\n"%(str(i),str(j)))
+		return "".join(ret)
 	
 	def __str__(self):
 		return self.__unicode__().encode('utf-8')
@@ -938,7 +938,7 @@ class Record(DictMixin):
 		except:
 			pass
 
-		if key != "comments" and not self.__oparams.has_key(key):
+		if key != "comments" and key not in self.__oparams:
 			self.__oparams[key]=self[key]
 
 		if key not in self.param_special:
@@ -957,10 +957,10 @@ class Record(DictMixin):
 		#if not self.__ptest[1] : raise SecurityError,"Permission Denied (%d)"%self.recid
 		key = str(key).strip().lower()
 
-		if key not in self.param_special and self.__params.has_key(key):
+		if key not in self.param_special and key in self.__params:
 			self.__setitem__(key,None)
 		else:
-			raise KeyError,"Cannot delete key %s"%key 
+			raise KeyError("Cannot delete key %s"%key) 
 
 	def keys(self):
 		"""All retrievable keys for this record"""
@@ -968,7 +968,7 @@ class Record(DictMixin):
 		return tuple(self.__params.keys())+tuple(self.param_special)
 		
 	def has_key(self,key):
-		if str(key).strip().lower() in self.keys(): return True
+		if str(key).strip().lower() in list(self.keys()): return True
 		return False
 	
 	def get(self, key, default=None):
@@ -979,27 +979,27 @@ class Record(DictMixin):
 	#################################
 
 	def addcomment(self, value):
-		if not isinstance(value,basestring):
-			print "Warning: invalid comment"
+		if not isinstance(value,str):
+			print("Warning: invalid comment")
 			return
 
 		#print "Updating comments: %s"%value
 		d=parseparmvalues(value,noempty=1)[1]
 
-		if d.has_key("comments"):
-			print "Warning: cannot set comments inside a comment"			
+		if "comments" in d:
+			print("Warning: cannot set comments inside a comment")			
 			return
 			
 		self.__comments.append((self.__context.user,time.strftime("%Y/%m/%d %H:%M:%S"),value))	# store the comment string itself		
 
 		# now update the values of any embedded params
-		for i,j in d.items():
+		for i,j in list(d.items()):
 			self.__setitem__(i,j)
 
 
 	def getparamkeys(self):
 		"""Returns parameter keys without special values like owner, creator, etc."""
-		return self.__params.keys()		
+		return list(self.__params.keys())		
 		
 
 	# ian: hard coded groups here need to be in sync with the various check*ctx methods.
@@ -1047,10 +1047,10 @@ class Record(DictMixin):
 	# from items_dict 
 	
 	def fromdict(self,d):
-		if d.has_key("comments"):
+		if "comments" in d:
 			self.__comments=d["comments"]
 			del d["comments"]
-		for k,v in d.items():
+		for k,v in list(d.items()):
 			#print "setting %s = %s"%(k,v)
 			self[k]=v
 		# generally there will be no context set at this point; validation is short form

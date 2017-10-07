@@ -107,7 +107,7 @@ def main():
 	if options.output:
 		outputbase = options.output
 		
-		print("\n(e2fixheader)(main)--output is", options.output)
+		print(("\n(e2fixheader)(main)--output is", options.output))
 	
 	files2process = []
 	
@@ -158,9 +158,9 @@ def main():
 	k=0
 	for fyle in files2process:
 		extension = '.'+fyle.split('.')[-1]
-		print("extension is",extension)
+		print(("extension is",extension))
 		if extension not in formats:
-				print("ERROR: invalid file %s" %(fyle))
+				print(("ERROR: invalid file %s" %(fyle)))
 				sys.exit(1)
 
 		if originaloutput:
@@ -169,7 +169,7 @@ def main():
 		else:
 			#options.output = fyle.replace('.','_hdrEd.')
 			options.output = fyle
-			print("(e2fixheaderparam.py line 134) Defining options.output as", fyle)
+			print(("(e2fixheaderparam.py line 134) Defining options.output as", fyle))
 			
 		if options.addfilename:
 			
@@ -186,11 +186,11 @@ def main():
 			
 			fyle = newinput
 			
-			print("\n\n\n\n\n\n\n\n\nNEW input is", fyle)
+			print(("\n\n\n\n\n\n\n\n\nNEW input is", fyle))
 			print("\n\n\n\n\n\n\n\n\n")
 		
 		
-		print("Sending this file for fixing", fyle)
+		print(("Sending this file for fixing", fyle))
 		fixer( fyle, options )
 		k+=1
 	
@@ -209,7 +209,7 @@ def fixer(fyle, options):
 		#print "Therefore not in it should be false, and it is...", '.hdf' not in options.output[-4:0]
 		#if '.hdf' not in options.output[-4:] and '.mrc' not in options.output[-4:] and 'bdb:' not in options.output[:5] and '.st' not in options.output[-4:] and '.ali' not in options.output[-4:] and '.rec' not in options.output[-4:]:
 		
-		print("\n(e2fixheader)(fixer) output is", options.output)
+		print(("\n(e2fixheader)(fixer) output is", options.output))
 		if options.output[-4:] in formats:
 			pass
 		elif options.output[-5:] in formats:
@@ -227,7 +227,7 @@ def fixer(fyle, options):
 	refheader = None
 	if options.refheader:
 		refheader = EMData( options.refheader, 0, True ).get_attr_dict()
-		print("\n(e2fixheader)(fixer) reading --refheader from", options.refheader)
+		print(("\n(e2fixheader)(fixer) reading --refheader from", options.refheader))
 	
 	n = 1
 	if fyle[-4:] == '.hdf' or fyle[-4:] == '.mrcs':
@@ -238,18 +238,18 @@ def fixer(fyle, options):
 		
 		indx=i
 		if fyle[-4:] == '.hdf' or fyle[-4:] == '.mrcs':
-			print("\n(e2fixheader)(fixer) fixing the header of img %d in stack %s" %( indx, fyle ))
+			print(("\n(e2fixheader)(fixer) fixing the header of img %d in stack %s" %( indx, fyle )))
 			if options.refheader:
 				refheader = EMData( options.refheader, i, True ).get_attr_dict()
 		else:
 			indx=0
 				
 		imgHdr = EMData(fyle,indx,True)
-		print("\n(e2fixheader)(fixer) type of imgHdr is", type(imgHdr))
-		print("\n(e2fixheader)(fixer) and imgHdr is", imgHdr)
+		print(("\n(e2fixheader)(fixer) type of imgHdr is", type(imgHdr)))
+		print(("\n(e2fixheader)(fixer) and imgHdr is", imgHdr))
 		
 		existingps = imgHdr.get_attr_dict()
-		print("\n(e2fixheader)(fixer) existingps are", existingps)
+		print(("\n(e2fixheader)(fixer) existingps are", existingps))
 		
 		aux1 = 0
 		aux2 = 0
@@ -265,10 +265,10 @@ def fixer(fyle, options):
 					outfile = options.output 
 			
 				img.write_image( outfile, indx )
-				print("overwriting header of img", indx)
+				print(("overwriting header of img", indx))
 				aux4+=1
 			else:
-				print("ERROR: could not read --refheader", refheader)
+				print(("ERROR: could not read --refheader", refheader))
 		
 		
 		elif not options.refheader:
@@ -277,10 +277,10 @@ def fixer(fyle, options):
 				paramValPairs=options.params.split(',')
 			
 				p2add = []
-				print("!!!!!!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!!!!!!!Param pair vals are", paramValPairs)
+				print(("!!!!!!!!!!!!!!!!!!!!\n!!!!!!!!!!!!!!!!!!!!Param pair vals are", paramValPairs))
 				for pair in paramValPairs:
 					p = pair.split(':')[0]
-					print("\nParsed parameter", p)
+					print(("\nParsed parameter", p))
 					if p not in existingps:
 						print("latter was not present already!")
 						p2add.append( p )
@@ -293,7 +293,7 @@ def fixer(fyle, options):
 					p.stdout.close()
 					fyle = tmp
 				
-					print("\nThere are parameters to add and the format is non-hdf. Therefore, this image will be created", fyle)
+					print(("\nThere are parameters to add and the format is non-hdf. Therefore, this image will be created", fyle))
 				
 					print("""\nWARNING: You are trying to add parameters to a file format that does not allow this.
 							You can only add new parameters to .hdf files. 
@@ -310,23 +310,23 @@ def fixer(fyle, options):
 						v=valtyper(options,v)
 					
 					if p and p not in p2add:
-						print("Will consider changing this existing param", p)
+						print(("Will consider changing this existing param", p))
 						previousParam = imgHdr[p]
 					
 						if v != previousParam:
 							aux1=1
 							imgHdr[p] = v
-							print("\nNew value %s for previous parameter %s" %(v,p))
+							print(("\nNew value %s for previous parameter %s" %(v,p)))
 						else:
-							print("new value is identical to previous parameters",v,previousParam)
+							print(("new value is identical to previous parameters",v,previousParam))
 				
-					print("\n\nThe params to add are", p2add)
+					print(("\n\nThe params to add are", p2add))
 					if p and p in p2add:
-						print("Will add this new parameter", p)
+						print(("Will add this new parameter", p))
 						aux2 = 1
 						imgHdr.set_attr(p,v)
-						print("\nNew PARAMETER %s added with this value %s" %(p,v))
-						print("Let's see if we can read it", p, imgHdr[p])
+						print(("\nNew PARAMETER %s added with this value %s" %(p,v)))
+						print(("Let's see if we can read it", p, imgHdr[p]))
 						
 				if not options.output:
 				
@@ -341,8 +341,8 @@ def fixer(fyle, options):
 						print("ERROR: Only MRC (.mrc, .rec, .ali, .st) and HDF (.hdf) formats supported.")
 						sys.exit()
 				
-					print("""\n\nOutput format will the be same as the input format (changed 
-						to HDF by default if new parameters here added), which is""", outputformat)
+					print(("""\n\nOutput format will the be same as the input format (changed 
+						to HDF by default if new parameters here added), which is""", outputformat))
 			
 				else:
 					outindx = 0
@@ -390,12 +390,12 @@ def fixer(fyle, options):
 				
 					else:
 						img = EMData(fyle,indx)
-						print("\nType of imgHdr is", type(imgHdr))
-						print("\n\n\nand imgHdr is", imgHdr)
+						print(("\nType of imgHdr is", type(imgHdr)))
+						print(("\n\n\nand imgHdr is", imgHdr))
 						img.set_attr_dict(imgHdr.get_attr_dict())
 						img.write_image(options.output,indx)	
 				else:
-					print("Couldn't find any parameters with the stem", options.stem)
+					print(("Couldn't find any parameters with the stem", options.stem))
 	
 	if aux1 == n:
 		print("\nformer parameter value(s) changed successfully!")
@@ -418,9 +418,9 @@ def valtyper(options,v):
 		v=int(v)
 	if options.valtype == 'float':
 		#v=int(float("{0:.2f}".format( round( float(v),2) ) )*100.00)/100.00
-		print("converting v",v)
+		print(("converting v",v))
 		v=round(float(v),2)
-		print("converted",v)
+		print(("converted",v))
 	if options.valtype == 'list':
 		v=list(v)
 	return(v)

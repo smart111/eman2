@@ -94,7 +94,7 @@ models are not completely compatible."""
 		if options.last > options.first :
 			if i > options.last :
 				continue
-		print("[%0.1f" % ( 100. * float( i ) / len( ptcls ) ) + "%" + "] Converting %s..." % f)
+		print(("[%0.1f" % ( 100. * float( i ) / len( ptcls ) ) + "%" + "] Converting %s..." % f))
 		
 		# Load CTF parameters from EMAN2
 		if options.debug :

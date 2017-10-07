@@ -84,7 +84,7 @@ For more information on ctffind3 please see: Mindell, JA, Grigorieff N.  2003.  
 		for f in fls:
 			star=StarFile("ctffind3/"+f)
 			if "rlnMicrographName" not in star :
-				print("No rlnMicrographName in ",f)
+				print(("No rlnMicrographName in ",f))
 				continue
 			
 			print(f)
@@ -148,7 +148,7 @@ For more information on ctffind3 please see: Mindell, JA, Grigorieff N.  2003.  
 
 def import_ctf(voltage, cs, ac, apix, verbose, version):
 	if not os.path.exists(version):
-		print("no " + version + " directory found. Please see usage instructions!")
+		print(("no " + version + " directory found. Please see usage instructions!"))
 		exit(-5)
 		
 	for filename in os.listdir("micrographs"):
@@ -177,7 +177,7 @@ def import_ctf(voltage, cs, ac, apix, verbose, version):
 	launch_childprocess("e2ctf.py --voltage {} --cs {} --ac {} --apix {} --allparticles --autofit --curdefocusfix --astigmatism --verbose {}".format(voltage,cs,ac,apix,verbose-1))
 
 def run_ctffind(apix, args, cs, voltage, ac, windowsize, minres, maxres, defocusmin, defocusmax, defocusstep,verbose, version):
-	print("Running " + version)
+	print(("Running " + version))
 	dstep = 10.0
 	mag = dstep / apix * 10000
 	
@@ -186,7 +186,7 @@ def run_ctffind(apix, args, cs, voltage, ac, windowsize, minres, maxres, defocus
 	created = False
 	for image in args:
 		if not os.path.exists(image):
-			print("Image Does not exist: " + image)
+			print(("Image Does not exist: " + image))
 			exit(-6)
 		card = open("card.txt",'w')
 		if image.split(".")[1] != "mrc":
@@ -194,7 +194,7 @@ def run_ctffind(apix, args, cs, voltage, ac, windowsize, minres, maxres, defocus
 			created = True
 		card.write(image.split(".")[0] + ".mrc\n" + version + "/" + base_name(image) + "_" + version + ".ctf\n" + str(cs) + "," + str(voltage) + "," + str(ac) + "," + str(mag) + "," + str(dstep) + "\n" + str(windowsize) + "," + str(minres) + "," + str(maxres) + "," + str(defocusmin) + "," + str(defocusmax) + "," + str(defocusstep))
 		card.close()
-		print("running " + version + " on: " + image)
+		print(("running " + version + " on: " + image))
 		if version == "ctffind3":
 			s = "`which ctffind3.exe` < card.txt >ctffind3/" + base_name(image) + "_ctffind3.log"
 		else:

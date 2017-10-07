@@ -243,10 +243,10 @@ def main():
 		exit(0)
 	elif options.subset:
 		subsetStack = options.path + '/subset' + str( options.subset ).zfill( len( str( options.subset))) + '.hdf' 
-		print("\nSubset to be written to", subsetStack)
+		print(("\nSubset to be written to", subsetStack))
 		
 		subsetcmd = 'e2proc3d.py ' + options.input + ' ' + subsetStack + ' --first=0 --last=' + str(options.subset-1) 
-		print("Subset cmd is", subsetcmd)
+		print(("Subset cmd is", subsetcmd))
 		
 		p=subprocess.Popen( subsetcmd, shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE )
 		text=p.communicate()	
@@ -305,17 +305,17 @@ def main():
 	
 	logger = E2init(sys.argv,options.ppid)
 
-	print("(e2spt_hac.py, main) - Logging started. Groups is", options.groups)
+	print(("(e2spt_hac.py, main) - Logging started. Groups is", options.groups))
 	
 	for i in range(options.groups):	
 		#if options.groups > 1:
 		if options.groups * 3 > nptcl:
 			print("ERROR: You need at least 3 particles per group to do all vs all within each group.")
-			print("You asked for %d groups; thus, the stack needs to have more than %d particles, but it only has %d" % (options.groups,3*options.groups,nptcl))
+			print(("You asked for %d groups; thus, the stack needs to have more than %d particles, but it only has %d" % (options.groups,3*options.groups,nptcl)))
 			print("Reduce the number of groups requested or provide a larger stack.")
 			sys.exit()
 		else:
-			print("(e2spt_hac.py, main) - working on group", i)
+			print(("(e2spt_hac.py, main) - working on group", i))
 			groupsize = int( nptcl/options.groups )
 			bottom_range = i * groupsize
 			top_range = (i+1) * groupsize
@@ -338,9 +338,9 @@ def main():
 
 				options.path = groupDIR
 				options.input = groupPATH
-				print("\n************************************\n(e2spt_hac.py) I will start ALL vs ALL on group number", i+1)
-				print("For which options.input is", options.input)
-				print("And uodated options.path is", options.path)
+				print(("\n************************************\n(e2spt_hac.py) I will start ALL vs ALL on group number", i+1))
+				print(("For which options.input is", options.input))
+				print(("And uodated options.path is", options.path))
 				print("************************************")
 
 
@@ -496,8 +496,8 @@ def exclusive_classes(options):
 			n=EMUtil.get_image_count(options.path + '/' + i)
 			for j in range(n):
 				a=EMData(options.path + '/' +i,j,True)
-				print("The average I have just appended has this multiplicity", a['spt_multiplicity'])
-				print("And comes from this file", options.path + '/' + i)
+				print(("The average I have just appended has this multiplicity", a['spt_multiplicity']))
+				print(("And comes from this file", options.path + '/' + i))
 				indxs = a['spt_ptcl_indxs']
 				indxs.sort()
 				averages.append({'file':options.path + '/' + i,'n':j,'multiplicity':a['spt_multiplicity'],'indxs':indxs})
@@ -510,7 +510,7 @@ def exclusive_classes(options):
 	repeats=0
 	for i in range(len(averages)):
 		if int(averages[i]['multiplicity']) >= int(options.exclusive_class_min):	
-			print("I've found a candidate with the min number of members in the average!", averages[i]['multiplicity'])
+			print(("I've found a candidate with the min number of members in the average!", averages[i]['multiplicity']))
 			candidates+=1
 			for j in range(i+1,len(averages)):	
 				if averages[i] not in repeated:
@@ -528,7 +528,7 @@ def exclusive_classes(options):
 				print("\n@@@\nI have found a ME class $$$$$$")			
 				me_classes.append(averages[i])
 
-	print("The mutually exclusive classes with more than %d particles" %options.exclusive_class_min)
+	print(("The mutually exclusive classes with more than %d particles" %options.exclusive_class_min))
 	print("are:")
 	for i in me_classes:
 		print(i)
@@ -614,7 +614,7 @@ def allvsall(options):
 		allptclsRound.update({particletag : [a,{i:totalt}]})			
 		
 		if options.verbose:
-			print("\n ptcl %d/%d done" %( i, nptcl ))
+			print(("\n ptcl %d/%d done" %( i, nptcl )))
 		
 		
 	oldptcls = {}									#'Unused' particles (those that weren't part of any unique-best-pair) join the 'oldptcls' dictionary onto the next round
@@ -655,7 +655,7 @@ def allvsall(options):
 		if k== 0:
 			newstack =options.input
 		
-		print("\n\n==================================\n(e2spt_hac.py) Starting iteration %d / %d (worst-case scenario)" % ( k, nptcls-1))
+		print(("\n\n==================================\n(e2spt_hac.py) Starting iteration %d / %d (worst-case scenario)" % ( k, nptcls-1)))
 		print("==================================\n\n")
 		
 		nnew = len(newptcls)
@@ -666,7 +666,7 @@ def allvsall(options):
 		#	#sys.exit()
 			
 		if k == (int( iters ) - 1) or (nnew + len(oldptcls) ) < 3 :
-			print("\n(e2spt_hac.py) (allvsall) This will be the final interation, n=", k)
+			print(("\n(e2spt_hac.py) (allvsall) This will be the final interation, n=", k))
 			if options.saveali:
 				if options.verbose:
 					print("\n(e2spt_hac.py) (allvsall) Saving aligned particles")
@@ -714,7 +714,7 @@ def allvsall(options):
 				particletag = roundtag + str(ptcl2).zfill(fillfactor)
 				
 				#if options.verbose > 2:
-				print("Setting the following comparison (all vs all amongst new ptcls): %s vs %s in ALL VS ALL" %(reftag,particletag))
+				print(("Setting the following comparison (all vs all amongst new ptcls): %s vs %s in ALL VS ALL" %(reftag,particletag)))
 				
 				#def __init__(self,fixedimagestack,imagestack,comparison, ptcl1, ptcl2, p1n, p2n,label,options,transform):
 				
@@ -743,14 +743,14 @@ def allvsall(options):
 			
 			#print "Old tagas are:\n", oldtags
 			nnn = 0
-			for refkey,refvalue in newptcls.items():
+			for refkey,refvalue in list(newptcls.items()):
 				ptcl1 = nnn
-				for particlekey,particlevalue in oldptcls.items():
+				for particlekey,particlevalue in list(oldptcls.items()):
 					
 					ptcl2 = oldtags[particlekey]
 					
 					#if options.verbose > 2:
-					print("Setting the following comparison (old vs new ptcls): %s vs %s in ALL VS ALL" %(refkey,particlekey))
+					print(("Setting the following comparison (old vs new ptcls): %s vs %s in ALL VS ALL" %(refkey,particlekey)))
 					
 					#task = Align3DTaskAVSA( newstack, options.path + '/oldptclstack.hdf', jj , refkey, particlekey, ptcl1, ptcl2,"Aligning particle round#%d_%d VS particle#%s, in iteration %d" % (k,ptcl1,particlekey.split('_')[0] + str(ptcl2),k),options.mask,options.normproc,options.preprocess,options.lowpass,options.highpass,
 					#options.npeakstorefine,options.align,options.aligncmp,options.falign,options.faligncmp,options.shrink,options.shrinkfine,options.verbose-1)
@@ -765,7 +765,7 @@ def allvsall(options):
 		
 		tids=etc.send_tasks(tasks)						#Start the alignments running
 		#if options.verbose > 0: 
-		print("%d tasks queued in iteration %d"%(len(tids),k)) 
+		print(("%d tasks queued in iteration %d"%(len(tids),k))) 
 		
 		results = get_results(etc,tids,options.verbose)				#Wait for alignments to finish and get results
 		
@@ -816,11 +816,11 @@ def allvsall(options):
 		
 		
 		
-		print("\n(e2spt_hac.py) (allvsall) Results completed for iteration", k)	
+		print(("\n(e2spt_hac.py) (allvsall) Results completed for iteration", k))	
 		for i in results:
 			if options.verbose > 8:
-				print("In iteration %d the SORTED results are:", k)	
-				print("%s VS %s , score=%f, transform=%s" %(i['ptclA'], i['ptclB'], i['score'], i['xform.align3d'] ))
+				print(("In iteration %d the SORTED results are:", k))	
+				print(("%s VS %s , score=%f, transform=%s" %(i['ptclA'], i['ptclB'], i['score'], i['xform.align3d'] )))
 			
 			#if k == 0:
 			
@@ -840,7 +840,7 @@ def allvsall(options):
 			compsInfo.append( [thisScore,indxA,indxB] )
 			
 			if options.verbose > 9 and options.plots:
-				print("\n(e2spt_hac.py, before plotter) Score appended to plot! and its type, and for pair", thisScore, type(thisScore), indxA, indxB)
+				print(("\n(e2spt_hac.py, before plotter) Score appended to plot! and its type, and for pair", thisScore, type(thisScore), indxA, indxB))
 
 			'''
 			Allocate particles in a comparison to a cluster so long as they haven't 
@@ -856,7 +856,7 @@ def allvsall(options):
 						#print "Clusters[cn] and its type are", clusters[cn], type(clusters[cn])
 						if len(clusters[cn]) < numPerSet:
 							if indxA not in usedSet:
-								print("IndxA as list is", [indxA])					
+								print(("IndxA as list is", [indxA]))					
 								clusters[cn].update( [indxA] )
 								usedSet.update( [indxA] )
 						
@@ -926,7 +926,7 @@ def allvsall(options):
 		textwriter(plotY, options, plotName.replace('.png','.txt'), invert=1 )
 
 		if options.verbose:
-			print("\n\n\n\nIn iteration %d, the total number of comparisons in the ranking list, either new or old that survived, is %d" % (k, len(results)))
+			print(("\n\n\n\nIn iteration %d, the total number of comparisons in the ranking list, either new or old that survived, is %d" % (k, len(results))))
 		
 		tried = set()											#Tracks what particles have "appeared" on the list, whether averaged or not
 		averages = {}											#Stores the new averages; you need a dict different from newptcls because you'll need to 'fetch' data from the previous version of newptcls
@@ -969,7 +969,7 @@ def allvsall(options):
 			score = round(float(results[z]['score']), 4)
 			
 			if options.verbose:
-				print("\n\n(e2spt_hac.py)The CCC SCORE for comparison %d in iteration %d is %f" %( z, k, score ))
+				print(("\n\n(e2spt_hac.py)The CCC SCORE for comparison %d in iteration %d is %f" %( z, k, score )))
 				
 			ptcl1dendoID = allptclsMatrix[k][results[z]['ptclA']][0]['spt_dendoID']				
 			ptcl2dendoID = allptclsMatrix[k][results[z]['ptclB']][0]['spt_dendoID']
@@ -984,19 +984,19 @@ def allvsall(options):
 			
 			if options.minscore and float(options.minscore) > 0.0:		
 				if float(score) > float(scoreFilter):
-					print("\nSkipping a merger because the score is", score)
-					print("And that's worse (larger, more positive, in EMAN2) than the specified percentage", options.minscore)
-					print("Of the best maximum score so far", absoluteMaxScore)
+					print(("\nSkipping a merger because the score is", score))
+					print(("And that's worse (larger, more positive, in EMAN2) than the specified percentage", options.minscore))
+					print(("Of the best maximum score so far", absoluteMaxScore))
 			
 			if options.maxmergenum and int(options.maxmergenum) > 0:
 				if multiplicity1 > int( options.maxmergenum ) and multiplicity2 > int( options.maxmergenum ):
 					multiplicityFilter = 1
 				
 				if multiplicityFilter:
-					print("""\nSkipping a merger because BOTH particles
+					print(("""\nSkipping a merger because BOTH particles
 						in the comparison have a multiplicity greater than --maxmergenum.
-						--maxmergenum is""", options.maxmergenum)
-					print("""Whereas the multiplicities of the involved particles are""", multiplicity1, multiplicity2)
+						--maxmergenum is""", options.maxmergenum))
+					print(("""Whereas the multiplicities of the involved particles are""", multiplicity1, multiplicity2))
 					
 				
 			key = str(z).zfill( len( str( nptcls*(nptcls-1)/2 )) )
@@ -1004,7 +1004,7 @@ def allvsall(options):
 			ali_info = {}
 			
 			
-			print("\nfiltering for non-tried comparisons, for scores better (below, more negative, which is better) than scoreFilter %f. In addition, multiplicityFilter is %d" %( scoreFilter, multiplicityFilter))
+			print(("\nfiltering for non-tried comparisons, for scores better (below, more negative, which is better) than scoreFilter %f. In addition, multiplicityFilter is %d" %( scoreFilter, multiplicityFilter)))
 			if results[z]['ptclA'] not in tried and results[z]['ptclB'] not in tried and score < scoreFilter and not multiplicityFilter:
 				
 				print("computing average")
@@ -1062,7 +1062,7 @@ def allvsall(options):
 						subp1_forFinalAliStack['xform.align3d']=pastt
 						
 						FinalAliStack.update({int(p):subp1_forFinalAliStack})		#But let's keep track of them, and write them out only when the LAST iteration has been reached
-						print("I have CHANGED a particle1 in final_ali_stack to have this transform", totalt)
+						print(("I have CHANGED a particle1 in final_ali_stack to have this transform", totalt))
 
 					indx_trans_pairs.update({p:pastt})
 					
@@ -1081,15 +1081,15 @@ def allvsall(options):
 						
 				resultingt = results[z]["xform.align3d"]					
 					
-				print("\n\n\nThe indexes in particle 2 are", ptcl2['spt_ptcl_indxs'])
+				print(("\n\n\nThe indexes in particle 2 are", ptcl2['spt_ptcl_indxs']))
 				
 				ptcl2info = allptclsMatrix[k][results[z]['ptclB']]
 				
-				print("\n\nptcl2 info attached is", ptcl2info)
+				print(("\n\nptcl2 info attached is", ptcl2info))
 					
 				ptcl2_indxs_transforms = ptcl2info[-1]
 				
-				print("\n\nptcl2_indexes_transforms is", ptcl2_indxs_transforms)
+				print(("\n\nptcl2_indexes_transforms is", ptcl2_indxs_transforms))
 				print("\n\n")
 				
 				#ptcl2avgr = Averagers.get(options.averager[0], options.averager[1])		#You need to recompute ptcl2 "fresh" from the raw data to avoid multiple interpolations
@@ -1102,23 +1102,23 @@ def allvsall(options):
 				dendo2 = ptcl2['spt_dendoID']
 				
 				for p in ptcl2['spt_ptcl_indxs']:						#All the particles in ptcl2's history need to undergo the new transformation before averaging
-					print("I'm fixing the transform for this index in the new average", p)	#(multiplied by any old transforms, all in one step, to avoid multiple interpolations)
+					print(("I'm fixing the transform for this index in the new average", p))	#(multiplied by any old transforms, all in one step, to avoid multiple interpolations)
 					
 					pastt = ptcl2_indxs_transforms[p]
 					
 					print("\n\n\n@@@@@@@@@@@@@@@@@")
-					print("So the past transform for ptcl2 was", pastt)
-					print("But the resulting transform is", resultingt)
+					print(("So the past transform for ptcl2 was", pastt))
+					print(("But the resulting transform is", resultingt))
 					
 					totalt = resultingt * pastt
-					print("Which means their product is", totalt)
+					print(("Which means their product is", totalt))
 
 					subp2 = EMData(options.input,p)
 					#subp2.process_inplace("xform",{"transform":totalt})					#RADICAL CHANGE **********************************
 					subp2.transform(totalt)
 					subp2['xform.align3d']=totalt
 					
-					print("Which should coincide with the xform.align3d parameter on the rotated particle's header", subp2['xform.align3d'])
+					print(("Which should coincide with the xform.align3d parameter on the rotated particle's header", subp2['xform.align3d']))
 					
 					avgr.add_image(subp2)
 					
@@ -1130,7 +1130,7 @@ def allvsall(options):
 						subp2_forFinalAliStack['xform.align3d']=totalt
 						
 						FinalAliStack.update({int(p):subp2_forFinalAliStack})			#But let's keep track of them, and write them out only when the LAST iteration has been reached			
-						print("I have CHANGED a particle2 in final_ali_stack to have this transform", totalt)
+						print(("I have CHANGED a particle2 in final_ali_stack to have this transform", totalt))
 
 					indx_trans_pairs.update({p:totalt})
 					ali_info.update( {p:pastt} )
@@ -1159,7 +1159,7 @@ def allvsall(options):
 					avgac.process_inplace(options.autocenter[0],options.autocenter[1])
 					
 					tcenter = avgac['xform.align3d']
-					print("Thus the average HAS BEEN be translated like this", tcenter)
+					print(("Thus the average HAS BEEN be translated like this", tcenter))
 					
 					avg.transform(tcenter)
 					
@@ -1183,7 +1183,7 @@ def allvsall(options):
 							subp1_forFinalAliStack['xform.align3d']=totalt
 							
 							FinalAliStack.update({int(p):subp1_forFinalAliStack})		#But let's keep track of them, and write them out only when the LAST iteration has been reached
-							print("After AUTOCENTER have CHANGED a particle1 in final_ali_stack to have this transform", totalt)
+							print(("After AUTOCENTER have CHANGED a particle1 in final_ali_stack to have this transform", totalt))
 
 					
 						
@@ -1202,7 +1202,7 @@ def allvsall(options):
 							subp2_forFinalAliStack['xform.align3d']=totalt
 							
 							FinalAliStack.update({int(p):subp2_forFinalAliStack})		#But let's keep track of them, and write them out only when the LAST iteration has been reached
-							print("After AUTOCENTER I have CHANGED a particle2 in final_ali_stack to have this transform", totalt)
+							print(("After AUTOCENTER I have CHANGED a particle2 in final_ali_stack to have this transform", totalt))
 				
 				#if options.sym != 'c1' and options.sym !='C1' and not options.breaksym:
 				#	if options.verbose > 5:
@@ -1331,13 +1331,13 @@ def allvsall(options):
 		
 		if k == 0:
 			if options.clusters and int(options.clusters) >1:
-				print("Clusters are", clusters)
+				print(("Clusters are", clusters))
 				remnants = allPtclSet - usedSet
 			
 				if remnants:
-					print("Remnants are", remnants)
+					print(("Remnants are", remnants))
 					lastCluster = int(options.clusters) - 1
-					print("THe last cluster indx is", lastCluster)
+					print(("THe last cluster indx is", lastCluster))
 				
 					clusters[lastCluster].update(remnants)
 				
@@ -1378,9 +1378,9 @@ def allvsall(options):
 		surviving_oldptcls = {}		
 		
 		if options.verbose > 2:
-			print("These were the particles in iteration", k)
+			print(("These were the particles in iteration", k))
 		
-		for particlekey,particlevalue in newptcls.items():
+		for particlekey,particlevalue in list(newptcls.items()):
 			
 			if options.verbose > 2:
 				print(particlekey)
@@ -1390,19 +1390,19 @@ def allvsall(options):
 
 			else:
 				if options.verbose > 1:
-					print("This particle from newptcls was averaged", particlekey)
+					print(("This particle from newptcls was averaged", particlekey))
 		
-		for particlekey,particlevalue in oldptcls.items():
+		for particlekey,particlevalue in list(oldptcls.items()):
 			if particlekey not in used:
 				surviving_oldptcls.update({particlekey:particlevalue})
 			else:
 				if options.verbose > 1:
-					print("This particle from oldptcls was averaged", particlekey)
+					print(("This particle from oldptcls was averaged", particlekey))
 						
 		if options.verbose > 0:
-			print("At the end of iteration", k)
-			print("There were these many old ptcls NOT averaged", len(surviving_oldptcls))
-			print("And these many 'new ptcls' not averaged that need to become old", len(surviving_newptcls))
+			print(("At the end of iteration", k))
+			print(("There were these many old ptcls NOT averaged", len(surviving_oldptcls)))
+			print(("And these many 'new ptcls' not averaged that need to become old", len(surviving_newptcls)))
 		
 		oldptcls = {}
 		oldptcls.update(surviving_oldptcls)  
@@ -1420,7 +1420,7 @@ def allvsall(options):
 		#a.write_image(oldptclstack.hdf,0)					#
 		
 		gg=0
-		for particlekey,particlevalue in oldptcls.items():
+		for particlekey,particlevalue in list(oldptcls.items()):
 			allptclsRound.update({ particlekey: [particlevalue,allptclsMatrix[k][particlekey][-1]]})
 			particlevalue.write_image(options.path + '/oldptclstack.hdf',gg)
 			gg+=1
@@ -1428,9 +1428,9 @@ def allvsall(options):
 		allptclsMatrix.append(allptclsRound)
 					
 		
-		print("And these many new averages", len(newptcls), len(averages))
-		print("So there are these many old particles for the next round", len(oldptcls))
-		print("(e2spt_hac.py)(allvsall function) And these many new-new ones", len(newptcls))
+		print(("And these many new averages", len(newptcls), len(averages)))
+		print(("So there are these many old particles for the next round", len(oldptcls)))
+		print(("(e2spt_hac.py)(allvsall function) And these many new-new ones", len(newptcls)))
 		print("\n\n")
 		#if k>0:
 		#	os.system('rm ' + newstack)
@@ -1474,7 +1474,7 @@ def get_results(etc,tids,verbose):
 		
 		tidsleft=[j for i,j in enumerate(tidsleft) if proglist[i]!=100]		# remove any completed tasks from the list we ask about
 		
-		print("  %d tasks, %d complete, %d waiting to start        \r"%(len(tids),ncomplete,nwait))
+		print(("  %d tasks, %d complete, %d waiting to start        \r"%(len(tids),ncomplete,nwait)))
 
 		if verbose:
 			sys.stdout.flush()
@@ -1619,7 +1619,7 @@ def plotter(xaxis,yaxis,options,name,maxX,maxY,invert=1,sort=1):
 	ax.set_xlabel('Comparison number (n)', fontsize=18, fontweight='bold')
 	ax.set_ylabel('Normalized cross correlation score', fontsize=18, fontweight='bold')
 	
-	print("\nXaxis to plot is", xaxis)	
+	print(("\nXaxis to plot is", xaxis))	
 	#plt.scatter(xaxis,yaxis,alpha=1,zorder=1,s=20)
 	
 	#pylab.rc("axes", linewidth=2.0)
@@ -1633,7 +1633,7 @@ def plotter(xaxis,yaxis,options,name,maxX,maxY,invert=1,sort=1):
 	
 	print("\n\n\nThe values to plot are")
 	for ele in range(len(xaxis)):
-		print(xaxis[ele],yaxis[ele])
+		print((xaxis[ele],yaxis[ele]))
 		
 		
 

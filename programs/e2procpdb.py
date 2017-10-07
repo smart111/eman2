@@ -216,7 +216,7 @@ def pdb_transform(t,lines,center=0,savetypes=["helix","sheet","other"],animorph=
 				electrons += atm[0]
 				atoms += 1.0
 			except:
-				print("Unknown Atom '%s' ignored." % a)
+				print(("Unknown Atom '%s' ignored." % a))
 		
 			xval[0] += x
 			yval[0] += y
@@ -249,13 +249,13 @@ def pdb_transform(t,lines,center=0,savetypes=["helix","sheet","other"],animorph=
 	zval[2] /= mass
 		
 	print(title)
-	print("%1.0f atoms   %1.0f electrons   mass= %1.3f kDa" % (atoms, electrons, mass / 1000.0))
-	print("atom center = (%1.2f,%1.2f,%1.2f)" % (xval[0], yval[0], zval[0]))
-	print("electron density center = (%1.2f,%1.2f,%1.2f)" % (xval[1], yval[1], zval[1]))
-	print("center of mass = (%1.2f,%1.2f,%1.2f)" % (xval[2], yval[2], zval[2]))
-	print("x range: %1.1f to %1.1f  (%1.1f)" % (xval[3], xval[4], xval[4] - xval[3]))
-	print("y range: %1.1f to %1.1f  (%1.1f)" % (yval[3], yval[4], yval[4] - yval[3]))
-	print("z range: %1.1f to %1.1f  (%1.1f)" % (zval[3], zval[4], zval[4] - zval[3]))
+	print(("%1.0f atoms   %1.0f electrons   mass= %1.3f kDa" % (atoms, electrons, mass / 1000.0)))
+	print(("atom center = (%1.2f,%1.2f,%1.2f)" % (xval[0], yval[0], zval[0])))
+	print(("electron density center = (%1.2f,%1.2f,%1.2f)" % (xval[1], yval[1], zval[1])))
+	print(("center of mass = (%1.2f,%1.2f,%1.2f)" % (xval[2], yval[2], zval[2])))
+	print(("x range: %1.1f to %1.1f  (%1.1f)" % (xval[3], xval[4], xval[4] - xval[3])))
+	print(("y range: %1.1f to %1.1f  (%1.1f)" % (yval[3], yval[4], yval[4] - yval[3])))
+	print(("z range: %1.1f to %1.1f  (%1.1f)" % (zval[3], zval[4], zval[4] - zval[3])))
 		
 		
 	if (center == 1) : trans = (-xval[0], -yval[0], -zval[0])
@@ -315,13 +315,13 @@ def pdb_transform(t,lines,center=0,savetypes=["helix","sheet","other"],animorph=
 						lines[counter]=i
 				counter=counter+1
 			
-			print("%d/%d complete" % (m, int(animorph[0])))
+			print(("%d/%d complete" % (m, int(animorph[0]))))
 		return lines
 
 	else: 
 		print("transform")
 		print(t)
-		print(len(lines))
+		print((len(lines)))
 		counter=0
 		for i in lines:
 			if (i[:6]=='HEADER') : title=i[10:72].strip()

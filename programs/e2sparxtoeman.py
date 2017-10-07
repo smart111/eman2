@@ -80,7 +80,7 @@ def main():
 		print("No ctf info found. This shouldn't happen with a SPARX input file.")
 		sys.exit(1)
 		
-	print("Processing ",args[0])
+	print(("Processing ",args[0]))
 
 	N=EMUtil.get_image_count(args[0])
 	olddf=0
@@ -94,11 +94,11 @@ def main():
 			jdb=js_open_dict(info_name(microname))
 			jdb["ctf_frame"]=[512,ctf,(256,256),tuple(),5,1]
 			olddf=ctf.defocus
-			if options.verbose : print("{}) ({}/{}) defocus={}".format(micronum,i,N,ctf.defocus))
+			if options.verbose : print(("{}) ({}/{}) defocus={}".format(micronum,i,N,ctf.defocus)))
 		img.del_attr("ctf")
 		img.write_image(microname,-1)
 
-	print(micronum," micrographs found")
+	print((micronum," micrographs found"))
 
 
 #	print "Defocus processing"

@@ -4,7 +4,7 @@
 #  08/26/2016
 #  New version of sort3D.
 #  
-from __future__ import print_function
+
 import  os
 import  sys
 import  types
@@ -70,7 +70,7 @@ def compute_average_ctf(mlist, radius):
 	avge       = EMData(orig_image_size, orig_image_size, 1, False) # 
 	ctf_2_sumo = EMData(orig_image_size, orig_image_size, 1, False)
 	ctf_2_sume = EMData(orig_image_size, orig_image_size, 1, False)
-	for im in xrange(len(mlist)):
+	for im in range(len(mlist)):
 		ctt = ctf_img(orig_image_size, mlist[im].get_attr("ctf"))
 		alpha, sx, sy, mr, scale = get_params2D(mlist[im], xform = "xform.align2d")
 		tmp = cosinemask(rot_shift2D(mlist[im], alpha, sx, sy, mr), radius)
@@ -89,7 +89,7 @@ def compute_average_ctf(mlist, radius):
 	sumctf2 = Util.divn_img(avgo, ctf_2_sumo)
 	frc = fsc(fft(sumavg), fft(sumctf2))
 	frc[1][0] = 1.0
-	for ifreq in xrange(1, len(frc[0])):
+	for ifreq in range(1, len(frc[0])):
 		frc[1][ifreq] = max(0.0, frc[1][ifreq])
 		frc[1][ifreq] = 2.*frc[1][ifreq]/(1.+frc[1][ifreq])
 	sumavg  =  Util.addn_img(avgo, avge)
@@ -104,7 +104,7 @@ def compute_average_noctf(mlist, radius):
 	orig_image_size = mlist[0].get_xsize()
 	avgo       = EMData(orig_image_size, orig_image_size, 1, False) #
 	avge       = EMData(orig_image_size, orig_image_size, 1, False) # 
-	for im in xrange(len(mlist)):
+	for im in range(len(mlist)):
 		alpha, sx, sy, mr, scale = get_params2D(mlist[im], xform = "xform.align2d")
 		params_list[im]= [alpha, sx, sy, mr, scale]
 		tmp = cosinemask(rot_shift2D(mlist[im], alpha, sx, sy, mr), radius)
@@ -113,7 +113,7 @@ def compute_average_noctf(mlist, radius):
 		else:        Util.add_img(avgo, tmp)
 	frc = fsc(fft(avge), fft(avgo))
 	frc[1][0] = 1.0
-	for ifreq in xrange(1, len(frc[0])):
+	for ifreq in range(1, len(frc[0])):
 		frc[1][ifreq] = max(0.0, frc[1][ifreq])
 		frc[1][ifreq] = 2.*frc[1][ifreq]/(1.+frc[1][ifreq])
 	sumavg  =  Util.addn_img(avgo, avge)
@@ -131,22 +131,22 @@ def adjust_pw_to_model(image, pixel_size, roo):
 	fil  = [None]*len(rot1)
 	if roo is None: # adjusted to the analytic model, See Penczek Methods Enzymol 2010
 		pu = []
-		for ifreq in xrange(len(rot1)):
+		for ifreq in range(len(rot1)):
 			x = float(ifreq)/float(len(rot1))/pixel_size
 			v = exp(c1+c2/(x/c3+1)**2) + exp(c4-0.5*(((x-c5)/c6**2)**2))
 			pu.append(v)
 		s =sum(pu)
-		for ifreq in xrange(len(rot1)): fil[ifreq] = sqrt(pu[ifreq]/(rot1[ifreq]*s))
+		for ifreq in range(len(rot1)): fil[ifreq] = sqrt(pu[ifreq]/(rot1[ifreq]*s))
 	else: # adjusted to a given 1-d rotational averaged pw2
 		if roo[0]<0.1 or roo[0]>1.: s =sum(roo)
 		else:  s=1.0
-		for ifreq in xrange(len(rot1)):fil[ifreq] = sqrt(roo[ifreq]/(rot1[ifreq]*s))
+		for ifreq in range(len(rot1)):fil[ifreq] = sqrt(roo[ifreq]/(rot1[ifreq]*s))
 	return filt_table(image, fil)
 	
 def get_optimistic_res(frc):
 	nfh = 0
 	np  = 0
-	for im in xrange(len(frc[1])):
+	for im in range(len(frc[1])):
 		ifreq = len(frc[1])-1-im
 		if frc[1][ifreq] >=0.143:
 			np +=1
@@ -288,7 +288,7 @@ def main():
 		print(Tracker["constants"]["isac_dir"])
 		Tracker["directory"]   = os.path.join(Tracker["constants"]["isac_dir"], "2dalignment")
 		core = read_text_row(os.path.join(Tracker["directory"], "initial2Dparams.txt"))
-		for im in xrange(len(core)):
+		for im in range(len(core)):
 			init_dict[im]  = core[im]
 		del core
 	else: init_dict = 0
@@ -323,11 +323,11 @@ def main():
 	if Tracker["constants"]["navg"] <0: navg = EMUtil.get_image_count(os.path.join(Tracker["constants"]["isac_dir"], "class_averages.hdf"))
 	else: navg = min(Tracker["constants"]["navg"], EMUtil.get_image_count(os.path.join(Tracker["constants"]["isac_dir"], "class_averages.hdf")))
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		for iavg in xrange(navg):
+		for iavg in range(navg):
 			params_of_this_average = []
 			image   = get_im(os.path.join(Tracker["constants"]["isac_dir"], "class_averages.hdf"), iavg)
 			members = image.get_attr("members")
-			for im in xrange(len(members)):
+			for im in range(len(members)):
 				abs_id =  members[im]
 				P = combine_params2( init_dict[abs_id][0], init_dict[abs_id][1], init_dict[abs_id][2], init_dict[abs_id][3], \
 				parameters[abs_id][0], parameters[abs_id][1]/Tracker["ini_shrink"], parameters[abs_id][2]/Tracker["ini_shrink"], parameters[abs_id][3])
@@ -345,20 +345,20 @@ def main():
 	del init_dict
 	tag_sharpen_avg = 1000
 	if navg <Blockdata["nproc"]: # 
-		for iavg in xrange(navg):
+		for iavg in range(navg):
 			if Blockdata["myid"] == iavg:
-				mlist = [None for i in xrange(len(list_dict[iavg]))]
-				for im in xrange(len(mlist)):
+				mlist = [None for i in range(len(list_dict[iavg]))]
+				for im in range(len(mlist)):
 					mlist[im]= get_im(Tracker["constants"]["orgstack"], list_dict[iavg][im])
 					set_params2D(mlist[im], params_dict[iavg][im], xform = "xform.align2d")
 				if Tracker["constants"]["noctf"]: ini_avg, frc = compute_average_noctf(mlist, Tracker["constants"]["radius"])
 				else: ini_avg, frc, plist = compute_average_ctf(mlist, Tracker["constants"]["radius"])
 				FH1 = get_optimistic_res(frc)
 				#write_text_file(frc, os.path.join(Tracker["constants"]["masterdir"], "fsc%03d_before_ali.txt"%iavg))
-				new_average1 = within_group_refinement([mlist[kik] for kik in xrange(0,len(mlist),2)], maskfile= None, randomize= False, ir=1.0,  \
+				new_average1 = within_group_refinement([mlist[kik] for kik in range(0,len(mlist),2)], maskfile= None, randomize= False, ir=1.0,  \
 				ou=Tracker["constants"]["radius"], rs=1.0, xrng=[x_range], yrng=[y_range], step=[Tracker["constants"]["xstep"]], \
 				dst=0.0, maxit=Tracker["constants"]["maxit"], FH = max(Tracker["constants"]["FH"], FH1), FF=0.1)
-				new_average2 = within_group_refinement([mlist[kik] for kik in xrange(1,len(mlist),2)], maskfile= None, randomize= False, ir=1.0, \
+				new_average2 = within_group_refinement([mlist[kik] for kik in range(1,len(mlist),2)], maskfile= None, randomize= False, ir=1.0, \
 				ou=Tracker["constants"]["radius"], rs=1.0, xrng=[x_range], yrng=[y_range], step=[Tracker["constants"]["xstep"]], \
 				dst=0.0, maxit=Tracker["constants"]["maxit"], FH = max(Tracker["constants"]["FH"], FH1), FF=0.1)
 				if Tracker["constants"]["noctf"]: new_avg, frc, plist = compute_average_noctf(mlist, Tracker["constants"]["radius"])
@@ -381,7 +381,7 @@ def main():
 				new_avg.set_attr("members", list_dict[iavg])
 				new_avg.set_attr("n_objects", len(list_dict[iavg]))
 		mpi_barrier(MPI_COMM_WORLD)
-		for im in xrange(navg): # avg
+		for im in range(navg): # avg
 			if im == Blockdata["myid"] and Blockdata["myid"] != Blockdata["main_node"]:
 				send_EMData(new_avg, Blockdata["main_node"],  tag_sharpen_avg)
 			elif Blockdata["myid"] == Blockdata["main_node"]:
@@ -427,31 +427,31 @@ def main():
 		image_start,image_end = MPI_start_end(navg, Blockdata["nproc"], Blockdata["myid"])
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			cpu_dict = {}
-			for iproc in xrange(Blockdata["nproc"]):
+			for iproc in range(Blockdata["nproc"]):
 				local_image_start, local_image_end = MPI_start_end(navg, Blockdata["nproc"], iproc)
-				for im in xrange(local_image_start, local_image_end): cpu_dict [im] = iproc
+				for im in range(local_image_start, local_image_end): cpu_dict [im] = iproc
 		else:  cpu_dict = 0
 		cpu_dict = wrap_mpi_bcast(cpu_dict, Blockdata["main_node"], communicator = MPI_COMM_WORLD)
 		
-		slist     = [None for im in xrange(navg)]
-		ini_list  = [None for im in xrange(navg)]
-		avg1_list = [None for im in xrange(navg)]
-		avg2_list = [None for im in xrange(navg)]
+		slist     = [None for im in range(navg)]
+		ini_list  = [None for im in range(navg)]
+		avg1_list = [None for im in range(navg)]
+		avg2_list = [None for im in range(navg)]
 		plist_dict ={}
-		for iavg in xrange(image_start,image_end):
+		for iavg in range(image_start,image_end):
 			#print("Process avg %d"%iavg)
-			mlist = [None for i in xrange(len(list_dict[iavg]))]
-			for im in xrange(len(mlist)):
+			mlist = [None for i in range(len(list_dict[iavg]))]
+			for im in range(len(mlist)):
 				mlist[im]= get_im(Tracker["constants"]["orgstack"], list_dict[iavg][im])
 				set_params2D(mlist[im], params_dict[iavg][im], xform = "xform.align2d")
 			if Tracker["constants"]["noctf"]: ini_avg, frc = compute_average_noctf(mlist, Tracker["constants"]["radius"])
 			else:   ini_avg, frc, plist = compute_average_ctf(mlist, Tracker["constants"]["radius"])
 			FH1 = get_optimistic_res(frc)
 			#write_text_file(frc, os.path.join(Tracker["constants"]["masterdir"], "fsc%03d_before_ali.txt"%iavg))
-			new_average1 = within_group_refinement([mlist[kik] for kik in xrange(0,len(mlist),2)], maskfile= None, randomize= False, ir=1.0,  \
+			new_average1 = within_group_refinement([mlist[kik] for kik in range(0,len(mlist),2)], maskfile= None, randomize= False, ir=1.0,  \
 			 ou=Tracker["constants"]["radius"], rs=1.0, xrng=[x_range], yrng=[y_range], step=[Tracker["constants"]["xstep"]], \
 			 dst=0.0, maxit=Tracker["constants"]["maxit"], FH=max(Tracker["constants"]["FH"], FH1), FF=0.1)
-			new_average2 = within_group_refinement([mlist[kik] for kik in xrange(1,len(mlist),2)], maskfile= None, randomize= False, ir=1.0, \
+			new_average2 = within_group_refinement([mlist[kik] for kik in range(1,len(mlist),2)], maskfile= None, randomize= False, ir=1.0, \
 			 ou= Tracker["constants"]["radius"], rs=1.0, xrng=[ x_range], yrng=[y_range], step=[Tracker["constants"]["xstep"]], \
 			 dst=0.0, maxit=Tracker["constants"]["maxit"], FH = max(Tracker["constants"]["FH"], FH1), FF=0.1)
 			if Tracker["constants"]["noctf"]: new_avg, frc,  plist = compute_average_noctf(mlist, Tracker["constants"]["radius"])
@@ -479,7 +479,7 @@ def main():
 			avg1_list[iavg]= new_average1
 			avg2_list[iavg]= new_average2
 		## send to main node to write
-		for im in xrange(navg):
+		for im in range(navg):
 			# avg
 			if cpu_dict[im] == Blockdata["myid"] and Blockdata["myid"] != Blockdata["main_node"]:
 				send_EMData(slist[im], Blockdata["main_node"],  tag_sharpen_avg)

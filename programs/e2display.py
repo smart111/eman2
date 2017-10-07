@@ -122,7 +122,7 @@ def main():
 	else:
 		for i in args:
 			if not file_exists(i):
-				print("%s doesn't exist" %i)
+				print(("%s doesn't exist" %i))
 				sys.exit(1)
 			display_file(i,app,options.singleimage,usescenegraph=options.newwidget)
 	

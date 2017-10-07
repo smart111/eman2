@@ -60,7 +60,7 @@ def check_exists(outfile, overwrite=False):
 	if not os.path.exists(outfile):
 		return True
 			
-	p = input("File %s exists. Overwrite? yes/no: "%outfile)
+	p = eval(input("File %s exists. Overwrite? yes/no: "%outfile))
 	if p.lower() in ["yes", "y"]:
 		return True
 
@@ -92,7 +92,7 @@ def distance(point1, point2):
 
 
 def read_pdb(filename, atomtype=None, chain=None, noisemodel=None):
-	print("\n=== Reading %s (atom type %s, chain %s) ==="%(filename, atomtype, chain))
+	print(("\n=== Reading %s (atom type %s, chain %s) ==="%(filename, atomtype, chain)))
 	points = {}
 	path = []
 	
@@ -118,7 +118,7 @@ def read_pdb(filename, atomtype=None, chain=None, noisemodel=None):
 	if len(points) == 0:
 		raise Exception("No atoms found in PDB file! Are chain and atomtype correct?")
 	
-	print("Loaded %s points"%len(points))
+	print(("Loaded %s points"%len(points)))
 	
 	return path, points
 
@@ -137,7 +137,7 @@ def write_pdbs(filename, paths, points=None, bfactors=None, tree=None):
 	nchn=97
 	chain = chr(nchn)
 
-	print("\n=== Writing %s ==="%filename)
+	print(("\n=== Writing %s ==="%filename))
 
 	for pathid in sorted(paths.keys()):
 		d = paths[pathid]
@@ -171,13 +171,13 @@ def write_pdbs(filename, paths, points=None, bfactors=None, tree=None):
 					count+=1
 					out.write('CONECT %4d %4d\n'%(k,v2))
 					connected.append((k,v2))
-			print("Wrote %s edges"%count)
+			print(("Wrote %s edges"%count))
 	
 		# out.write('CONECT %4d %4d\n'%(atoms[0], atoms[-1]))
 		out.write("ENDMDL\n")
 
 
-	print("Wrote %s points"%len(path))
+	print(("Wrote %s points"%len(path)))
 
 	out.write("END")
 	out.close()
@@ -214,7 +214,7 @@ class PathWalker(object):
 			self.mapthresh=mapthresh
 		else:
 			self.mapthresh=self.mrc["mean_nonzero"]
-			print(self.mapthresh)
+			print((self.mapthresh))
 		
 		
 		if self.atomtype in ['all', 'None', '']:
@@ -288,7 +288,7 @@ class PathWalker(object):
 			self.start=id1
 			self.end=id2
 		
-		print("Note: linking start/end: ", self.start, self.end)
+		print(("Note: linking start/end: ", self.start, self.end))
 		self.fixededges.append((self.start, self.end))
 		
 		#add phantom point
@@ -307,7 +307,7 @@ class PathWalker(object):
 					self.itree[ct].add(idn)
 		#end adding phantom point
 		
-		print(self.itree)
+		print((self.itree))
 		# Process forced edges
 		for link in self.fixededges:
 			try:
@@ -316,7 +316,7 @@ class PathWalker(object):
 				self.weighted[(link[0], link[1])] = 0
 				self.weighted[(link[1], link[0])] = 0
 			except KeyError:
-				print("Atom ",link[0]," or ", link[1], " does not exist...")
+				print(("Atom ",link[0]," or ", link[1], " does not exist..."))
 				
 		# Some useful statistics
 		self.endpoints = self.find_endpoints()
@@ -350,7 +350,7 @@ class PathWalker(object):
 		# We need to rotate the path so the start atom is first..
 		paths = ret.get('paths', {})
 		for pathid in sorted(paths.keys()):
-			print("--- Evaluating path %s of %s ---"%(pathid+1, len(paths)))
+			print(("--- Evaluating path %s of %s ---"%(pathid+1, len(paths))))
 			d = paths[pathid]
 
 			# Rotate the path so the starting element is first in the list
@@ -436,19 +436,19 @@ class PathWalker(object):
 
 
 	def stats(self):
-		print("\n=== Statistics for %s ==="%self.filename)
-		print("Total Nodes: %s"%len(self.itree))
-		print("Total Edges: %s"%len(self.distances))
+		print(("\n=== Statistics for %s ==="%self.filename))
+		print(("Total Nodes: %s"%len(self.itree)))
+		print(("Total Edges: %s"%len(self.distances)))
 		
-		print("Endpoints: %s"%self.total_endpoints)
-		print("\t", self.endpoints)
+		print(("Endpoints: %s"%self.total_endpoints))
+		print(("\t", self.endpoints))
 		
-		print("Branches: %s"%self.total_branches)
-		print("\t", self.branches)
+		print(("Branches: %s"%self.total_branches))
+		print(("\t", self.branches))
 		
 		print("Edges:")
 		for k in sorted(self.points.keys()):
-			print("\t%-10s%s"%(k, self.itree[k]))
+			print(("\t%-10s%s"%(k, self.itree[k])))
 
 
 
@@ -481,7 +481,7 @@ class PathWalker(object):
 			# print endpaths
 
 			if not children - set(current) and len(current) > minlength:
-				print("Found path of len", len(current))
+				print(("Found path of len", len(current)))
 				endpaths.add(current)
 				continue
 		
@@ -503,8 +503,8 @@ class PathWalker(object):
 		tspfile = tempfile.mkstemp(suffix='.tsp')[1]
 		outfile = tempfile.mkstemp(suffix='.out')[1]
 		
-		print("TSPLib file: %s"%tspfile)
-		print("Results file: %s"%outfile)
+		print(("TSPLib file: %s"%tspfile))
+		print(("Results file: %s"%outfile))
 		
 		self.write_tsplib(filename=tspfile)
 		# os.system("concorde -x -m -o %s %s"%(outfile, tspfile))
@@ -631,7 +631,7 @@ class PathWalker(object):
 			r = ['%-10s'%i for i in args]
 			return "".join(r)
 		
-		print(fmt("PDB Edge", "", "Distance", "Weight"))
+		print((fmt("PDB Edge", "", "Distance", "Weight")))
 		breaks = []
 
 		pmin = min(path)
@@ -654,7 +654,7 @@ class PathWalker(object):
 				breaks.append((d1, d2))
 				b = "*"
 				
-			print(fmt(p1, p2, d1, d2, b))
+			print((fmt(p1, p2, d1, d2, b)))
 
 		r2 = []
 		j = 0
@@ -670,12 +670,12 @@ class PathWalker(object):
 		score_path = float(correctbonds) / len(path)
 
 		print("\nPath quality statistics:")
-		print("\tNoise: %s"%self.noise)
-		print("\tLongest continuous fragment score: %s"%score_fragment)
-		print("\tNumber of breaks: %s out of %s bonds"%(len(breaks), len(path)))
-		print("\tPath score: %0.5f"%(score_path))
-		print("\tMinimum distance:", min(distances))
-		print("\tMaximum distance:", max(distances))
+		print(("\tNoise: %s"%self.noise))
+		print(("\tLongest continuous fragment score: %s"%score_fragment))
+		print(("\tNumber of breaks: %s out of %s bonds"%(len(breaks), len(path))))
+		print(("\tPath score: %0.5f"%(score_path)))
+		print(("\tMinimum distance:", min(distances)))
+		print(("\tMaximum distance:", max(distances)))
 		
 		# Save output
 		ret = {
@@ -785,7 +785,7 @@ class PathWalker(object):
 
 	def write_json(self, soln, filename=None):
 		outfile = self.outfile + ".json"
-		print("Writing solution dictionary to %s"%outfile)
+		print(("Writing solution dictionary to %s"%outfile))
 		f = open(outfile, 'w')
 		json.dump(soln, f, indent=1)
 		f.close()
@@ -824,7 +824,7 @@ class PathWalker(object):
 				try:
 					fout.write("%s %s\n"%(keyorder.index(i[0])+1, keyorder.index(i[1])+1))
 				except ValueError:
-					print(i,"is not in the list")
+					print((i,"is not in the list"))
 			fout.write("-1\n")
 
 		fout.write("EDGE_WEIGHT_SECTION\n")
@@ -916,7 +916,7 @@ class CaRMSD(object):
 	
 	def run(self):
 		common = set(self.pdb1.keys()) & set(self.pdb2.keys())
-		print("%s points in common"%len(common))
+		print(("%s points in common"%len(common)))
 
 		distances = {}
 		for pos in common:
@@ -924,7 +924,7 @@ class CaRMSD(object):
 		
 		rmsd = math.sqrt(sum((i**2 for i in list(distances.values()))) / len(distances))
 
-		print("Total RMSD:", rmsd)
+		print(("Total RMSD:", rmsd))
 		
 		if check_exists(self.outfile, overwrite=self.overwrite):
 			p = {0:{'path':self.path1}}

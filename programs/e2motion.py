@@ -85,7 +85,7 @@ def main():
 		fls=[int(i[-2:]) for i in os.listdir(".") if i[:4]=="m2d_" and len(i)==6 and str.isdigit(i[-2:])]
 		if len(fls)==0 : fls=[1]
 		options.path = "m2d_{:02d}".format(max(fls))
-		if options.verbose : print("Using --path ",options.path)
+		if options.verbose : print(("Using --path ",options.path))
 		
 	if not os.path.exists(options.path) :
 		os.mkdir(options.path)
@@ -96,7 +96,7 @@ def main():
 	if options.iter not in parms :
 		try: options.iter=max([int(i) for i in list(parms.keys())])
 		except: options.iter=0
-		print("Iteration: ",options.iter)
+		print(("Iteration: ",options.iter))
 
 	pid=E2init(argv)
 	
@@ -469,7 +469,7 @@ class EMMotion(QtGui.QMainWindow):
 		except:
 			self.particles=None
 			self.wlnptcl.setText("No Data")
-			print("Warning: no particle alignment data found for iter=",itr)
+			print(("Warning: no particle alignment data found for iter=",itr))
 			return
 		
 		m=0

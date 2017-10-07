@@ -187,11 +187,11 @@ def main():
 		ts = get_symt(sym)
 		ks = len(ts)
 		angsa = [None]*na
-		for k in xrange(ks):
+		for k in range(ks):
 			delete_bdb("bdb:Q%1d"%k)
 			junk = cmdexecute("e2bdb.py  "+stack+"  --makevstack=bdb:Q%1d"%k)
 			DB = db_open_dict("bdb:Q%1d"%k)
-			for i in xrange(na):
+			for i in range(na):
 				ut = qt[i]*ts[k]
 				DB.set_attr(i, "xform.projection", ut)
 				#bt = ut.get_params("spider")
@@ -218,8 +218,8 @@ def main():
 		if len(args) == 1:
 			stack = args[0]
 		else:
-			print( "usage: " + usage)
-			print( "Please run '" + progname + " -h' for detailed options")
+			print(( "usage: " + usage))
+			print(( "Please run '" + progname + " -h' for detailed options"))
 			return 1
 
 		t0 = time()	
@@ -350,7 +350,7 @@ def main():
 			#varList   = EMData.read_images(stack, range(img_begin, img_end))
 			varList    = []
 			this_image = EMData()
-			for index_of_particle in xrange(img_begin,img_end):
+			for index_of_particle in range(img_begin,img_end):
 				this_image.read_image(stack,index_of_particle)
 				varList.append(image_decimate_window_xform_ctf(this_image, options.decimate, options.window,options.CTF))
 		else:
@@ -369,7 +369,7 @@ def main():
 				proj_angles = []
 				aveList     = []
 				tab = EMUtil.get_all_attributes(stack, 'xform.projection')
-				for i in xrange(nima):
+				for i in range(nima):
 					t     = tab[i].get_params('spider')
 					phi   = t['phi']
 					theta = t['theta']
@@ -382,22 +382,22 @@ def main():
 				print_msg("%-70s:  %d\n"%("Number of neighboring projections", img_per_grp))
 				print_msg("...... Finding neighboring projections\n")
 				if options.VERBOSE:
-					print "Number of images per group: ", img_per_grp
-					print "Now grouping projections"
+					print("Number of images per group: ", img_per_grp)
+					print("Now grouping projections")
 				proj_angles.sort()
 			proj_angles_list = [0.0]*(nima*4)
 			if myid == main_node:
-				for i in xrange(nima):
+				for i in range(nima):
 					proj_angles_list[i*4]   = proj_angles[i][1]
 					proj_angles_list[i*4+1] = proj_angles[i][2]
 					proj_angles_list[i*4+2] = proj_angles[i][3]
 					proj_angles_list[i*4+3] = proj_angles[i][4]
 			proj_angles_list = bcast_list_to_all(proj_angles_list, myid, main_node)
 			proj_angles      = []
-			for i in xrange(nima):
+			for i in range(nima):
 				proj_angles.append([proj_angles_list[i*4], proj_angles_list[i*4+1], proj_angles_list[i*4+2], int(proj_angles_list[i*4+3])])
 			del proj_angles_list
-			proj_list, mirror_list = nearest_proj(proj_angles, img_per_grp, range(img_begin, img_end))
+			proj_list, mirror_list = nearest_proj(proj_angles, img_per_grp, list(range(img_begin, img_end)))
 
 			all_proj = Set()
 			for im in proj_list:
@@ -406,44 +406,44 @@ def main():
 
 			all_proj = list(all_proj)
 			if options.VERBOSE:
-				print "On node %2d, number of images needed to be read = %5d"%(myid, len(all_proj))
+				print("On node %2d, number of images needed to be read = %5d"%(myid, len(all_proj)))
 
 			index = {}
-			for i in xrange(len(all_proj)): index[all_proj[i]] = i
+			for i in range(len(all_proj)): index[all_proj[i]] = i
 			mpi_barrier(MPI_COMM_WORLD)
 
 			if myid == main_node:
 				print_msg("%-70s:  %.2f\n"%("Finding neighboring projections lasted [s]", time()-t2))
 				print_msg("%-70s:  %d\n"%("Number of groups processed on the main node", len(proj_list)))
 				if options.VERBOSE:
-					print "Grouping projections took: ", (time()-t2)/60	, "[min]"
-					print "Number of groups on main node: ", len(proj_list)
+					print("Grouping projections took: ", (time()-t2)/60	, "[min]")
+					print("Number of groups on main node: ", len(proj_list))
 			mpi_barrier(MPI_COMM_WORLD)
 
 			if myid == main_node:
 				print_msg("...... calculating the stack of 2D variances \n")
 				if options.VERBOSE:
-					print "Now calculating the stack of 2D variances"
+					print("Now calculating the stack of 2D variances")
 
 			proj_params = [0.0]*(nima*5)
 			aveList = []
 			varList = []				
 			if nvec > 0:
-				eigList = [[] for i in xrange(nvec)]
+				eigList = [[] for i in range(nvec)]
 
-			if options.VERBOSE: 	print "Begin to read images on processor %d"%(myid)
+			if options.VERBOSE: 	print("Begin to read images on processor %d"%(myid))
 			ttt = time()
 			#imgdata = EMData.read_images(stack, all_proj)
 			imgdata = []
-			for index_of_proj in xrange(len(all_proj)):
+			for index_of_proj in range(len(all_proj)):
 				img     = EMData()
 				img.read_image(stack, all_proj[index_of_proj])
 				dmg = image_decimate_window_xform_ctf(img, options.decimate, options.window, options.CTF)
 				#print dmg.get_xsize(), "init"
 				imgdata.append(dmg)
 			if options.VERBOSE:
-				print "Reading images on processor %d done, time = %.2f"%(myid, time()-ttt)
-				print "On processor %d, we got %d images"%(myid, len(imgdata))
+				print("Reading images on processor %d done, time = %.2f"%(myid, time()-ttt))
+				print("On processor %d, we got %d images"%(myid, len(imgdata)))
 			mpi_barrier(MPI_COMM_WORLD)
 
 			'''	
@@ -463,14 +463,14 @@ def main():
 			'''
 			from applications import prepare_2d_forPCA
 			from utilities import model_blank
-			for i in xrange(len(proj_list)):
+			for i in range(len(proj_list)):
 				ki = proj_angles[proj_list[i][0]][3]
 				if ki >= symbaselen:  continue
 				mi = index[ki]
 				phiM, thetaM, psiM, s2xM, s2yM = get_params_proj(imgdata[mi])
 
 				grp_imgdata = []
-				for j in xrange(img_per_grp):
+				for j in range(img_per_grp):
 					mj = index[proj_angles[proj_list[i][j]][3]]
 					phi, theta, psi, s2x, s2y = get_params_proj(imgdata[mj])
 					alpha, sx, sy, mirror = params_3D_2D_NEW(phi, theta, psi, s2x, s2y, mirror_list[i][j])
@@ -487,7 +487,7 @@ def main():
 				if not options.no_norm:
 					#print grp_imgdata[j].get_xsize()
 					mask = model_circle(nx/2-2, nx, nx)
-					for k in xrange(img_per_grp):
+					for k in range(img_per_grp):
 						ave, std, minn, maxx = Util.infomask(grp_imgdata[k], mask, False)
 						grp_imgdata[k] -= ave
 						grp_imgdata[k] /= std
@@ -500,12 +500,12 @@ def main():
 					ny2 = 2*ny
 					if options.CTF:
 						from utilities import pad
-						for k in xrange(img_per_grp):
+						for k in range(img_per_grp):
 							grp_imgdata[k] = window2d(fft( filt_tanl( filt_ctf(fft(pad(grp_imgdata[k], nx2, ny2, 1,0.0)), grp_imgdata[k].get_attr("ctf"), binary=1), options.fl, options.aa) ),nx,ny)
 							#grp_imgdata[k] = window2d(fft( filt_table( filt_tanl( filt_ctf(fft(pad(grp_imgdata[k], nx2, ny2, 1,0.0)), grp_imgdata[k].get_attr("ctf"), binary=1), options.fl, options.aa), fifi) ),nx,ny)
 							#grp_imgdata[k] = filt_tanl(grp_imgdata[k], options.fl, options.aa)
 					else:
-						for k in xrange(img_per_grp):
+						for k in range(img_per_grp):
 							grp_imgdata[k] = filt_tanl( grp_imgdata[k], options.fl, options.aa)
 							#grp_imgdata[k] = window2d(fft( filt_table( filt_tanl( filt_ctf(fft(pad(grp_imgdata[k], nx2, ny2, 1,0.0)), grp_imgdata[k].get_attr("ctf"), binary=1), options.fl, options.aa), fifi) ),nx,ny)
 							#grp_imgdata[k] = filt_tanl(grp_imgdata[k], options.fl, options.aa)
@@ -517,7 +517,7 @@ def main():
 					ny2 = 2*ny
 					if options.CTF:
 						from utilities import pad
-						for k in xrange(img_per_grp):
+						for k in range(img_per_grp):
 							grp_imgdata[k] = window2d( fft( filt_ctf(fft(pad(grp_imgdata[k], nx2, ny2, 1,0.0)), grp_imgdata[k].get_attr("ctf"), binary=1) ) , nx,ny)
 							#grp_imgdata[k] = window2d(fft( filt_table( filt_tanl( filt_ctf(fft(pad(grp_imgdata[k], nx2, ny2, 1,0.0)), grp_imgdata[k].get_attr("ctf"), binary=1), options.fl, options.aa), fifi) ),nx,ny)
 							#grp_imgdata[k] = filt_tanl(grp_imgdata[k], options.fl, options.aa)
@@ -559,10 +559,10 @@ def main():
 				varList.append(var)
 
 				if options.VERBOSE:
-					print "%5.2f%% done on processor %d"%(i*100.0/len(proj_list), myid)
+					print("%5.2f%% done on processor %d"%(i*100.0/len(proj_list), myid))
 				if nvec > 0:
 					eig = pca(input_stacks=grp_imgdata, subavg="", mask_radius=radiuspca, nvec=nvec, incore=True, shuffle=False, genbuf=True)
-					for k in xrange(nvec):
+					for k in range(nvec):
 						set_params_proj(eig[k], [phiM, thetaM, 0.0, 0.0, 0.0])
 						eigList[k].append(eig[k])
 					"""
@@ -578,15 +578,15 @@ def main():
 				from fundamentals import fpol
 				if myid == main_node:
 					km = 0
-					for i in xrange(number_of_proc):
+					for i in range(number_of_proc):
 						if i == main_node :
-							for im in xrange(len(aveList)):
+							for im in range(len(aveList)):
 								aveList[im].write_image(options.ave2D, km)
 								km += 1
 						else:
 							nl = mpi_recv(1, MPI_INT, i, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 							nl = int(nl[0])
-							for im in xrange(nl):
+							for im in range(nl):
 								ave = recv_EMData(i, im+i+70000)
 								"""
 								nm = mpi_recv(1, MPI_INT, i, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
@@ -603,7 +603,7 @@ def main():
 								km += 1
 				else:
 					mpi_send(len(aveList), 1, MPI_INT, main_node, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
-					for im in xrange(len(aveList)):
+					for im in range(len(aveList)):
 						send_EMData(aveList[im], main_node,im+myid+70000)
 						"""
 						members = aveList[im].get_attr('members')
@@ -621,7 +621,7 @@ def main():
 			if options.ave3D:
 				from fundamentals import fpol
 				if options.VERBOSE:
-					print "Reconstructing 3D average volume"
+					print("Reconstructing 3D average volume")
 				ave3D = recons3d_4nn_MPI(myid, aveList, symmetry=options.sym, npad=options.npad)
 				bcast_EMData_to_all(ave3D, myid)
 				if myid == main_node:
@@ -631,9 +631,9 @@ def main():
 			del ave, var, proj_list, stack, phi, theta, psi, s2x, s2y, alpha, sx, sy, mirror, aveList
 
 			if nvec > 0:
-				for k in xrange(nvec):
+				for k in range(nvec):
 					if options.VERBOSE:
-						print "Reconstruction eigenvolumes", k
+						print("Reconstruction eigenvolumes", k)
 					cont = True
 					ITER = 0
 					mask2d = model_circle(radiuspca, nx, nx)
@@ -650,7 +650,7 @@ def main():
 						del eig3D
 						cont = False
 						icont = 0
-						for l in xrange(len(eigList[k])):
+						for l in range(len(eigList[k])):
 							phi, theta, psi, s2x, s2y = get_params_proj(eigList[k][l])
 							proj = prgs(eig3Df, kb, [phi, theta, psi, s2x, s2y])
 							cl = ccc(proj, eigList[k][l], mask2d)
@@ -664,7 +664,7 @@ def main():
 
 						if myid == main_node:
 							u = int(u[0])
-							print " Eigenvector: ",k," number changed ",int(icont[0])
+							print(" Eigenvector: ",k," number changed ",int(icont[0]))
 						else: u = 0
 						u = bcast_number_to_all(u, main_node)
 						cont = bool(u)
@@ -679,30 +679,30 @@ def main():
 				from fundamentals import fpol 
 				if myid == main_node:
 					km = 0
-					for i in xrange(number_of_proc):
+					for i in range(number_of_proc):
 						if i == main_node :
-							for im in xrange(len(varList)):
+							for im in range(len(varList)):
 								tmpvol=fpol(varList[im], Tracker["nx"], Tracker["nx"],1)
 								tmpvol.write_image(options.var2D, km)
 								km += 1
 						else:
 							nl = mpi_recv(1, MPI_INT, i, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 							nl = int(nl[0])
-							for im in xrange(nl):
+							for im in range(nl):
 								ave = recv_EMData(i, im+i+70000)
 								tmpvol=fpol(ave, Tracker["nx"], Tracker["nx"],1)
 								tmpvol.write_image(options.var2D, km)
 								km += 1
 				else:
 					mpi_send(len(varList), 1, MPI_INT, main_node, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
-					for im in xrange(len(varList)):
+					for im in range(len(varList)):
 						send_EMData(varList[im], main_node, im+myid+70000)#  What with the attributes??
 
 			mpi_barrier(MPI_COMM_WORLD)
 
 		if  options.var3D:
 			if myid == main_node and options.VERBOSE:
-				print "Reconstructing 3D variability volume"
+				print("Reconstructing 3D variability volume")
 
 			t6 = time()
 			# radiusvar = options.radius
@@ -717,12 +717,12 @@ def main():
 			if myid == main_node:
 				print_msg("%-70s:  %.2f\n"%("Reconstructing 3D variability took [s]", time()-t6))
 				if options.VERBOSE:
-					print "Reconstruction took: %.2f [min]"%((time()-t6)/60)
+					print("Reconstruction took: %.2f [min]"%((time()-t6)/60))
 
 			if myid == main_node:
 				print_msg("%-70s:  %.2f\n"%("Total time for these computations [s]", time()-t0))
 				if options.VERBOSE:
-					print "Total time for these computations: %.2f [min]"%((time()-t0)/60)
+					print("Total time for these computations: %.2f [min]"%((time()-t0)/60))
 				print_end_msg("sx3dvariability")
 
 		from mpi import mpi_finalize

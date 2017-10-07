@@ -37,15 +37,15 @@ def main():
 			print("Error: No m2d_* folders found")
 			sys.exit(1)
 		options.path = "m2d_{:02d}".format(max(fls))
-		if options.verbose : print("Working in folder: ",options.path)
+		if options.verbose : print(("Working in folder: ",options.path))
 
 	if options.iter<=0 :
 		fls=[int(i[15:17]) for i in os.listdir(options.path) if i[:15]=="particle_parms_" and str.isdigit(i[15:17])]
 		if len(fls)==0 : 
-			print("Error: No particle_parms* files found in ",options.path)
+			print(("Error: No particle_parms* files found in ",options.path))
 			sys.exit(2)
 		else: options.iter=max(fls)
-		if options.verbose: print("Iteration: ",options.iter)
+		if options.verbose: print(("Iteration: ",options.iter))
 
 #	NTHREADS=max(options.threads,2)		# we have one thread just writing results
 
@@ -97,9 +97,9 @@ def main():
 			frac=i/float(N)
 			try:
 				remain=int((time.time()-t0)/frac-(time.time()-t0))	# est remaining time in sec
-				print("{:6d}/{:-6d}   time remaining: {}:{:02d}     \r".format(i,N,remain//60,remain%60))
+				print(("{:6d}/{:-6d}   time remaining: {}:{:02d}     \r".format(i,N,remain//60,remain%60)))
 			except:
-				print("{:6d}/{:-6d}     \r".format(i,N))
+				print(("{:6d}/{:-6d}     \r".format(i,N)))
 				
 			sys.stdout.flush()
 			

@@ -25,7 +25,7 @@ for da in angs:
 	recon.setup()
 	
 	for i,e in enumerate(eulers):
-		print i,e
+		print(i,e)
 		recon.insert_slice(ptclf,e,1.0)
 	
 	final=recon.finish(True)
@@ -36,9 +36,9 @@ for da in angs:
 	r1=[0]*(size/2)
 	r2=[0]*(size/2)
 	n=[0]*(size/2)
-	for z in xrange(-size/2,size/2):
-		for y in xrange(-size/2,size/2):
-			for x in xrange(size/2+1):
+	for z in range(-size/2,size/2):
+		for y in range(-size/2,size/2):
+			for x in range(size/2+1):
 				r=int(sqrt(x*x+y*y+z*z))
 				if r>=size/2 : continue
 				n[r]+=1
@@ -46,7 +46,7 @@ for da in angs:
 				if img[x,y+size/2,z+size/2]>1.5 : r2[r]+=1
 				
 	out=file("fill_ptrb_%04d.txt"%sl,"w")
-	for i in xrange(size/2):
+	for i in range(size/2):
 		out.write("%d\t%1.2f\t%1.2f\n"%(i,100.0*r1[i]/n[i],100.0*r2[i]/n[i]))
 	out=None
 				

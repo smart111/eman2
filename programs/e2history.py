@@ -211,23 +211,23 @@ def print_to_std_out(all):
 			ah={}
 			for i in range(n):
 				try: h=db.history[i+1]
-				except: print("Entry ",i," missing")
+				except: print(("Entry ",i," missing"))
 				try : ah.setdefault(h["path"],[]).append(h)
 				except: continue
 			for k in list(ah.keys()):
-				print("---------- ",k)
+				print(("---------- ",k))
 				for i in ah[k]:
-					if "end" in i : print(local_datetime(i["start"]),"\t   ",time_diff(i["end"]-i["start"]),"\t"," ".join(i["args"]))
-					elif "progress" in i : print(local_datetime(i["start"]),"\t ",int(i["progress"]*100)," % done\t"," ".join(i["args"]))
-					else: print(local_datetime(i["start"]),"\tincomplete\t"," ".join(i["args"]))
+					if "end" in i : print((local_datetime(i["start"]),"\t   ",time_diff(i["end"]-i["start"]),"\t"," ".join(i["args"])))
+					elif "progress" in i : print((local_datetime(i["start"]),"\t ",int(i["progress"]*100)," % done\t"," ".join(i["args"])))
+					else: print((local_datetime(i["start"]),"\tincomplete\t"," ".join(i["args"])))
 		else:
 			for i in range(n):
 				try: h=db.history[i+1]
-				except: print("Entry ",i," missing")
+				except: print(("Entry ",i," missing"))
 				if h != None and "path" in h and h["path"]==os.getcwd():
-					if "end" in h :print(local_datetime(h["start"]),"\t   ",time_diff(h["end"]-h["start"]),"\t"," ".join(h["args"]))
-					elif "progress" in h :print(local_datetime(h["start"]),"\t   ",int(h["progress"]*100)," % done\t"," ".join(h["args"]))
-					else: print(local_datetime(h["start"]),"\tincomplete\t"," ".join(h["args"]))
+					if "end" in h :print((local_datetime(h["start"]),"\t   ",time_diff(h["end"]-h["start"]),"\t"," ".join(h["args"])))
+					elif "progress" in h :print((local_datetime(h["start"]),"\t   ",int(h["progress"]*100)," % done\t"," ".join(h["args"])))
+					else: print((local_datetime(h["start"]),"\tincomplete\t"," ".join(h["args"])))
 	else:
 		db=shelve.open(".eman2log")
 		try:
@@ -237,7 +237,7 @@ def print_to_std_out(all):
 			sys.exit(0)
 		
 		for i in range(n-1):
-			print(" ".join(db[str(i+1)]["args"]))
+			print((" ".join(db[str(i+1)]["args"])))
 		print("done")
 		
 	try:

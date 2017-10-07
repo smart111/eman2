@@ -123,7 +123,7 @@ def main():
 		print("ERROR: last 2 cls_result files not even/odd pair. Delete any incomplete iterations from refine folder!")
 		sys.exit(1)
 
-	if options.verbose: print("running on:",clsout)
+	if options.verbose: print(("running on:",clsout))
 
 	#newproj="../"+os.getcwd().split("/")[-1]+"_m"
 	#try: os.makedirs(newproj+"/particles")
@@ -163,18 +163,18 @@ def main():
 			try: 
 				if os.path.exists(dest) : raise Exception
 				os.rename(src,dest)
-				if options.verbose>1: print("Renaming {} to {}".format(src,dest))
+				if options.verbose>1: print(("Renaming {} to {}".format(src,dest)))
 				file(src,"w").write(file(dest,"r").read())			# copy the original data back to the source file so we don't have gaps for unaligned particles, but only if the rename worked
 				n+=1
 			except: 
-				if options.verbose>1: print("Failed to rename ",name)
+				if options.verbose>1: print(("Failed to rename ",name))
 				pass
 	
-		if options.verbose==1: print(n," stacks renamed to __orig")
+		if options.verbose==1: print((n," stacks renamed to __orig"))
 	
 	### Deal with threads (spawn more instances of ourselves as separate processes)
 	if nthreads>1:
-		print("Running in parallel with ",nthreads," threads")
+		print(("Running in parallel with ",nthreads," threads"))
 		threads=[threading.Thread(target=os.system,args=[" ".join(sys.argv+["--frac={},{}".format(i,nthreads)])]) for i in range(nthreads)]
 		for t in threads: t.start()
 		for t in threads: t.join()
@@ -186,7 +186,7 @@ def main():
 		if options.filefilt!=None and not options.filefilt in name : continue
 		base=base_name(name)
 		db=js_open_dict(info_name(name))
-		if options.verbose : print("### Processing {} ({})".format(base,options.frac[0]+1))
+		if options.verbose : print(("### Processing {} ({})".format(base,options.frac[0]+1)))
 		
 		movie="movieparticles/{}_ptcls.hdf".format(base)
 		movieim=EMData(movie,0)
@@ -199,7 +199,7 @@ def main():
 		except:
 			try: ctf=db["ctf_frame"][1]
 			except:
-				print("ERROR: no CTF info for {}. Skipping file".format(name))
+				print(("ERROR: no CTF info for {}. Skipping file".format(name)))
 				continue
 		
 		# We need this to filter the projections
@@ -225,7 +225,7 @@ def main():
 			# if we can't find the particle in the lst file
 			try: eo,lstn=lstmap[(name,n)]
 			except:
-				if options.verbose>1 : print("skipping",name,n)
+				if options.verbose>1 : print(("skipping",name,n))
 				unaliavg=sum(stack)
 				avg=unaliavg		# on failure we just use the straight average
 				try: avg=avg.get_clip(Region((nx-pnx)/2,(nx-pnx)/2,pnx,pnx))		# resize to original particle size
@@ -287,9 +287,9 @@ def main():
 				pk=ccf.calc_max_location()
 				dx=-(pk[0]-nx/2)
 				dy=-(pk[1]-nx/2)
-				if options.verbose>1 : print(base,n,i,dx,dy)
+				if options.verbose>1 : print((base,n,i,dx,dy))
 				if dx==nx/2 or dy==nx/2 :
-					print(base,n, "failed")
+					print((base,n, "failed"))
 					bad=1
 					break
 				

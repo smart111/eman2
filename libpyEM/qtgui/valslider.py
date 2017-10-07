@@ -611,7 +611,7 @@ class RangeSlider(QtGui.QWidget):
 		self.rng=tuple(rng)
 		self.value=tuple(value)
 		self.mdownloc=None
-		if len(rng)!=2 or len(value)!=2 : raise Exception,"RangeSlider needs a valid range and value)"
+		if len(rng)!=2 or len(value)!=2 : raise Exception("RangeSlider needs a valid range and value)")
 
 		sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Policy(0),QtGui.QSizePolicy.Policy(7))
 		sizePolicy.setHorizontalStretch(0)
@@ -673,7 +673,7 @@ class RangeSlider(QtGui.QWidget):
 		v0y=self.vtoy(self.value[0])
 		v1y=self.vtoy(self.value[1])
 		
-		print y,v0y,v1y
+		print(y,v0y,v1y)
 		
 		# outside the current range, no effect
 		if y>v0y+3 : return
@@ -836,7 +836,7 @@ class EMSpinWidget(QtGui.QWidget):
 			
 		except ValueError:
 			self.numbox.setText(str(self.value))
-			print "ERROR!!! You must enter a number"
+			print("ERROR!!! You must enter a number")
 		
 class EMQTColorWidget(QtGui.QWidget):
 	"""

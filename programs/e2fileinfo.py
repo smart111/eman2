@@ -96,7 +96,7 @@ def checkoutput(options):
 		exit(0)
 	if os.path.exists(outfile):
 		if not options.force:
-			print("Error, outfile",outfile, "already exists")
+			print(("Error, outfile",outfile, "already exists"))
 			exit(0)
 		else:
 			remove_file(options.outfile)
@@ -113,7 +113,7 @@ def getidx(paramstring):
 	elif (paramstring in ee_expressions ):
 		idx = 4
 	else:
-		print("error, cannot handle", paramstring)
+		print(("error, cannot handle", paramstring))
 		exit(0)
 
 	return idx
@@ -127,7 +127,7 @@ def fileinfo_op(filename,info,outfile):
 		
 	if ( info[1] not in ["+=", "-=", "*=", "/=", "%="]):
 		print("ERROR: could not extract logical expression")
-		print("Must be one of", "+=", "-=", "*=", "/=", "%=")
+		print(("Must be one of", "+=", "-=", "*=", "/=", "%="))
 		print(info)
 		exit(1)
 	
@@ -152,7 +152,7 @@ def fileinfo_op(filename,info,outfile):
 		
 		if ( len(vals) < 4 ):
 			print("ERROR: the CTF params were inconsistent with what was expected")
-			print("I am examining image number %d, and its ctf params are as follows:" %(i+1))
+			print(("I am examining image number %d, and its ctf params are as follows:" %(i+1)))
 			print(vals)
 			exit(1)
 		
@@ -232,7 +232,7 @@ def fileinfo_remove(filename, info,outfile):
 		
 		if ( len(vals) < 4 ):
 			print("ERROR: the CTF params were inconsistent with what was expected")
-			print("I am examining image number %d, and its ctf params are as follows:" %(i+1))
+			print(("I am examining image number %d, and its ctf params are as follows:" %(i+1)))
 			print(vals)
 			exit(1)
 			
@@ -275,11 +275,11 @@ def fileinfo_remove(filename, info,outfile):
 		else:
 			total_removed += 1
 	
-	print("Of a total of %d images %d were removed" %(n,total_removed))
+	print(("Of a total of %d images %d were removed" %(n,total_removed)))
 
 def checkInfoType(infotype):
 	if ( infotype not in defocus_expressions and infotype not in bfactor_expressions and infotype not in ac_expressions and infotype not in amp_expressions and infotype not in ee_expressions):
-		print("Error, infotype %s must be in the following sets:" %infotype)
+		print(("Error, infotype %s must be in the following sets:" %infotype))
 		print(bfactor_expressions)
 		print(defocus_expressions)
 		print(ac_expressions)
@@ -314,9 +314,9 @@ def fileinfo_output(filename, infotype):
 		if idx == 0:
 			f = re.findall("\d.*\d*", vals[0])
 			defocus = f[0]
-			print("%f" %float(defocus))
+			print(("%f" %float(defocus)))
 		else:
-			print("%f" %float(vals[idx]))
+			print(("%f" %float(vals[idx])))
 
 
 def fileinfo(filenames):
@@ -332,10 +332,10 @@ def fileinfo(filenames):
 		d.read_image(i,0,True)
 		if d.get_zsize()==1:
 			s="%%-%ds%%s\t%%d\t%%d x %%d"%(l+2)
-			print(s%(i,t,n,d.get_xsize(),d.get_ysize()))
+			print((s%(i,t,n,d.get_xsize(),d.get_ysize())))
 		else:
 			s="%%-%ds%%s\t%%d\t%%d x %%d x %%d"%(l+2)
-			print(s%(i,t,n,d.get_xsize(),d.get_ysize(),d.get_zsize()))
+			print((s%(i,t,n,d.get_xsize(),d.get_ysize(),d.get_zsize())))
 		
 # If executed as a program
 if __name__ == '__main__':

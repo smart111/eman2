@@ -1179,7 +1179,7 @@ class EMScene3D(EMItem3D, EMGLWidget):
 			
 			
 	def mouseDoubleClickEvent(self,event):
-		print "Mouse Double Click Event"
+		print("Mouse Double Click Event")
 	
 	# Grab and release the keyboard
 	def enterEvent(self, event):
@@ -1392,7 +1392,7 @@ class EMScene3D(EMItem3D, EMGLWidget):
 		else:
 			filename = "%s.%s"%(filename,format)
 			image.save(filename, format)
-		print "Saved %s to disk"%os.path.basename(str(filename))
+		print("Saved %s to disk"%os.path.basename(str(filename)))
 	
 	def saveMovie(self, filename):
 
@@ -1469,7 +1469,7 @@ class EMScene3D(EMItem3D, EMGLWidget):
 		try:
 			tree = pickle.load(rfile)
 		except:
-			print "ERROR!!! Couldn't load the session file"
+			print("ERROR!!! Couldn't load the session file")
 			rfile.close()
 			return	
 		rfile.close()
@@ -2128,7 +2128,7 @@ class EMInspector3D(QtGui.QWidget):
 	def _recursiveupdatetreeselvis(self, item):
 		item.setSelectionStateBox()
 		item.getVisibleState()
-		for childidx in xrange(item.childCount()):
+		for childidx in range(item.childCount()):
 			self._recursiveupdatetreeselvis(item.child(childidx))
 			
 	def updateTreeSelVis(self, selecteditem=None):
@@ -2271,7 +2271,7 @@ class EMInspector3D(QtGui.QWidget):
 				self.scenegraph().setCurrentSelection(self.tree_widget.currentItem().item3d())
 			self.updateSceneGraph()
 		else:
-			print "Error cannot remove root node!!"
+			print("Error cannot remove root node!!")
 			
 	def _get_toolbox_layout(self):
 		tvbox = QtGui.QHBoxLayout()
@@ -2990,7 +2990,7 @@ class EMQTreeWidgetItem(QtGui.QTreeWidgetItem):
 		"""
 		Remove all children from the SG
 		"""
-		for i in xrange(self.childCount()):
+		for i in range(self.childCount()):
 			self.child(0).removeAllChildren(inspector)
 			inspector.removeTreeNode(self, 0) 
 

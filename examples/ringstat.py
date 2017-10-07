@@ -33,7 +33,7 @@ def main():
 			#print mrcf
 			
 			for i in range(len(mrcf)):
-				print mrcf[i],pdbf[i]
+				print(mrcf[i],pdbf[i])
 				pdbshp=process_image(join(mypath,pdbf[i]),pdbf[i])
 				mrcshp=process_image(join(mypath,mrcf[i]),mrcf[i])
 				outfile=open(options.output,"a")
@@ -49,13 +49,13 @@ def main():
 			elif filetype=="pdb":
 				files = sorted([ f for f in listdir(mypath) if f.endswith("_result.pdb")])
 			else:
-				print "pdb or mrc only.."
+				print("pdb or mrc only..")
 				exit()
 			
-			print files
+			print(files)
 			
 			for fname in files:
-				print join(mypath,fname)
+				print(join(mypath,fname))
 				shape=process_image(join(mypath,fname),fname)
 				#totalen=process_image(join(mypath,fname),fname)
 				
@@ -94,7 +94,7 @@ def process_image(imgname,imgprefix):
 		mx=dot(tp,p)
 		### align the polygon 
 		eigvv=LA.eig(mx)		# a 3-vector with eigenvalues and a 3x3 with the vectors
-		eig=[(1.0/eigvv[0][i],eigvv[1][:,i]) for i in xrange(3)]  # extract for sorting
+		eig=[(1.0/eigvv[0][i],eigvv[1][:,i]) for i in range(3)]  # extract for sorting
 		eig=sorted(eig)		# now eig is sorted in order from major to minor axes
 		et=matrix([[eig[0][1][0],eig[0][1][1],eig[0][1][2]],[eig[1][1][0],eig[1][1][1],eig[1][1][2]],[eig[2][1][0],eig[2][1][1],eig[2][1][2]]])
 		
@@ -134,7 +134,7 @@ def process_image(imgname,imgprefix):
 		#shp=append(shp.A1,d)
 		shp=append(shp.A1,totalen)
 		shp=append(shp,area)
-		print shp
+		print(shp)
 		#for i in range(nn):
 			#pa.set_vector_at(i,Vec3f(pl[i,0],pl[i,1],pl[i,2]),1.0)
 		#pa.save_to_pdb(imgprefix+"aaa.pdb")
@@ -160,7 +160,7 @@ def process_image(imgname,imgprefix):
 		
 		# Compute the eigenvalues/vectors
 		eigvv=LA.eig(mx)		# a 3-vector with eigenvalues and a 3x3 with the vectors
-		eig=[(1.0/eigvv[0][i],eigvv[1][:,i]) for i in xrange(3)]  # extract for sorting
+		eig=[(1.0/eigvv[0][i],eigvv[1][:,i]) for i in range(3)]  # extract for sorting
 		eig=sorted(eig)		# now eig is sorted in order from major to minor axes
 		#T=array([eig[0][1],eig[1][1],eig[2][1]])            # reassemble sorted matrix
 
@@ -176,7 +176,7 @@ def process_image(imgname,imgprefix):
 		shp=an.analyze()[0]
 		#shp=EMNumPy.em2numpy(shp)
 		
-		print shp[0],shp[1],shp[2],shp[3],shp[2]/shp[1],shp[1]/shp[0]
+		print(shp[0],shp[1],shp[2],shp[3],shp[2]/shp[1],shp[1]/shp[0])
 		for i in range(4):
 			shp[i]=sqrt(shp[i]/finalimg["mean"])*finalimg["apix_x"]
 		

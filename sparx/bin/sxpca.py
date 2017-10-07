@@ -59,7 +59,7 @@ def main():
 	output_stack = args[-1]
 
 	if options.nvec is None:
-		print "Error: number of components is not given"
+		print("Error: number of components is not given")
 		sys.exit(-2) 
 
 	isRoot = True
@@ -76,7 +76,7 @@ def main():
 	vecs = []
 	vecs = pca(input_stacks, options.subavg, options.rad, options.nvec, options.incore, options.shuffle, not(options.genbuf), options.mask, options.MPI)
 	if isRoot:
-		for i in xrange(len(vecs)):
+		for i in range(len(vecs)):
 			vecs[i].write_image(output_stack, i)
 	
 	global_def.BATCH = False

@@ -98,8 +98,8 @@ optionList = pyemtbx.options.get_optionlist(sys.argv[1:])
 
 #Check for basic usage
 if len(args) != 2:
-   print("usage:" + usage)
-   print("Please run'" + progname + " -h' for detailed options")
+   print(("usage:" + usage))
+   print(("Please run'" + progname + " -h' for detailed options"))
    sys.exit(1)
 
 for option1 in optionList:
@@ -154,14 +154,14 @@ if not header.get_attr_dict().__contains__('data_source'):
 if header.get_attr_dict().__contains__('apix') and header.get_attr_dict().__contains__('apix_x'):
 	if header['apix_x'] == 1:
 		apix=header['apix']
-		print("""***An "apix" value was found in the header. This is an old style and apix values should be correctly stored in apix_x, apix_y, apix_z. The value in apix is """ + str(apix) + """. Be aware this may not be the value you intended***""")
+		print(("""***An "apix" value was found in the header. This is an old style and apix values should be correctly stored in apix_x, apix_y, apix_z. The value in apix is """ + str(apix) + """. Be aware this may not be the value you intended***"""))
 	else:
 		apix=header['apix_x']
 elif header.get_attr_dict().__contains__('apix_x'):
 	apix = header['apix_x']
 elif header.get_attr_dict().__contains__('apix'):
 	apix = header['apix']
-	print("""***An "apix" value was found in the header. This is an old style and apix values should be correctly stored in apix_x, apix_y, apix_z. The value in apix is """ + str(apix) + """. Be aware this may not be the value you intended***""")
+	print(("""***An "apix" value was found in the header. This is an old style and apix values should be correctly stored in apix_x, apix_y, apix_z. The value in apix is """ + str(apix) + """. Be aware this may not be the value you intended***"""))
 elif project_db.__contains__('global.apix'):
 	apix = project_db['global.apix']
 else:
@@ -217,7 +217,7 @@ for db in dblist:
 			amplitude_contrast = float(db_set['ctf'].to_dict()['ampcont']) / 10				
 			#defocus = db_set['ctf'].to_dict()['defocus']*1000
 			break
-print("CTF information being pulled from: " + db)
+print(("CTF information being pulled from: " + db))
 if ctf_corr == 1:
 	s = """echo "data_\nloop_\n_rlnImageName\n_rlnMicrographName\n_rlnDefocusU\n_rlnDefocusV\n_rlnDefocusAngle\n_rlnVoltage\n_rlnSphericalAberration\n_rlnAmplitudeContrast" > """ + E2RLN + "/all_images.star"
 else:

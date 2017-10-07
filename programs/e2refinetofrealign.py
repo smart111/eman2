@@ -78,8 +78,8 @@ optionList = pyemtbx.options.get_optionlist(sys.argv[1:])
 (options, args) = parser.parse_args()
 
 if len(args) != 2:
-   print("usage:" + usage)
-   print("Please run'" + progname + " -h' for detailed options")
+   print(("usage:" + usage))
+   print(("Please run'" + progname + " -h' for detailed options"))
    sys.exit(1)
 
 

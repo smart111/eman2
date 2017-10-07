@@ -28,7 +28,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
 
-from global_def import *
+from .global_def import *
 
 def project(volume, params, radius=-1):
 	"""
@@ -42,8 +42,8 @@ def project(volume, params, radius=-1):
 		proj: generated 2-D projection
 	"""
         # angles phi, theta, psi
-	from fundamentals import rot_shift2D
-	from utilities import set_params_proj
+	from .fundamentals import rot_shift2D
+	from .utilities import set_params_proj
 	from EMAN2 import Processor
 
 	if(radius>0):	myparams = {"transform":Transform({"type":"spider","phi":params[0],"theta":params[1],"psi":params[2]}), "radius":radius}
@@ -100,10 +100,10 @@ def prj(vol, params, stack = None):
 				either: an in-core stack of generated 2-D projections
 			stack
 	"""
-	from utilities  import set_params_proj
-	from projection import prep_vol
+	from .utilities  import set_params_proj
+	from .projection import prep_vol
 	volft,kb = prep_vol(vol)
-	for i in xrange(len(params)):
+	for i in range(len(params)):
 		proj = prgs(volft, kb, params[i])
 		set_params_proj(proj, [params[i][0], params[i][1], params[i][2], -params[i][3], -params[i][4]])
 		proj.set_attr_dict({ 'ctf_applied':0})
@@ -131,8 +131,8 @@ def prgs(volft, kb, params, kbx=None, kby=None):
 			proj: generated 2-D projection
 	"""
 	#  params:  phi, theta, psi, sx, sy
-	from fundamentals import fft
-	from utilities import set_params_proj
+	from .fundamentals import fft
+	from .utilities import set_params_proj
 	from EMAN2 import Processor
 
 	R = Transform({"type":"spider", "phi":params[0], "theta":params[1], "psi":params[2]})
@@ -168,8 +168,8 @@ def prgl(volft, params, interpolation_method = 0, return_real = True):
 			proj: generated 2-D projection
 	"""
 	#  params:  phi, theta, psi, sx, sy
-	from fundamentals import fft
-	from utilities import set_params_proj, info
+	from .fundamentals import fft
+	from .utilities import set_params_proj, info
 	from EMAN2 import Processor
 	if(interpolation_method<0 or interpolation_method>1):  ERROR('Unsupported interpolation method', "interpolation_method", 1, 0)
 	npad = volft.get_attr_default("npad",1)
@@ -197,10 +197,10 @@ def prgq( volft, kb, nx, delta, ref_a, sym, MPI=False):
 	  Generate set of projections based on even angles
 	  The command returns list of ffts of projections
 	"""
-	from projection   import prep_vol, prgs
-	from applications import MPI_start_end
-	from utilities    import even_angles, model_blank
-	from fundamentals import fft
+	from .projection   import prep_vol, prgs
+	from .applications import MPI_start_end
+	from .utilities    import even_angles, model_blank
+	from .fundamentals import fft
 	# generate list of Eulerian angles for reference projections
 	#  phi, theta, psi
 	mode = "F"
@@ -216,33 +216,33 @@ def prgq( volft, kb, nx, delta, ref_a, sym, MPI=False):
 	else:
 		ncpu = 1
 		myid = 0
-	from applications import MPI_start_end
+	from .applications import MPI_start_end
 	ref_start,ref_end = MPI_start_end( num_ref, ncpu, myid )
 
 	prjref = []     # list of (image objects) reference projections in Fourier representation
 
-        for i in xrange(num_ref):
+        for i in range(num_ref):
 		prjref.append(model_blank(nx, nx))  # I am not sure why is that necessary, why not put None's??
 
-        for i in xrange(ref_start, ref_end):
+        for i in range(ref_start, ref_end):
 		prjref[i] = prgs(volft, kb, [ref_angles[i][0], ref_angles[i][1], ref_angles[i][2], 0.0, 0.0])
 
 	if MPI:
-		from utilities import bcast_EMData_to_all
-		for i in xrange(num_ref):
-			for j in xrange(ncpu):
+		from .utilities import bcast_EMData_to_all
+		for i in range(num_ref):
+			for j in range(ncpu):
 				ref_start,ref_end = MPI_start_end(num_ref,ncpu,j)
 				if i >= ref_start and i < ref_end: rootid = j
 			bcast_EMData_to_all( prjref[i], myid, rootid )
 
-	for i in xrange(len(ref_angles)):
+	for i in range(len(ref_angles)):
 		prjref[i].set_attr_dict({"phi": ref_angles[i][0], "theta": ref_angles[i][1],"psi": ref_angles[i][2]})
 
 	return prjref
 
 
 def prgs1d( prjft, kb, params ):
-	from fundamentals import fft
+	from .fundamentals import fft
 	from math import cos, sin, pi
 	from EMAN2 import Processor
 
@@ -338,7 +338,7 @@ def prep_vol(vol, npad = 2, interpolation_method = -1):
 	else:
 		# NN and trilinear
 		assert  interpolation_method >= 0
-		from utilities import pad
+		from .utilities import pad
 		volft = pad(vol, Mx*npad, My*npad, My*npad, 0.0)
 		volft.set_attr("npad", npad)
 		volft.div_sinc(interpolation_method)
@@ -356,9 +356,9 @@ def gen_rings_ctf( prjref, nx, ctf, numr):
 	  The command returns list of rings
 	"""
         from math         import sin, cos, pi
-	from fundamentals import fft
-	from alignment    import ringwe
-	from filter       import filt_ctf
+	from .fundamentals import fft
+	from .alignment    import ringwe
+	from .filter       import filt_ctf
 	mode = "F"
 	wr_four  = ringwe(numr, "F")
 	cnx = nx//2 + 1
@@ -367,7 +367,7 @@ def gen_rings_ctf( prjref, nx, ctf, numr):
 
 	refrings = []     # list of (image objects) reference projections in Fourier representation
 
-        for i in xrange( len(prjref) ):
+        for i in range( len(prjref) ):
 		cimage = Util.Polar2Dm(filt_ctf(prjref[i], ctf, True) , cnx, cny, numr, mode)  # currently set to quadratic....
 		Util.Normalize_ring(cimage, numr, 0 )
 
@@ -393,7 +393,7 @@ def gen_rings_ctf( prjref, nx, ctf, numr):
 # agls: [[phi0, theta0, psi0], [phi1, theta1, psi1], ..., [phin, thetan, psin]]
 def plot_angles(agls, nx = 256):
 	from math      import cos, sin, fmod, pi, radians
-	from utilities import model_blank
+	from .utilities import model_blank
 
 	# var
 	im = model_blank(nx, nx)
@@ -428,7 +428,7 @@ def plot_angles(agls, nx = 256):
 	ri = nx//2
 	rr = ri-1
 	conv = pi/180.0
-	for i in xrange(len(agls)):
+	for i in range(len(agls)):
 		if agls[i][1] > 90.0:
 			agls[i][0] = agls[i][0] + 180.0
 			agls[i][1] = 180.0 - float(agls[i][1])
@@ -470,12 +470,12 @@ def cml_refine_agls_wrap(vec_in, data, flag_weights = False):
 # not used yet
 def cml_refine_agls(Prj, Ori, delta):
 	from copy      import deepcopy
-	from utilities import amoeba
+	from .utilities import amoeba
 	global g_n_prj
 	
 	scales = [delta] * (g_n_prj + 2)
 
-	for iprj in xrange(g_n_prj):
+	for iprj in range(g_n_prj):
 		# init vec_in
 		vec_in   = [Ori[4*iprj], Ori[4*iprj+1], Ori[4*iprj+2]]
 		# prepare vec_data
@@ -486,7 +486,7 @@ def cml_refine_agls(Prj, Ori, delta):
 		Ori[4*iprj]   = (optvec[0]+360)%360
 		Ori[4*iprj+1] = optvec[1]
 		Ori[4*iprj+2] = optvec[2]
-		print 'refine:', iprj, 'angles:', Ori[4*iprj:4*iprj+4], 'disc:', -disc
+		print('refine:', iprj, 'angles:', Ori[4*iprj:4*iprj+4], 'disc:', -disc)
 
 	return Ori
 
@@ -525,12 +525,12 @@ def cml_disc(Prj, Ori, Rot, flag_weights=True):
 		cml = Util.cml_line_in3d(Ori, g_seq, g_n_prj, g_n_lines)
 		weights = Util.cml_weights(cml)
 		mw  = max(weights)
-		for i in xrange(g_n_lines): weights[i]  = mw - weights[i]
+		for i in range(g_n_lines): weights[i]  = mw - weights[i]
 		sw = sum(weights)
 		if sw == 0:
 			weights = [6.28 / float(g_n_lines)] * g_n_lines
 		else:
-			for i in xrange(g_n_lines):
+			for i in range(g_n_lines):
 				weights[i] /= sw
 				weights[i] *= weights[i]
 	else:   weights = [1.0] * g_n_lines
@@ -566,14 +566,14 @@ def cml_export_txtagls(outdir, outname, Ori, disc, title):
 	angfile = open(outdir + '/' + outname, 'a')
 
 	angfile.write('|%s|-----------------------------------------------%s---------\n' % (title, time.ctime()))
-	for i in xrange(g_n_prj): angfile.write('%10.3f\t%10.3f\t%10.3f\n' % (Ori[4*i], Ori[4*i+1], Ori[4*i+2]))
+	for i in range(g_n_prj): angfile.write('%10.3f\t%10.3f\t%10.3f\n' % (Ori[4*i], Ori[4*i+1], Ori[4*i+2]))
 			
 	angfile.write('\nDiscrepancy: %12.5e\n\n' % disc)
 	angfile.close()
 
 # init global variables used to a quick acces with many function of common-lines
 def cml_init_global_var(dpsi, delta, nprj, debug):
-	from utilities import even_angles
+	from .utilities import even_angles
 
 	global g_anglst, g_d_psi, g_n_psi, g_i_prj, g_n_lines, g_n_prj, g_n_anglst, g_debug, g_seq
 	# TO FIX
@@ -593,21 +593,21 @@ def cml_init_global_var(dpsi, delta, nprj, debug):
 	g_seq      = [0] * 2 * g_n_lines
 	c          = 0
 	# prepare pairwise indexes ij
-	for i in xrange(g_n_prj):
-		for j in xrange(i+1, g_n_prj):
+	for i in range(g_n_prj):
+		for j in range(i+1, g_n_prj):
 			g_seq[c]   = i
 			g_seq[c+1] = j
 			c += 2
 
 # export result obtain by the function find_struct
 def cml_export_struc(stack, outdir, irun, Ori):
-	from projection import plot_angles
-	from utilities  import set_params_proj, get_im
+	from .projection import plot_angles
+	from .utilities  import set_params_proj, get_im
 
 	global g_n_prj
 	
 	pagls = []
-	for i in xrange(g_n_prj):
+	for i in range(g_n_prj):
 		data = get_im(stack, i)
 		p = [Ori[4*i], Ori[4*i+1], Ori[4*i+2], 0.0, 0.0]
 		set_params_proj(data, p)
@@ -622,10 +622,10 @@ def cml_export_struc(stack, outdir, irun, Ori):
 
 # open and transform projections to sinogram
 def cml_open_proj(stack, ir, ou, lf, hf, dpsi = 1):
-	from projection   import cml_sinogram
-	from utilities    import model_circle, get_params_proj, model_blank, get_im
-	from fundamentals import fftip
-	from filter       import filt_tanh
+	from .projection   import cml_sinogram
+	from .utilities    import model_circle, get_params_proj, model_blank, get_im
+	from .fundamentals import fftip
+	from .filter       import filt_tanh
 
 	# number of projections
 	if  type(stack) == type(""): nprj = EMUtil.get_image_count(stack)
@@ -633,7 +633,7 @@ def cml_open_proj(stack, ir, ou, lf, hf, dpsi = 1):
 	Prj  = []                                          # list of projections
 	Ori  = [-1] * 4 * nprj                             # orientation intial (phi, theta, psi, index) for each projection
 
-	for i in xrange(nprj):
+	for i in range(nprj):
 		image = get_im(stack, i)
 
 		# read initial angles if given
@@ -668,7 +668,7 @@ def cml_open_proj(stack, ir, ou, lf, hf, dpsi = 1):
 		nye = sino.get_ysize()
 		prj = model_blank(bdf, 2*nye)
 		pp = model_blank(nxe, 2*nye)
-		for li in xrange(nye):
+		for li in range(nye):
 			# get the line li
 			line = Util.window(sino, nxe, 1, 1, 0, li-nye//2, 0)
 			# u2 (not improve the results)
@@ -689,7 +689,7 @@ def cml_open_proj(stack, ir, ou, lf, hf, dpsi = 1):
 # transform an image to sinogram (mirror include)
 def cml_sinogram(image2D, diameter, d_psi = 1):
 	from math         import cos, sin
-	from fundamentals import fft
+	from .fundamentals import fft
 
 	M_PI  = 3.141592653589793238462643383279502884197
 
@@ -717,7 +717,7 @@ def cml_sinogram(image2D, diameter, d_psi = 1):
 	e = EMData()
 	e.set_size(diameter, nangle, 1)
 	offset = M - diameter // 2
-	for j in xrange(nangle):
+	for j in range(nangle):
 		nuxnew =  cos(dangle * j)
 		nuynew = -sin(dangle * j)
 		line   = fft(volft.extractline(kb, nuxnew, nuynew))
@@ -729,7 +729,7 @@ def cml_sinogram(image2D, diameter, d_psi = 1):
 # transform an image to sinogram (mirror include)
 def cml_sinogram_shift(image2D, diameter, shifts = [0.0, 0.0], d_psi = 1):
 	from math         import cos, sin
-	from fundamentals import fft
+	from .fundamentals import fft
 
 	M_PI  = 3.141592653589793238462643383279502884197
 
@@ -762,7 +762,7 @@ def cml_sinogram_shift(image2D, diameter, shifts = [0.0, 0.0], d_psi = 1):
 	e = EMData()
 	e.set_size(diameter, nangle, 1)
 	offset = M - diameter // 2
-	for j in xrange(nangle):
+	for j in range(nangle):
 		nuxnew =  cos(dangle * j)
 		nuynew = -sin(dangle * j)
 		line   = fft(volft.extractline(kb, nuxnew, nuynew))
@@ -773,7 +773,7 @@ def cml_sinogram_shift(image2D, diameter, shifts = [0.0, 0.0], d_psi = 1):
 
 # write the head of the logfile
 def cml_head_log(stack, outdir, delta, ir, ou, lf, hf, rand_seed, maxit, given, flag_weights, trials, ncpu):
-	from utilities import print_msg
+	from .utilities import print_msg
 
 	# call global var
 	global g_anglst, g_n_prj, g_d_psi, g_n_anglst
@@ -797,14 +797,14 @@ def cml_head_log(stack, outdir, delta, ir, ou, lf, hf, rand_seed, maxit, given, 
 
 # write the end of the logfile
 def cml_end_log(Ori):
-	from utilities import print_msg
+	from .utilities import print_msg
 	global g_n_prj
 	print_msg('\n\n')
-	for i in xrange(g_n_prj): print_msg('Projection #%03i: phi %10.5f    theta %10.5f    psi %10.5f\n' % (i, Ori[4*i], Ori[4*i+1], Ori[4*i+2]))
+	for i in range(g_n_prj): print_msg('Projection #%03i: phi %10.5f    theta %10.5f    psi %10.5f\n' % (i, Ori[4*i], Ori[4*i+1], Ori[4*i+2]))
 
 # find structure
 def cml_find_structure(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_weights):
-	from projection import cml_export_progress, cml_disc, cml_export_txtagls
+	from .projection import cml_export_progress, cml_disc, cml_export_txtagls
 	import time, sys
 
 	# global vars
@@ -814,9 +814,9 @@ def cml_find_structure(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_w
 	ocp = [-1] * g_n_anglst
 
 	if first_zero:
-		listprj = range(1, g_n_prj)
+		listprj = list(range(1, g_n_prj))
 		ocp[0]  = 0 
-	else:   listprj = range(g_n_prj)
+	else:   listprj = list(range(g_n_prj))
 
 	# to stop when the solution oscillates
 	period_disc = [0, 0, 0]
@@ -824,7 +824,7 @@ def cml_find_structure(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_w
 	period_th   = 2
 
 	# iteration loop
-	for ite in xrange(maxit):
+	for ite in range(maxit):
 		t_start = time.time()
 
 		# loop over i prj
@@ -843,8 +843,8 @@ def cml_find_structure(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_w
 			iw = [0] * (g_n_prj - 1)
 			c  = 0
 			ct = 0
-			for i in xrange(g_n_prj):
-				for j in xrange(i+1, g_n_prj):
+			for i in range(g_n_prj):
+				for j in range(i+1, g_n_prj):
 					if i == iprj or j == iprj:
 						iw[ct] = c
 						ct += 1
@@ -854,7 +854,7 @@ def cml_find_structure(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_w
 			best_disc = 1.0e20
 			best_psi  = -1
 			best_iagl = -1
-			for iagl in xrange(g_n_anglst):
+			for iagl in range(g_n_anglst):
 				# if orientation is free
 				if ocp[iagl] == -1:
 					# assign new orientation
@@ -866,12 +866,12 @@ def cml_find_structure(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_w
 						cml = Util.cml_line_in3d(Ori, g_seq, g_n_prj, g_n_lines)
 						weights = Util.cml_weights(cml)
 						mw  = max(weights)
-						for i in xrange(g_n_lines): weights[i]  = mw - weights[i]
+						for i in range(g_n_lines): weights[i]  = mw - weights[i]
 						sw = sum(weights)
 						if sw == 0:
 							weights = [6.28 / float(g_n_lines)] * g_n_lines
 						else:
-							for i in xrange(g_n_lines):
+							for i in range(g_n_lines):
 								weights[i] /= sw
 								weights[i] *= weights[i]
 					else:   weights = [1.0] * g_n_lines
@@ -935,7 +935,7 @@ def cml_find_structure(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_w
 
 # find structure
 def cml_find_structure2(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_weights, myid, main_node, number_of_proc):
-	from projection import cml_export_progress, cml_disc, cml_export_txtagls
+	from .projection import cml_export_progress, cml_disc, cml_export_txtagls
 	import time, sys
 	from random import shuffle,random
 
@@ -949,9 +949,9 @@ def cml_find_structure2(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_
 	ocp = [-1] * g_n_anglst
 
 	if first_zero:
-		listprj = range(1, g_n_prj)
+		listprj = list(range(1, g_n_prj))
 		ocp[0]  = 0 
-	else:   listprj = range(g_n_prj)
+	else:   listprj = list(range(g_n_prj))
 
 	# to stop when the solution oscillates
 	period_disc = [0, 0, 0]
@@ -960,7 +960,7 @@ def cml_find_structure2(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_
 	#if not flag_weights:   weights = [1.0] * g_n_lines
 
 	# iteration loop
-	for ite in xrange(maxit):
+	for ite in range(maxit):
 		#print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ite = ", ite, "   myid = ", myid
 		t_start = time.time()
 
@@ -970,7 +970,7 @@ def cml_find_structure2(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_
 		shuffle(tlistprj)
 		nnn = len(tlistprj)
 		tlistprj = mpi_bcast(tlistprj, nnn, MPI_INT, main_node, MPI_COMM_WORLD)
-		tlistprj = map(int, tlistprj)
+		tlistprj = list(map(int, tlistprj))
 		"""
 		if(ite>1 and ite%5 == 0  and ite<140):
 			if(myid == main_node):
@@ -1006,8 +1006,8 @@ def cml_find_structure2(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_
 			iw = [0] * (g_n_prj - 1)
 			c  = 0
 			ct = 0
-			for i in xrange(g_n_prj):
-				for j in xrange(i+1, g_n_prj):
+			for i in range(g_n_prj):
+				for j in range(i+1, g_n_prj):
 					if i == iprj or j == iprj:
 						iw[ct] = c
 						ct += 1
@@ -1016,7 +1016,7 @@ def cml_find_structure2(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_
 			# loop over all angles
 			best_disc_list = [0]*g_n_anglst
 			best_psi_list  = [0]*g_n_anglst
-			for iagl in xrange(myid, g_n_anglst, number_of_proc):
+			for iagl in range(myid, g_n_anglst, number_of_proc):
 				# if orientation is free
 				if ocp[iagl] == -1:
 					# assign new orientation
@@ -1028,12 +1028,12 @@ def cml_find_structure2(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_
 						cml = Util.cml_line_in3d(Ori, g_seq, g_n_prj, g_n_lines)
 						weights = Util.cml_weights(cml)
 						mw  = max(weights)
-						for i in xrange(g_n_lines): weights[i]  = mw - weights[i]
+						for i in range(g_n_lines): weights[i]  = mw - weights[i]
 						sw = sum(weights)
 						if sw == 0:
 							weights = [6.28 / float(g_n_lines)] * g_n_lines
 						else:
-							for i in xrange(g_n_lines):
+							for i in range(g_n_lines):
 								weights[i] /= sw
 								weights[i] *= weights[i]
 
@@ -1059,7 +1059,7 @@ def cml_find_structure2(Prj, Ori, Rot, outdir, outname, maxit, first_zero, flag_
 
 			if myid == main_node:
 				best_disc = 1.0e20
-				for iagl in xrange(g_n_anglst):
+				for iagl in range(g_n_anglst):
 					if best_disc_list[iagl] > 0.0 and best_disc_list[iagl] < best_disc:
 						best_disc = best_disc_list[iagl]
 						best_psi = best_psi_list[iagl]
@@ -1127,7 +1127,7 @@ def cml2_ori_collinearity(Ori):
 	deg2rad = 1.0 / rad2deg
 	nori    = len(Ori) // 4
 	lx, ly  = [], []
-	for n in xrange(nori):
+	for n in range(nori):
 		ind     = n * 4
 		ph, th  = Ori[ind:ind+2]
 		ph     *= deg2rad
@@ -1137,7 +1137,7 @@ def cml2_ori_collinearity(Ori):
 
 	# direct least square fitting of ellipse (IEEE ICIP Pilu96)
 	D = zeros((nori, 6))
-	for c in xrange(nori):
+	for c in range(nori):
 		D[c, :] = [lx[c]*lx[c], lx[c]*ly[c], ly[c]*ly[c], lx[c], ly[c], 1.0]
 	D = matrix(D)
 	S = D.transpose() * D

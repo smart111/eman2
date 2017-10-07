@@ -60,7 +60,7 @@ indicating its position in the movie.
 	(options, args) = parser.parse_args()
 
 	if options.boxsize<10 : 
-		print "Please specify a box size"
+		print("Please specify a box size")
 		sys.exit(1)
 
 	box=options.boxsize
@@ -78,7 +78,7 @@ indicating its position in the movie.
 			if ".hdf" in i: uniq[base_name(i,nodir=True)]=[]
 	else :
 		lsx=LSXFile(options.useset,True)
-		for i in xrange(len(lsx)): 
+		for i in range(len(lsx)): 
 			ln=lsx.read(i)
 			try: uniq[base_name(ln[1],nodir=True)].append(int(ln[0]))
 			except: uniq[base_name(ln[1],nodir=True)]=[int(ln[0])]
@@ -92,10 +92,10 @@ indicating its position in the movie.
 		elif os.path.exists("movie/"+ u.replace("_aliavg","").replace("_proc","")+".mrcs"):m=u.replace("_aliavg","").replace("_proc","")+".mrcs"
 		elif os.path.exists("movie/"+ u.split(".")[0]+"_raw_proc_corr.hdf") : m= u.split(".")[0]+"_raw_proc_corr.hdf"
 		else :
-			print "Couldn't find movie for ",u
-			print "Tried: ","{}_raw_proc_align.hdf".format(u), "{}.hdf".format(u.replace("_aliavg","_align")), "{}_proc_align.hdf".format(u), "{}.mrcs".format(u), u.replace("aliavg","align")+".hdf",u.replace("_aliavg","").replace("_proc","")+".mrcs","movie/"+ u.split(".")[0]+"_raw_proc_corr.hdf"
+			print("Couldn't find movie for ",u)
+			print("Tried: ","{}_raw_proc_align.hdf".format(u), "{}.hdf".format(u.replace("_aliavg","_align")), "{}_proc_align.hdf".format(u), "{}.mrcs".format(u), u.replace("aliavg","align")+".hdf",u.replace("_aliavg","").replace("_proc","")+".mrcs","movie/"+ u.split(".")[0]+"_raw_proc_corr.hdf")
 			continue
-		print "Movie found {} -> {}".format(u,m)
+		print("Movie found {} -> {}".format(u,m))
 
 
 		fsp=os.path.join("movie",m)
@@ -108,10 +108,10 @@ indicating its position in the movie.
 				fsp=os.path.join("movie",m)
 				n=EMUtil.get_image_count(fsp)
 			if n<=2 : 
-				print "skipping ",m," (too few images)"
+				print("skipping ",m," (too few images)")
 				continue	
 		except:
-			print "skipping ",m," (read error)"
+			print("skipping ",m," (read error)")
 			continue
 
 		#if not os.path.exists("info/{}_info.json".format(u)) :
@@ -131,12 +131,12 @@ indicating its position in the movie.
 			nptcl=EMUtil.get_image_count(ptclfile)
 
 		if nptcl==0 : 
-			print "no particles found :",u
+			print("no particles found :",u)
 			continue
 
-		if len(uniq[u])==0 : uniq[u]=xrange(nptcl)
+		if len(uniq[u])==0 : uniq[u]=range(nptcl)
 		
-		for i in xrange(n):
+		for i in range(n):
 			fm=EMData(fsp,i)
 			fm.process_inplace("normalize.edgemean")
 			for ib in uniq[u]:

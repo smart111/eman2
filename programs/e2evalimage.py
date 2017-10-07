@@ -191,7 +191,7 @@ class GUIEvalImage(QtGui.QWidget):
 				if self.defaultcs!=None : ctf.cs=self.defaultcs
 				if self.defaultapix!=None : ctf.apix=self.defaultapix
 				parms=[int(box),ctf,(256,256),set(),5,1]
-				print("Initialize new parms for: ",base_name(i))
+				print(("Initialize new parms for: ",base_name(i)))
 
 			if self.constbfactor>0 : parms[1].bfactor=self.constbfactor
 
@@ -649,14 +649,14 @@ class GUIEvalImage(QtGui.QWidget):
 
 
 	def unImport(self,val=None):
-		print("unimport ",base_name(self.setlist.item(self.curset).text(),nodir=self.nodir))
+		print(("unimport ",base_name(self.setlist.item(self.curset).text(),nodir=self.nodir)))
 		item=base_name(self.setlist.item(self.curset).text(),nodir=self.nodir)
 		try: os.unlink("micrographs/%s.hdf"%item)
-		except: print("Couldn't delete micrographs/%s.hdf"%item)
+		except: print(("Couldn't delete micrographs/%s.hdf"%item))
 
 	def doImport(self,val=None):
 		"""Imports the currently selected image into a project"""
-		print("import ",base_name(self.setlist.item(self.curset).text(),nodir=self.nodir))
+		print(("import ",base_name(self.setlist.item(self.curset).text(),nodir=self.nodir)))
 
 		# This is just the (presumably) unique portion of the filename
 		item=base_name(self.setlist.item(self.curset).text(),nodir=self.nodir)

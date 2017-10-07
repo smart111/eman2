@@ -185,7 +185,7 @@ def rundcclients(host,port,verbose):
 		rc=subprocess.call(["e2parallel.py","realdcclient","--server="+str(host),"--port="+str(port),"--verbose="+str(verbose),"--clientid="+str(clientid)])
 		if rc : 
 			if rc==1 : print("Client exited at server request")
-			else : print("Client exited with status code %s"%str(rc))
+			else : print(("Client exited with status code %s"%str(rc)))
 			break
 
 def rundcclient(host,port,verbose,clientid):
@@ -199,7 +199,7 @@ def rundcclient(host,port,verbose,clientid):
 def precache(files):
 	"""Adds a list of filenames to the precaching queue. Precaching will occur before jobs are started."""
 	q=EMTaskQueue()
-	print(len(files)," files queued for precaching") 
+	print((len(files)," files queued for precaching")) 
 	q.precache["files"]=files
 	
 
@@ -211,7 +211,7 @@ def rerunall():
 	
 	for i in e: q.task_rerun(i)
 	
-	print("Requeued %d tasks"%len(e))
+	print(("Requeued %d tasks"%len(e)))
 
 def killall():
 	"""Requeues all active (incomplete) tasks"""
@@ -221,7 +221,7 @@ def killall():
 	
 	for i in e: q.task_aborted(i)
 
-	print("Killed %d tasks"%len(e))
+	print(("Killed %d tasks"%len(e)))
 
 def killdcserver(server,port,verbose):
 	EMDCsendonecom(server,port,"QUIT")
@@ -345,8 +345,8 @@ class TaskData(QtCore.QAbstractTableModel):
 	def col(self,task,n):
 		"""gets a single table entry"""
 		if not isinstance(task,EMTask) : 
-			print(loc.row(),keys[loc.row()])
-			print(self.target[keys[loc.row()]])
+			print((loc.row(),keys[loc.row()]))
+			print((self.target[keys[loc.row()]]))
 			return QtCore.QVariant("???")
 			
 		if n==0 : ret=task.taskid

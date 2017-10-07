@@ -117,7 +117,7 @@ handled this way."""
 	if options.verbose>0 : print("MSA complete")
 	for j,i in enumerate(out):
 		try :
-			if options.verbose>0 : print("Eigenvalue: ",i.get_attr("eigval"))
+			if options.verbose>0 : print(("Eigenvalue: ",i.get_attr("eigval")))
 		except: pass
 		i.write_image(args[1],j)
 

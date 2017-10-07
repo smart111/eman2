@@ -74,18 +74,18 @@ def main():
 # read in projection Euler angles
 	if options.refs:
 		ORTs=[]
-		for i in xrange(nx):	
+		for i in range(nx):	
 			# this reads the header, gets the orientation, and reads it out EMAN style
 			ort=EMData(options.refs,i,True)["xform.projection"]
 			o=ort.get_rotation("eman")
 			o["phi"]=0
 			ort.set_rotation(o)
 			ORTs.append(ort)
-		print nx," projections read"
+		print(nx," projections read")
 
 	logid=E2init(sys.argv,options.ppid)
 
-	print "Computing average unit vectors"
+	print("Computing average unit vectors")
 	# compile vector sums for each class
 	for y in range(ny):
 		im=EMData(args[0],0,False,Region(0,y,nx,1))
@@ -95,7 +95,7 @@ def main():
 		except: bvecs[N]=im
 
 	# normalize all vector sums
-	for im in bvecs.values(): 
+	for im in list(bvecs.values()): 
 		im.process_inplace("normalize.unitlen")
 
 	# Make an output image of vectors
@@ -106,7 +106,7 @@ def main():
 		except: pass
 		
 	mx.write_image("simvec.hdf",0)
-	print "Output mean quality vector per class in simvec.hdf"
+	print("Output mean quality vector per class in simvec.hdf")
 
 	syms=Symmetries.get(options.sym).get_syms()
 
@@ -116,21 +116,21 @@ def main():
 		if options.inset.lower()[:4]!="bdb:" : dbin=db_open_dict("bdb:sets#%s"%options.inset)
 		else : dbin=db_open_dict(options.inset)
 	
-	print "Particle quality file"
+	print("Particle quality file")
 	# Output particle quality file
 	out=file("simqual.txt","w")
 	t=time.time()
 	outn=0
-	for y in xrange(ny):
+	for y in range(ny):
 		if time.time()-t>.2 :
-			print " %d\t %d\r"%(y,outn),
+			print(" %d\t %d\r"%(y,outn), end=' ')
 			sys.stdout.flush()
 			t=time.time()
 
 		im=EMData(args[0],0,False,Region(0,y,nx,1))
 		N=im.calc_min_index()
 		best=-10.0,-10.0,-1
-		for r in xrange(nx):
+		for r in range(nx):
 			try:
 				c=-im.cmp("ccc",bvecs[r])
 				if c>best[0]: best=[c,im[r]-im["minimum"],r]
@@ -159,7 +159,7 @@ def main():
 			dbout[outn]=im
 			outn+=1
 	
-	print "Output particle quality file simqual.txt"
+	print("Output particle quality file simqual.txt")
 	E2end(logid)
 
 if __name__ == "__main__":  main()

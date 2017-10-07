@@ -73,7 +73,7 @@ def get_list(typename):
             n = TestUtil.get_debug_float(i)
         elif typename == "long":
             n1 = TestUtil.get_debug_int(i)
-            n = long(n1)
+            n = int(n1)
         elif typename == "string":
             n = TestUtil.get_debug_string(i)
         elif typename == "transformarray":
@@ -92,7 +92,7 @@ def get_dict(typename):
 			n = TestUtil.get_debug_int(i)
 		elif typename == "long":
 			n1 = TestUtil.get_debug_int(i)
-			n = long(n1)
+			n = int(n1)
 		elif typename == "float":
 			n = TestUtil.get_debug_float(i)
 		elif typename == "string":

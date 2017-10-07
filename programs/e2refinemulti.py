@@ -546,7 +546,7 @@ Based on your requested resolution and box-size, modified by --speed, I will use
 	db = js_open_dict(options.path+"/0_refine_parms.json")
 	db.update(vars(options))
 
-	print("NOTE: you can check the progress of the refinement at any time by opening this URL in your web-browser:  file://{}/index.html".format(os.path.abspath(output_path)))
+	print(("NOTE: you can check the progress of the refinement at any time by opening this URL in your web-browser:  file://{}/index.html".format(os.path.abspath(output_path))))
 	
 	### Actual refinement loop ###
 	for it in range(1,options.iter+1) :
@@ -569,7 +569,7 @@ Based on your requested resolution and box-size, modified by --speed, I will use
 		if makesimmask :
 			av=Averagers.get("minmax",{"max":1})
 			nprj=EMUtil.get_image_count("{path}/projections_{itr:02d}.hdf".format(path=options.path,itr=it))
-			print("Mask from {} projections".format(nprj))
+			print(("Mask from {} projections".format(nprj)))
 			for i in range(nprj):
 				a=EMData("{path}/projections_{itr:02d}.hdf".format(path=options.path,itr=it),i)
 				av.add_image(a)
@@ -661,7 +661,7 @@ Based on your requested resolution and box-size, modified by --speed, I will use
 		run("e2proc3d.py {path}/threed_{itr:02d}_{mdl:02d}.hdf {path}/tmp0.hdf --process=filter.lowpass.gauss:cutoff_freq=.05".format(path=options.path,itr=it,mdl=1))
 		o0=EMData("{path}/threed_{itr:02d}_{mdl:02d}.hdf".format(path=options.path,itr=it,mdl=1),0)
 		for mdl in range(1,options.nmodels):
-			if options.verbose>0 : print("Aligning map ",mdl+1)
+			if options.verbose>0 : print(("Aligning map ",mdl+1))
 			map2="{path}/threed_{itr:02d}_{mdl:02d}.hdf".format(path=options.path,itr=it,mdl=mdl+1)
 			run("e2proc3d.py {map2} {path}/tmp1.hdf --process=filter.lowpass.gauss:cutoff_freq=.05 {align}".format(path=options.path,map2=map2,align=align))
 			run("e2proc3d.py {map2} {path}/tmp1f.hdf --process=filter.lowpass.gauss:cutoff_freq=.05 --process=xform.flip:axis=z {align}".format(path=options.path,map2=map2,align=align))
@@ -677,12 +677,12 @@ Based on your requested resolution and box-size, modified by --speed, I will use
 			if ca<cb :
 				try: ali=a["xform.align3d"]
 				except: ali=Transform()
-				if verbose>0 : print("correct hand detected ",ali)
+				if verbose>0 : print(("correct hand detected ",ali))
 			else :
 				try: ali=b["xform.align3d"]
 				except: ali=Transform()
 				o.process_inplace("xform.flip",{"axis":"z"})
-				if verbose>0 : print("handedness flip required",ali)
+				if verbose>0 : print(("handedness flip required",ali))
 			o.transform(ali)
 
 			os.unlink(map2)
@@ -728,9 +728,9 @@ Based on your requested resolution and box-size, modified by --speed, I will use
 	# Now we split the data into sets for individual model refinements
 	run("e2classextract.py {path}/classes_{itr:02d}.hdf --refinemulti --sort --verbose=1 --setname={set}".format(path=options.path,itr=it,set=setname))
 
-	print("e2refinemulti.py completed sucessfully, but you are not yet done. The particles going into each output map have been seperated into the sets listed above. \
+	print(("e2refinemulti.py completed sucessfully, but you are not yet done. The particles going into each output map have been seperated into the sets listed above. \
 You now need to run a single model e2refine_easy job for each of these output sets to produce the final maps. The maps in {} are not optimal, and no gold standard \
-resolution has been determined for them.".format(options.path))
+resolution has been determined for them.".format(options.path)))
 	append_html("<p>e2refinemulti.py has now completed running, and experienced no detectable errors, but you aren't done yet. The multi-model refinement method is inherently somewhat instable, particularly if \
 the variability in your map you are trying to classify is continuous rather than discrete. What this means is, the final maps in {}, are not entirely optimal, and do not have gold standard resolutions associated \
 with them. Your next step should be to run a normal e2refine_easy run for the particles from each of the subgroups produced by this run of e2refinemulti. To facilitate that process, new particle sets have \
@@ -776,14 +776,14 @@ def get_apix_used(options):
 def run(command):
 	"Mostly here for debugging, allows you to control how commands are executed (os.system is normal)"
 
-	print("{}: {}".format(time.ctime(time.time()),command))
+	print(("{}: {}".format(time.ctime(time.time()),command)))
 	append_html("<p>{}: {}</p>".format(time.ctime(time.time()),command),True)
 
 	ret=launch_childprocess(command)
 
 	# We put the exit here since this is what we'd do in every case anyway. Saves replication of error detection code above.
 	if ret !=0 :
-		print("Error running: ",command)
+		print(("Error running: ",command))
 		sys.exit(1)
 
 	return

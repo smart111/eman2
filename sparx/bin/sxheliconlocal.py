@@ -84,8 +84,8 @@ def main():
 	
 	(options, args) = parser.parse_args(arglist[1:])
 	if len(args) < 3 or len(args) > 4:
-		print "usage: " + usage + "\n"
-		print "Please run '" + progname + " -h' for detailed options"
+		print("usage: " + usage + "\n")
+		print("Please run '" + progname + " -h' for detailed options")
 	else:
 		global_def.BATCH = True
 		# Convert input arguments in the units/format as expected by ihrsr_MPI in applications.
@@ -96,7 +96,7 @@ def main():
 		if options.an <= 0 :
 			ERROR("Angular search range (an) has to be given.  Only local searches are permitted.","sxheliconlocal",1)
 
-		print  " This code is under development, some instabilities are possible 12/28/2014"
+		print(" This code is under development, some instabilities are possible 12/28/2014")
 
 		rminp = int((float(options.rmin)/options.apix) + 0.5)
 		rmaxp = int((float(options.rmax)/options.apix) + 0.5)
@@ -114,12 +114,12 @@ def main():
 		txsp = ""
 		y_restrict2 = ""
 
-		for i in xrange(len(xr)):    xrp += str(float(xr[i])/options.apix)+" "
+		for i in range(len(xr)):    xrp += str(float(xr[i])/options.apix)+" "
 		xrp = xrp[:-1]
-		for i in xrange(len(txs)):  txsp += str(float(txs[i])/options.apix)+" "
+		for i in range(len(txs)):  txsp += str(float(txs[i])/options.apix)+" "
 		txsp = txsp[:-1]
 		# now y_restrict has the same format as x search range .... has to change ihrsr accordingly
-		for i in xrange(len(y_restrict)): y_restrict2 +=  str(float(y_restrict[i])/options.apix)+" "
+		for i in range(len(y_restrict)): y_restrict2 +=  str(float(y_restrict[i])/options.apix)+" "
 		y_restrict2 = y_restrict2[:-1]
 
 		from mpi import mpi_init, mpi_finalize

@@ -256,7 +256,7 @@ def remove_MoinMoinWiki_makeup(target_text):
 				item_tokens = display_item.split(makeup_separator)
 				assert (len(item_tokens) == 2)
 				display_item = item_tokens[1] # 2nd one should be display text
-			print "### Found a wiki makeup token \"%s\". Changed to \"%s\"" % (makeup_token, display_item)
+			print("### Found a wiki makeup token \"%s\". Changed to \"%s\"" % (makeup_token, display_item))
 			target_text = target_text.replace(makeup_token, display_item, 1)
 
 		# Try to find the next
@@ -268,7 +268,7 @@ def remove_MoinMoinWiki_makeup(target_text):
 # ----------------------------------------------------------------------------------------
 def construct_token_list_from_MoinMoinWiki(sxcmd_config):
 
-	print "Start parsing MoinMoinWiki document (%s as %s %s command) " % (sxcmd_config.wiki, sxcmd_config.category, sxcmd_config.role)
+	print("Start parsing MoinMoinWiki document (%s as %s %s command) " % (sxcmd_config.wiki, sxcmd_config.category, sxcmd_config.role))
 
 	if sxcmd_config.format != "MoinMoinWiki": ERROR("Logical Error: Incorrect Wiki format %s! Check the sxcmd_config setting in this script." % (sxcmd_config.format), "%s in %s" % (__name__, os.path.basename(__file__)))
 
@@ -389,7 +389,7 @@ def construct_token_list_from_MoinMoinWiki(sxcmd_config):
 							token.key_prefix = key[0:len(key) - len(token.key_base)]
 							# Try to set the special type base on the keyword dictionary
 							best_keyword_map = SXkeyword_map(99, "")
-							for keyword in keyword_dict.keys():
+							for keyword in list(keyword_dict.keys()):
 								if key.find(keyword) != -1:
 									# command token contains keyword
 									keyword_map = keyword_dict[keyword]
@@ -425,7 +425,7 @@ def construct_token_list_from_MoinMoinWiki(sxcmd_config):
 							continue
 						line_buffer = line_buffer[item_tail + len(target_operator):].strip() # Get the rest of line
 						# check consistency between 'usage in command line' and this
-						if key_base not in sxcmd.token_dict.keys(): ERROR("Wiki Format Error: Key base (%s) is missing from 'usage in command line' in '= Usage ='." % key_base, "%s in %s" % (__name__, os.path.basename(__file__)))
+						if key_base not in list(sxcmd.token_dict.keys()): ERROR("Wiki Format Error: Key base (%s) is missing from 'usage in command line' in '= Usage ='." % key_base, "%s in %s" % (__name__, os.path.basename(__file__)))
 						# Get the reference to the command token object associated with this key base name
 						token = sxcmd.token_dict[key_base]
 						if token.key_base != key_base: ERROR("Logical Error: Registered command token with wrong key base name into the dictionary.", "%s in %s" % (__name__, os.path.basename(__file__)))
@@ -508,7 +508,7 @@ def construct_token_list_from_MoinMoinWiki(sxcmd_config):
 
 	handle_exceptional_cases(sxcmd)
 
-	print "Succeed to parse MoinMoinWiki document (%s as %s %s command)" % (sxcmd_config.wiki, sxcmd_config.category, sxcmd_config.role)
+	print("Succeed to parse MoinMoinWiki document (%s as %s %s command)" % (sxcmd_config.wiki, sxcmd_config.category, sxcmd_config.role))
 
 	"""
 	# For DEBUG
@@ -562,7 +562,7 @@ def remove_DokuWiki_makeup(target_text):
 				item_tokens = display_item.split(makeup_separator)
 				assert (len(item_tokens) == 2)
 				display_item = item_tokens[1] # 2nd one should be display text
-			print "### Found a wiki makeup token \"%s\". Changed to \"%s\"" % (makeup_token, display_item)
+			print("### Found a wiki makeup token \"%s\". Changed to \"%s\"" % (makeup_token, display_item))
 			target_text = target_text.replace(makeup_token, display_item, 1)
 
 		# Try to find the next
@@ -574,7 +574,7 @@ def remove_DokuWiki_makeup(target_text):
 # ----------------------------------------------------------------------------------------
 def construct_token_list_from_DokuWiki(sxcmd_config):
 
-	print "Start parsing DokuWiki document (%s as %s %s command) " % (sxcmd_config.wiki, sxcmd_config.category, sxcmd_config.role)
+	print("Start parsing DokuWiki document (%s as %s %s command) " % (sxcmd_config.wiki, sxcmd_config.category, sxcmd_config.role))
 
 	if sxcmd_config.format != "DokuWiki": ERROR("Logical Error: Incorrect Wiki format %s! Check the sxcmd_config setting in this script." % (sxcmd_config.format), "%s in %s" % (__name__, os.path.basename(__file__)))
 
@@ -690,7 +690,7 @@ def construct_token_list_from_DokuWiki(sxcmd_config):
 							token.key_prefix = key[0:len(key) - len(token.key_base)]
 							# Try to set the special type base on the keyword dictionary
 							best_keyword_map = SXkeyword_map(99, "")
-							for keyword in keyword_dict.keys():
+							for keyword in list(keyword_dict.keys()):
 								if key.find(keyword) != -1:
 									# command token contains keyword
 									keyword_map = keyword_dict[keyword]
@@ -727,7 +727,7 @@ def construct_token_list_from_DokuWiki(sxcmd_config):
 							continue
 						line_buffer = line_buffer[item_tail + len(target_operator):].strip() # Get the rest of line
 						# check consistency between 'usage in command line' and this
-						if key_base not in sxcmd.token_dict.keys(): ERROR("Wiki Format Error: Key base (%s) is missing from 'usage in command line' in '====== Usage ======'." % key_base, "%s in %s" % (__name__, os.path.basename(__file__)))
+						if key_base not in list(sxcmd.token_dict.keys()): ERROR("Wiki Format Error: Key base (%s) is missing from 'usage in command line' in '====== Usage ======'." % key_base, "%s in %s" % (__name__, os.path.basename(__file__)))
 						# Get the reference to the command token object associated with this key base name
 						token = sxcmd.token_dict[key_base]
 						if token.key_base != key_base: ERROR("Logical Error: Registered command token with wrong key base name into the dictionary.", "%s in %s" % (__name__, os.path.basename(__file__)))
@@ -802,7 +802,7 @@ def construct_token_list_from_DokuWiki(sxcmd_config):
 
 	handle_exceptional_cases(sxcmd)
 
-	print "Succeed to parse MoinMoinWiki document (%s as %s %s command)" % (sxcmd_config.wiki, sxcmd_config.category, sxcmd_config.role)
+	print("Succeed to parse MoinMoinWiki document (%s as %s %s command)" % (sxcmd_config.wiki, sxcmd_config.category, sxcmd_config.role))
 
 	"""
 	# For DEBUG
@@ -857,7 +857,7 @@ def apply_sxsubcmd_config(sxsubcmd_config, sxcmd):
 	# Using the first entry in token edit list as command mode token of this subset,
 	# get mode token from sxcmd (having a fullset of tokens)
 	mode_token_edit = sxsubcmd_config.token_edit_list[0]
-	if mode_token_edit.key_base not in fullset_token_dict.keys(): ERROR("Logical Error: This condition should not happen! Subset command configuration must be incorrect. Key (%s) should not exists." % (mode_token_edit.key_base), "%s in %s" % (__name__, os.path.basename(__file__)))
+	if mode_token_edit.key_base not in list(fullset_token_dict.keys()): ERROR("Logical Error: This condition should not happen! Subset command configuration must be incorrect. Key (%s) should not exists." % (mode_token_edit.key_base), "%s in %s" % (__name__, os.path.basename(__file__)))
 	mode_token = fullset_token_dict[mode_token_edit.key_base]
 
 	# Create mode name of this subset, append key base of mode token to mode_name of this command
@@ -887,7 +887,7 @@ def apply_sxsubcmd_config(sxsubcmd_config, sxcmd):
 	for token_edit in sxsubcmd_config.token_edit_list:
 		# print "MRK_DEBUG: token_edit.key_base = %s" % (token_edit.key_base)
 		token = None
-		if token_edit.key_base not in fullset_token_dict.keys():
+		if token_edit.key_base not in list(fullset_token_dict.keys()):
 			# token key base is not found in fullset. This must be an argument to be added
 			if token_edit.key_prefix != "": ERROR("Logical Error: This condition should not happen! Subset command configuration must be incorrect. Key (%s) should be argument." % (token_edit.key_base) , "%s in %s" % (__name__, os.path.basename(__file__)))
 			token = token_edit

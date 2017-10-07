@@ -85,7 +85,7 @@ def main():
 	rlen=EMUtil.get_image_count(args[1])
 	clen_stg1=3*int(sqrt(clen))
 
-	print("%d references, using %d stage 1 averaged references"%(clen,clen_stg1))
+	print(("%d references, using %d stage 1 averaged references"%(clen,clen_stg1)))
 
 	#if options.align[:21]=="rotate_translate_tree" :
 		#options.shrink=None
@@ -104,12 +104,12 @@ def main():
 		cmd="e2simmx.py %s %s %s %s --align=rotate_translate_tree --aligncmp=sqeuclidean:normto=1 --cmp=sqeuclidean --saveali --force --verbose=%d"%(args[0],args[0],args[3],options.shrinks1, options.verbose-1)
 		if options.prefilt : cmd+=" --prefilt"
 		if options.parallel!=None : cmd+=" --parallel="+options.parallel
-		print("executing ",cmd)
+		print(("executing ",cmd))
 		launch_childprocess(cmd)
 
 		E2progress(E2n,0.10)
 		# Go through the reference self-simmx and determine the most self-dissimilar set of references
-		print("Finding %d dissimilar classification centers"%clen_stg1)
+		print(("Finding %d dissimilar classification centers"%clen_stg1))
 		ref_simmx=EMData(args[3],0)
 		ref_orts=EMData.read_images(args[3],(1,2,3,4))
 		centers=[0]		# start with the first (generally a top view) image regardless
@@ -176,7 +176,7 @@ def main():
 		if options.ralign!=None : cmd+=" --ralign=%s --raligncmp=%s"%(options.ralign,options.raligncmp)
 		if options.parallel!=None : cmd+=" --parallel="+options.parallel
 		if options.exclude!=None : cmd+=" --exclude="+options.exclude
-		print("executing ",cmd)
+		print(("executing ",cmd))
 		launch_childprocess(cmd)
 	else :
 		# reread classification info
@@ -186,7 +186,7 @@ def main():
 	E2progress(E2n,0.60)
 	############### Step 3 - classify particles against subset of original projections
 	# Now we need to convert this small classification into a 'seed' for the large classification matrix for simplicity
-	print("Seeding full classification matrix (%d x %d) -> %s"%(clen,rlen,args[2]))
+	print(("Seeding full classification matrix (%d x %d) -> %s"%(clen,rlen,args[2])))
 	mxstg1=EMData(args[5],0)
 	mx=EMData(clen,rlen,1)
 	mx.add(-1.0e38)	# a large negative value to be replaced later
@@ -230,7 +230,7 @@ def main():
 	if (options.shrink):
 		cmd += " --shrink="+str(options.shrink)
 
-	print("executing ",cmd)
+	print(("executing ",cmd))
 	launch_childprocess(cmd)
 
 	E2progress(E2n,1.0)

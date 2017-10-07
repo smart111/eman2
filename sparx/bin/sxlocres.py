@@ -39,7 +39,7 @@ from	global_def import SPARX_MPI_TAG_UNIVERSAL
 #Transforms the local resolution file from frequency units to angstroms.
 def makeAngRes(freqvol, nx, ny, nz, pxSize):
 	if (pxSize == 1.0):
-		print "Using a value of 1 for the pixel size. Are you sure this is correct?"
+		print("Using a value of 1 for the pixel size. Are you sure this is correct?")
 
 	outAngResVol = EMData()
 	outAngResVol.set_size(nx,ny,nz)
@@ -81,7 +81,7 @@ def main():
 	(options, args) = parser.parse_args(arglist[1:])
 
 	if len(args) <3 or len(args) > 4:
-		print "See usage " + usage
+		print("See usage " + usage)
 		sys.exit()
 
 	if global_def.CACHE_DISABLE:
@@ -156,10 +156,10 @@ def main():
 		if(myid == 0):
 			if res_overall !=-1.0:
 				freqvol += (res_overall- Util.infomask(freqvol, m, True)[0])
-				for ifreq in xrange(len(resolut)):
+				for ifreq in range(len(resolut)):
 					if resolut[ifreq][0] >res_overall:
 						 break
-				for jfreq in xrange(ifreq, len(resolut)):
+				for jfreq in range(ifreq, len(resolut)):
 					resolut[jfreq][1] = 0.0	
 			freqvol.write_image(outvol)
 			
@@ -205,10 +205,10 @@ def main():
 
 		freqvol = model_blank(nn,nn,nn)
 		resolut = []
-		for i in xrange(1,lp):
+		for i in range(1,lp):
 			fl = step*i
 			fh = fl+step
-			print lp,i,step,fl,fh
+			print(lp,i,step,fl,fh)
 			v = fft(filt_tophatb( vf, fl, fh))
 			u = fft(filt_tophatb( uf, fl, fh))
 			tmp1 = Util.muln_img(v,v)
@@ -240,9 +240,9 @@ def main():
 			Util.mul_img(tmp3,m)
 			freq=(fl+fh)/2.0
 			bailout = True
-			for x in xrange(nn):
-				for y in xrange(nn):
-					for z in xrange(nn):
+			for x in range(nn):
+				for y in range(nn):
+					for z in range(nn):
 						if(m.get_value_at(x,y,z) > 0.5):
 							if(freqvol.get_value_at(x,y,z) == 0.0):
 								if(tmp3.get_value_at(x,y,z) < cutoff):
@@ -251,13 +251,13 @@ def main():
 								else:
 									bailout = False
 			if(bailout):  break
-		print len(resolut)
+		print(len(resolut))
 		if res_overall !=-1.0:
 			freqvol += (res_overall- Util.infomask(freqvol, m, True)[0])
-			for ifreq in xrange(len(resolut)):
+			for ifreq in range(len(resolut)):
 				if resolut[ifreq][1] >res_overall:
 					 break
-			for jfreq in xrange(ifreq, len(resolut)):
+			for jfreq in range(ifreq, len(resolut)):
 				resolut[jfreq][2] = 0.0	
 		freqvol.write_image(outvol)
 		

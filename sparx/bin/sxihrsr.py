@@ -85,12 +85,12 @@ def main():
 
 	(options, args) = parser.parse_args(arglist[1:])
 	if len(args) < 1 or len(args) > 5:
-		print "usage: " + usage + "\n"
-		print "Please run '" + progname + " -h' for detailed options"
+		print("usage: " + usage + "\n")
+		print("Please run '" + progname + " -h' for detailed options")
 	else:
 		# Convert input arguments in the units/format as expected by ihrsr_MPI in applications.
 		if options.apix < 0:
-			print "Please enter pixel size"
+			print("Please enter pixel size")
 			sys.exit()
 
 		rminp = int((float(options.rmin)/options.apix) + 0.5)
@@ -109,12 +109,12 @@ def main():
 		txsp = ''
 		y_restrict2 = ''
 		
-		for i in xrange(len(xr)):
+		for i in range(len(xr)):
 			xrp += " "+str(float(xr[i])/options.apix)
-		for i in xrange(len(txs)):
+		for i in range(len(txs)):
 			txsp += " "+str(float(txs[i])/options.apix)
 		# now y_restrict has the same format as x search range .... has to change ihrsr accordingly
-		for i in xrange(len(y_restrict)):
+		for i in range(len(y_restrict)):
 			y_restrict2 += " "+str(float(y_restrict[i])/options.apix)
 
 		if options.MPI:

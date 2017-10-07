@@ -19,7 +19,7 @@ ldr=""
 for pf in sorted(sys.argv[1:]):
 	try: p=EMData(pf)
 	except:
-		print "Couldn't read:",pf
+		print("Couldn't read:",pf)
 		continue
 
 	# identify when we've started on a new directory
@@ -51,12 +51,12 @@ for pf in sorted(sys.argv[1:]):
 	# Compute the eigenvalues/vectors
 	eigvv=LA.eig(mx)		# a 3-vector with eigenvalues and a 3x3 with the vectors
 	if min(eigvv[0])==0 :
-		print "error on ",pf
+		print("error on ",pf)
 		drn-=1
 		continue
 	#print eigvv[0]
 	#print eigvv[1]
-	eig=[(1.0/eigvv[0][i],eigvv[1][:,i]) for i in xrange(3)]  # extract for sorting
+	eig=[(1.0/eigvv[0][i],eigvv[1][:,i]) for i in range(3)]  # extract for sorting
 	#eig=sorted(eig,reverse=True)		# now eig is sorted in order from major to minor axes
 	eig=sorted(eig)		# now eig is sorted in order from major to minor axes
 	T=array([eig[0][1],eig[1][1],eig[2][1]])            # reassemble sorted matrix
@@ -91,5 +91,5 @@ for pf in sorted(sys.argv[1:]):
 	
 	# Z/Y - should always be >1, Y/X, Z/X
 	out.write("%1.3g\t%1.3g\t%1.3g\t# %s\n"%(shp[2]/shp[1],shp[1]/shp[0],shp[2]/shp[0],pf.split("/")[-1]))
-	print "%1.3g\t%1.3g\t%1.3g\t# %s"%(shp[2]/shp[1],shp[1]/shp[0],shp[2]/shp[0],pf)
+	print("%1.3g\t%1.3g\t%1.3g\t# %s"%(shp[2]/shp[1],shp[1]/shp[0],shp[2]/shp[0],pf))
 	

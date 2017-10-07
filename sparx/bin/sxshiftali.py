@@ -57,13 +57,13 @@ def main():
 	(options, args) = parser.parse_args()
 	
 	if not(options.MPI):
-		print "Only MPI version is currently implemented."
-		print "Please run '" + progname + " -h' for detailed options"
+		print("Only MPI version is currently implemented.")
+		print("Please run '" + progname + " -h' for detailed options")
 		return
 			
 	if len(args) < 1 or len(args) > 2:
-		print "usage: " + usage
-		print "Please run '" + progname + " -h' for detailed options"
+		print("usage: " + usage)
+		print("Please run '" + progname + " -h' for detailed options")
 	else:
 	
 		if len(args) == 1: mask = None
@@ -121,7 +121,7 @@ def shiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fourvar=Fa
 	else:
 		nima = 0
 	nima = bcast_number_to_all(nima, source_node = main_node)
-	list_of_particles = range(nima)
+	list_of_particles = list(range(nima))
 	
 	image_start, image_end = MPI_start_end(nima, number_of_proc, myid)
 	list_of_particles = list_of_particles[image_start: image_end]
@@ -162,13 +162,13 @@ def shiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fourvar=Fa
 	if CACHE_DISABLE:
 		data = EMData.read_images(stack, list_of_particles)
 	else:
-		for i in xrange(number_of_proc):
+		for i in range(number_of_proc):
 			if myid == i:
 				data = EMData.read_images(stack, list_of_particles)
 			if ftp == "bdb": mpi_barrier(MPI_COMM_WORLD)
 
 
-	for im in xrange(len(data)):
+	for im in range(len(data)):
 		data[im].set_attr('ID', list_of_particles[im])
 		st = Util.infomask(data[im], mask, False)
 		data[im] -= st[0]
@@ -188,8 +188,8 @@ def shiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fourvar=Fa
 			del ctf_abs_sum
 		else:
 			temp = EMData(nx, ny, 1, False)
-			for i in xrange(0,nx,2):
-				for j in xrange(ny):
+			for i in range(0,nx,2):
+				for j in range(ny):
 					temp.set_value_at(i,j,snr)
 			Util.add_img(ctf_2_sum, temp)
 			del temp
@@ -198,14 +198,14 @@ def shiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fourvar=Fa
 
 	# apply initial xform.align2d parameters stored in header
 	init_params = []
-	for im in xrange(len(data)):
+	for im in range(len(data)):
 		t = data[im].get_attr('xform.align2d')
 		init_params.append(t)
 		p = t.get_params("2d")
 		data[im] = rot_shift2D(data[im], p['alpha'], sx=p['tx'], sy=p['ty'], mirror=p['mirror'], scale=p['scale'])
 
 	# fourier transform all images, and apply ctf if CTF
-	for im in xrange(len(data)):
+	for im in range(len(data)):
 		if CTF:
 			ctf_params = data[im].get_attr("ctf")
 			data[im] = filt_ctf(fft(data[im]), ctf_params)
@@ -221,7 +221,7 @@ def shiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fourvar=Fa
 	ishift_x = [0.0]*len(data)
 	ishift_y = [0.0]*len(data)
 
-	for Iter in xrange(max_iter):
+	for Iter in range(max_iter):
 		if myid == main_node:
 			start_time = time()
 			print_msg("Iteration #%4d\n"%(total_iter))
@@ -268,7 +268,7 @@ def shiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fourvar=Fa
 		else:                nwy = ny
 
 		not_zero = 0
-		for im in xrange(len(data)):
+		for im in range(len(data)):
 			if oneDx:
 				ctx = Util.window(ccf(data[im],tavg),nwx,1)
 				p1  = peak_search(ctx)
@@ -308,7 +308,7 @@ def shiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fourvar=Fa
 
 		sx_ave = round(float(sx_sum_total)/nima)
 		sy_ave = round(float(sy_sum_total)/nima)
-		for im in xrange(len(data)): 
+		for im in range(len(data)): 
 			p1_x = ishift_x[im] - sx_ave
 			p1_y = ishift_y[im] - sy_ave
 			params2 = {"filter_type" : Processor.fourier_filter_types.SHIFT, "x_shift" : p1_x, "y_shift" : p1_y, "z_shift" : 0.0}
@@ -331,7 +331,7 @@ def shiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fourvar=Fa
 
 	#for im in xrange(len(data)): data[im] = fft(data[im])  This should not be required as only header information is used
 	# combine shifts found with the original parameters
-	for im in xrange(len(data)):		
+	for im in range(len(data)):		
 		t0 = init_params[im]
 		t1 = Transform()
 		t1.set_params({"type":"2D","alpha":0,"scale":t0.get_scale(),"mirror":0,"tx":shift_x[im],"ty":shift_y[im]})
@@ -389,11 +389,11 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 		filaments = ordersegments(infils, ptlcoords)
 		total_nfils = len(filaments)
 		inidl = [0]*total_nfils
-		for i in xrange(total_nfils):  inidl[i] = len(filaments[i])
+		for i in range(total_nfils):  inidl[i] = len(filaments[i])
 		linidl = sum(inidl)
 		nima = linidl
 		tfilaments = []
-		for i in xrange(total_nfils):  tfilaments += filaments[i]
+		for i in range(total_nfils):  tfilaments += filaments[i]
 		del filaments
 	else:
 		total_nfils = 0
@@ -408,7 +408,7 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 	tfilaments = bcast_list_to_all(tfilaments, myid, source_node = main_node)
 	filaments = []
 	iendi = 0
-	for i in xrange(total_nfils):
+	for i in range(total_nfils):
 		isti = iendi
 		iendi = isti+inidl[i]
 		filaments.append(tfilaments[isti:iendi])
@@ -420,8 +420,8 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 		ERROR('number of CPUs (%i) is larger than the number of filaments (%i), please reduce the number of CPUs used'%(nproc, total_nfils), "ehelix_MPI", 1,myid)
 
 	#  balanced load
-	temp = chunks_distribution([[len(filaments[i]), i] for i in xrange(len(filaments))], nproc)[myid:myid+1][0]
-	filaments = [filaments[temp[i][1]] for i in xrange(len(temp))]
+	temp = chunks_distribution([[len(filaments[i]), i] for i in range(len(filaments))], nproc)[myid:myid+1][0]
+	filaments = [filaments[temp[i][1]] for i in range(len(temp))]
 	nfils     = len(filaments)
 
 	#filaments = [[0,1]]
@@ -429,14 +429,14 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 	list_of_particles = []
 	indcs = []
 	k = 0
-	for i in xrange(nfils):
+	for i in range(nfils):
 		list_of_particles += filaments[i]
 		k1 = k+len(filaments[i])
 		indcs.append([k,k1])
 		k = k1
 	data = EMData.read_images(stack, list_of_particles)
 	ldata = len(data)
-	print "ldata=", ldata
+	print("ldata=", ldata)
 	nx = data[0].get_xsize()
 	ny = data[0].get_ysize()
 	if maskfile == None:
@@ -447,7 +447,7 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 
 	# apply initial xform.align2d parameters stored in header
 	init_params = []
-	for im in xrange(ldata):
+	for im in range(ldata):
 		t = data[im].get_attr('xform.align2d')
 		init_params.append(t)
 		p = t.get_params("2d")
@@ -466,7 +466,7 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 
 	from utilities import info
 
-	for im in xrange(ldata):
+	for im in range(ldata):
 		data[im].set_attr('ID', list_of_particles[im])
 		st = Util.infomask(data[im], mask, False)
 		data[im] -= st[0]
@@ -495,8 +495,8 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 		else:
 			temp = EMData(nx, ny, 1, False)
 			tsnr = 1./snr
-			for i in xrange(0,nx+2,2):
-				for j in xrange(ny):
+			for i in range(0,nx+2,2):
+				for j in range(ny):
 					temp.set_value_at(i,j,tsnr)
 					temp.set_value_at(i+1,j,0.0)
 			#info(ctf_2_sum)
@@ -507,13 +507,13 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 	total_iter = 0
 	shift_x = [0.0]*ldata
 
-	for Iter in xrange(max_iter):
+	for Iter in range(max_iter):
 		if myid == main_node:
 			start_time = time()
 			print_msg("Iteration #%4d\n"%(total_iter))
 		total_iter += 1
 		avg = EMData(nx, ny, 1, False)
-		for im in xrange(ldata):
+		for im in range(ldata):
 			Util.add_img(avg, fshift(data[im], shift_x[im]))
 
 		reduce_EMData_to_root(avg, myid, main_node)
@@ -548,7 +548,7 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 		sx_sum = 0.0
 		nxc = nx//2
 		
-		for ifil in xrange(nfils):
+		for ifil in range(nfils):
 			"""
 			# Calculate filament average
 			avg = EMData(nx, ny, 1, False)
@@ -562,7 +562,7 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 			nsegms = indcs[ifil][1]-indcs[ifil][0]
 			ctx = [None]*nsegms
 			pcoords = [None]*nsegms
-			for im in xrange(indcs[ifil][0], indcs[ifil][1]):
+			for im in range(indcs[ifil][0], indcs[ifil][1]):
 				ctx[im-indcs[ifil][0]] = Util.window(ccf(tavg, data[im]), nx, 1)
 				pcoords[im-indcs[ifil][0]] = data[im].get_attr('ptcl_source_coord')
 				#ctx[im-indcs[ifil][0]].write_image("ctx.hdf",im-indcs[ifil][0])
@@ -624,7 +624,7 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 					#if incline == 0:  print  "incline = 0  ",six,tang,qt,qu
 			#print qm,six,sib,bang
 			#print " got results   ",indcs[ifil][0], indcs[ifil][1], ifil,myid,qm,sib,tang,bang,len(ctx),Util.infomask(ctx[0], None, True)
-			for im in xrange(indcs[ifil][0], indcs[ifil][1]):
+			for im in range(indcs[ifil][0], indcs[ifil][1]):
 				kim = im-indcs[ifil][0]
 				dst = sqrt((pcoords[cents][0] - pcoords[kim][0])**2 + (pcoords[cents][1] - pcoords[kim][1])**2)
 				if(kim < cents):  xl = -dst*bang+sib
@@ -644,7 +644,7 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 			sx_sum = 0.0
 		sx_sum = 0.0
 		sx_sum = bcast_number_to_all(sx_sum, source_node = main_node)
-		for im in xrange(ldata):
+		for im in range(ldata):
 			shift_x[im] -= sx_sum
 			#print  "   %3d  %6.3f"%(im,shift_x[im])
 		#exit()
@@ -652,7 +652,7 @@ def helicalshiftali_MPI(stack, maskfile=None, maxit=100, CTF=False, snr=1.0, Fou
 
 			
 	# combine shifts found with the original parameters
-	for im in xrange(ldata):		
+	for im in range(ldata):		
 		t1 = Transform()
 		##import random
 		##shix=random.randint(-10, 10)

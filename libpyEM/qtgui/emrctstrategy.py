@@ -84,14 +84,14 @@ class Strategy2IMGMan(Strategy):
 	def pickevent(self, caller, x, y):
 		if caller == self.mediator.untilt_win:
 			if self.mediator.tilt_win.boxes.boxpopulation < self.mediator.untilt_win.boxes.boxpopulation:
-				print "Error, you need to selct an untilted partilce pair, before you select a new tilted one"
+				print("Error, you need to selct an untilted partilce pair, before you select a new tilted one")
 				return False
 		if caller == self.mediator.tilt_win:
 			if (self.mediator.tilt_win.boxes.boxpopulation == 0 and self.mediator.untilt_win.boxes.boxpopulation == 0):
-				print "Error, you first need to pick an untilted particle"
+				print("Error, you first need to pick an untilted particle")
 				return False
 			if self.mediator.untilt_win.boxes.boxpopulation < self.mediator.tilt_win.boxes.boxpopulation:
-				print "Error, you need to selct an untilted partilce pair, before you select a new tilted one"
+				print("Error, you need to selct an untilted partilce pair, before you select a new tilted one")
 				return False
 		return True
 		
@@ -170,7 +170,7 @@ class Strategy2IMGPair(Strategy):
 		#pick untilted particle
 		if caller == self.mediator.tilt_win:
 			if (self.mediator.tilt_win.boxes.boxpopulation == 0 and self.mediator.untilt_win.boxes.boxpopulation == 0):
-				print "Error, you first need to pick an untilted particle"
+				print("Error, you first need to pick an untilted particle")
 				return False
 			if self.mediator.untilt_win.boxes.boxpopulation == self.mediator.tilt_win.boxes.boxpopulation:
 				if self.mediator.tilt_win.boxes.boxpopulation >= self.minpp_for_xform:
@@ -238,8 +238,8 @@ class Strategy2IMGPair(Strategy):
 			self.dgamma = math.degrees(gamma) 
 			#print rotA
 			
-			self.mediator.control_window.pair_picker_tool.tiltaxis.setText(("%3.2f"%self.dphi)+u'\u00B0')
-			self.mediator.control_window.pair_picker_tool.gamma.setText(("%3.2f"%self.dgamma)+u'\u00B0')
+			self.mediator.control_window.pair_picker_tool.tiltaxis.setText(("%3.2f"%self.dphi)+'\u00B0')
+			self.mediator.control_window.pair_picker_tool.gamma.setText(("%3.2f"%self.dgamma)+'\u00B0')
 			# Save tilt data
 			self.mediator.tilt_win.boxes.save_tiltdata_to_db([self.tiltangle, self.dphi, self.dgamma])
 			self.mediator.untilt_win.boxes.save_tiltdata_to_db([self.tiltangle, self.dphi, self.dgamma])
@@ -269,7 +269,7 @@ class Strategy2IMGPair(Strategy):
 			detA = numpy.linalg.det(self.A)	# The determinate is is COS of the tilt angle
 			try:
 				self.tiltangle = math.degrees(math.acos(detA))
-				self.mediator.control_window.pair_picker_tool.tiltangle.setText(("%3.2f"%self.tiltangle)+u'\u00B0')
+				self.mediator.control_window.pair_picker_tool.tiltangle.setText(("%3.2f"%self.tiltangle)+'\u00B0')
 			except:
 				self.mediator.control_window.pair_picker_tool.tiltangle.setText("Det(A) > 1")
 			self.compute_tiltaxis()
@@ -281,18 +281,18 @@ class Strategy2IMGPair(Strategy):
 			U, D, V = numpy.linalg.svd(rotA)
 			# single values are ranked by numpy
 			self.tiltangle = math.degrees(math.acos(D[1]))
-			self.mediator.control_window.pair_picker_tool.tiltangle.setText(("%3.2f"%self.tiltangle)+u'\u00B0')
+			self.mediator.control_window.pair_picker_tool.tiltangle.setText(("%3.2f"%self.tiltangle)+'\u00B0')
 			# compute tilt axis
 			self.dphi = math.degrees(math.atan2(U[0][1],U[0][0]))
 			self.dgamma = math.degrees(math.atan2(V[0][1],V[0][0]))
 			# save and display data
-			self.mediator.control_window.pair_picker_tool.tiltaxis.setText(("%3.2f"%self.dphi)+u'\u00B0')
-			self.mediator.control_window.pair_picker_tool.gamma.setText(("%3.2f"%self.dgamma)+u'\u00B0')
+			self.mediator.control_window.pair_picker_tool.tiltaxis.setText(("%3.2f"%self.dphi)+'\u00B0')
+			self.mediator.control_window.pair_picker_tool.gamma.setText(("%3.2f"%self.dgamma)+'\u00B0')
 			# Save tilt data
 			self.mediator.tilt_win.boxes.save_tiltdata_to_db([self.tiltangle, self.dphi, self.dgamma])
 			self.mediator.untilt_win.boxes.save_tiltdata_to_db([self.tiltangle, self.dphi, self.dgamma])
 			
-			print D
+			print(D)
 			
 	def update_boxes(self):
 		for i,box in enumerate(self.mediator.untilt_win.boxes.boxlist):

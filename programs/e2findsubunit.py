@@ -120,7 +120,7 @@ def main() :
 		if len(plist)==0: break
 			
 		nvox+=1
-		if nvox%100==0 : print(nvox,len(plist))
+		if nvox%100==0 : print((nvox,len(plist)))
 		
 	data*=-1.0
 	data.process_inplace("threshold.belowtozero",{"minval":options.thr})

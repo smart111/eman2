@@ -46,9 +46,9 @@ def main(args):
 	for fname in args:
 		
 		if not os.path.isfile(fname):
-			print("Sorry, {} does not exist".format(fname))
+			print(("Sorry, {} does not exist".format(fname)))
 			continue
-		else: print("Processing {}".format(fname))
+		else: print(("Processing {}".format(fname)))
 		
 		hdr = EMData(fname,0,True)
 		if (hdr['nx'] / options.boxsize - 1) < 2 or (hdr['ny'] / options.boxsize - 1) < 2:
@@ -76,14 +76,14 @@ def main(args):
 		pairs = [(i,j) for i in range(n) for j in range(i+1,n)]
 		npairs = len(pairs)
 		
-		if options.verbose: print("Loading frames from {}".format(fname))
+		if options.verbose: print(("Loading frames from {}".format(fname)))
 		all_frames = []
 		for i in range(n):
 			print2line("\t{}/{}".format(i,n))
 			f = EMData(fname,i)
 			if options.fixbadlines:
 				for line in options.xybadlines:
-					coords = map(int,line.split(','))
+					coords = list(map(int,line.split(',')))
 					f.process_inplace('math.xybadline',{'xloc':coords[0],'yloc':coords[1]})
 			if options.fixaxes:
 				f.process_inplace('filter.xyaxes0',{'neighbor':1,'neighbornorm':options.nnorm,'x':1,'y':1})
@@ -151,7 +151,7 @@ def main(args):
 		for i,(tx,ty) in enumerate(zip(rx,ry)):
 			#tx = round(t[0],2)
 			#ty = round(t[1],2)
-			print("{}/{}\t{}\t{}".format(str(i+1).rjust(2),n,tx,ty))
+			print(("{}/{}\t{}\t{}".format(str(i+1).rjust(2),n,tx,ty)))
 			f = EMData(fname,i)
 			f.process_inplace('xform',{'transform':Transform({'type':'eman','tx':tx,'ty':ty})})
 			avg.add_image(f)
@@ -184,10 +184,10 @@ def incoherent_pws(frames,bs=512):
 	mx = np.arange(bs+50,frames[0]['nx']-bs+50,bs)
 	my = np.arange(bs+50,frames[1]['ny']-bs+50,bs)
 	regions = {}
-	for i in xrange(len(frames)): 
+	for i in range(len(frames)): 
 		regions[i] = [[x,y] for y in my for x in mx]
 	ips = Averagers.get('mean')
-	for i in xrange(len(frames)):
+	for i in range(len(frames)):
 		print2line("\t{}/{}".format(i+1,len(frames)))
 		img = frames[i]
 		frame_avg = Averagers.get('mean')
@@ -229,17 +229,17 @@ class PairwiseCoherence:
 		mx = np.arange(self.bs+50,self.frames[0]['nx']-self.bs+50,self.bs)
 		my = np.arange(self.bs+50,self.frames[0]['ny']-self.bs+50,self.bs)
 		self._tiles = {}
-		for i in xrange(self.n):
+		for i in range(self.n):
 			self._tiles[i] = np.array([[x,y] for y in my for x in mx])
 		self._stacks = {}
-		for ir in xrange(len(self._tiles[0])):
-			self._stacks[ir] = np.array([self._tiles[i][ir] for i in xrange(self.n)])
+		for ir in range(len(self._tiles[0])):
+			self._stacks[ir] = np.array([self._tiles[i][ir] for i in range(self.n)])
 		self._orig_tiles = deepcopy(self._tiles)
 		self._orig_stacks = deepcopy(self._stacks)
 	
 	def _calc_coherent_power_spectrum(self):
 		cps_avg = Averagers.get('mean')
-		for s in xrange(len(self._stacks)):
+		for s in range(len(self._stacks)):
 			stack_avg = Averagers.get('mean')
 			for i,r in enumerate(self._stacks[s]):
 				reg = Region(r[0],r[1],self.bs,self.bs)
@@ -306,9 +306,9 @@ class DirectDetectorUtil:
 		if options.path[-4:].lower() in (".mrc"): nd = hdr['nz']
 		else: nd = EMUtil.get_image_count(options.path)
 		if not outfile: outfile = options.path[:-4] + "_corrected.hdf"
-		for i in xrange(nd):
+		for i in range(nd):
 			if options.verbose:
-				print "Correcting frame: {}/{}	\r".format(i+1,nd),
+				print("Correcting frame: {}/{}	\r".format(i+1,nd), end=' ')
 				sys.stdout.flush()
 			if options.path[-4:].lower() in (".mrc"):
 				r = Region(0,0,i,nx,ny,1)
@@ -334,9 +334,9 @@ class DirectDetectorUtil:
 			sigd=dark.copy()
 			sigd.to_zero()
 			a=Averagers.get("mean",{"sigma":sigd,"ignore0":1})
-			for i in xrange(0,nd):
+			for i in range(0,nd):
 				if options.verbose:
-					print "Summing dark: {}/{}	\r".format(i+1,nd),
+					print("Summing dark: {}/{}	\r".format(i+1,nd), end=' ')
 					sys.stdout.flush()
 				t=EMData(options.dark,i)
 				t.process_inplace("threshold.clampminmax",{"minval":0,"maxval":t["mean"]+t["sigma"]*3.5,"tozero":1})
@@ -362,9 +362,9 @@ class DirectDetectorUtil:
 			sigg=gain.copy()
 			sigg.to_zero()
 			a=Averagers.get("mean",{"sigma":sigg,"ignore0":1})
-			for i in xrange(0,nd):
+			for i in range(0,nd):
 				if options.verbose:
-					print "Summing gain: {}/{}	\r".format(i+1,nd),
+					print("Summing gain: {}/{}	\r".format(i+1,nd), end=' ')
 					sys.stdout.flush()
 				t=EMData(options.gain,i)
 				t.process_inplace("threshold.clampminmax",{"minval":0,"maxval":t["mean"]+t["sigma"]*3.5,"tozero":1})

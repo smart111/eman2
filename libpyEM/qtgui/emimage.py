@@ -44,7 +44,7 @@ def image_update():
 	from emimage2d import EMImage2DWidget
 	from emimagemx import EMImageMXWidget
 	from emimage3d import EMImage3DWidget
-	for i in EMImage2DWidget.allim.keys():
+	for i in list(EMImage2DWidget.allim.keys()):
 		try:
 			if i.isVisible() and i.data["changecount"] !=i.image_change_count:
 				i.force_fft_redo()
@@ -52,14 +52,14 @@ def image_update():
 				i.updateGL()
 		except: pass
 	
-	for i in EMImageMXWidget.allim.keys():
+	for i in list(EMImageMXWidget.allim.keys()):
 		try:
 			if i.isVisible() and i.data[0]["changecount"]!=i.image_change_count:
 				i.force_display_update()
 				i.updateGL()
 		except: pass
 		
-	for i in EMImage3DWidget.allim.keys():
+	for i in list(EMImage3DWidget.allim.keys()):
 		try:
 			if i.isVisible() and i.data["changecount"]!=i.image_change_count:
 				i.updateGL()
@@ -100,7 +100,7 @@ class EMImageWidget(object):
 		from EMAN2 import remove_directories_from_name
 		if force_plot and force_2d:
 			# ok this sucks but it suffices for the time being
-			print "Error, the force_plot and force_2d options are mutually exclusive"
+			print("Error, the force_plot and force_2d options are mutually exclusive")
 			return None
 		
 		if force_plot or (isinstance(data,EMData) and data.get_zsize()==1 and data.get_ysize()==1):
@@ -161,7 +161,7 @@ class EMImageWidget(object):
 				widget.set_data(data,remove_directories_from_name(filename),replace)
 				return widget	
 		else:
-			raise Exception,"data must be a single EMData object or a list of EMData objects"
+			raise Exception("data must be a single EMData object or a list of EMData objects")
 
 
 class EMWidgetFromFile(object):
@@ -183,7 +183,7 @@ class EMWidgetFromFile(object):
 		
 		if force_plot and force_2d:
 			# ok this sucks but it suffices for the time being
-			print "Error, the force_plot and force_2d options are mutually exclusive"
+			print("Error, the force_plot and force_2d options are mutually exclusive")
 			return None
 		
 		if force_plot:
@@ -226,7 +226,7 @@ class EMWidgetFromFile(object):
 				if isinstance(old,EMScene3D): widget = old
 				else: widget = EMScene3D()
 #				print n,data
-				for ii in xrange(n):
+				for ii in range(n):
 					data=EMData(filename,ii)
 					datai = EMDataItem3D(data, transform=Transform())
 					widget.insertNewNode(os.path.basename(filename), datai, parentnode=widget)
@@ -240,7 +240,7 @@ class EMWidgetFromFile(object):
 				else: widget = EMImageMXWidget(application=application)
 				data = filename
 			else: 
-				print filename
+				print(filename)
 				raise # weirdness, this should never happen
 			widget.set_data(data,filename)
 			return widget

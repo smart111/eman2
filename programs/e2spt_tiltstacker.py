@@ -101,7 +101,7 @@ def main():
 	(options, args) = parser.parse_args()	
 	
 	
-	print("--negativetiltseries", options.negativetiltseries)
+	print(("--negativetiltseries", options.negativetiltseries))
 	
 	if options.exclude and options.include:
 		print("\nERROR: Supplied either exclude or include. Cannot supply both at the same time.")
@@ -144,7 +144,7 @@ def main():
 			#finalangles = list(angles)
 			#anglestoexclude = []
 			
-			print("\n\nthere are these many angles", len(angles))
+			print(("\n\nthere are these many angles", len(angles)))
 			#if tiltstoexclude:
 			#	for tilt in tiltstoexclude:
 			#		anglestoexclude.append( angles[ int(tilt) ] )
@@ -179,16 +179,16 @@ def main():
 		outstackhdf = options.path + '/stack.hdf' 
 		
 		minindx = min(intiltsdict)
-		print("minindx is", minindx)
-		print("getting size from any first image, intiltsdict[ minindx ][0]", intiltsdict[ minindx ][0])
+		print(("minindx is", minindx))
+		print(("getting size from any first image, intiltsdict[ minindx ][0]", intiltsdict[ minindx ][0]))
 		
 		hdr = EMData( intiltsdict[minindx][0], 0, True )
 		nx = hdr['nx']
 		ny = hdr['ny']
-		print(nx,ny)
+		print((nx,ny))
 		
 		
-		print("\nOutstack is", outstackhdf)
+		print(("\nOutstack is", outstackhdf))
 		
 					
 		
@@ -204,7 +204,7 @@ def main():
 				intiltimgfile =	intiltsdict[index][0]
 				
 				if options.verbose > 9:
-					print("\nat index {} we have image {}, collected in turn {}".format( index, intiltsdict[index][0], intiltsdict[index][-1] ))
+					print(("\nat index {} we have image {}, collected in turn {}".format( index, intiltsdict[index][0], intiltsdict[index][-1] )))
 				intiltimg = EMData( intiltimgfile, 0 )
 			
 				tiltangle = intiltsdict[index][1]
@@ -271,21 +271,21 @@ def main():
 			cmdBin = 'e2proc2d.py ' + outstackhdf + ' ' + tmp + ' --process=math.fft.resample:n=' + str(options.shrink) 
 			
 			#cmdBin = 'newstack ' + outstackhdf + ' ' + tmp + ' -ftreduce ' +  str(options.shrink) + ' -antialias 5'
-			print("\n(e2spt_tiltstacker.py)(main) cmdBin is", cmdBin)
+			print(("\n(e2spt_tiltstacker.py)(main) cmdBin is", cmdBin))
 			
 			runcmd(options,cmdBin)
 			#+ ' && rm ' + outstackhdf + ' && mv ' + tmp + ' ' + outstackhdf
 			
 			os.remove(outstackhdf)
-			print("\nremoved {}".format(outstackhdf))
+			print(("\nremoved {}".format(outstackhdf)))
 			os.rename(tmp,outstackhdf)
-			print("\nrenamed {} to {}".format(tmp,outstackhdf))
+			print(("\nrenamed {} to {}".format(tmp,outstackhdf)))
 
 			#p = subprocess.Popen( cmdBin , shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			#text = p.communicate()	
 			#p.stdout.close()
 
-		print("\nreading outstackhdf hdr, for file {}".format(outstackhdf))
+		print(("\nreading outstackhdf hdr, for file {}".format(outstackhdf)))
 		outtilthdr = EMData(outstackhdf,0,True)
 		currentapix = outtilthdr['apix_x']
 		if float(options.apix) and float(options.apix) != float(currentapix):
@@ -295,7 +295,7 @@ def main():
 			print("\nFixing apix")
 			cmdapix = 'e2procheader.py --input=' + outstackhdf + ' --stem=apix --valtype=float --stemval=' + str( options.apix )
 			
-			print("\n(e2spt_tiltstacker.py)(main) cmdapix is", cmdapix)
+			print(("\n(e2spt_tiltstacker.py)(main) cmdapix is", cmdapix))
 			
 			runcmd(options,cmdapix)
 			
@@ -317,7 +317,7 @@ def main():
 		#	stcmd += ' --apix=' + str(options.apix)
 			#stcmd += ' && e2procheader.py --input=' + outstackst + ' --stem=apix --valtype=float --stemval=' + str( options.apix ) + ' --output=' + outstackst.replace('.st','.mrc') + " && mv " +  outstackst.replace('.st','.mrc') + ' ' + outstackst
 		
-		print("\n(e2spt_tiltstacker.py)(main) stcmd is", stcmd)	
+		print(("\n(e2spt_tiltstacker.py)(main) stcmd is", stcmd))	
 		
 		#p = subprocess.Popen( stcmd , shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		#text = p.communicate()	
@@ -339,7 +339,7 @@ def main():
 		if options.normalizeimod:
 			try:
 				cmd = 'newstack ' + outstackst + ' ' + outstackst + ' --float 2'
-				print("normalizeimod cmd is", cmd)
+				print(("normalizeimod cmd is", cmd))
 				runcmd(options,cmd)
 
 				#p = subprocess.Popen( cmd , shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -356,7 +356,7 @@ def main():
 			print(text)
 		
 		if options.mirroraxis:
-			print("\nMirroring across axis", options.mirroraxis)
+			print(("\nMirroring across axis", options.mirroraxis))
 			mirrorlabel = options.mirroraxis.upper()
 			outstackstmirror = outstackst.replace('.st','_mirror'+ mirrorlabel+ '.st')
 
@@ -365,14 +365,14 @@ def main():
 			if options.outmode != 'float':
 				cmdMirror += ' --outmode=' + options.outmode + ' --fixintscaling=sane'
 			
-			print("options.apix is", options.apix)
+			print(("options.apix is", options.apix))
 			if options.apix:
 				cmdMirror += ' --apix=' + str(options.apix)
 				cmdMirror += ' && e2fixheaderparam.py --input=' + outstackstmirror + ' --stem=apix --valtype=float --stemval=' + str( options.apix ) + ' --output=' + outstackstmirror.replace('.st','.mrc') + " && mv " +  outstackstmirror.replace('.st','.mrc') + ' ' + outstackstmirror
 				
 				print("added fixheaderparam to cmdMirror!")
 			
-			print("cmdMirror is", cmdMirror)
+			print(("cmdMirror is", cmdMirror))
 			runcmd(options,cmdMirror)
 
 			#p = subprocess.Popen( cmdMirror , shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -386,8 +386,8 @@ def main():
 		findir = os.listdir(options.path)
 		for f in findir:
 			if '~' in f:
-				print("\nfile to remove",f)
-				print("in path", options.path + '/' + f)
+				print(("\nfile to remove",f))
+				print(("in path", options.path + '/' + f))
 				os.remove(options.path + '/' + f)
 
 
@@ -426,7 +426,7 @@ def findtiltimgfiles( options ):
 					
 					#k will serve to compensate for damage.
 					#It indicates the order in which data collection occured
-	print("\n(e2spt_tiltstacker.py)(findtiltimgfiles) These many img files were found", len( intilts ))		
+	print(("\n(e2spt_tiltstacker.py)(findtiltimgfiles) These many img files were found", len( intilts )))		
 	intilts.sort()
 	print("\nand they've been sorted")
 		
@@ -447,12 +447,12 @@ def getangles( options, ntilts, raworder=False ):
 			if line:
 				angle = float(line)
 				angles.append( angle )
-				print("appending angle", angle)
+				print(("appending angle", angle))
 
 		#angles = [a for a in xrange( options.lowesttilt, options.highesttilt, options.tiltstep )]
 	else:	
 		
-		print("There was no .tlt file so I'll generate the angles using lowesttilt=%f, highesttilt=%f, tiltstep=%f" % (options.lowesttilt, options.highesttilt, options.tiltstep))
+		print(("There was no .tlt file so I'll generate the angles using lowesttilt=%f, highesttilt=%f, tiltstep=%f" % (options.lowesttilt, options.highesttilt, options.tiltstep)))
 		generate = floatrange( options.lowesttilt, options.highesttilt, options.tiltstep )
 		angles=[ round(float(x),2) for x in generate ]
 	
@@ -467,30 +467,30 @@ def getangles( options, ntilts, raworder=False ):
 				angles = angles[:-1*dif] #cut the angles list by however many exceeding elements there are, as indicated by dif
 				
 	
-	print("BEFORE sorting, angles are", angles)
+	print(("BEFORE sorting, angles are", angles))
 	
-	print("negativetiltseries is", options.negativetiltseries)
-	print("not negativetiltseries", not options.negativetiltseries)
-	print("raworder", raworder)
-	print("not raworder", not raworder)
-	print("not options.negativetiltseries and not raworder", not options.negativetiltseries and not raworder)
+	print(("negativetiltseries is", options.negativetiltseries))
+	print(("not negativetiltseries", not options.negativetiltseries))
+	print(("raworder", raworder))
+	print(("not raworder", not raworder))
+	print(("not options.negativetiltseries and not raworder", not options.negativetiltseries and not raworder))
 
 
 	if options.negativetiltseries:
 		angles.sort()
-		print("\n(e2spt_tiltstacker.py)(getangles) AFTER sorting, angles are", angles)
+		print(("\n(e2spt_tiltstacker.py)(getangles) AFTER sorting, angles are", angles))
 	
 	elif not raworder:
 		angles.sort()
 		angles.reverse()
-		print("\n(e2spt_tiltstacker.py)(getangles) AFTER REVERSING (ordered from largest to smallest), angles are", angles)
+		print(("\n(e2spt_tiltstacker.py)(getangles) AFTER REVERSING (ordered from largest to smallest), angles are", angles))
 	
 	return angles
 
 
 def writetlt( angles, options, raworder=False ):
 	
-	print("(writetlt) these many angles", len(angles))
+	print(("(writetlt) these many angles", len(angles)))
 	angless = list( angles )
 	
 	if not raworder:
@@ -513,8 +513,8 @@ def writetlt( angles, options, raworder=False ):
 			anglestoexclude.append( angless[k] )
 		
 		k+=1
-	print("\nthese many angles excluded",len(anglestoexclude))
-	print("\nexcluded angles",anglestoexclude)	
+	print(("\nthese many angles excluded",len(anglestoexclude)))
+	print(("\nexcluded angles",anglestoexclude))	
 	f.writelines( lines )
 	f.close()
 		
@@ -534,7 +534,7 @@ def organizetilts( options, intilts, raworder=False ):
 
 			parsedname = intilt.replace(',',' ').replace('-',' ').replace('_',' ').replace('.mrcs',' ').replace('.mrc',' ').split()
 			#dividerstoadd = options.anglesindxinfilename - 1
-			print('parsedname is',parsedname)
+			print(('parsedname is',parsedname))
 			charsum = 0
 			for i in range(options.anglesindxinfilename):
 				charsum += len(parsedname[i])
@@ -543,7 +543,7 @@ def organizetilts( options, intilts, raworder=False ):
 			charsum += options.anglesindxinfilename
 
 			sign = intilt[charsum+1]
-			print("by position %d sign is %s" % (charsum+1,sign))
+			print(("by position %d sign is %s" % (charsum+1,sign)))
 			angle = float(parsedname[options.anglesindxinfilename])
 			if sign == '-':
 				angle *= -1
@@ -568,7 +568,7 @@ def organizetilts( options, intilts, raworder=False ):
 		finalangles = []
 		tiltstoexclude = options.exclude.split(',')
 
-		print('anglesdict is', anglesdict)
+		print(('anglesdict is', anglesdict))
 
 		for angle in angles:
 			indexintiltseries = kkkk
@@ -603,7 +603,7 @@ def organizetilts( options, intilts, raworder=False ):
 			if options.bidirectional:
 				
 				
-				print("\nzeroangle=%f, indexminangle=%d" %( zeroangle, indexminangle ))
+				print(("\nzeroangle=%f, indexminangle=%d" %( zeroangle, indexminangle )))
 				if not options.negativetiltseries:
 					print("\nNegative tilt series is OFF. This is a POSITIVE tilt series")
 					secondhalf = angles[ indexminangle: len(angles) ]	#This goes from zero to lowest tilta angles, i.e., -tiltrange
@@ -622,9 +622,9 @@ def organizetilts( options, intilts, raworder=False ):
 					secondhalf = angles[ indexminangle+1: len(angles) ]	#This goes from 0+tiltstep to the most positive angle, that is, +tiltrange
 				
 				orderedangles = firsthalf + secondhalf
-				print("\n(organizetilts) Ordered angles are", orderedangles)
-				print("\n(organizetilts) Because firsthalf is", firsthalf)
-				print("\n(organizetilts) and secondhalf is", secondhalf)
+				print(("\n(organizetilts) Ordered angles are", orderedangles))
+				print(("\n(organizetilts) Because firsthalf is", firsthalf))
+				print(("\n(organizetilts) and secondhalf is", secondhalf))
 				
 				#writetlt( orderedangles, options )
 		
@@ -639,7 +639,7 @@ def organizetilts( options, intilts, raworder=False ):
 			#orderedangles.reverse()
 			
 			#angles.sort()
-			print("negativetiltseries and raworer are",options.negativetiltseries,raworder)
+			print(("negativetiltseries and raworer are",options.negativetiltseries,raworder))
 			angles.reverse()
 			print("therefore, angles are reversed (largest to smallest)")
 			
@@ -653,20 +653,20 @@ def organizetilts( options, intilts, raworder=False ):
 			if not options.stackregardless:	
 				print("""\n(e2spt_tiltstacker.py)(organizetilts) ERROR: Number of tilt angles 
 				and tilt images is not equal.""")
-				print("""Number of tilt angles = %d ; number of tilt images = %d """ % ( len( orderedangles ), len( intilts ) ))
+				print(("""Number of tilt angles = %d ; number of tilt images = %d """ % ( len( orderedangles ), len( intilts ) )))
 				sys.exit()
 			else:
-				print("""\n(e2spt_tiltstacker.py)(organizetilts) WARNING: Number of tilt angles 
-				and tilt images is not equal. Stacking nevertheless since you provided --stackregardless""", options.stackregardless)
-				print("""Number of tilt angles = %d ; number of tilt images = %d """ % ( len( orderedangles ), len( intilts ) ))
+				print(("""\n(e2spt_tiltstacker.py)(organizetilts) WARNING: Number of tilt angles 
+				and tilt images is not equal. Stacking nevertheless since you provided --stackregardless""", options.stackregardless))
+				print(("""Number of tilt angles = %d ; number of tilt images = %d """ % ( len( orderedangles ), len( intilts ) )))
 				
 		tiltstoexclude = options.exclude.split(',')
 		
 		indexesintiltseries = list(range(len(angles)))
 		collectionindexes = list(range(len(angles)))
 		
-		print("options.bidirectional is", options.bidirectional)
-		print("indexminangle is", indexminangle)
+		print(("options.bidirectional is", options.bidirectional))
+		print(("indexminangle is", indexminangle))
 
 		if options.bidirectional and indexminangle != None:
 			firstrange = list(range(0,indexminangle+1))
@@ -683,8 +683,8 @@ def organizetilts( options, intilts, raworder=False ):
 			indexesintiltseries = list(firstrange) + list(secondrange)
 		
 			
-		print("collection indexes are", collectionindexes)
-		print("indexes in tiltseries are", indexesintiltseries)
+		print(("collection indexes are", collectionindexes))
+		print(("indexes in tiltseries are", indexesintiltseries))
 			
 			
 		for k in range(len(intilts)):
@@ -723,7 +723,7 @@ def usntacker( options ):
 	
 	outname = outname.replace('.hdf','_UNSTACKED.hdf')
 	
-	print("\n(e2spt_tiltstacker)(unstacker) unstack outname is {}".format(outname))
+	print(("\n(e2spt_tiltstacker)(unstacker) unstack outname is {}".format(outname)))
 	
 	#print "\noutname of unstacked tilt will be", outname
 	
@@ -736,7 +736,7 @@ def usntacker( options ):
 		cmdun += ' --list=' + lst
 	
 
-	print("\n(e2spt_tiltstacker)(unstacker) cmdun is", cmdun)	
+	print(("\n(e2spt_tiltstacker)(unstacker) cmdun is", cmdun))	
 	runcmd(options,cmdun)
 	
 	#p = subprocess.Popen( cmdun , shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -763,7 +763,7 @@ def restacker( options ):
 	if '.hdf' in inputf[-3:]:
 		outname = options.path + '/' + options.restack.replace('.st','_RESTACKED.hdf')
 	
-	print("\n!!!!!!!!!!!!!!!!\n\nOutname is", outname)
+	print(("\n!!!!!!!!!!!!!!!!\n\nOutname is", outname))
 	
 	tmp = options.path + '/' + 'tmp.hdf'
 	
@@ -800,7 +800,7 @@ def getindxs( string ):
 	
 	intList=set([])
 	for i in range( len(stringList) ):
-		print("\n\nstringList[i] is", stringList[i])
+		print(("\n\nstringList[i] is", stringList[i]))
 		
 		if '-' in stringList[i]:
 			stringList[i] = stringList[i].split('-')
@@ -822,7 +822,7 @@ def getindxs( string ):
 	#parsedindxs = list( parsedindxs )
 	parsedindxs.sort()
 	
-	print("\nParsed indexes are", parsedindxs)
+	print(("\nParsed indexes are", parsedindxs))
 	return parsedindxs
 	
 
@@ -832,13 +832,13 @@ def makeimglist( inputf, options ):
 	if '.ali' in inputf[-4:] or '.mrc' in inputf[-4:] or '.mrcs' in inputf[-5:] or '.st' in inputf[-3:]:
 		n = EMData( inputf,0,True )['nz']
 
-	print("input n is", n)
-	print("input is",input)
+	print(("input n is", n))
+	print(("input is",input))
 	
 	allindxs = set( [ str(i) for i in range(n) ] )
 	finalindxs = set( list( allindxs ) )
 	
-	print("\nallindxs are", allindxs)
+	print(("\nallindxs are", allindxs))
 	
 	if options.exclude:
 		print("\nPrint there's EXCLUDE!!")
@@ -850,7 +850,7 @@ def makeimglist( inputf, options ):
 		iindxs = getindxs( options.include )
 		finalindxs = list( iindxs )
 	
-	print("\nFinalindxs are", finalindxs)
+	print(("\nFinalindxs are", finalindxs))
 	
 	ints = []
 	for id in finalindxs:
@@ -860,7 +860,7 @@ def makeimglist( inputf, options ):
 	if not options.negativetiltseries:
 			ints.reverse()
 	
-	print("\nfinalindx sorted are", ints)
+	print(("\nfinalindx sorted are", ints))
 	#final = []
 	#for fi in ints:
 	#	final.append( str( fi ) )
@@ -874,12 +874,12 @@ def makeimglist( inputf, options ):
 	f.writelines( lines )
 	f.close()
 	
-	print("\nlistfile is", listfile)
+	print(("\nlistfile is", listfile))
 	return listfile
 
 
 def floatrange(start, stop, step):
-	print("\nInside floatrange, start, stop and step are", start, stop, step)
+	print(("\nInside floatrange, start, stop and step are", start, stop, step))
 	
 	r = start
 	kkk=0
@@ -898,7 +898,7 @@ def floatrange(start, stop, step):
 
 def runcmd(options,cmd,cmdsfilepath=''):
 	if options.verbose > 9:
-		print("(e2tomo_icongpu)(runcmd) running command", cmd)
+		print(("(e2tomo_icongpu)(runcmd) running command", cmd))
 	
 	p=subprocess.Popen( cmd, shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	text=p.communicate()	

@@ -49,7 +49,7 @@ This program will look in an spt_XX folder at particle_parms_xx.json and show a 
 	if options.iter<=0 :
 		fls=[int(i[15:17]) for i in os.listdir(options.path) if i[:15]=="particle_parms_" and str.isdigit(i[15:17])]
 		if len(fls)==0 : 
-			print("Cannot find a {}/particle_parms* file".format(options.path))
+			print(("Cannot find a {}/particle_parms* file".format(options.path)))
 			sys.exit(2)
 		options.iter=max(fls)
 		
@@ -85,8 +85,8 @@ This program will look in an spt_XX folder at particle_parms_xx.json and show a 
 	if options.verbose:
 		lz=len(col[col<0])
 		gz=len(col[col>0])
-		print("%1.2f (%d) less than zero"%(float(lz)/(lz+gz),lz))
-		print("%1.2f (%d) less than zero"%(float(gz)/(lz+gz),gz))
+		print(("%1.2f (%d) less than zero"%(float(lz)/(lz+gz),lz)))
+		print(("%1.2f (%d) less than zero"%(float(gz)/(lz+gz),gz)))
 
 	his=histogram(col,options.bins)
 

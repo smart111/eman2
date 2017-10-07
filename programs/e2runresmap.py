@@ -88,7 +88,7 @@ if options.resmapexe==None:
 			sys.exit(1)
 		if len(dl)==1 :
 			resmap=os.path.join(path,dl[0])
-			if options.verbose: print("Found: ",resmap)
+			if options.verbose: print(("Found: ",resmap))
 			break
 	else:
 		print("Unable to find ResMap executable in your path. Please use --resmapexe")

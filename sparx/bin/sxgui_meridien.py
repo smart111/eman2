@@ -240,10 +240,10 @@ class ResolutionOverviewPlot(QDialog):
             return
         # create an axis
         ax = self.figure.add_subplot(111)
-        xruns = range(1,len(resolution_0143)+1)
+        xruns = list(range(1,len(resolution_0143)+1))
 
         ax.plot(xruns, resolution_0143, "x-",label="Resolution FSC 0.143")
-        xruns = range(1, len(resolutions_05)+1)
+        xruns = list(range(1, len(resolutions_05)+1))
         ax.plot(xruns, resolutions_05, "x-", label="Resolution FSC 0.5")
 
         plt.grid()
@@ -464,7 +464,7 @@ class MainWindow(QtGui.QMainWindow):
         :return:
         '''
 
-        if root_tree_item in self.root_items_path_dictionary.values():
+        if root_tree_item in list(self.root_items_path_dictionary.values()):
             number_of_runs = root_tree_item.childCount()
             for i in range(number_of_runs):
                 child_run = root_tree_item.child(i)
@@ -476,7 +476,7 @@ class MainWindow(QtGui.QMainWindow):
         :return: List of checked QItemWidget
         """
         checked_runs = []
-        for root in self.root_items_path_dictionary.values():
+        for root in list(self.root_items_path_dictionary.values()):
             number_of_runs = root.childCount()
 
             for i in range(number_of_runs):

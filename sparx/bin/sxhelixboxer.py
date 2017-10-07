@@ -46,10 +46,10 @@ try:
 	
 	ENABLE_GUI = True
 	
-except ImportError, e:
-	print "Importing GUI libraries failed!"
-	print e
-	print "GUI features are disabled."
+except ImportError as e:
+	print("Importing GUI libraries failed!")
+	print(e)
+	print("GUI features are disabled.")
 	ENABLE_GUI = False
 
 """
@@ -123,7 +123,7 @@ def main():
 	# Window filaments 
 	if options.window:
 		if len(args) < 1:
-			print "Must specify name of output directory where intermediate files are to be deposited."
+			print("Must specify name of output directory where intermediate files are to be deposited.")
 			return
 		outdir = args[0]
 		tdir = options.topdir
@@ -188,10 +188,10 @@ def main():
 				
 			E2end(logid)
 		elif len(args) == 0:
-			print 'You must specify a micrograph file or use the "--gui" option.'
+			print('You must specify a micrograph file or use the "--gui" option.')
 			return
 		elif len(args) > 1:
-			print 'Multiple micrographs can only be specified with the "--gui" option'
+			print('Multiple micrographs can only be specified with the "--gui" option')
 			return
 
 def counterGen():
@@ -481,7 +481,7 @@ def save_particle_coords(helix_particle_coords_dict, output_filepath, micrograph
 	out_file.write("#micrograph: " + micrograph_filepath + "\n")
 	out_file.write("#segment length: " + str(ptcl_length) + "\n")
 	out_file.write("#segment width: " + str(ptcl_width) + "\n")
-	for helix_coords in helix_particle_coords_dict.keys():
+	for helix_coords in list(helix_particle_coords_dict.keys()):
 		out_file.write("#helix: " + str(tuple(helix_coords[0:2])) + "," + str(tuple(helix_coords[2:4])) + "," + str(helix_coords[4]) + "\n")
 		particle_list = helix_particle_coords_dict[helix_coords]
 		for ptcl_center in particle_list:
@@ -513,11 +513,11 @@ def save_particles(particles, ptcl_filepath, do_edge_norm=False, stack_file_mode
 	testfilename = ".HelixBoxerTestFile%s" % ext    
 	try:
 		testdata.write_image(testfilename, 0) #Test for write support
-	except RuntimeError, e:
+	except RuntimeError as e:
 		ext = ".hdf"
 	try:
 		testdata.write_image(testfilename, 1) #Test for stack file support
-	except RuntimeError, e:
+	except RuntimeError as e:
 		stack_file_mode = "none"
 	finally:
 		if os.access(testfilename, os.F_OK):
@@ -717,7 +717,7 @@ def db_save_particles(micrograph_filepath, ptcl_filepath = None, px_dst = None, 
 			helix_particles = get_rotated_particles(micrograph, coords, px_dst, px_length, px_width, gridding, mic_name = micrograph_filename)
 		else:
 			helix_particles = get_unrotated_particles(micrograph, coords, px_dst, px_length, px_width,mic_name = micrograph_filename)
-		for ii in xrange(len(helix_particles)):
+		for ii in range(len(helix_particles)):
 			(helix_particles[ii]).set_attr("filament", micrograph_filename+"%04d"%nhelix)
 		nhelix = nhelix + 1
 		all_particles.append(helix_particles)
@@ -968,7 +968,7 @@ if ENABLE_GUI:
 			if self.helices_groupbox.isChecked():
 				if self.helices_coords_groupbox.isChecked():
 					path = str( self.helices_coords_line_edit.text() )
-					save_helix_coords(helices_dict.keys(), path)
+					save_helix_coords(list(helices_dict.keys()), path)
 				if self.helices_images_groupbox.isChecked():
 					helix_filepath = str(self.helices_images_line_edit.text())
 					i = 0
@@ -1007,7 +1007,7 @@ if ENABLE_GUI:
 							side = max(px_length, px_width)
 							helix_particles = get_unrotated_particles(micrograph, coords_key, px_dst, side, side, mic_name=self.micrograph_filename)
 							px_overlap = side - px_dst
-						for ii in xrange(len(helix_particles)):
+						for ii in range(len(helix_particles)):
 							(helix_particles[ii]).set_attr("filament", self.micrograph_filename+"%04d"%nhelix)
 						nhelix = nhelix + 1
 						all_particles.append(helix_particles)
@@ -1298,7 +1298,7 @@ if ENABLE_GUI:
 			# this must mean cter is being calculated on a single micrograph!
 			from utilities import get_im
 			
-			print "starting cter"
+			print("starting cter")
 			
 			# get the current micrograph
 			image_name = self.micrograph_filepath
@@ -1314,14 +1314,14 @@ if ENABLE_GUI:
 				ctf_ampcont      = float(self.ctf_ampcont.text())
 				ctf_kboot        = int(self.ctf_kboot.text())
 				
-			except ValueError,extras:
+			except ValueError as extras:
 				# conversion of a value failed!
-				print "integer conversion failed."
+				print("integer conversion failed.")
 				if not(extras.args is None):
-					print extras.args[0]
+					print(extras.args[0])
 				return
 			except:
-				print "error"
+				print("error")
 				return
 			
 			fname, fext = os.path.splitext(image_name)
@@ -1329,7 +1329,7 @@ if ENABLE_GUI:
 			outpartres = 'partres_%s'%fname
 			
 			if os.path.exists(outpwrot) or os.path.exists(outpartres):
-				print "Please remove or rename %s and or %s"%(outpwrot,outpartres)
+				print("Please remove or rename %s and or %s"%(outpwrot,outpartres))
 				return
 			
 			from morphology import cter
@@ -1359,10 +1359,10 @@ if ENABLE_GUI:
 			set_ctf(img, [defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont, ast_amp, ast_agl])
 			# and rewrite image 
 			img.write_image(image_name)
-			print [defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont, ast_amp, ast_agl]
+			print([defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont, ast_amp, ast_agl])
 			
-			print [defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont, ast_amp, ast_agl]
-			print "CTF estimation using CTER done."
+			print([defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont, ast_amp, ast_agl])
+			print("CTF estimation using CTER done.")
 						
 		def color_boxes(self):
 			"""
@@ -1410,7 +1410,7 @@ if ENABLE_GUI:
 			creates a unique key for a new "rectline" EMShape, which is used for boxing a helix
 			@return: a string that is the key for the new "rectline" EMShape
 			"""
-			i = self.counter.next()
+			i = next(self.counter)
 			return "rectline%i" % i
 		def get_width(self):
 			"""
@@ -1504,7 +1504,7 @@ if ENABLE_GUI:
 			
 			width = self.box_width
 			if self.helices_dict:
-				first_coords = self.helices_dict.keys()[0]
+				first_coords = list(self.helices_dict.keys())[0]
 				width = first_coords[4]
 			self.box_width_spinbox.setValue(width)
 		def main_image_closed(self):
@@ -1530,7 +1530,7 @@ if ENABLE_GUI:
 						from utilities import info, model_blank
 						from EMAN2 	   import Util
 						# invert contrast of micrograph so average remains unchanged
-						print "Inverting contrast of micrograph"
+						print("Inverting contrast of micrograph")
 						mnx = micrograph.get_xsize()
 						mny = micrograph.get_ysize()
 						sttt = info(micrograph)
@@ -1593,7 +1593,7 @@ if ENABLE_GUI:
 			#resize current boxes
 			#TODO: this is similar to part of self.mouse_up ==> make both methods call a function with common code
 			shapes = self.main_image.get_shapes() #an EMShapeDict of EMShapes
-			for box_key in shapes.keys():
+			for box_key in list(shapes.keys()):
 				old_emshape = shapes.get(box_key)
 				old_coords = old_emshape.getShape()[4:9]
 				new_coords = (old_coords[0], old_coords[1], old_coords[2], old_coords[3], width)
@@ -1832,7 +1832,7 @@ if ENABLE_GUI:
 			"""
 	
 			if self.current_boxkey and self.edit_mode != "delete":
-				if self.helices_dict.has_key(self.initial_helix_box_data_tuple):
+				if self.initial_helix_box_data_tuple in self.helices_dict:
 					self.helices_dict.pop(self.initial_helix_box_data_tuple)
 				if self.initial_helix_box_data_tuple in self.get_db_item("helixboxes"):
 					self.remove_box_from_db(self.initial_helix_box_data_tuple)
@@ -1971,7 +1971,7 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 		do_gridding = False
 		
 	if not(outstacknameall[0:4] == 'bdb:' or outstacknameall[-3:] == 'hdf'):
-		print "%s must be in bdb or hdf format"%outstacknameall
+		print("%s must be in bdb or hdf format"%outstacknameall)
 		return
 
 	if freq < 0: freq = 1.0/boxsize
@@ -1985,12 +1985,12 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 	
 	# set rmax in pixels to default if user input rmax is greater than half the box size
 	if 2*rmaxp > boxsize:
-		print "ERROR...The segment size should be no less than twice rmax in pixels. Current segment size is %d and twice rmax in pixels is %d."%(boxsize, 2*rmaxp)
+		print("ERROR...The segment size should be no less than twice rmax in pixels. Current segment size is %d and twice rmax in pixels is %d."%(boxsize, 2*rmaxp))
 		return
 			
 	# Calculate distance between adjacent squares as ~1 rise in pixels if not set by user
 	if ptcl_dst < 0:
-		print "ERROR...Distance between segments (ptcl_dst) not specified."
+		print("ERROR...Distance between segments (ptcl_dst) not specified.")
 		return
 
 	if topdir == None:
@@ -2009,7 +2009,7 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 		# v1 is a micrograph directory, create directory named outdir in v1
 		coutdir = os.path.join(topv1, outdir)
 		if os.path.exists(coutdir):
-			print 'Output directory %s  exists, please change the name and restart the program'%coutdir
+			print('Output directory %s  exists, please change the name and restart the program'%coutdir)
 			return
 		outdirlist.append(coutdir)
 	for coutdir in outdirlist:
@@ -2025,7 +2025,7 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 		flist2.sort(key=str.lower)
 		nfiles = len(flist2)
 		print_msg('Sorted file list in %s:\n'%v1)
-		for iii in xrange(nfiles):
+		for iii in range(nfiles):
 			print_msg('%s,'%flist2[iii])
 		print_msg('\n')
 		for i2, v2 in enumerate(flist2):
@@ -2053,7 +2053,7 @@ def windowallmic(dirid, micid, micsuffix, outdir, pixel_size, boxsize=256, minse
 			region,hist = hist_list(cutoffhistogram,lhist)	
 			msg = "      Histogram of cut off frequencies\n      ERROR       number of frequencies\n"
 			print_msg(msg)
-			for lhx in xrange(len(lhist)):
+			for lhx in range(len(lhist)):
 				msg = " %10.3f     %7d\n"%(region[lhx], hist[lhx])
 				print_msg(msg)
 		print_msg('The percentage of micrographs filtered by the cutoff frequency: %6f\n' % (len(cutoffhistogram)*1.0/lenmicnames))		
@@ -2117,7 +2117,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 	if importctf:	
 		ctfs = read_text_row(importctf)
 		nx = True
-		for i in xrange(len(ctfs)):
+		for i in range(len(ctfs)):
 			smic = ctfs[i][-1].split('/')
 			ctfilename = (smic[-1].split('.'))[0]
 			if(ctfilename == filename):
@@ -2125,7 +2125,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 				nx = False
 				break
 		if nx:
-			print "Micrograph %s"%filename,"  not listed in CTER results, skipping ...."
+			print("Micrograph %s"%filename,"  not listed in CTER results, skipping ....")
 			return
 		if(ctfs[8]/ctfs[0] > cterr[0]):
 			print_msg('Defocus error %f exceeds the threshold. Micrograph %s rejected.\n'%(ctfs[8]/ctfs[0], filename))
@@ -2194,8 +2194,8 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 	db_load_helix_coords(tmpfile, hcoordsname, False, boxsize)
 	
 	micrograph_filename = os.path.join(micpath,'%s.hdf'%filename)                     ##@ming
-	print "mic file name=%s"%micrograph_filename
-	print "mic file path=%s"%micpath
+	print("mic file name=%s"%micrograph_filename)
+	print("mic file path=%s"%micpath)
 	micrograph_name = os.path.splitext( micrograph_filename )[0]        ##@ming 
 	helix_filepath = "%s_helix.hdf" % ( os.path.join(micpath, filename) )   ##@ming
 	helices_dict = win_get_helices_dict(tmpfile, boxsize)                ##@ming
@@ -2215,7 +2215,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 
 	a = read_text_row(hcoordsname)
 	if len(a)%2 != 0:
-		print "Number of rows in helix coordinates file %s should be even!"%hcoordsname
+		print("Number of rows in helix coordinates file %s should be even!"%hcoordsname)
 		return
 	nhelices = len(a)/2
 	#try:      iseg = EMUtil.get_image_count(outstacknameall)
@@ -2240,7 +2240,7 @@ def windowmic(outstacknameall, micpath, outdir, micname, hcoordsname, pixel_size
 			else:
 				print_msg( "otcl_images: %s\n"%otcl_images)
 				print_msg( "ptcl_images: %s\n"%ptcl_images)
-				for j in xrange(n1):
+				for j in range(n1):
 					prj = get_im(ptcl_images, j)
 					prj = ramp(prj)
 					stat = Util.infomask( prj, mask, False )

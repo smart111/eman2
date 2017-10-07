@@ -74,7 +74,7 @@ def main():
 	handler=myhandler()
 	xml.sax.parse(args[0],handler)
 
-	print("%d markers in CMM file"%len(handler.parsed))
+	print(("%d markers in CMM file"%len(handler.parsed)))
 
 	pa=PointArray()
 	pa.set_number_points(len(handler.parsed))

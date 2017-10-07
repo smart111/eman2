@@ -135,7 +135,7 @@ def main():
 	
 	if options.input==None :
 		options.input=db["input"][0].replace("_even","")
-		print("No --input specified, using: ",options.input)
+		print(("No --input specified, using: ",options.input))
 	
 	if options.output == None:
 		fls=[int(i[-2:]) for i in os.listdir(".") if i[:10]=="refinevar_" and len(i)==12 and str.isdigit(i[-2:])]
@@ -181,16 +181,16 @@ def main():
 			options.classifyfile="%s/classify.hdf"%(options.output)
 			options.projfile="%s/projections.hdf"%(options.output)
 			options.cafile="%s/variance_classes_tmp.hdf"%(options.output)
-			print(get_classaverage_cmd(options))
+			print((get_classaverage_cmd(options)))
 			if ( launch_childprocess(get_classaverage_cmd(options)) != 0 ):
-				print("Failed to execute %s" %get_classaverage_cmd(options))
+				print(("Failed to execute %s" %get_classaverage_cmd(options)))
 				sys.exit(1)
 			E2progress(logid,(mod*2.0+1)/nprogress)
 			
 			# deal with shrink3d
 			if options.shrink3d : 
 				if options.verbose : print("Shrinking")
-				print("e2proc2d.py %s %s --meanshrink=%d --inplace --writejunk"%(options.cafile,"%s/variance_classes_tmp_s.hdf"%(options.output),options.shrink3d))
+				print(("e2proc2d.py %s %s --meanshrink=%d --inplace --writejunk"%(options.cafile,"%s/variance_classes_tmp_s.hdf"%(options.output),options.shrink3d)))
 				if ( launch_childprocess("e2proc2d.py %s %s --meanshrink=%d --inplace --writejunk"%(options.cafile,"%s/variance_classes_tmp_s.hdf"%(options.output),options.shrink3d)) != 0 ):
 					print("Failed to execute CA shrink")
 					sys.exit(1)
@@ -199,9 +199,9 @@ def main():
 			if options.verbose : print("3-D Reconstruction")
 			# build a new 3-D map
 			options.model="%s/variance_threed_tmp.hdf"%(options.output)
-			print(get_make3d_cmd(options))
+			print((get_make3d_cmd(options)))
 			if ( launch_childprocess(get_make3d_cmd(options)) != 0 ):
-				print("Failed to execute %s" %get_make3d_cmd(options))
+				print(("Failed to execute %s" %get_make3d_cmd(options)))
 				sys.exit(1)
 			E2progress(logid,(mod*2.0+2.0)/nprogress)
 

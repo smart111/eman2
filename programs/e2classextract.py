@@ -123,12 +123,12 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 
 		nref=int(classmx[0]["maximum"])+1
 
-		if options.orientclassn==None : rng=range(nref)
+		if options.orientclassn==None : rng=list(range(nref))
 		else : rng=[int(i) for i in options.orientclassn.split(",")]
 
 		# now we loop over the classes
 		for i in rng:
-			if options.verbose>1 : print("--- Class %d"%i)
+			if options.verbose>1 : print(("--- Class %d"%i))
 
 			for eo in range(len(classmx)):
 				outname="classptcl_{:04d}.hdf".format(i)
@@ -136,11 +136,11 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 				
 				for j in range(nptcl[eo]):
 					if classmx[eo][0,j]!=i : continue		# only proceed if the particle is in this class
-					if options.verbose: print("{}\t{}\t{}".format(i,("even","odd")[eo],j))
+					if options.verbose: print(("{}\t{}\t{}".format(i,("even","odd")[eo],j)))
 
 					try: ptcl=EMData(cptcl[eo],j)
 					except:
-						print("Error reading: ",cptcl[eo],j)
+						print(("Error reading: ",cptcl[eo],j))
 						sys.exit(1)
 
 					# Find the transform for this particle (2d) and apply it
@@ -185,7 +185,7 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 		for c in range(ncls):
 			try : h=EMData(args[0],c,True)
 			except:
-				if options.verbose>0 : print("Bad class-average: ",c)
+				if options.verbose>0 : print(("Bad class-average: ",c))
 				continue
 
 			# this is a list of all of the particle indices from the input set (inset).
@@ -198,13 +198,13 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 				except: pass
 
 			if len(ptcl)==0 :
-				if options.verbose>0 : print("No particles in class-average: ",c)
+				if options.verbose>0 : print(("No particles in class-average: ",c))
 				continue
 
 			# this one is fatal, since we should only have gotten here with good averages
 			try : mdl=h["model_id"]
 			except:
-				print("No model_id in class average {}. Was this classes file created with e2refinemulti.py ?".format(c))
+				print(("No model_id in class average {}. Was this classes file created with e2refinemulti.py ?".format(c)))
 				sys.exit(1)
 
 			if mdl not in outlst :
@@ -233,7 +233,7 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 					nextf,extf,com=outlst[k].read(i)
 					ptcls.append((extf,nextf))
 				ptcls.sort()
-				if options.verbose>1: print("Sorting {} ({})".format(k,len(ptcls)))
+				if options.verbose>1: print(("Sorting {} ({})".format(k,len(ptcls))))
 
 				# erase and reopen LSX file
 				pth=outlst[k].path
@@ -250,7 +250,7 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 
 		if options.verbose>0 :
 			print("Output files:")
-			for k in sorted(outlst.keys()) : print("model_id = {} : {} ({})".format(k,outlst[k].path,outlst[k].n))
+			for k in sorted(outlst.keys()) : print(("model_id = {} : {} ({})".format(k,outlst[k].path,outlst[k].n)))
 
 	elif options.classlist:
 		# Read the file containing class-average numbers
@@ -285,7 +285,7 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 		for c in clsnums:
 			try : h=EMData(args[0],c,True)
 			except:
-				if options.verbose>0 : print("Bad class-average: ",c)
+				if options.verbose>0 : print(("Bad class-average: ",c))
 				continue
 
 			# this is a list of all of the particle indices from the input set (inset).
@@ -298,7 +298,7 @@ e2classextract.py --orientcls refine_03/cls_result_04 --orientedparticles sets/a
 				except: pass
 
 			if len(ptcl)==0 :
-				if options.verbose>0 : print("No particles in class-average: ",c)
+				if options.verbose>0 : print(("No particles in class-average: ",c))
 				continue
 
 			#### This is where we actually generate the new sets

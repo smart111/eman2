@@ -56,7 +56,7 @@ class TestPixel(unittest.TestCase):
 
         p3 = Pixel(1, 2, 3, 2.3)
         p4 = Pixel(11, 2, 3, 2.3)
-        self.assert_(p3 != p4)
+        self.assertTrue(p3 != p4)
 
         self.assertEqual(p1.x, x)
         self.assertEqual(p1.y, y)
@@ -96,7 +96,7 @@ class TestException(unittest.TestCase):
         if(IS_TEST_EXCEPTION):
             try:
                 e.read_image("__notexistingfile__.mrc")
-            except RuntimeError, runtime_err:
+            except RuntimeError as runtime_err:
                 err_type = exception_type(runtime_err)
                 self.assertEqual(err_type, "FileAccessException")
 
@@ -108,7 +108,7 @@ class TestException(unittest.TestCase):
         if(IS_TEST_EXCEPTION):
             try:
                 e.process_inplace("NotExistintFilter_kfjda")
-            except RuntimeError, runtime_err:
+            except RuntimeError as runtime_err:
                 err_type = exception_type(runtime_err)
                 self.assertEqual(err_type, "NotExistingObjectException")
 
@@ -120,7 +120,7 @@ class TestException(unittest.TestCase):
         if(IS_TEST_EXCEPTION):
             try:
                 e.read_image(fake_img)
-            except RuntimeError, runtime_err:
+            except RuntimeError as runtime_err:
                 err_type = exception_type(runtime_err)
                 self.assertEqual(err_type, "FileAccessException")
             

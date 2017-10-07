@@ -63,8 +63,8 @@ def main():
 
 		a.write_image(options.output,i)
 		indexes.remove(num)
-		print("I have chosen taken particle %d from the original stack" %num)
-		print("And have put it into index %d in the randomized stack" %i)
+		print(("I have chosen taken particle %d from the original stack" %num))
+		print(("And have put it into index %d in the randomized stack" %i))
 	print("DONE!")	
 	return()
 	

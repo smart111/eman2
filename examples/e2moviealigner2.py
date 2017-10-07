@@ -49,7 +49,7 @@ def main():
 	(options, args) = parser.parse_args()
 	
 	if len(args) < 1:
-		print usage
+		print(usage)
 		parser.error("You must specify at least one input DDD movie stack.")
 		sys.exit(1)
 	
@@ -63,7 +63,7 @@ def main():
 	
 	for fname in args:
 		
-		if options.verbose and len(args) > 1: print("Processing {}".format(fname))
+		if options.verbose and len(args) > 1: print(("Processing {}".format(fname)))
 		
 		if options.gain or options.dark or options.gaink2:
 			if options.verbose: print("Correcting frames")
@@ -94,11 +94,11 @@ class MovieAligner:
 		self.base = fname.split('.')[0]
 		self.nnorm = options.neighbornorm
 		self.frames = []
-		for i in xrange(self.hdr['nimg']):
+		for i in range(self.hdr['nimg']):
 			f = EMData(fname,i)
 			if options.fixbadlines:
 				for line in options.xybadlines:
-					coords = map(int,line.split(','))
+					coords = list(map(int,line.split(',')))
 					f.process_inplace('math.xybadline',{'xloc':coords[0],'yloc':coords[1]})
 			self.frames.append(f)
 		self.translations = np.zeros((self.hdr['nimg'],2))
@@ -108,12 +108,12 @@ class MovieAligner:
 		mx = np.arange(self.bs+50,self.hdr['nx']-self.bs+50,self.bs)
 		my = np.arange(self.bs+50,self.hdr['ny']-self.bs+50,self.bs)
 		self._regions = {}
-		for i in xrange(self.hdr['nimg']):
+		for i in range(self.hdr['nimg']):
 			self._regions[i] = [[x,y] for y in my for x in mx]
 		self._orig_regions = self._regions
 		self._stacks = {}
-		for ir in xrange(len(self._regions[0])):
-			self._stacks[ir] = [self._regions[i][ir] for i in xrange(self.hdr['nimg'])]
+		for ir in range(len(self._regions[0])):
+			self._stacks[ir] = [self._regions[i][ir] for i in range(self.hdr['nimg'])]
 		self._orig_stacks = self._stacks
 		self.iter = 0
 		self.static = int(self.hdr['nimg']/3)
@@ -126,7 +126,7 @@ class MovieAligner:
 	
 	def calc_incoherent_pws(self):
 		ips = Averagers.get('mean')
-		for i in xrange(self.hdr['nimg']):
+		for i in range(self.hdr['nimg']):
 			img = self.frames[i]
 			frame_avg = Averagers.get('mean')
 			for r in self._regions[i]:
@@ -144,7 +144,7 @@ class MovieAligner:
 	
 	def calc_coherent_pws(self):
 		cps = Averagers.get('mean')
-		for s in xrange(len(self._stacks)):
+		for s in range(len(self._stacks)):
 			stack_avg = Averagers.get('mean')
 			for i,r in enumerate(self._stacks[s]):
 				stack_avg.add_image(self.frames[i].get_clip(Region(r[0],r[1],self.bs,self.bs)))
@@ -241,7 +241,7 @@ class MovieAligner:
 			ctf.defocus=df
 			curve=np.array(ctf.compute_1d(ns*2,ds,Ctf.CtfType.CTF_AMP)[1:])
 			curve*=curve
-			zeros=[int(ctf.zero(i)/ds) for i in xrange(15)]
+			zeros=[int(ctf.zero(i)/ds) for i in range(15)]
 			zeros=[i for i in zeros if i<len(curve) and i>0]
 			onedbg,bg=self.bgsub(oned,zeros)
 			qual=curve.dot(onedbg)
@@ -270,7 +270,7 @@ class MovieAligner:
 		itpy[0]=curve[:floc].min()
 		itpx=np.array(itpx)
 		itpy=np.array(itpy)
-		bg = np.interp(range(len(curve)),itpx,itpy)
+		bg = np.interp(list(range(len(curve))),itpx,itpy)
 		ret=curve-bg
 		ret[:floc]=0
 		return ret,bg
@@ -297,7 +297,7 @@ class MovieAligner:
 			print("Frame\tMaximum Shift Magnitude")
 			bds = np.array(bounds).reshape((self.hdr['nimg'],2,2)).astype(int)
 			for i,bd in enumerate(bds):
-				print("{}\t{}".format(i+1,round(np.sqrt(bd[0,1]**2+bd[1,1]**2),0)))
+				print(("{}\t{}".format(i+1,round(np.sqrt(bd[0,1]**2+bd[1,1]**2),0))))
 			print("")
 		
 		init_state = np.random.randint(-1,1,size=(self.hdr['nimg'],2)).flatten()
@@ -370,9 +370,9 @@ class MovieAligner:
 			sigd=dark.copy()
 			sigd.to_zero()
 			a=Averagers.get("mean",{"sigma":sigd,"ignore0":1})
-			for i in xrange(0,nd):
+			for i in range(0,nd):
 				if options.verbose:
-					print "Summing dark: {}/{}	\r".format(i+1,nd),
+					print("Summing dark: {}/{}	\r".format(i+1,nd), end=' ')
 					sys.stdout.flush()
 				t=EMData(options.dark,i)
 				t.process_inplace("threshold.clampminmax",{"minval":0,"maxval":t["mean"]+t["sigma"]*3.5,"tozero":1})
@@ -398,9 +398,9 @@ class MovieAligner:
 			sigg=gain.copy()
 			sigg.to_zero()
 			a=Averagers.get("mean",{"sigma":sigg,"ignore0":1})
-			for i in xrange(0,nd):
+			for i in range(0,nd):
 				if options.verbose:
-					print "Summing gain: {}/{}	\r".format(i+1,nd),
+					print("Summing gain: {}/{}	\r".format(i+1,nd), end=' ')
 					sys.stdout.flush()
 				t=EMData(options.gain,i)
 				t.process_inplace("threshold.clampminmax",{"minval":0,"maxval":t["mean"]+t["sigma"]*3.5,"tozero":1})
@@ -439,9 +439,9 @@ class MovieAligner:
 		if options.path[-4:].lower() in (".mrc"): nd = hdr['nz']
 		else: nd = EMUtil.get_image_count(options.path)
 		if not outfile: outfile = options.path[:-4] + "_corrected.hdf"
-		for i in xrange(nd):
+		for i in range(nd):
 			if options.verbose:
-				print "Correcting frame: {}/{}	\r".format(i+1,nd),
+				print("Correcting frame: {}/{}	\r".format(i+1,nd), end=' ')
 				sys.stdout.flush()
 			if options.path[-4:].lower() in (".mrc"):
 				r = Region(0,0,i,nx,ny,1)
@@ -494,7 +494,7 @@ class CallBack(object):
 		w = str(max(self.aligner.energies[1:]))
 		c = str(self.aligner.energies[-1])
 		if self.aligner.verbose: 
-			print("fEvals: {} CPS: {} Energy: {} Accepted: {}".format(i,n,fx,accepted))
+			print(("fEvals: {} CPS: {} Energy: {} Accepted: {}".format(i,n,fx,accepted)))
 		self.aligner.write_cps(fname="_pws_coherent_callback.hdf",n=self.counter)
 		self.counter += 1
 

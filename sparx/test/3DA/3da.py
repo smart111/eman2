@@ -39,7 +39,7 @@ import os
 
 
 
-print  "start"
+print("start")
 vol=getImage("../model001.tcp")
 #info(vol)
 #vol = vol.FourInterpol(320,320,320)
@@ -49,7 +49,7 @@ volft,kb=prep_vol(vol)
 #angles=even_angles(1.,20.,25.,0.,359.9,'S')#,'Minus')
 angles=even_angles(12.,0.,180.0,0.,359.9,'S')#,'Minus')
 
-print  angles
+print(angles)
 nangles = len(angles)
 
 stack = "proj.hdf"
@@ -61,10 +61,10 @@ sy=0
 
 ast = 720/nangles
 apsi=-ast
-for i in xrange(nangles):
+for i in range(nangles):
 	apsi += ast
 	angles[i][2] = apsi
-	print  angles[i]
+	print(angles[i])
 	proj=prgs(volft, kb, [angles[i][0], angles[i][1], angles[i][2], 0., 0.])
 	proj.set_attr_dict({'phi':angles[i][0], 'theta':angles[i][1], 'psi':0, 'alpha':0, 'sx':0, 'sy':0, 'mirror':0})
 	proj.write_image(stack2, i)
@@ -104,9 +104,9 @@ for i in xrange(nangles):
 	#print  ccc(proj,ps)
 	#pt = fshift(proj, sx, sy)
 	#ps = rtshg(pt, -angles[i][2], 0.0, 0.0)
-	print  i, angles[i][0], angles[i][1], angles[i][2], -sx, -sy
+	print(i, angles[i][0], angles[i][1], angles[i][2], -sx, -sy)
 	ast, sxt, syt, sc = compose_transform2(0, sx, sy, 1, -alpha,0,0,1)
-	print  i, angles[i][0], angles[i][1], ast,sxt,syt
+	print(i, angles[i][0], angles[i][1], ast,sxt,syt)
 	#ps = rtshg(pt, alpha, sx, sy)
 	
 	#ps = rtshg(pt, alpha, sx, sy)
@@ -125,7 +125,7 @@ exit()
 # b=EMData().read_images("proj.hdf")
 #stack = "proj.hdf"
 m = model_circle(30,75,75,75)
-list_proj=range(len(angles))
+list_proj=list(range(len(angles)))
 
 #v = recons3d_4nn(stack, list_proj, "c1")
 #print ccc(v,vol,m)
@@ -134,7 +134,7 @@ list_proj=range(len(angles))
 
 
 v = recons3d_4nn(stack2, list_proj, "c1")
-print ccc(v,vol,m)
+print(ccc(v,vol,m))
 
 #dropImage(v,"vt.spi")
 #  0.919

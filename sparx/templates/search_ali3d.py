@@ -36,7 +36,7 @@ from   sparx        import *
 import sys
 
 if len(sys.argv) != 5:
-    print 'search_alivol.py <vol_to_align.hdf> <ref_vol.hdf> <name_vol_aligned.hdf> <radius_mask>'
+    print('search_alivol.py <vol_to_align.hdf> <ref_vol.hdf> <name_vol_aligned.hdf> <radius_mask>')
     sys.exit()
 
 # vars
@@ -63,7 +63,7 @@ cc  = [0]     * size_agls
 mir = [False] * size_agls
 
 # for each angles search the alignment of the volumes
-for n in xrange(size_agls): # another loop over Psi
+for n in range(size_agls): # another loop over Psi
     # set the value of phi, theta, and psi in the header of the volume
     im.read_image(name_vol, 0, True)
     im.set_attr_dict({'phi': agls[n][0], 'theta': agls[n][1], 'psi': 0, 's3x': 0, 's3y':0, 's3z': 0, 'scale': 1})
@@ -86,9 +86,9 @@ for n in xrange(size_agls): # another loop over Psi
     val_cc = ccc(tmp_ali, tmp_ref, mask)
 
     # to display the result
-    print '================================'
-    print 'Agls: cross correlation: %3.2f' % val_cc
-    print '================================\n'
+    print('================================')
+    print('Agls: cross correlation: %3.2f' % val_cc)
+    print('================================\n')
     
     #---- the same on the mirror struvture ---------------------------
     # set the value of phi, theta, and psi in the header of the volume
@@ -113,9 +113,9 @@ for n in xrange(size_agls): # another loop over Psi
     n_val_cc = ccc(tmp_ali, tmp_ref, mask)
 
     # to display the result
-    print '================================'
-    print 'Agls mirror: cross correlation: %3.2f' % n_val_cc
-    print '================================\n'
+    print('================================')
+    print('Agls mirror: cross correlation: %3.2f' % n_val_cc)
+    print('================================\n')
 
     #----- choose the best and store
     if n_val_cc > val_cc:
@@ -130,7 +130,7 @@ for n in xrange(size_agls): # another loop over Psi
 val_max  = -1e10
 best_pos = -1
 best_mir = False
-for n in xrange(size_agls):
+for n in range(size_agls):
     if cc[n] > val_max:
         val_max  = cc[n]
         best_pos = n
@@ -142,7 +142,7 @@ theta = agls[best_pos][1]
 if best_mir: name_vol = name_mir
 
 #---- search the alignment for severals values of psi ----
-psi = range(0, 360, 36)
+psi = list(range(0, 360, 36))
 cc  = -1e10
 
 for n in psi:
@@ -166,9 +166,9 @@ for n in psi:
     val_cc = ccc(tmp_ali, tmp_ref, mask)
 
     # to display the result
-    print '================================'
-    print 'Psi: cross correlation: %3.2f' % val_cc
-    print '================================\n'
+    print('================================')
+    print('Psi: cross correlation: %3.2f' % val_cc)
+    print('================================\n')
 
     # choose the best
     if val_cc > cc:
@@ -191,9 +191,9 @@ vol_ali = rot_shift3D(im, im.get_attr('phi'), im.get_attr('theta'), im.get_attr(
 vol_ali.write_image(name_ali)
 
 # print the end infos
-print '\n\n'
-print 'best cc value:', cc
-print '%10.3f\t%10.3f\t%10.3f' % (phi, theta, best_pos)
-if best_mir: print 'use mirror structure'
+print('\n\n')
+print('best cc value:', cc)
+print('%10.3f\t%10.3f\t%10.3f' % (phi, theta, best_pos))
+if best_mir: print('use mirror structure')
 
 

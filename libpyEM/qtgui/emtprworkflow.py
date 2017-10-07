@@ -74,7 +74,7 @@ class EMTomoChooseFilteredPtclsTask(EMBaseTomoChooseFilteredPtclsTask):
 		self.form_db_name ="bdb:tomo.choose.filtered"
 
 	def on_form_ok(self,params):
-		if not params.has_key("tomo_filt_choice") or params["tomo_filt_choice"] == None:
+		if "tomo_filt_choice" not in params or params["tomo_filt_choice"] == None:
 			error("Please choose some data")
 			return
 		choice = params["tomo_filt_choice"]
@@ -136,7 +136,7 @@ class E2TomoFilterParticlesTask(WorkFlowTask):
 		if E2TomoFilterParticlesTask.preprocessor_cache == None:
 			a = dump_processors_list()
 			l = ["None"]
-			for key in a.keys():
+			for key in list(a.keys()):
 				if len(key) > 5 and key[:6] == "filter":
 					vals = key.split(".")
 					if len(vals) > 1:
@@ -169,7 +169,7 @@ class E2TomoFilterParticlesTask(WorkFlowTask):
 						values = vals[p[0]]
 						s = "The parameters for the %s processor are:"  %p[0]
 						
-						for i in xrange(1,len(values),3):
+						for i in range(1,len(values),3):
 							s += " " + values[i] +","
 						s = s[:-1] # get rid of the last column
 						error_message.append(s)
@@ -180,7 +180,7 @@ class E2TomoFilterParticlesTask(WorkFlowTask):
 	def check_name_param(self,params):
 		error_message = []
 		
-		if not params.has_key("name"):
+		if "name" not in params:
 			error_message.append("You must supply a name for your filtered set")
 		else:
 			if params["name"] in self.get_previous_filtered_set_names():
@@ -189,7 +189,7 @@ class E2TomoFilterParticlesTask(WorkFlowTask):
 		return error_message
 	
 	def on_form_ok(self,params):	
-		if  params.has_key("filenames") and len(params["filenames"]) == 0:
+		if  "filenames" in params and len(params["filenames"]) == 0:
 			self.run_select_files_msg()
 			return
 		
@@ -201,7 +201,7 @@ class E2TomoFilterParticlesTask(WorkFlowTask):
 		if params["alt"] != 0 or params["az"] != 0 or params["phi"] != 0:
 			params["rotate"] = "%.2f,%.2f,%.2f" %(params["az"],params["alt"],params["phi"])
 
-		if params.has_key("rotate") or params.has_key("filter_processor"):
+		if "rotate" in params or "filter_processor" in params:
 			success,cmd = self.process_all(params)
 			if not success:
 				error("Command failed:"+cmd)
@@ -228,15 +228,15 @@ class E2TomoFilterParticlesTask(WorkFlowTask):
 #		db_map = project_db.get(name)
 		previous_sets = []
 		
-		for root_name,dict in db_map.items():
-			for filt,name in dict.items():
+		for root_name,dict in list(db_map.items()):
+			for filt,name in list(dict.items()):
 				if 	previous_sets.count(filt) == 0:
 					previous_sets.append(filt)
 					
 		return previous_sets
 	
 	def convert_to_root(self,name):
-		if self.name_map.has_key(name): return self.name_map[name]
+		if name in self.name_map: return self.name_map[name]
 		else:return name
 	
 	def output_names(self,params):
@@ -257,9 +257,9 @@ class E2TomoFilterParticlesTask(WorkFlowTask):
 			cmd = "e2proc3d.py"
  			cmd += " "+name
  			cmd += " "+outnames[i]
- 			if params.has_key("filter_processor"):
+ 			if "filter_processor" in params:
  				cmd += " --process="+params["filter_processor"]
- 			if params.has_key("rotate"):
+ 			if "rotate" in params:
  				cmd += " --rot="+params["rotate"]
  			success = (os.system(cmd) in (0,12))
  			if not success:
@@ -284,7 +284,7 @@ class E2TomoFilterParticlesTask(WorkFlowTask):
 		
 		for i,name in enumerate(params["filenames"]):
 			real_name = self.convert_to_root(name)
-			if db_map.has_key(real_name):
+			if real_name in db_map:
 				d = db_map[real_name]
 				d[params["name"]] = outnames[i]
 				db_map[real_name] = d
@@ -304,7 +304,7 @@ class EMTomoChooseFilteredPtclsForFiltTask(EMBaseTomoChooseFilteredPtclsTask):
 		self.task_type = task_type
 
 	def on_form_ok(self,params):
-		if not params.has_key("tomo_filt_choice") or params["tomo_filt_choice"] == None:
+		if "tomo_filt_choice" not in params or params["tomo_filt_choice"] == None:
 			error("Please choose some data")
 			return
 		choice = params["tomo_filt_choice"]
@@ -324,7 +324,7 @@ class EMTomoBootStapChoosePtclsTask(EMBaseTomoChooseFilteredPtclsTask):
 		self.form_db_name ="bdb:tomo.choose.forbootstraptomo"
 
 	def on_form_ok(self,params):
-		if not params.has_key("tomo_filt_choice") or params["tomo_filt_choice"] == None:
+		if "tomo_filt_choice" not in params or params["tomo_filt_choice"] == None:
 			error("Please choose some data")
 			return
 		choice = params["tomo_filt_choice"]
@@ -351,7 +351,7 @@ class EMSubTomoDataReportTask(EMRawDataReportTask):
 		'''
 		data_dict = EMProjectDataDict(self.project_list)
 		project_data = data_dict.get_data_dict()
-		project_names = project_data.keys()
+		project_names = list(project_data.keys())
 		self.project_data_at_init = project_data # so if the user hits cancel this can be reset
 
 		from emform import EMTomographicFileTable,EMFileTable
@@ -375,7 +375,7 @@ class EMRefDataReportTask(EMRawDataReportTask):
 		'''
 		data_dict = EMProjectDataDict(self.project_list)
 		project_data = data_dict.get_data_dict()
-		project_names = project_data.keys()
+		project_names = list(project_data.keys())
 		self.project_data_at_init = project_data # so if the user hits cancel this can be reset
 
 		from emform import EMTomographicFileTable,EMFileTable
@@ -443,7 +443,7 @@ class EMTomoBootstrapTask(WorkFlowTask):
 		
 		proc_data = dump_processors_list()
 		masks = {}
-		for key in proc_data.keys():
+		for key in list(proc_data.keys()):
 			if len(key) >= 5 and key[:5] == "mask.":
 				masks[key] = proc_data[key]
 		masks["None"] = ["Choose this to stop masking from occuring"]
@@ -452,7 +452,7 @@ class EMTomoBootstrapTask(WorkFlowTask):
 		params.append([pmask, pmaskparams])
 		
 		filters = {}
-		for key in proc_data.keys():
+		for key in list(proc_data.keys()):
 			if len(key) >= 7 and key[:7] == "filter.":
 				filters[key] = proc_data[key]
 		filters["None"] = ["Choose this to stop filtering from occuring"]
@@ -462,7 +462,7 @@ class EMTomoBootstrapTask(WorkFlowTask):
 
 		ali_data = dump_aligners_list()
 		caligners = {}
-		for key in ali_data.keys():
+		for key in list(ali_data.keys()):
 			if len(key) >= 19 and key[:19] == "rotate_translate_3d":
 				caligners[key] = ali_data[key]
 		pali = ParamDef("aligner3D",vartype="string",desc_short="Aligner3D",desc_long="The 3D course aligner",property=None,defaultunits=db.get("aligner3D",dfl="rotate_translate_3d"),choices=caligners)
@@ -470,7 +470,7 @@ class EMTomoBootstrapTask(WorkFlowTask):
 		params.append([pali, paliparams])
 		
 		craligners = {}
-		for key in ali_data.keys():
+		for key in list(ali_data.keys()):
 			if len(key) >= 9 and key[:9] == "refine_3d":
 				craligners[key] = ali_data[key]
 		prali = ParamDef("raligner3D",vartype="string",desc_short="RAligner3D",desc_long="The 3D refine aligner",property=None,defaultunits=db.get("raligner3D",dfl="refine_3d_grid"),choices=craligners)
@@ -504,10 +504,10 @@ class EMTomoBootstrapTask(WorkFlowTask):
 		
 	def on_form_ok(self,params):
 		
-		if not params.has_key("filenames"):
+		if "filenames" not in params:
 			EMErrorMessageDisplay.run(["Please select files for processing"])
 			return
-		if  params.has_key("filenames") and len(params["filenames"]) == 0:
+		if  "filenames" in params and len(params["filenames"]) == 0:
 			EMErrorMessageDisplay.run(["Please select files for processing"])
 			return
 		if len(params["refnames"]) > 1:
@@ -557,7 +557,7 @@ class EMTomoBootstrapTask(WorkFlowTask):
 			e23dcalist += " --postprocess="+params["postfilter"]+spacer+params["postfilterparams"]
 		if params["parallel"]:
 			e23dcalist += " --parallel="+params["parallel"]
-		print e23dcalist
+		print(e23dcalist)
 		
 		child = subprocess.Popen(e23dcalist, shell=True)
 		
@@ -577,7 +577,7 @@ class EMTomoRawDataReportTask(EMRawDataReportTask):
 		'''
 		data_dict = EMProjectDataDict(self.project_list)
 		project_data = data_dict.get_data_dict()
-		project_names = project_data.keys()
+		project_names = list(project_data.keys())
 		self.project_data_at_init = project_data # so if the user hits cancel this can be reset
 
 		from emform import EMTomographicFileTable,EMFileTable
@@ -610,7 +610,7 @@ class E2TomoBoxerGuiTask(WorkFlowTask):
 		return table, n
 
 	def get_tomo_boxes_in_database(name):
-		print "checking for boxes, but this aspect of things is not working yet...."+base_name(name)+" "+name
+		print("checking for boxes, but this aspect of things is not working yet...."+base_name(name)+" "+name)
 		#from e2spt_boxer import tomo_db_name
 		#if db_check_dict(tomo_db_name):
 			#tomo_db = db_open_dict(tomo_db_name)
@@ -631,7 +631,7 @@ class E2TomoBoxerGuiTask(WorkFlowTask):
 		params.append(p)
 		pylong = ParamDef(name="yshort",vartype="boolean",desc_short="yshort",desc_long="Use Z axis as normal",property=None,defaultunits=db.get("yshort",dfl=True),choices=None)
 		pinmem = ParamDef(name="inmemory",vartype="boolean",desc_short="inmemory",desc_long="Load the tomo into memory",property=None,defaultunits=db.get("inmemory",dfl=True),choices=None)
-		papix = ParamDef(name="apix",vartype="float",desc_short=u"\u212B per pixel", desc_long="Angstroms per pixel",property=None,defaultunits=db.get("apix",dfl=1.0),choices=None )
+		papix = ParamDef(name="apix",vartype="float",desc_short="\u212B per pixel", desc_long="Angstroms per pixel",property=None,defaultunits=db.get("apix",dfl=1.0),choices=None )
 		params.append([pylong, pinmem, papix])
 #		db = db_open_dict(self.form_db_name)
 #		params.append(ParamDef(name="interface_boxsize",vartype="int",desc_short="Box size",desc_long="An integer value",property=None,defaultunits=db.get("interface_boxsize",dfl=128),choices=[]))
@@ -640,11 +640,11 @@ class E2TomoBoxerGuiTask(WorkFlowTask):
 	
 	def on_form_ok(self,params):
 		
-		if not params.has_key("filenames"):
+		if "filenames" not in params:
 			EMErrorMessageDisplay.run(["Please select files for processing"])
 			return
 		
-		if  params.has_key("filenames") and len(params["filenames"]) == 0:
+		if  "filenames" in params and len(params["filenames"]) == 0:
 			EMErrorMessageDisplay.run(["Please select files for processing"])
 			return
 

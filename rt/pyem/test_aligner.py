@@ -72,9 +72,9 @@ class TestAligner(unittest.TestCase):
 						g = e.align("translational",ref,{},"dot",{})
 						t =  g.get_attr("xform.align3d")
 						params = t.get_params("eman")
-						self.failIf(fabs(params["tx"]+ dx) > 1)
-						self.failIf(fabs(params["ty"] + dy) > 1)
-						self.failIf(fabs(params["tz"] + dz) > 1)
+						self.assertFalse(fabs(params["tx"]+ dx) > 1)
+						self.assertFalse(fabs(params["ty"] + dy) > 1)
+						self.assertFalse(fabs(params["tz"] + dz) > 1)
 						
 						f = e.process("xform",{"transform":t})
 						self.assertEqual(f.equal(g),True)
@@ -94,8 +94,8 @@ class TestAligner(unittest.TestCase):
 					g = e.align("translational",ref,{},"dot",{})
 					t =  g.get_attr("xform.align2d")
 					params = t.get_params("2d")
-					self.failIf(fabs(params["tx"]+ dx) > 1)
-					self.failIf(fabs(params["ty"] + dy) > 1)
+					self.assertFalse(fabs(params["tx"]+ dx) > 1)
+					self.assertFalse(fabs(params["ty"] + dy) > 1)
 					
 					f = e.process("xform",{"transform":t})
 					self.assertEqual(f.equal(g),True)
@@ -131,13 +131,13 @@ class TestAligner(unittest.TestCase):
 					if result > 180 and result < 360:
 						result = 360-result
 					if result > 360: result = result-360
-					self.failIf( result > 3 ) # 3 seems accurate enough
+					self.assertFalse( result > 3 ) # 3 seems accurate enough
 						
 					# we have to do it this way because of double to float conversions
 					f = ref.process("xform",{"transform":t})
 					dif = f-g
 					dif.process_inplace("math.absvalue")
-					self.failIf(dif["mean"] > 0.01)
+					self.assertFalse(dif["mean"] > 0.01)
 				
 	def no_test_RotatePrecenterAligner(self):
 		"""test RotatePrecenterAligner ......................"""
@@ -164,13 +164,13 @@ class TestAligner(unittest.TestCase):
 					t =  g.get_attr("xform.align2d")
 					params = t.get_params("2d")
 					result = fabs(params["alpha"] - az)
-					print params["alpha"],az
+					print(params["alpha"],az)
 					#print g.get_attr("align.az"), az
 					if result > 180 and result < 360:
 						result = 360-result
 					if result > 360: result = result-360
 					
-					self.failIf( result > 3 ) # 3 seems accurate enough
+					self.assertFalse( result > 3 ) # 3 seems accurate enough
 		
 
 	def test_RotateTranslateAligner(self):
@@ -215,7 +215,7 @@ class TestAligner(unittest.TestCase):
 					f = ref.process("xform",{"transform":t})
 					dif = f-g
 					dif.process_inplace("math.absvalue")
-					self.failIf(dif["mean"] > 0.01)
+					self.assertFalse(dif["mean"] > 0.01)
 
 
 	def test_RotateFlipAligner(self):
@@ -254,8 +254,8 @@ class TestAligner(unittest.TestCase):
 						result = 360-result
 					if result > 360: result = result-360
 					#print 'result = ', result
-					self.failIf( result > 3 ) # 3 seems accurate enough
-					self.failIf( t1.get_mirror() != mirror)
+					self.assertFalse( result > 3 ) # 3 seems accurate enough
+					self.assertFalse( t1.get_mirror() != mirror)
 					
 #					f = e.process("xform",{"transform":t1})
 #					dif = f-g
@@ -287,18 +287,18 @@ class TestAligner(unittest.TestCase):
 					t =  g.get_attr("xform.align2d")
 					params = t.get_params("2d")
 					if debug:
-						print params
-						print az,dx,dy,mirror
-					self.failIf(fabs(params["tx"] + dx) > 2)
-					self.failIf(fabs(params["ty"] + dy) > 2)
+						print(params)
+						print(az,dx,dy,mirror)
+					self.assertFalse(fabs(params["tx"] + dx) > 2)
+					self.assertFalse(fabs(params["ty"] + dy) > 2)
 					
 					result = fabs( (params["alpha"] + az) %360 )
 					
 					if result > 180 and result < 360:
 						result = 360-result
 					if result > 360: result = result-360
-					self.failIf( result > 5 ) # 5 seems accurate enough
-					self.failIf( t.get_mirror() != mirror)
+					self.assertFalse( result > 5 ) # 5 seems accurate enough
+					self.assertFalse( t.get_mirror() != mirror)
 	
 	def test_RotateTranslateFlipAligner(self):
 		"""test RotateTranslateFlip Aligner ................."""
@@ -356,7 +356,7 @@ class TestAligner(unittest.TestCase):
 					f = ref.process("xform",{"transform":t1})
 					dif = f-g
 					dif.process_inplace("math.absvalue")
-					self.failIf(dif["mean"] > 0.01)
+					self.assertFalse(dif["mean"] > 0.01)
 		testlib.safe_unlink('e.hdf')
 
 	def test_RTF_slow_exhaustive_aligner(self):

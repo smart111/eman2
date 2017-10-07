@@ -241,8 +241,8 @@ def main():
 	(options, args) = parser.parse_args()
 
 	if len(args) < 2:
-		print("usage: " + usage)
-		print("Please run '" + progname + " -h' for detailed options")
+		print(("usage: " + usage))
+		print(("Please run '" + progname + " -h' for detailed options"))
 		sys.exit(1)
 
 	logid = E2init(sys.argv,options.ppid)
@@ -267,7 +267,7 @@ def main():
 		options.outmode = "int8"
 
 	if options.outmode not in file_mode_map :
-		print("Invalid output mode, please specify one of :\n",str(list(file_mode_map.keys())).translate(None,'"[]'))
+		print(("Invalid output mode, please specify one of :\n",str(list(file_mode_map.keys())).translate(None,'"[]')))
 		sys.exit(1)
 
 	no_2d_3d_options = (not (options.threed2threed or options.threed2twod or options.twod2threed))
@@ -312,7 +312,7 @@ def main():
 					outfile = outfile + out_ext
 
 			if out_ext == ".lst" :
-					print("Output file extension may not be .lst: " + outfile)
+					print(("Output file extension may not be .lst: " + outfile))
 					continue
 
 		is_single_2d_image = False
@@ -349,7 +349,7 @@ def main():
 								os.remove(outfile)
 		else :
 			num_inp_images = -1
-			print("Input file '" + infile + "' does not exist.")
+			print(("Input file '" + infile + "' does not exist."))
 			continue
 
 		if out_ext == inp_ext :
@@ -369,7 +369,7 @@ def main():
 		out3d = (num_out_images == 1)
 
 		if options.verbose > 1 :
-			print("input 3d, output 3d =", inp3d, out3d)
+			print(("input 3d, output 3d =", inp3d, out3d))
 
 		opt3to3 = options.threed2threed
 		opt3to2 = options.threed2twod
@@ -427,7 +427,7 @@ def main():
 				return
 			else:
 				if options.verbose > 0:
-					print("Process 3D as a stack of %d 2D images" % d.get_zsize())
+					print(("Process 3D as a stack of %d 2D images" % d.get_zsize()))
 
 				nimg = d.get_zsize()
 
@@ -486,7 +486,7 @@ def main():
 			n0 = options.step[0]
 
 		if options.verbose > 0:
-			print("%d images, processing %d-%d stepping by %d"%(nimg,n0,n1,options.step[1]))
+			print(("%d images, processing %d-%d stepping by %d"%(nimg,n0,n1,options.step[1])))
 
 		# Now we deal with inclusion/exclusion lists
 
@@ -529,7 +529,7 @@ def main():
 		dummy = 0										#JESUS
 
 		if options.verbose > 1 :
-			print("input file, output file, is three-d =", infile, outfile, isthreed)
+			print(("input file, output file, is three-d =", infile, outfile, isthreed))
 
 		for i in range(n0, n1+1, options.step[1]):
 			if options.verbose >= 1:
@@ -565,7 +565,7 @@ def main():
 					if len(vals) > 4 : n_z = int(vals[3])
 
 					if n_x <= 0 or n_y <= 0 or n_z <= 0 :
-						print("Error: Image dimensions must be positive integers:", n_x, n_y, n_z)
+						print(("Error: Image dimensions must be positive integers:", n_x, n_y, n_z))
 						sys.exit(1)
 
 					func = "0"
@@ -583,13 +583,13 @@ def main():
 						nz = 1
 						w = eval(func)
 					except :
-						print("Error: Syntax error in image expression '" + func + "'")
+						print(("Error: Syntax error in image expression '" + func + "'"))
 						sys.exit(1)
 
 					d = image_from_formula(n_x, n_y, n_z, func)
 				else:
 					if options.verbose > 1 :
-						print("Read image #", i, "from input file:")
+						print(("Read image #", i, "from input file:"))
 					d = EMData()
 					d.read_image(infile, i)
 			else:
@@ -618,11 +618,11 @@ def main():
 				index_d[append_option] = 0
 
 			if options.verbose > 1 :
-				print("option list =", optionlist)
+				print(("option list =", optionlist))
 
 			for option1 in optionlist:
 				if options.verbose > 1 :
-					print("option in option list =", option1)
+					print(("option in option list =", option1))
 				nx = d.get_xsize()
 				ny = d.get_ysize()
 
@@ -635,7 +635,7 @@ def main():
 					try:
 						if i == n0 and d["ctf"].apix != apix :
 							if options.verbose > 0:
-								print("Warning: A/pix value in CTF was %1.2f, changing to %1.2f. May impact CTF parameters."%(d["ctf"].apix,apix))
+								print(("Warning: A/pix value in CTF was %1.2f, changing to %1.2f. May impact CTF parameters."%(d["ctf"].apix,apix)))
 
 						d["ctf"].apix = apix
 					except: pass
@@ -748,7 +748,7 @@ def main():
 						angle=float(angle)
 					except:
 						traceback.print_exc()
-						print(options.anisotropic[index_d[option1]])
+						print((options.anisotropic[index_d[option1]]))
 						print("Error: --anisotropic specify amount,angle")
 						sys.exit(1)
 						
@@ -871,7 +871,7 @@ def main():
 							sc.common_lines(e, e, sclmd, scl, true)
 						else:
 							if options.verbose > 0:
-								print("Error: invalid common-line mode '" + sclmd + "'")
+								print(("Error: invalid common-line mode '" + sclmd + "'"))
 
 							sys.exit(1)
 
@@ -922,7 +922,7 @@ def main():
 						options.outtype = "unknown"
 
 					if options.verbose > 1 :
-						print("output type =", options.outtype)
+						print(("output type =", options.outtype))
 
 					if i == 0:
 						original_outfile = outfile
@@ -1088,7 +1088,7 @@ def main():
 							out_name = outfile.split('.')[0]+'-'+str(i+1).zfill(len(str(nimg)))+'.'+outfile.split('.')[-1]
 							if d["sigma"]==0:
 								if options.verbose > 0:
-									print("Warning: sigma = 0 for image ",i)
+									print(("Warning: sigma = 0 for image ",i))
 
 								if options.writejunk == False:
 									if options.verbose > 0:
@@ -1110,7 +1110,7 @@ def main():
 
 							if d["sigma"]==0:
 								if options.verbose > 0:
-									print("Warning: sigma = 0 for image ",i)
+									print(("Warning: sigma = 0 for image ",i))
 
 								if options.writejunk == False:
 									if options.verbose > 0:
@@ -1148,7 +1148,7 @@ def main():
 			n_outimg = EMUtil.get_image_count(outfile)
 
 			if options.verbose > 0:
-				print(str(n_outimg) + " images")
+				print((str(n_outimg) + " images"))
 		except:
 			pass
 

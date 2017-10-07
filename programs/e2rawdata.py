@@ -139,7 +139,7 @@ def main():
 			db=js_open_dict(info_name(arg,nodir=not options.usefoldername))
 			db["ctf_frame"]=[box,ctf,(box/2,box/2),set(),5,1]
 			db["quality"]=5
-			print(info_name(arg,nodir=not options.usefoldername),ctf)
+			print((info_name(arg,nodir=not options.usefoldername),ctf))
 
 		E2progress(logid,(float(i)/float(len(args))))
 

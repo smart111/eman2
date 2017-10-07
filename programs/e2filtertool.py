@@ -371,7 +371,7 @@ class EMProcessorWidget(QtGui.QWidget):
 			elif parms[i+1]=="XYDATA" :
 				self.parmw.append(StringBox(self,parms[i],dflt[2],100,dflt[0]))
 
-			else: print("Unknown parameter type",parms[i+1],parms)
+			else: print(("Unknown parameter type",parms[i+1],parms))
 
 			self.parmw[-1].setToolTip(parms[i+2])
 			self.gbl.addWidget(self.parmw[-1],self.ninput,1,1,4)

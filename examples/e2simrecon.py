@@ -43,13 +43,13 @@ import numpy as np
 def run(command):
 	"Mostly here for debugging, allows you to control how commands are executed (os.system is normal)"
 
-	print "{}: {}".format(time.ctime(time.time()),command)
+	print("{}: {}".format(time.ctime(time.time()),command))
 
 	ret=launch_childprocess(command)
 
 	# We put the exit here since this is what we'd do in every case anyway. Saves replication of error detection code above.
 	if ret !=0 :
-		print "Error running: ",command
+		print("Error running: ",command)
 		sys.exit(1)
 
 	return
@@ -77,7 +77,7 @@ Simulates the effects of a 3D reconstruction by including noise and rotational u
 	vol=EMData(args[0],0,True)
 	nz=vol["nz"]
 	if nz==1 :
-		print "Input must be a volume"
+		print("Input must be a volume")
 		sys.exit(1)
 		
 	da=360.0/nz
@@ -86,7 +86,7 @@ Simulates the effects of a 3D reconstruction by including noise and rotational u
 	run(com)
 	
 	n=EMUtil.get_image_count("simproj.hdf")
-	for i in xrange(n):
+	for i in range(n):
 		h=EMData(args[0],i,True)
 		xf=h["xform.projection"]
 		k=xf.get_rotation("eman")

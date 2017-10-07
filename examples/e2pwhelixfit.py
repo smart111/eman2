@@ -23,7 +23,7 @@ def read_fixed(edgefile):
 	f.close()
 	
 	for fragment in fragments:
-		fragment = map(int, fragment.split())
+		fragment = list(map(int, fragment.split()))
 		for i in range(len(fragment)-1):
 			fixededges.append((fragment[i], fragment[i+1]))
 	return fixededges
@@ -62,22 +62,22 @@ def main():
 	logid=E2init(sys.argv)
 	
 	eg=[]
-	if options.edgefile<>None:
+	if options.edgefile!=None:
 		edge=read_fixed(options.edgefile)
 		eg.append(edge[0][0])
 		for i in range(1,len(edge)):
-			if edge[i][0]<>edge[i-1][1]:
+			if edge[i][0]!=edge[i-1][1]:
 				eg.append(edge[i-1][1])
 				eg.append(edge[i][0])
 		eg.append(edge[len(edge)-1][1])
 		atomnumber=read_pdb(options.pdbin)
-		print eg
+		print(eg)
 		for i in range(len(eg)):
 			for j in range(len(atomnumber)):
 				if atomnumber[j]==eg[i]:
 					eg[i]=j
 					break
-		print eg
+		print(eg)
 		#exit()
 	
 	mrc=EMData(options.mapin)
@@ -93,7 +93,7 @@ def main():
 		for i in range(len(hlx)/8):
 			h=[hlx[i*8+2],hlx[i*8+3],hlx[i*8+4],hlx[i*8+5],hlx[i*8+6],hlx[i*8+7]]
 			mindist=min(np.sum((allhlx-h)*(allhlx-h),axis=1))
-			print h,mindist
+			print(h,mindist)
 			if mindist>100:
 				allhlx=np.vstack((allhlx,h))
 				newhlx=1
@@ -101,7 +101,7 @@ def main():
 			break
 				
 	allhlx=np.delete(allhlx,[0,1],axis=0)
-	print allhlx
+	print(allhlx)
 	
 	hlx=[]
 	n=atoms.get_number_points()
@@ -172,8 +172,8 @@ def main():
 	#for h in allhlx:
 		#hlx.extend([0,0,h[0],h[1],h[2],h[3],h[4],h[5]])
 	
-	print hlx
-	if options.mapwohelix<>None:
+	print(hlx)
+	if options.mapwohelix!=None:
 		atoms.remove_helix_from_map(mrc,hlx)
 		mrc.write_image(options.mapwohelix)
 	E2end(logid)

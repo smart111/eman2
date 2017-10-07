@@ -149,8 +149,8 @@ class TestUtils(unittest.TestCase):
         n1 = 10
         n2 = 20
         f1 = Util.get_frand(n1, n2)
-        self.assert_(n1 <= f1)
-        self.assert_(f1 <= n2)
+        self.assertTrue(n1 <= f1)
+        self.assertTrue(f1 <= n2)
         
     def test_get_gauss_rand(self):
         """test get_gauss_rand() function ..................."""
@@ -287,14 +287,14 @@ class TestUtils(unittest.TestCase):
         b = []
         SEED = 123456
         Util.set_randnum_seed(SEED)
-        for i in xrange(10):
+        for i in range(10):
             a.append(Util.get_irand(1,100))
         
         Util.set_randnum_seed(SEED)
-        for i in xrange(10):
+        for i in range(10):
             b.append(Util.get_irand(1,100))
         
-        for i in xrange(10):
+        for i in range(10):
             self.assertEqual(a[i], b[i])
             
         seed = Util.get_randnum_seed()
@@ -650,7 +650,7 @@ class TestEMUtils(unittest.TestCase):
         
         EMUtil.delete_hdf_attribute(file, 'count')
         d = img.get_attr_dict()
-        self.assertEqual(d.has_key('count'), False)
+        self.assertEqual('count' in d, False)
         
         testlib.safe_unlink(file)
         

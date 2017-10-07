@@ -77,7 +77,7 @@ def main():
 		try:
 			n=EMUtil.get_image_count(args[0])
 		except:
-			print("Error, couldn't read images from: ",args[0])
+			print(("Error, couldn't read images from: ",args[0]))
 			sys.exit(1)
 
 		try:
@@ -104,7 +104,7 @@ def main():
 			fft1=img.do_fft()
 			if ctf.defocus!=lastdf :
 				imgnum+=1
-				if options.verbose>0: print("Defocus {:4.2f} particles{:03d}".format(ctf.defocus,imgnum))
+				if options.verbose>0: print(("Defocus {:4.2f} particles{:03d}".format(ctf.defocus,imgnum)))
 				db=js_open_dict("info/particles{:03d}_info.json".format(imgnum))
 				ctf2=EMAN2Ctf()
 				ctf2.defocus=ctf.defocus
@@ -169,7 +169,7 @@ def main():
 				js["boxes"]=boxlist
 				js.close()
 				if not "{}.hdf".format(base_name(filename,nodir=True)) in micros:
-					print("Warning: Imported boxes for {}, but micrographs/{}.hdf does not exist".format(base_name(filename),base_name(filename,True)))
+					print(("Warning: Imported boxes for {}, but micrographs/{}.hdf does not exist".format(base_name(filename),base_name(filename,True))))
 
 		elif options.box_type == 'coords':
 			micros=os.listdir("micrographs")
@@ -183,7 +183,7 @@ def main():
 					boxlist.append([float(fields[0]), float(fields[1]), 'manual'])
 				js_open_dict(info_name(filename,nodir=True))["boxes"]=boxlist
 				if not "{}.hdf".format(base_name(filename,nodir=True)) in micros:
-					print("Warning: Imported boxes for {}, but micrographs/{}.hdf does not exist".format(base_name(filename),base_name(filename,True)))
+					print(("Warning: Imported boxes for {}, but micrographs/{}.hdf does not exist".format(base_name(filename),base_name(filename,True))))
 
 
 		elif options.box_type == 'tiltedboxes':
@@ -247,7 +247,7 @@ def main():
 						boxlist.append([xc,yc,'manual']) # should probably be 'relion' or 'from_star'
 					js_open_dict(info_name(mg,nodir=True))["boxes"]=boxlist
 					if not "{}.hdf".format(base_name(mg,nodir=True)) in project_micros:
-						print("Warning: Imported boxes for {}.hdf, but micrographs/{}.hdf does not exist".format(base_name(filename),base_name(mg,nodir=True)))
+						print(("Warning: Imported boxes for {}.hdf, but micrographs/{}.hdf does not exist".format(base_name(filename),base_name(mg,nodir=True))))
 				elif len(micros) > 1:
 					for mg in project_micros:
 						boxlist = []
@@ -263,7 +263,7 @@ def main():
 							boxlist.append([xc,yc,'manual'])
 						js_open_dict(info_name(mg,nodir=True))["boxes"]=boxlist
 						if not "{}.hdf".format(base_name(mg,nodir=True)) in project_micros:
-							print("Warning: Imported boxes for {}, but micrographs/{}.hdf does not exist".format(base_name(mg),base_name(mg,nodir=True)))
+							print(("Warning: Imported boxes for {}, but micrographs/{}.hdf does not exist".format(base_name(mg),base_name(mg,nodir=True))))
 
 		else : print("ERROR: Unknown box_type")
 
@@ -324,12 +324,12 @@ with the same name, you should specify only the .hed files (no renaming is neces
 def run(command):
 	"Mostly here for debugging, allows you to control how commands are executed (os.system is normal)"
 
-	print("{}: {}".format(time.ctime(time.time()),command))
+	print(("{}: {}".format(time.ctime(time.time()),command)))
 	ret=launch_childprocess(command)
 
 	# We put the exit here since this is what we'd do in every case anyway. Saves replication of error detection code above.
 	if ret !=0 :
-		print("Error running: ",command)
+		print(("Error running: ",command))
 		sys.exit(1)
 
 	return

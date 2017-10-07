@@ -274,8 +274,8 @@ class EMImage2DWidget(EMGLWidget):
 	def set_mouse_mode(self,mode_num):
 		if self.mouse_mode == mode_num:
 			return
-		if not self.mouse_mode_dict.has_key(mode_num):
-			print "unknown mouse mode:",mode_num
+		if mode_num not in self.mouse_mode_dict:
+			print("unknown mouse mode:",mode_num)
 			return
 		self.mouse_mode = mode_num
 		self.del_shapes()
@@ -699,7 +699,7 @@ class EMImage2DWidget(EMGLWidget):
 
 	def set_FFT(self,val):
 		if self.data != None and self.data.is_complex():
-			print " I am returning"
+			print(" I am returning")
 			return
 
 		self.curfft=val
@@ -854,7 +854,7 @@ class EMImage2DWidget(EMGLWidget):
 			# doing a 24-bit color FFT:
 
 			if not self.display_fft.is_complex ( ) :
-				print "Error, the FFT is not complex; internal error"
+				print("Error, the FFT is not complex; internal error")
 				return None
 
 			value_size = 3  # 3 8-bit bytes
@@ -952,7 +952,7 @@ class EMImage2DWidget(EMGLWidget):
 
 		if self.curfft==1 :
 			if self.display_fft.is_complex() == False:
-				print "error, the fft is not complex, internal error"
+				print("error, the fft is not complex, internal error")
 				return
 			a=(3,(self.width()*3-1)/4*4+4,self.height(),self.display_fft.render_ap24(1+int(self.origin[0]/self.scale),1+int(self.origin[1]/self.scale),self.width(),self.height(),(self.width()*3-1)/4*4+4,self.scale,pixden[0],pixden[1],self.fcurmin,self.fcurmax,self.fgamma,3))
 		elif self.curfft in (2,3) :
@@ -1279,7 +1279,7 @@ class EMImage2DWidget(EMGLWidget):
 		alpha = 1.0
 		if len(self.shapes) > 0:
 
-			for k in self.shapes.keys():
+			for k in list(self.shapes.keys()):
 				shape = self.shapes[k]
 				if not isinstance(shape,EMShape) : continue
 				glLineWidth(2)
@@ -1298,7 +1298,7 @@ class EMImage2DWidget(EMGLWidget):
 			GL.glBlendFunc(GL.GL_SRC_ALPHA,GL.GL_ONE_MINUS_SRC_ALPHA);
 
 		glPointSize(2)
-		for k,s in self.shapes.items():
+		for k,s in list(self.shapes.items()):
 			### handle boxes for 3D images
 			if s.shape[0] == "ellipse":
 				mxlen=11
@@ -1312,7 +1312,7 @@ class EMImage2DWidget(EMGLWidget):
 
 			if k == self.active[0]:
 				if not isinstance(s,EMShape) :
-					print "Invalid shape in EMImage : ",s
+					print("Invalid shape in EMImage : ",s)
 					continue
 				vals = s.shape[1:8]
 				vals[0:3] = self.active[1:4]
@@ -1383,7 +1383,7 @@ class EMImage2DWidget(EMGLWidget):
 
 
 		# We do the scr* shapes last since they mess up the matrix
-		for k,s in self.shapes.items():
+		for k,s in list(self.shapes.items()):
 			try:
 				if s.shape[0][:3]=="scr":
 #					print "shape",s.shape
@@ -1461,7 +1461,7 @@ class EMImage2DWidget(EMGLWidget):
 			self.set_line_animation(*animation.get_end())
 
 	def set_animation_increment(self,increment):
-		for shape in self.shapes.items():
+		for shape in list(self.shapes.items()):
 			shape[1].set_blend(increment)
 
 		self.shapechange = True
@@ -1472,7 +1472,7 @@ class EMImage2DWidget(EMGLWidget):
 
 	def update_blend(self):
 		ret = False
-		for shape in self.shapes.items():
+		for shape in list(self.shapes.items()):
 			s = shape[1]
 			if s.isanimated:
 				v = s.incblend()
@@ -2264,7 +2264,7 @@ class EMImageInspector2D(QtGui.QWidget):
 		fft=data.do_fft()
 		pspec=fft.calc_radial_dist(fft["ny"]/2,0.0,1.0,1)
 		ds=1.0/(fft["ny"]*data["apix_x"])
-		s=[ds*i for i in xrange(fft["ny"]/2)]
+		s=[ds*i for i in range(fft["ny"]/2)]
 
 		from emplot2d import EMDataFnPlotter
 
@@ -2286,7 +2286,7 @@ class EMImageInspector2D(QtGui.QWidget):
 		fftsum.mult(1.0/len(self.target().list_data))
 		pspec=fftsum.calc_radial_dist(fft["ny"]/2,0.0,1.0,1)	# note that this method knows about is_inten() image flag
 		ds=1.0/(fft["ny"]*self.target().get_data()["apix_x"])
-		s=[ds*i for i in xrange(fft["ny"]/2)]
+		s=[ds*i for i in range(fft["ny"]/2)]
 
 		from emplot2d import EMDataFnPlotter
 
@@ -2301,21 +2301,21 @@ class EMImageInspector2D(QtGui.QWidget):
 				nm,op=parsemodopt(self.procbox1.getValue())
 				ret.append(Processors.get(nm,op))
 			except:
-				print "Error with processor: ",self.procbox1.getValue()
+				print("Error with processor: ",self.procbox1.getValue())
 
 		if self.procbox2.getEnabled():
 			try:
 				nm,op=parsemodopt(self.procbox2.getValue())
 				ret.append(Processors.get(nm,op))
 			except:
-				print "Error with processor2: ",self.procbox2.getValue()
+				print("Error with processor2: ",self.procbox2.getValue())
 
 		if self.procbox3.getEnabled():
 			try:
 				nm,op=parsemodopt(self.procbox3.getValue())
 				ret.append(Processors.get(nm,op))
 			except:
-				print "Error with processor: ",self.procbox3.getValue()
+				print("Error with processor: ",self.procbox3.getValue())
 
 		self.target().set_disp_proc(ret)
 
@@ -2343,7 +2343,7 @@ class EMImageInspector2D(QtGui.QWidget):
 		elif depth==1 :
 			out=file(fsp+".pgm","w")
 			out.write("P5 %d %d 255\n"%(w,h))
-			print w,h,w*h,len(bmap)
+			print(w,h,w*h,len(bmap))
 			out.write(bmap)
 			out.close()
 

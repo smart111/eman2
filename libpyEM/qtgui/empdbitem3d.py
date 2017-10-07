@@ -391,7 +391,7 @@ class EMBallStickModel(EMPDBItem3D):
 			for k in range(len(self.allResidues)):
 				res = self.allResidues[k]
 				key =  res[4][0]
-				if self.side_chains.has_key(key):
+				if key in self.side_chains:
 					self.renderResidues(res,self)
 					continue
 				if k !=0: #connects residues together from the nitrogen of one residue to the O of the next residue
@@ -408,7 +408,7 @@ class EMBallStickModel(EMPDBItem3D):
 		try:
 			glCallList(self.dl)
 		except:
-			print "call list failed",self.dl
+			print("call list failed",self.dl)
 			glDeleteLists(self.dl,1)
 			self.dl = None
 	
@@ -1178,7 +1178,7 @@ class EMSphereModel(EMPDBItem3D):
 		if self.dl == None: #self.dl is the display list, every time a new file is added, this is changed back to None
 			self.dl=glGenLists(1)
 			glNewList(self.dl,GL_COMPILE)
-			for i in xrange(self.natoms):
+			for i in range(self.natoms):
 				glPushMatrix()
 				glTranslate(self.coords[i][0],self.coords[i][1],self.coords[i][2])
 				glScale(self.vwr[i],self.vwr[i],self.vwr[i])
@@ -1195,7 +1195,7 @@ class EMSphereModel(EMPDBItem3D):
 		try:
 			glCallList(self.dl)
 		except:
-			print "call list failed",self.dl
+			print("call list failed",self.dl)
 			glDeleteLists(self.dl,1)
 			self.dl = None
 

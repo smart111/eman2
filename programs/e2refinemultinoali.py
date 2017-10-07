@@ -90,10 +90,10 @@ def main():
 		if len(fls)==0 : fls=[0]
 		options.newpath = "multinoali_{:02d}".format(max(fls)+1)
 
-	print("Working directory: {}".format(options.newpath))
+	print(("Working directory: {}".format(options.newpath)))
 	try: os.mkdir(options.newpath)
 	except:
-		print("New path {} exist. Overwrite...".format(options.newpath))
+		print(("New path {} exist. Overwrite...".format(options.newpath)))
 		pass
 
 
@@ -198,7 +198,7 @@ def main():
 						symdone[j]=i
 						break
 			eulerlst.append(elst)
-		print("Making {} projections in {} groups...".format(n, len(eulerlst)))
+		print(("Making {} projections in {} groups...".format(n, len(eulerlst))))
 		sym="c1"
 
 		#for i in range(len(eulerlst)):
@@ -221,7 +221,7 @@ def main():
 	
 	#### start iterations...
 	for it in range(options.iter):
-		print("Starting iteration {} ...".format(it))
+		print(("Starting iteration {} ...".format(it)))
 		print("Making projections...")
 
 		if it==0:
@@ -336,7 +336,7 @@ def main():
 				if thrtolaunch<len(thrds) :
 					while (threading.active_count()==NTHREADS ) : time.sleep(.1)
 					if time.time()-t01>3:
-						print("Starting thread {}/{}".format(thrtolaunch,len(thrds)))
+						print(("Starting thread {}/{}".format(thrtolaunch,len(thrds))))
 						t01=time.time()
 					thrds[thrtolaunch].start()
 					thrtolaunch+=1
@@ -347,7 +347,7 @@ def main():
 					#print idx,ccc
 					corr[idx]=ccc
 			
-			print(time.time()-t00)
+			print((time.time()-t00))
 			np.savetxt("{path}/simmx_{it:02d}_{eo}.txt".format(path=options.newpath,eo=eo, it=it),corr)
 			
 			
@@ -385,7 +385,7 @@ def main():
 					clso=np.argmin(corr,1)
 					cls=clso%len(models)
 					clsm=clso//len(models)
-					print(eo,[float(sum(cls==k))/float(npt) for k in models])
+					print((eo,[float(sum(cls==k))/float(npt) for k in models]))
 					for i in range(npt):
 						v=cmxcls[0,i]
 						if options.breaksym:
@@ -425,7 +425,7 @@ def main():
 						#print toavg
 						for i in toavg:
 							cmxout[s][0,int(i)]=int(c)
-					print(c, ncls,cmxout[s]["mean_nonzero"])
+					print((c, ncls,cmxout[s]["mean_nonzero"]))
 
 			
 			### write classmx

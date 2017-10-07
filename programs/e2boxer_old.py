@@ -333,7 +333,7 @@ def write_output(args,options,logid, database="e2boxercache"):
 							return
 						gbdb = js_open_dict(gdb_name)
 						if boxkey not in gbdb:
-							print("no gauss mode autoboxing parameters were found in database for %s...this should not happen"%boxkey)
+							print(("no gauss mode autoboxing parameters were found in database for %s...this should not happen"%boxkey))
 							print('exiting...')
 							return
 						autoboxdict = gbdb[boxkey]
@@ -1583,7 +1583,7 @@ class SwarmBoxer:
 			exc_x = box[0]/exclusion_shrink
 			exc_y = box[1]/exclusion_shrink
 			if exc_x >= exclusion_image.get_xsize() or exc_y > exclusion_image.get_ysize():
-				print("Box position (%i,%i) was outside exclusion image boundaries (%i,%i)... ignoring (email this to woolford@bcm.edu)" %(exc_x,exc_y,exclusion_image.get_xsize(),exclusion_image.get_ysize()))
+				print(("Box position (%i,%i) was outside exclusion image boundaries (%i,%i)... ignoring (email this to woolford@bcm.edu)" %(exc_x,exc_y,exclusion_image.get_xsize(),exclusion_image.get_ysize())))
 				continue
 			if exclusion_image.get(exc_x,exc_y) != 0: boxes.append(box)
 			#else the particle was re-centered on an excluded region!
@@ -1622,7 +1622,7 @@ class SwarmBoxer:
 			get_application().setOverrideCursor(QtCore.Qt.ArrowCursor)
 			self.target().set_status_message("Autoboxed %d Particles" %len(boxes), 10000)
 		else:
-			print("Autoboxed %d Particles" %len(boxes))
+			print(("Autoboxed %d Particles" %len(boxes)))
 
 
 		return boxes
@@ -2420,13 +2420,13 @@ class GaussPanel:
 			# conversion of a value failed!
 			print("integer conversion failed.")
 			if not(extras.args is None):
-				print(extras.args[0])
+				print((extras.args[0]))
 			return
 		except:
 			print("error")
-			print(self.ctf_window_size.text())
-			print(self.ctf_overlap_size.text())
-			print(self.ctf_edge_size.text())
+			print((self.ctf_window_size.text()))
+			print((self.ctf_overlap_size.text()))
+			print((self.ctf_edge_size.text()))
 			return
 
 		# print "determine power spectrum"
@@ -2539,7 +2539,7 @@ class GaussPanel:
 			# conversion of a value failed!
 			print("integer conversion failed.")
 			if not(extras.args is None):
-				print(extras.args[0])
+				print((extras.args[0]))
 			return
 		except:
 			print("error")
@@ -2550,7 +2550,7 @@ class GaussPanel:
 		outpartres = 'partres_%s'%fname
 
 		if os.path.exists(outpwrot) or os.path.exists(outpartres):
-			print("Please remove or rename %s and or %s"%(outpwrot,outpartres))
+			print(("Please remove or rename %s and or %s"%(outpwrot,outpartres)))
 			return
 
 		from morphology import cter
@@ -2707,7 +2707,7 @@ class GaussBoxer:
 		'''
 		When the autobox button is clicked then we force an autobox.
 		'''
-		print('file to be processed: ', self.target().current_file())
+		print(('file to be processed: ', self.target().current_file()))
 		self.auto_box(self.target().current_file(),force_remove_auto_boxes=True)
 
 	def auto_box(self, imgname, parameter_update=True, force_remove_auto_boxes=False, cache=True):
@@ -2746,16 +2746,16 @@ class GaussBoxer:
 		peaks = ccf.peak_ccf( boxsize/2-1)
 		del ccf
 		npeak = len(peaks)/3
-		print("npeak: ", npeak)
+		print(("npeak: ", npeak))
 		boxes = []
 		ccfs = [] # ccfs are used to set threshold_low adn threshold_high after the particles have been picked. see set_data in CcfHistogram in sxboxer and set_params_of_gui in pawelautoboxer in boxertools.py
-		print("thr low: ", self.thr_low)
-		print("thr hi: ", self.thr_hgh)
-		print("pixel_output: ", self.pixel_output)
-		print("pixel input: ", self.pixel_input)
-		print("invert: ", self.invert)
-		print("gauss width: ", self.gauss_width)
-		print("variance: ", self.use_variance)
+		print(("thr low: ", self.thr_low))
+		print(("thr hi: ", self.thr_hgh))
+		print(("pixel_output: ", self.pixel_output))
+		print(("pixel input: ", self.pixel_input))
+		print(("invert: ", self.invert))
+		print(("gauss width: ", self.gauss_width))
+		print(("variance: ", self.use_variance))
 		for i in range(npeak):
 			cx = peaks[3*i+1]
 			cy = peaks[3*i+2]
@@ -2795,7 +2795,7 @@ class GaussBoxer:
 			get_application().setOverrideCursor(QtCore.Qt.ArrowCursor)
 			self.target().set_status_message("Autoboxed %d Particles" %len(boxes), 10000)
 		else:
-			print("Autoboxed %d Particles" %len(boxes))
+			print(("Autoboxed %d Particles" %len(boxes)))
 
 		self.panel_object.enable_auto_box(False)
 		gbdb = js_open_dict(GaussPanel.GDB_NAME)
@@ -3005,7 +3005,7 @@ class GaussBoxer:
 		peaks = ccf.peak_ccf( boxsize/2-1)
 		del ccf
 		npeak = len(peaks)/3
-		print("npeak: ", npeak)
+		print(("npeak: ", npeak))
 		boxes = []
 		for i in range(npeak):
 			cx = peaks[3*i+1]
@@ -3026,7 +3026,7 @@ class GaussBoxer:
 		del peaks
 		# adds boxes and write to database
 		self.target.add_boxes(boxes, True)
-		print("Autoboxed %d Particles" %len(boxes))
+		print(("Autoboxed %d Particles" %len(boxes)))
 
 	# auto_ctf is meant to be called for batch only...
 	# take care of case where estimated ctf is saved into downsampled micrograph from which particles are picked.
@@ -3061,7 +3061,7 @@ class GaussBoxer:
 		ctf_tuple = [defocus,ctf_Cs,ctf_volt,self.pixel_output,0,ctf_ampcont]
 		set_ctf(img, ctf_tuple)
 		img.write_image(image_name, 0)
-		print("        CTF parameters for original micrograph %s:"%image_name, ctf_tuple)
+		print(("        CTF parameters for original micrograph %s:"%image_name, ctf_tuple))
 		del img
 
 class GaussTool(GaussBoxer,EMBoxingTool):

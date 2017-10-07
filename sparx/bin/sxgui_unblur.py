@@ -771,7 +771,7 @@ class SXUnblurPlot(QtGui.QWidget):
             intLenUpper += 1
 
         # First half of the figure add to the upper widget
-        for number in xrange(intLenUpper):
+        for number in range(intLenUpper):
             # Create a Widget for each figure.
             figWidgetUpper = QtGui.QWidget(scrollContentUpper)
             figWidgetLower = QtGui.QWidget(scrollContentLower)
@@ -1037,7 +1037,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                     else:
                         self._fill_gui(inputlist=list(listOfShiftFiles))
             else:
-                print('Error: {0} not found! Try again'.format(inputfile))
+                print(('Error: {0} not found! Try again'.format(inputfile)))
 
     def _check_list_or_file(self, data):
         """Check if the input name is a file or a list of files"""
@@ -1756,11 +1756,11 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                 listSplit = strSuffix.split('/')[-1].split('*')
             if len(listSplit) != 2:
                 self.arrMicNumber = numpy.arange(len(self.listFile))
-                print(
+                print((
                     'Warning: Could not identify micrograph serial number.\n' +
                     'X-axis of the plots do not represent' +
                     'the serial micrograph number.'
-                    )
+                    ))
             else:
                 listMicNumber = []
                 varBreak = False
@@ -1772,11 +1772,11 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                     except:
                         self.arrMicNumber = numpy.arange(len(self.listFile))
                         varBreak = True
-                        print(
+                        print((
                             'Warning: Could not identify micrograph serial number.\n' +
                             'X-axis of the plots do not represent' +
                             'the serial micrograph number.'
-                            )
+                            ))
                         break
                     else:
                         listMicNumber.append(number)
@@ -1803,21 +1803,21 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
             return None
         elif len(self.listFile) <= 5:
             self.varAnalyzeOne = True
-            print(
+            print((
                 '\nWarning: !!!! Only few shift files selected, ' +
                 'so plots of all micrographs could not work as expected. !!!!\n'
-                )
+                ))
 
         # Load and calculate data for the first time
         value = self._first_time_calculations()
 
         if len(self.arrMicNumber) != len(self.listFile):
             self.arrMicNumber = numpy.arange(len(self.listFile))
-            print(
+            print((
                 'Warning: Files were corrupt, lost track of micrograph serial number.\n' +
                 'X-axis of the plots do not represent' +
                 'the serial micrograph number.'
-                )
+                ))
 
         if value is not None:
             # Fill list widget
@@ -1953,7 +1953,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
             (self.dMax, '<f8'),
             (self.dMaxFirst, '<f8')
             ]
-        for index in xrange(1, self.intFrames + 1):
+        for index in range(1, self.intFrames + 1):
             self.listDType.append(('x{:d}'.format(index), '<f8'))
             self.listDType.append(('y{:d}'.format(index), '<f8'))
             self.listCoordX.append('x{:d}'.format(index))
@@ -1985,11 +1985,11 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                     # Transpose the array
                     arrCoord = numpy.transpose(arrCoord)
             except ValueError:
-                print('Warning: File corrupt, skip:', file)
+                print(('Warning: File corrupt, skip:', file))
                 continue
 
             if len(arrCoord) != self.intFrames:
-                print('Warning: File does not have {0} Frames, skip:'.format(self.intFrames), file)
+                print(('Warning: File does not have {0} Frames, skip:'.format(self.intFrames), file))
                 continue
 
             # Get the micrograph name
@@ -2019,11 +2019,11 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                     # Transpose the array
                     arrCoord = numpy.transpose(arrCoord)
             except ValueError:
-                print('Warning: File corrupt, skip:', file)
+                print(('Warning: File corrupt, skip:', file))
                 continue
 
             if len(arrCoord) != self.intFrames:
-                print('Warning: File does not have {0} Frames, skip:'.format(self.intFrames), file)
+                print(('Warning: File does not have {0} Frames, skip:'.format(self.intFrames), file))
                 continue
 
             # Get the micrograph name
@@ -2047,7 +2047,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                     round(coord[idxY], 6)
 
             # Calculate per frame drift
-            for index in xrange(1, self.intFrames):
+            for index in range(1, self.intFrames):
 
                 fltDistanceX = \
                     self.arrData['x{:d}'.format(index)][number] - \
@@ -2147,7 +2147,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
             varOverallDrift = 0
 
             # Use all wanted frames
-            for index in xrange(self.idxFirstFrame, self.idxLastFrame):
+            for index in range(self.idxFirstFrame, self.idxLastFrame):
 
                 # Calculate Angles
                 if index <= self.idxLastFrame - 2:
@@ -2274,7 +2274,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
             ] = True
 
         # Fill the dictionary with frame and angle
-        for index in xrange(self.idxFirstFrame, self.idxLastFrame):
+        for index in range(self.idxFirstFrame, self.idxLastFrame):
 
             # With angles
             if index <= self.idxLastFrame - 1 \
@@ -2539,7 +2539,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
             self.leStopAngle.setEnabled(True)
             self.cbAngle.setEnabled(True)
 
-            for number in xrange(self.idxFirstFrame, self.idxLastFrame):
+            for number in range(self.idxFirstFrame, self.idxLastFrame):
 
                 # Special case for angle: break if the number is too huge
                 if mode == self.modeAngle and number > self.intFrames - 2:
@@ -2814,7 +2814,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
             else:
 
                 # Set all frames to the general settings
-                for index in xrange(self.idxFirstFrame, self.idxLastFrame):
+                for index in range(self.idxFirstFrame, self.idxLastFrame):
                     self.dictThresh['Frame {:d}'.format(index)][
                         self.idxStartSave
                         ] = fltStart
@@ -2831,7 +2831,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                 # Disable the general and frame save button
                 # and set the mode to frames.
                 self.dictButton[mode].setEnabled(False)
-                for index in xrange(self.idxFirstFrame, self.idxLastFrame):
+                for index in range(self.idxFirstFrame, self.idxLastFrame):
                     self.dictThresh['Frame {:d}'.format(index)][self.idxSaved] = True
                 mode = self.modeFrame
 
@@ -2861,7 +2861,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                 # If all check boxes are checked,
                 # mark the general check box as checked.
                 # Else partially checked.
-                for index in xrange(self.idxFirstFrame, self.idxLastFrame):
+                for index in range(self.idxFirstFrame, self.idxLastFrame):
                     if not self.dictThresh['Frame {:d}'.format(index)][
                             self.idxCriterion
                             ]:
@@ -2877,7 +2877,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                 # If all check boxes are unchecked,
                 # mark the general check box as unchecked.
                 # Else partially checked.
-                for index in xrange(self.idxFirstFrame, self.idxLastFrame):
+                for index in range(self.idxFirstFrame, self.idxLastFrame):
                     if self.dictThresh['Frame {:d}'.format(index)][
                             self.idxCriterion
                             ]:
@@ -2901,7 +2901,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                 self.dictThresh[strCurrent][self.idxCriterion] = False
 
                 # If all check boxes are unchecked, disable the button
-                for index in xrange(
+                for index in range(
                         self.idxFirstFrame,
                         self.idxFirstFrame + self.cbAngle.count()
                         ):
@@ -2915,7 +2915,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
 
             # If its checked, check all frames
             if self.chGeneralCriterion.checkState() == Qt.Checked:
-                for index in xrange(self.idxFirstFrame, self.idxLastFrame):
+                for index in range(self.idxFirstFrame, self.idxLastFrame):
                     self.dictThresh['Frame {:d}'.format(index)][
                         self.idxCriterion
                         ] = True
@@ -2925,7 +2925,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
 
             # If its unchecked, uncheck all frames
             elif self.chGeneralCriterion.checkState() == Qt.Unchecked:
-                for index in xrange(self.idxFirstFrame, self.idxLastFrame):
+                for index in range(self.idxFirstFrame, self.idxLastFrame):
                     self.dictThresh['Frame {:d}'.format(index)][
                         self.idxCriterion
                         ] = False
@@ -2942,7 +2942,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
         """Uncheck all angle criterions"""
 
         # Set all criterions to False
-        for index in xrange(self.idxFirstFrame, self.idxLastFrame):
+        for index in range(self.idxFirstFrame, self.idxLastFrame):
             if index >= self.intFrames - 1:
                 break
             self.dictThresh['Angle {:d}'.format(index)][
@@ -2985,7 +2985,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
 
         # Set the file names for faster search and select this files
         setFileNames = set(arrBetweenThres[self.dFile])
-        for index in xrange(int(self.lsFiles.count())):
+        for index in range(int(self.lsFiles.count())):
             if str(self.lsFiles.item(index).text()) in setFileNames:
                 self.lsFiles.item(index).setCheckState(Qt.Checked)
             else:
@@ -3132,7 +3132,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
                 self.varOldStopGeneral = fltStop
 
                 # Set the settings to all frames
-                for index in xrange(self.idxFirstFrame, self.idxLastFrame - 1):
+                for index in range(self.idxFirstFrame, self.idxLastFrame - 1):
                     self.dictThresh['Frame {:d}'.format(index)][
                         self.idxStart
                         ] = fltStart
@@ -3142,7 +3142,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
 
                 # Enable the save button for general and all frames
                 self.dictButton[mode].setEnabled(True)
-                for index in xrange(self.idxFirstFrame, self.idxLastFrame):
+                for index in range(self.idxFirstFrame, self.idxLastFrame):
                     self.dictThresh['Frame {:d}'.format(index)][self.idxSaved] = False
 
                 # Set the Text to the general widgets and turn it black
@@ -3266,7 +3266,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
         """Invert Selection"""
 
         # Invert the selection and save the current selection state
-        for index in xrange(int(self.lsFiles.count())):
+        for index in range(int(self.lsFiles.count())):
             if self.lsFiles.item(index).checkState() == Qt.Checked:
                 self.lsFiles.item(index).setCheckState(Qt.Unchecked)
             else:
@@ -3434,7 +3434,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
         # Fill the lists with current entrys
         listChecked = []
         listUnchecked = []
-        for index in xrange(int(self.lsFiles.count())):
+        for index in range(int(self.lsFiles.count())):
             if self.lsFiles.item(index).checkState() == Qt.Checked:
                 listChecked.append(str(self.lsFiles.item(index).text()))
             else:
@@ -3805,7 +3805,7 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
 
         for row in arrThresh:
             listElement = []
-            for index in xrange(2, len(row)):
+            for index in range(2, len(row)):
                 listElement.append(row[index])
             if row[0] != self.modeOverall:
                 self.dictThresh.update({'{0} {1}'.format(row[0], row[1]): listElement})
@@ -4030,10 +4030,10 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
         # Check if there are less than 5
         if len(self.arrMicNumber) <= 5:
             self.varAnalyzeOne = True
-            print(
+            print((
                 '\nWarning: !!!! Only few shift files selected, ' +
                 'so plots of all micrographs could not work as expected. !!!!\n'
-                )
+                ))
 
         return arrThresh, arrGeneral
 
@@ -4218,10 +4218,10 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
         # Check if there are less than 5
         if len(self.arrMicNumber) <= 5:
             self.varAnalyzeOne = True
-            print(
+            print((
                 '\nWarning: !!!! Only few shift files selected, ' +
                 'so plots of all micrographs could not work as expected. !!!!\n'
-                )
+                ))
 
         return arrThresh, arrGeneral
 
@@ -4391,11 +4391,11 @@ class SXDriftUnblur(QtGui.QMainWindow, Ui_MSMainWidget):
             dtype=None
             ))
 
-        print(
+        print((
             'Warning: Could not identify micrograph serial number due to an old settings file.\n' +
             'X-axis of the plots do not represent' +
             'the serial micrograph number.'
-            )
+            ))
         self.arrMicNumber = numpy.arange(len(self.arrData))
 
         return arrThresh, arrGeneral

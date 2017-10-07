@@ -194,7 +194,7 @@ def check(options,verbose):
 	
 	if (options.sep < 1):
 		if verbose>0:
-			print("Error: the --sep argument must be greater than zero, currently it is %d" %(options.sep))
+			print(("Error: the --sep argument must be greater than zero, currently it is %d" %(options.sep)))
 		error = True
 	
 
@@ -203,12 +203,12 @@ def check(options,verbose):
 		if os.path.exists(options.outfile):
 			if (not options.force):
 				if verbose>0:
-					print("File %s exists, will not write over, exiting" %options.outfile)
+					print(("File %s exists, will not write over, exiting" %options.outfile))
 				error = True
 		
 		if not os.path.exists(options.simmxfile) and not db_check_dict(options.simmxfile):
 			if verbose>0:
-				print("Error: the similarity matrix file (%s) was not found, cannot run e2classify.py" %(options.simmxfile))
+				print(("Error: the similarity matrix file (%s) was not found, cannot run e2classify.py" %(options.simmxfile)))
 			error = True
 		else:
 			num_sim =  EMUtil.get_image_count(options.simmxfile)

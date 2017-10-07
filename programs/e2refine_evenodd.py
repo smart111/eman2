@@ -156,7 +156,7 @@ def main():
 
 	# Prepare the starting models for each run
 	# each model will have different random phases beyond the specified resolution
-	print("### Preparing initial models for refinement, phase-randomized at %1.1f A resolution"%options.randomres)
+	print(("### Preparing initial models for refinement, phase-randomized at %1.1f A resolution"%options.randomres))
 	launch_childprocess("e2proc3d.py %s %s_even/initial_model.hdf --process=filter.lowpass.randomphase:cutoff_freq=%1.4f"%(options.model,options.path,1.0/options.randomres))
 	launch_childprocess("e2proc3d.py %s %s_odd/initial_model.hdf --process=filter.lowpass.randomphase:cutoff_freq=%1.4f"%(options.model,options.path,1.0/options.randomres))
 	
@@ -192,7 +192,7 @@ def main():
 	for i in range(options.startiter,options.iter):
 		# do a refine alignment of each odd map to the corresponding even map before resolution calc
 		try:
-			print("aligning iteration %d"%i)
+			print(("aligning iteration %d"%i))
 			launch_childprocess("e2proc3d.py %s_odd/threed_filt_%02d.hdf tmp1.hdf --alignref=%s_even/threed_filt_%02d.hdf --align=refine_3d"%(options.path,i,options.path,i))
 			launch_childprocess("e2proc3d.py %s_odd/threed_filt_%02d.hdf tmp2.hdf --process=xform.flip:axis=z --alignref=%s_even/threed_filt_%02d.hdf --align=refine_3d"%(options.path,i,options.path,i))
 		except:
@@ -218,13 +218,13 @@ def main():
 		# Compute FSC convergence plot
 		com="e2proc3d.py {path}_even/threed_filt_{iter:02d}.hdf {path}/fsc_eo_{iter:02d}.txt --apix={apix} --calcfsc={path}_odd/threed_filt_{iter:02d}.hdf".format(path=options.path,iter=i,apix=apix)
 		if ( launch_childprocess(com) != 0 ):
-			print("Failed to execute %s" %com)
+			print(("Failed to execute %s" %com))
 			exit_refine(1,logid)
 
 	# measure resolution curve
 	com="e2proc3d.py {path}_even/threed_filt_{iter:02d}.hdf {path}/fsc_gold.txt --apix={apix} --calcfsc={path}_odd/threed_filt_{iter:02d}.hdf".format(path=options.path,iter=options.iter-1,apix=apix)
 	if ( launch_childprocess(com) != 0 ):
-		print("Failed to execute %s" %com)
+		print(("Failed to execute %s" %com))
 		exit_refine(1,logid)
 
 

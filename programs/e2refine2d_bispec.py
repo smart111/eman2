@@ -158,7 +158,7 @@ def main():
 	# make footprint images (rotational/translational invariants)
 	fpfile=options.input.split("__")[0]+"__ctf_flip_bispec.lst"
 	if not os.path.exists(fpfile):
-		print("WARNING: ",fpfile," not found. Computing bispectra. This will slow processing. ")
+		print(("WARNING: ",fpfile," not found. Computing bispectra. This will slow processing. "))
 		fpfile=options.path+"/input_bispec.hdf"
 		run("e2proc2dpar.py {} {} --process filter.highpass.gauss:cutoff_pixels=2 --process math.bispectrum.slice:fp={}:size={} --threads {}".format(options.input,fpfile,bispec_invar_parm[1],bispec_invar_parm[0],options.threads))
 	else:
@@ -166,7 +166,7 @@ def main():
 		tmp2=EMData(options.input,0)
 		tmp2=tmp2.process("math.bispectrum.slice",{"fp":bispec_invar_parm[1],"size":bispec_invar_parm[0]})
 		if tmp1["nx"]!=tmp2["nx"] or tmp1["ny"]!=tmp2["ny"] :
-			print("WARNING: images in ",fpfile," have the wrong dimensions. Recomputing bispectra. This will slow processing.")
+			print(("WARNING: images in ",fpfile," have the wrong dimensions. Recomputing bispectra. This will slow processing."))
 			fpfile=options.path+"/input_bispec.hdf"
 			run("e2proc2dpar.py {} {} --process filter.highpass.gauss:cutoff_pixels=2 --process math.bispectrum.slice:fp={}:size={} --threads {}".format(options.input,fpfile,bispec_invar_parm[1],bispec_invar_parm[0],options.threads))
 
@@ -258,7 +258,7 @@ def get_classaverage_extras(options):
 def run(command):
 	"Execute a command with optional verbose output"
 	global options
-	if options.verbose>0 : print("*** ",command)
+	if options.verbose>0 : print(("*** ",command))
 	if options.verbose>1 : tm=time.time()
 	error = launch_childprocess(command)
 
@@ -266,10 +266,10 @@ def run(command):
 		pass
 #	#	print "Segfault running %s\nNormal on some platforms, ignoring"%command
 	elif error :
-		print("Error running:\n%s"%command)
+		print(("Error running:\n%s"%command))
 		exit(1)
 
-	if options.verbose>1 : print(time.time()-tm," seconds to complete")
+	if options.verbose>1 : print((time.time()-tm," seconds to complete"))
 
 def get_simmx_cmd(options,refs,simmx,check=False,nofilecheck=False):
 

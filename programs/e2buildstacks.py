@@ -68,7 +68,7 @@ def main():
 	if os.path.exists(options.stackname) :
 		try: os.unlink(options.stackname)
 		except:
-			print("ERROR: Unable to remove ",options.stackname,". Cannot proceed")
+			print(("ERROR: Unable to remove ",options.stackname,". Cannot proceed"))
 			sys.exit(1)
 			
 	# if output is LSX format, we handle it differently, with a specific object for these files
@@ -82,7 +82,7 @@ def main():
 		
 		if options.verbose : 
 			if nimg==1 : print(infile)
-			else : print(infile,nimg)
+			else : print((infile,nimg))
 
 		for i in range(nimg):
 			if outfile!=None:
@@ -92,7 +92,7 @@ def main():
 				img.write_image(options.stackname,n)
 			n+=1
 			
-	if options.verbose : print(n," total images written to ",options.stackname)
+	if options.verbose : print((n," total images written to ",options.stackname))
 			
 			
 if __name__ == "__main__":

@@ -77,7 +77,7 @@ def main():
 		print(td)
 		k=list(td.keys())
 		k.sort()
-		for i in k: print(i,td[i])
+		for i in k: print((i,td[i]))
 
 	if options.display!="" :
 		l,x,y=options.display.split(',')

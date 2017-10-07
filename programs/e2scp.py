@@ -104,17 +104,17 @@ def main():
 		basepath=args[-1]
 		
 		for a in args[1:-1]:
-			print(a,remotepath)
+			print((a,remotepath))
 			sources=ssh.listrecurse(a,remotepath)
 			
-			if options.verbose : print(len(sources)," source files in ",a)
+			if options.verbose : print((len(sources)," source files in ",a))
 			
 			for s in sources:
 				if s[:4].lower()=="bdb:" :
-					if options.verbose>1 : print("Read %s as %s"%("bdb:"+remotepath+"/"+s[4:],"bdb:"+basepath+"/"+s[4:]))
+					if options.verbose>1 : print(("Read %s as %s"%("bdb:"+remotepath+"/"+s[4:],"bdb:"+basepath+"/"+s[4:])))
 					ssh.getbdb("bdb:"+remotepath+"/"+s[4:],"bdb:"+basepath+"/"+s[4:])
 				else:
-					if options.verbose>1 : print("Read %s as %s"%(remotepath+"/"+s,basepath+"/"+s))
+					if options.verbose>1 : print(("Read %s as %s"%(remotepath+"/"+s,basepath+"/"+s)))
 					ssh.getfile(remotepath+"/"+s,basepath+"/"+s)
 		
 
@@ -125,7 +125,7 @@ def main():
 		
 		# create the target path
 		remotepath=args[-1][args[-1].find(":")+1:]
-		if options.verbose>1 : print("Create remote path: ",remotepath)
+		if options.verbose>1 : print(("Create remote path: ",remotepath))
 		ssh.mkdir(remotepath)
 		
 		# local base path
@@ -134,14 +134,14 @@ def main():
 		for a in args[1:-1]:
 			sources=get_dir_list_recurse(a,basepath)
 			
-			if options.verbose : print(len(sources)," source files in ",a)
+			if options.verbose : print((len(sources)," source files in ",a))
 		
 			for s in sources:
 				if s[:4].lower()=="bdb:" :
-					if options.verbose>1 : print("Write %s as %s"%("bdb:"+basepath+s[4:],"bdb:"+remotepath+"/"+s[4:]))
+					if options.verbose>1 : print(("Write %s as %s"%("bdb:"+basepath+s[4:],"bdb:"+remotepath+"/"+s[4:])))
 					ssh.putbdb("bdb:"+basepath+"/"+s[4:],"bdb:"+remotepath+"/"+s[4:])
 				else:
-					if options.verbose>1 : print("Write %s as %s"%(basepath+"/"+s,remotepath+"/"+s))
+					if options.verbose>1 : print(("Write %s as %s"%(basepath+"/"+s,remotepath+"/"+s)))
 					ssh.putfile(basepath+"/"+s,remotepath+"/"+s)
 				
 					
@@ -372,7 +372,7 @@ class scp_proxy:
 			self.stdout=self.ssh.stdout		# read from this
 			self.stdin=self.ssh.stdin		# write to this
 		except:
-			print("ssh to remote machine failed : ",("ssh",host,"e2ssh.py --client"))
+			print(("ssh to remote machine failed : ",("ssh",host,"e2ssh.py --client")))
 			traceback.print_exc()
 			sys.exit(2)
 		
@@ -384,7 +384,7 @@ class scp_proxy:
 			if ln=="HELO" : 
 				if self.verbose : print("Connection established")
 				break
-			if self.verbose >1 : print("*** ",ln)
+			if self.verbose >1 : print(("*** ",ln))
 		
 		atexit.register(self.close)
 		

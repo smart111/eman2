@@ -136,7 +136,7 @@ def main():
 					rslt= rslt[1]
 					for r in rslt:
 						nfinished+=1
-						if options.verbose>0: print("Particle:",r["id"],"\tnodes:",r["choice"])
+						if options.verbose>0: print(("Particle:",r["id"],"\tnodes:",r["choice"]))
 						for c in r["choice"]:
 							ptclpernode[c]+=1
 						clsmx[0].set_value_at(0,r["id"],r["cls"])
@@ -144,7 +144,7 @@ def main():
 							clsmx[nt].set_value_at(0,r["id"],r["simmx"][nt])
 			
 			taskids=[j for i,j in enumerate(taskids) if curstat[i]!=100]
-			if haveprogress: print("{:d}/{:d} finished".format(nfinished,npt))
+			if haveprogress: print(("{:d}/{:d} finished".format(nfinished,npt)))
 			E2progress(E2n, 0.5 + float(nfinished)/npt)
 			
 		for i in range(nnod):
@@ -254,7 +254,7 @@ def buildtree(projs,par,nodes,incomplete,verbose):
 		y=y[0]
 		
 		### Do averaging
-		if verbose>0: print("Averaging ",ai[x],ai[y]," to ",npj+k)
+		if verbose>0: print(("Averaging ",ai[x],ai[y]," to ",npj+k))
 		
 		alipm=[a[x,y] for a in pms]
 		alidict={"type":"2d"}
@@ -410,7 +410,7 @@ def classify(ptcl,ai,nodes,clsmx,align,alicmp,cmp,ralign,alircmp,cmptmp,masktmp)
 				ni=nimg["tree_children"][0]
 			else:
 				ni=nimg["tree_children"][1]
-		print("Particle",pp,"nodes",choice)
+		print(("Particle",pp,"nodes",choice))
 		nimg=EMData(nodes,ni)
 		pm=compare(prob,nimg,options)
 		clsmx[0].set_value_at(0,pp,ni)

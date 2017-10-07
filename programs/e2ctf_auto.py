@@ -101,7 +101,7 @@ Important: This program must be run from the project directory, not from within 
 		sys.exit(1)
 
 	ptcls=["particles/"+i for i in os.listdir("particles") if "__ctf" not in i and i[0]!="." and ".hed" not in i ]
-	if options.verbose : print("%d particle stacks identified"%len(args))
+	if options.verbose : print(("%d particle stacks identified"%len(args)))
 
 	if options.highdensity : highdensity="--highdensity"
 	else: highdensity=""
@@ -142,7 +142,7 @@ Strongly suggest refitting CTF from frames with e2rawdata.py with revised parame
 	if options.voltage==0 :
 		try:
 			options.voltage=float(project["global.microscope_voltage"])
-			print("Using project voltage = ",options.voltage)
+			print(("Using project voltage = ",options.voltage))
 		except:
 			print("Error, no voltage found")
 			sys.exit(1)
@@ -150,7 +150,7 @@ Strongly suggest refitting CTF from frames with e2rawdata.py with revised parame
 	if options.cs==0 :
 		try:
 			options.cs=float(project["global.microscope_cs"])
-			print("Using project Cs = ",options.cs)
+			print(("Using project Cs = ",options.cs))
 		except:
 			print("Error, no Cs found")
 			sys.exit(1)
@@ -158,7 +158,7 @@ Strongly suggest refitting CTF from frames with e2rawdata.py with revised parame
 	if options.apix==0 :
 		try:
 			options.apix=float(project["global.apix"])
-			print("Using project A/pix = ",options.apix)
+			print(("Using project A/pix = ",options.apix))
 		except:
 			print("Error, no A/pix found")
 			sys.exit(1)
@@ -167,7 +167,7 @@ Strongly suggest refitting CTF from frames with e2rawdata.py with revised parame
 		tmp=EMData(ptcls[0],0)
 		boxsize=tmp["nx"]
 	except:
-		print("ERROR: Couldn't read first particle from ",ptcls[0])
+		print(("ERROR: Couldn't read first particle from ",ptcls[0]))
 		sys.exit(3)
 
 	###
@@ -244,7 +244,7 @@ resolution, but for high resolution work, fitting defocus/astig from frames is r
 					continue
 				dfvals.append((ctf.defocus,f))
 			except:
-				print("CTF seems to have failed for ",f)
+				print(("CTF seems to have failed for ",f))
 			db.close()
 
 		if len(dfvals)<5 :
@@ -400,10 +400,10 @@ resolution, but for high resolution work, fitting defocus/astig from frames is r
 	launch_childprocess(com)
 
 	E2end(logid)
-	print("""
+	print(("""
 The length of your particle on its longest axis should be <= {}. If your particle is larger than this,
 you either need a larger box-size, or you will need to proceed with CTF fitting manually (and will likely achieve
-suboptimal results). See http://www.eman2.org/emanwiki/EMAN2/BoxSize""".format(maskrad3*options.apix))
+suboptimal results). See http://www.eman2.org/emanwiki/EMAN2/BoxSize""".format(maskrad3*options.apix)))
 
 if __name__ == "__main__":
 	main()

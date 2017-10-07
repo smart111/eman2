@@ -81,8 +81,8 @@ optionList = pyemtbx.options.get_optionlist(sys.argv[1:])
 
 #Check for basic usage
 if len(args) != 1:
-   print("usage:" + usage)
-   print("Please run'" + progname + " -h' for detailed options")
+   print(("usage:" + usage))
+   print(("Please run'" + progname + " -h' for detailed options"))
    sys.exit(1)
 
 
@@ -189,7 +189,7 @@ for db in dblist:
 			break
 
 if options.verbosity == 0 :
-	print("CTF information being pulled from: " + db)
+	print(("CTF information being pulled from: " + db))
 if ctf_corr == 1:
 	s = "echo \"data_\nloop_\n_rlnImageName\n_rlnMicrographName\n_rlnDefocusU\n_rlnDefocusV\n_rlnDefocusAngle\n_rlnVoltage\n_rlnSphericalAberration\n_rlnAmplitudeContrast\" > " + E2RLN + "/all_images.star"
 	if "defocus" in optionList:

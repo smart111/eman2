@@ -35,14 +35,14 @@
 #   from appropriate application, in this case "sxali2d_c.py ...  --function=wei_func
 # 
 
-from global_def import *
+from .global_def import *
 from EMAN2_cppwrap import *
 
 ref_ali2d_counter = -1
 def ref_ali2d( ref_data ):
-	from utilities    import print_msg
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import center_2D
+	from .utilities    import print_msg
+	from .filter       import fit_tanh, filt_tanl
+	from .utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -69,9 +69,9 @@ def ref_ali2d( ref_data ):
 	return  tavg, cs
 
 def ref_ali2d_c( ref_data ):
-	from utilities    import print_msg
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import center_2D
+	from .utilities    import print_msg
+	from .filter       import fit_tanh, filt_tanl
+	from .utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -96,9 +96,9 @@ def ref_ali2d_c( ref_data ):
 	return  tavg, cs
 
 def julien( ref_data ):
-        from utilities    import print_msg
-        from filter       import fit_tanh, filt_tanl
-        from utilities    import center_2D
+        from .utilities    import print_msg
+        from .filter       import fit_tanh, filt_tanl
+        from .utilities    import center_2D
         #  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
         #  Input: list ref_data
         #   0 - mask
@@ -124,9 +124,9 @@ def julien( ref_data ):
         return  tavg, cs
 
 def ref_ali2d_m( ref_data ):
-	from utilities    import print_msg
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import center_2D
+	from .utilities    import print_msg
+	from .filter       import fit_tanh, filt_tanl
+	from .utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -151,9 +151,9 @@ def ref_ali2d_m( ref_data ):
 	return  tavg, cs
 
 def ref_ali3dm( refdata ):
-	from filter import fit_tanh, filt_tanl
-	from utilities import get_im
-	from fundamentals import rot_shift3D
+	from .filter import fit_tanh, filt_tanl
+	from .utilities import get_im
+	from .fundamentals import rot_shift3D
 	import os
 
 	numref = refdata[0]
@@ -163,17 +163,17 @@ def ref_ali3dm( refdata ):
 	#varf   = refdata[4]
 	mask   = refdata[5]
 
-	print 'filter every volume at (0.4, 0.1)'
-	for iref in xrange(numref):
+	print('filter every volume at (0.4, 0.1)')
+	for iref in range(numref):
 		v = get_im(os.path.join(outdir, "vol%04d.hdf"%total_iter), iref)
 		v = filt_tanl(v, 0.4, 0.1)
 		v *= mask
 		v.write_image(os.path.join(outdir, "volf%04d.hdf"%total_iter), iref)
 		
 def ref_sort3d(refdata):
-	from filter import fit_tanh, filt_tanl
-	from utilities import get_im
-	from fundamentals import rot_shift3D
+	from .filter import fit_tanh, filt_tanl
+	from .utilities import get_im
+	from .fundamentals import rot_shift3D
 	import os
 	numref          = refdata[0]
 	outdir          = refdata[1]
@@ -186,18 +186,18 @@ def ref_sort3d(refdata):
 	from time import strftime, localtime
 	theme='filter every volume at (%f, 0.1)'%low_pass_filter
 	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-	print(line+theme)
-	print 'filter every volume at (%f, 0.1)'%low_pass_filter
-	for iref in xrange(numref):
+	print((line+theme))
+	print('filter every volume at (%f, 0.1)'%low_pass_filter)
+	for iref in range(numref):
 		v = get_im(os.path.join(outdir, "vol%04d.hdf"%total_iter), iref)
 		v = filt_tanl(v, low_pass_filter, 0.1)
 		v *= mask
 		v.write_image(os.path.join(outdir, "volf%04d.hdf"%total_iter), iref)
 
 def ref_ali3dm_ali_50S( refdata ):
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import get_im
-	from fundamentals import rot_shift3D
+	from .filter       import fit_tanh, filt_tanl
+	from .utilities    import get_im
+	from .fundamentals import rot_shift3D
 	import  os
 
 	numref     = refdata[0]
@@ -210,7 +210,7 @@ def ref_ali3dm_ali_50S( refdata ):
 
 	flmin = 1.0
 	flmax = -1.0
-	for iref in xrange(numref):
+	for iref in range(numref):
 		fl, aa = fit_tanh( fscc[iref] )
 		if (fl < flmin):
 			flmin = fl
@@ -218,31 +218,31 @@ def ref_ali3dm_ali_50S( refdata ):
 		if (fl > flmax):
 			flmax = fl
 			aamax = aa
-		print 'iref,fl,aa: ', iref, fl, aa
+		print('iref,fl,aa: ', iref, fl, aa)
 		# filter to minimum resolution
-	print 'flmin,aamin:', flmin, aamin
-	for iref in xrange(numref):
+	print('flmin,aamin:', flmin, aamin)
+	for iref in range(numref):
 		v = get_im(os.path.join(outdir, "vol%04d.hdf"%total_iter), iref)
 		v = filt_tanl(v, flmin, aamin)
 		
 		if ali50s:
-			from utilities    import get_params3D, set_params3D, combine_params3
-			from applications import ali_vol_shift, ali_vol_rotate
+			from .utilities    import get_params3D, set_params3D, combine_params3
+			from .applications import ali_vol_shift, ali_vol_rotate
 			if iref==0:
 				v50S_ref = alivol_mask_getref( v, mask_50S )
 			else:
 				v = alivol_mask( v, v50S_ref, mask_50S )
 
 		if not(varf is None):
-			print 'filtering by fourier variance'
+			print('filtering by fourier variance')
 			v.filter_by_image( varf )
 	
 		v.write_image(os.path.join(outdir, "volf%04d.hdf"%total_iter), iref)
 
 def ref_random( ref_data ):
-	from utilities    import print_msg
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import center_2D
+	from .utilities    import print_msg
+	from .filter       import fit_tanh, filt_tanl
+	from .utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -290,10 +290,10 @@ def ref_random( ref_data ):
 	return  tavg, cs
 
 def ref_ali3d( ref_data ):
-	from utilities      import print_msg
-	from filter         import fit_tanh, filt_tanl
-	from fundamentals   import fshift
-	from morphology     import threshold
+	from .utilities      import print_msg
+	from .filter         import fit_tanh, filt_tanl
+	from .fundamentals   import fshift
+	from .morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -344,9 +344,9 @@ def ref_ali3d( ref_data ):
 	return  volf, cs
 
 def helical( ref_data ):
-	from utilities      import print_msg
-	from filter         import fit_tanh, filt_tanl
-	from morphology     import threshold
+	from .utilities      import print_msg
+	from .filter         import fit_tanh, filt_tanl
+	from .morphology     import threshold
 	#  Prepare the reference in helical refinement, i.e., low-pass filter .
 	#  Input: list ref_data
 	#   0 - raw volume
@@ -372,9 +372,9 @@ def helical( ref_data ):
 	return  volf#,[0.,0.,0.]
 
 def helical2( ref_data ):
-	from utilities      import print_msg
-	from filter	    import fit_tanh, filt_tanl
-	from morphology     import threshold
+	from .utilities      import print_msg
+	from .filter	    import fit_tanh, filt_tanl
+	from .morphology     import threshold
 	#  Prepare the reference in helical refinement, i.e., low-pass filter.
 	#  Input: list ref_data
 	#  2 - raw volume
@@ -396,10 +396,10 @@ def helical2( ref_data ):
 
 
 def reference3( ref_data ):
-	from utilities      import print_msg
-	from filter         import fit_tanh1, filt_tanl
-	from fundamentals   import fshift
-	from morphology     import threshold
+	from .utilities      import print_msg
+	from .filter         import fit_tanh1, filt_tanl
+	from .fundamentals   import fshift
+	from .morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -431,10 +431,10 @@ def reference3( ref_data ):
 	return  volf, cs
 
 def reference4( ref_data ):
-	from utilities      import print_msg
-	from filter         import fit_tanh, filt_tanl, filt_gaussl
-	from fundamentals   import fshift, fft
-	from morphology     import threshold
+	from .utilities      import print_msg
+	from .filter         import fit_tanh, filt_tanl, filt_gaussl
+	from .fundamentals   import fshift, fft
+	from .morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -466,10 +466,10 @@ def reference4( ref_data ):
 	return  volf, cs
 
 def ref_aliB_cone( ref_data ):
-	from utilities      import print_msg
-	from filter         import fit_tanh, filt_tanl
-	from fundamentals   import fshift
-	from morphology     import threshold
+	from .utilities      import print_msg
+	from .filter         import fit_tanh, filt_tanl
+	from .fundamentals   import fshift
+	from .morphology     import threshold
 	from math           import sqrt
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
@@ -490,12 +490,12 @@ def ref_aliB_cone( ref_data ):
 	volf = threshold(volf)
 	Util.mul_img(volf, ref_data[0])
 
-	from  fundamentals  import  rops_table
+	from  .fundamentals  import  rops_table
 	pwem = rops_table(volf)
 	ftb = []
-	for idum in xrange(len(pwem)):
+	for idum in range(len(pwem)):
 		ftb.append(sqrt(ref_data[1][idum]/pwem[idum]))
-	from filter import filt_table
+	from .filter import filt_table
 	volf = filt_table(volf, ftb)
 
 	fl, aa = fit_tanh(ref_data[3])
@@ -517,10 +517,10 @@ def ref_aliB_cone( ref_data ):
 	return  volf
 
 def ref_7grp( ref_data ):
-	from utilities      import print_msg
-	from filter         import fit_tanh, filt_tanl, filt_gaussinv
-	from fundamentals   import fshift
-	from morphology     import threshold
+	from .utilities      import print_msg
+	from .filter         import fit_tanh, filt_tanl, filt_gaussinv
+	from .fundamentals   import fshift
+	from .morphology     import threshold
 	from math           import sqrt
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
@@ -551,9 +551,9 @@ def ref_7grp( ref_data ):
 	return  volf,cs
 
 def spruce_up( ref_data ):
-	from utilities      import print_msg
-	from filter         import filt_tanl, fit_tanh
-	from morphology     import threshold
+	from .utilities      import print_msg
+	from .filter         import filt_tanl, fit_tanh
+	from .morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -571,12 +571,12 @@ def spruce_up( ref_data ):
 	Util.mul_scalar(volf, 1.0/stat[1])
 	volf = threshold(volf)
 	# Apply B-factor
-	from filter import filt_gaussinv
+	from .filter import filt_gaussinv
 	from math import sqrt
 	B = 1.0/sqrt(2.*14.0)
 	volf = filt_gaussinv(volf, B, False)
 	nx = volf.get_xsize()
-	from utilities import model_circle
+	from .utilities import model_circle
 	stat = Util.infomask(volf, model_circle(nx//2-2,nx,nx,nx)-model_circle(nx//2-6,nx,nx,nx), True)
 
 	volf -= stat[0]
@@ -591,9 +591,9 @@ def spruce_up( ref_data ):
 	return  volf, cs
 
 def spruce_up_variance( ref_data ):
-	from utilities      import print_msg
-	from filter         import filt_tanl, fit_tanh, filt_gaussl
-	from morphology     import threshold
+	from .utilities      import print_msg
+	from .filter         import filt_tanl, fit_tanh, filt_gaussl
+	from .morphology     import threshold
 	#  Prepare the reference in 3D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -626,7 +626,7 @@ def spruce_up_variance( ref_data ):
 	volf = volf - stat[0]
 	Util.mul_scalar(volf, 1.0/stat[1])
 
-	from utilities import model_circle
+	from .utilities import model_circle
 	nx = volf.get_xsize()
 	stat = Util.infomask(volf, model_circle(nx//2-2,nx,nx,nx)-model_circle(nx//2-6,nx,nx,nx), True)
 
@@ -639,11 +639,11 @@ def spruce_up_variance( ref_data ):
 	return  volf, cs
 
 def minfilt( fscc ):
-	from filter import fit_tanh
+	from .filter import fit_tanh
 	numref = len(fscc)
 	flmin = 1.0
 	flmax = -1.0
-	for iref in xrange(numref):
+	for iref in range(numref):
 		fl, aa = fit_tanh( fscc[iref] )
 		if (fl < flmin):
 			flmin = fl
@@ -655,12 +655,12 @@ def minfilt( fscc ):
 	return flmin,aamin,idmin
 
 def ref_ali3dm_new( refdata ):
-	from utilities    import print_msg
-	from utilities    import model_circle, get_im
-	from filter       import filt_tanl, filt_gaussl, filt_table
-	from morphology   import threshold
-	from fundamentals import rops_table
-	from alignment    import ali_nvol
+	from .utilities    import print_msg
+	from .utilities    import model_circle, get_im
+	from .filter       import filt_tanl, filt_gaussl, filt_table
+	from .morphology   import threshold
+	from .fundamentals import rops_table
+	from .alignment    import ali_nvol
 	from math         import sqrt
 	import   os
 
@@ -683,7 +683,7 @@ def ref_ali3dm_new( refdata ):
 	print_msg(msg)
 
 	vol = []
-	for i in xrange(numref):
+	for i in range(numref):
 		vol.append(get_im( os.path.join(outdir, "vol%04d.hdf"%total_iter), i ))
 		stat = Util.infomask( vol[i], mask, False )
 		vol[i] -= stat[0]
@@ -693,25 +693,25 @@ def ref_ali3dm_new( refdata ):
 	del stat
 
 	reftab = rops_table( vol[idmin] )
-	for i in xrange(numref):
+	for i in range(numref):
 		if(i != idmin):
 			vtab = rops_table( vol[i] )
 			ftab = [None]*len(vtab)
-			for j in xrange(len(vtab)):
+			for j in range(len(vtab)):
 		        	ftab[j] = sqrt( reftab[j]/vtab[j] )
 			vol[i] = filt_table( vol[i], ftab )
 
 	if ali50S:
 		vol = ali_nvol(vol, get_im( "mask-50S.spi" ))
-	for i in xrange(numref):
+	for i in range(numref):
 		if(not (varf is None) ):   vol[i] = vol[i].filter_by_image( varf )
 		filt_tanl( vol[i], flmin, aamin ).write_image( os.path.join(outdir, "volf%04d.hdf" % total_iter), i )
 
 def spruce_up_var_m( refdata ):
-	from utilities  import print_msg
-	from utilities  import model_circle, get_im
-	from filter     import filt_tanl, filt_gaussl
-	from morphology import threshold
+	from .utilities  import print_msg
+	from .utilities  import model_circle, get_im
+	from .filter     import filt_tanl, filt_gaussl
+	from .morphology import threshold
 	import os
 
 	numref     = refdata[0]
@@ -736,7 +736,7 @@ def spruce_up_var_m( refdata ):
 	msg = "Minimum tangent filter:  cut-off frequency = %10.3f     fall-off = %10.3f\n"%(fflmin, aamin)
 	print_msg(msg)
 
-	for i in xrange(numref):
+	for i in range(numref):
 		volf = get_im( os.path.join(outdir, "vol%04d.hdf"% total_iter) , i )
 		if(not (varf is None) ):   volf = volf.filter_by_image( varf )
 		volf = filt_tanl(volf, flmin, aamin)
@@ -757,8 +757,8 @@ def spruce_up_var_m( refdata ):
 				v50S_0 = volf.copy()
 				v50S_0 *= mask_50S
 			else:
-				from applications import ali_vol_3
-				from fundamentals import rot_shift3D
+				from .applications import ali_vol_3
+				from .fundamentals import rot_shift3D
 				v50S_i = volf.copy()
 				v50S_i *= mask_50S
 
@@ -768,9 +768,9 @@ def spruce_up_var_m( refdata ):
 		volf.write_image( os.path.join(outdir, "volf%04d.hdf"%total_iter), i )
 
 def steady( ref_data ):
-	from utilities    import print_msg
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import center_2D
+	from .utilities    import print_msg
+	from .filter       import fit_tanh, filt_tanl
+	from .utilities    import center_2D
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -792,10 +792,10 @@ def steady( ref_data ):
 
 
 def constant( ref_data ):
-	from utilities    import print_msg
-	from filter       import fit_tanh, filt_tanl
-	from utilities    import center_2D
-	from morphology   import threshold
+	from .utilities    import print_msg
+	from .filter       import fit_tanh, filt_tanl
+	from .utilities    import center_2D
+	from .morphology   import threshold
 	#  Prepare the reference in 2D alignment, i.e., low-pass filter and center.
 	#  Input: list ref_data
 	#   0 - mask
@@ -811,7 +811,7 @@ def constant( ref_data ):
 	aa = 0.1
 	#msg = "Tangent filter:  cut-off frequency = %10.3f        fall-off = %10.3f\n"%(fl, aa)
 	#print_msg(msg)
-	from utilities import model_circle
+	from .utilities import model_circle
 	nx = ref_data[2].get_xsize()
 	stat = Util.infomask(ref_data[2], model_circle(nx//2-2,nx,nx), False)
 	ref_data[2] -= stat[0]
@@ -822,10 +822,10 @@ def constant( ref_data ):
 
 
 def temp_dovolume( ref_data ):
-	from utilities      import print_msg, read_text_row
-	from filter         import fit_tanh, filt_tanl
-	from fundamentals   import fshift
-	from morphology     import threshold
+	from .utilities      import print_msg, read_text_row
+	from .filter         import fit_tanh, filt_tanl
+	from .fundamentals   import fshift
+	from .morphology     import threshold
 	#  Prepare the reference in 3D alignment, this function corresponds to what do_volume does.
 	#  Input: list ref_data
 	#   0 - mask
@@ -856,15 +856,15 @@ def temp_dovolume( ref_data ):
 	msg = "Tangent filter:  cut-off frequency = %10.3f        fall-off = %10.3f\n"%(fl, aa)
 	print_msg(msg)
 
-	from utilities    import read_text_file
-	from fundamentals import rops_table, fftip, fft
-	from filter       import filt_table, filt_btwl
+	from .utilities    import read_text_file
+	from .fundamentals import rops_table, fftip, fft
+	from .filter       import filt_table, filt_btwl
 	fftip(vol)
 	try:
 		rt = read_text_file( "pwreference.txt" )
 		ro = rops_table(vol)
 		#  Here unless I am mistaken it is enough to take the beginning of the reference pw.
-		for i in xrange(1,len(ro)):  ro[i] = (rt[i]/ro[i])**0.5
+		for i in range(1,len(ro)):  ro[i] = (rt[i]/ro[i])**0.5
 		vol = fft( filt_table( filt_tanl(vol, fl, aa), ro) )
 		msg = "Power spectrum adjusted\n"
 		print_msg(msg)
@@ -889,10 +889,10 @@ def temp_dovolume( ref_data ):
 
 
 def dovolume( ref_data ):
-	from utilities      import print_msg, read_text_row
-	from filter         import fit_tanh, filt_tanl
-	from fundamentals   import fshift
-	from morphology     import threshold
+	from .utilities      import print_msg, read_text_row
+	from .filter         import fit_tanh, filt_tanl
+	from .fundamentals   import fshift
+	from .morphology     import threshold
 	#  Prepare the reference in 3D alignment, this function corresponds to what do_volume does.
 	#  Input: list ref_data
 	#   0 - mask
@@ -923,15 +923,15 @@ def dovolume( ref_data ):
 	msg = "Tangent filter:  cut-off frequency = %10.3f        fall-off = %10.3f\n"%(fl, aa)
 	print_msg(msg)
 
-	from utilities    import read_text_file
-	from fundamentals import rops_table, fftip, fft
-	from filter       import filt_table, filt_btwl
+	from .utilities    import read_text_file
+	from .fundamentals import rops_table, fftip, fft
+	from .filter       import filt_table, filt_btwl
 	fftip(vol)
 	try:
 		rt = read_text_file( "pwreference.txt" )
 		ro = rops_table(vol)
 		#  Here unless I am mistaken it is enough to take the beginning of the reference pw.
-		for i in xrange(1,len(ro)):  ro[i] = (rt[i]/ro[i])**0.5
+		for i in range(1,len(ro)):  ro[i] = (rt[i]/ro[i])**0.5
 		vol = fft( filt_table( filt_tanl(vol, fl, aa), ro) )
 		msg = "Power spectrum adjusted\n"
 		print_msg(msg)
@@ -961,8 +961,8 @@ def do_volume_mask(ref_data):
 		3. - current iteration number
 	"""
 	from EMAN2	import Util
-	from morphology import cosinemask
-	from utilities  import get_im
+	from .morphology import cosinemask
+	from .utilities  import get_im
 
 	# Retrieve the function specific input arguments from ref_data
 	vol		= ref_data[0]
@@ -983,10 +983,10 @@ def do_volume_mrk02(ref_data):
 	"""
 	from EMAN2          import Util
 	from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
-	from filter         import filt_table
-	from reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
-	from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
-	from fundamentals import rops_table, fftip, fft
+	from .filter         import filt_table
+	from .reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
+	from .utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
+	from .fundamentals import rops_table, fftip, fft
 	import types
 
 	# Retrieve the function specific input arguments from ref_data
@@ -1004,7 +1004,7 @@ def do_volume_mrk02(ref_data):
 	except:  local_filter = False
 	#=========================================================================
 	# volume reconstruction
-	if( type(data) == types.ListType ):
+	if( type(data) == list ):
 		if Tracker["constants"]["CTF"]:
 			vol = recons3d_4nn_ctf_MPI(myid, data, Tracker["constants"]["snr"], \
 					symmetry=Tracker["constants"]["sym"], npad=Tracker["constants"]["npad"], mpi_comm=mpi_comm, smearstep = Tracker["smearstep"])
@@ -1015,22 +1015,22 @@ def do_volume_mrk02(ref_data):
 		vol = data
 
 	if myid == 0:
-		from morphology import threshold
-		from filter     import filt_tanl, filt_btwl
-		from utilities  import model_circle, get_im
+		from .morphology import threshold
+		from .filter     import filt_tanl, filt_btwl
+		from .utilities  import model_circle, get_im
 		import types
 		nx = vol.get_xsize()
 		if(Tracker["constants"]["mask3D"] == None):
 			mask3D = model_circle(int(Tracker["constants"]["radius"]*float(nx)/float(Tracker["constants"]["nnxo"])+0.5), nx, nx, nx)
 		elif(Tracker["constants"]["mask3D"] == "auto"):
-			from utilities import adaptive_mask
+			from .utilities import adaptive_mask
 			mask3D = adaptive_mask(vol)
 		else:
-			if( type(Tracker["constants"]["mask3D"]) == types.StringType ):  mask3D = get_im(Tracker["constants"]["mask3D"])
+			if( type(Tracker["constants"]["mask3D"]) == bytes ):  mask3D = get_im(Tracker["constants"]["mask3D"])
 			else:  mask3D = (Tracker["constants"]["mask3D"]).copy()
 			nxm = mask3D.get_xsize()
 			if( nx != nxm):
-				from fundamentals import rot_shift3D
+				from .fundamentals import rot_shift3D
 				mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
 				nxm = mask3D.get_xsize()
 				assert(nx == nxm)
@@ -1041,25 +1041,25 @@ def do_volume_mrk02(ref_data):
 		vol = threshold(vol)
 		Util.mul_img(vol, mask3D)
 		if( Tracker["PWadjustment"] ):
-			from utilities    import read_text_file, write_text_file
+			from .utilities    import read_text_file, write_text_file
 			rt = read_text_file( Tracker["PWadjustment"] )
 			fftip(vol)
 			ro = rops_table(vol)
 			#  Here unless I am mistaken it is enough to take the beginning of the reference pw.
-			for i in xrange(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["upscale"]
+			for i in range(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["upscale"]
 			#write_text_file(rops_table(filt_table( vol, ro),1),"foo.txt")
 			if Tracker["constants"]["sausage"]:
 				ny = vol.get_ysize()
 				y = float(ny)
 				from math import exp
-				for i in xrange(len(ro)):  ro[i] *= \
+				for i in range(len(ro)):  ro[i] *= \
 				  (1.0+1.0*exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.10)/0.025)**2)+1.0*exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.215)/0.025)**2))
 
 			if local_filter:
 				# skip low-pass filtration
 				vol = fft( filt_table( vol, ro) )
 			else:
-				if( type(Tracker["lowpass"]) == types.ListType ):
+				if( type(Tracker["lowpass"]) == list ):
 					vol = fft( filt_table( filt_table(vol, Tracker["lowpass"]), ro) )
 				else:
 					vol = fft( filt_table( filt_tanl(vol, Tracker["lowpass"], Tracker["falloff"]), ro) )
@@ -1070,20 +1070,20 @@ def do_volume_mrk02(ref_data):
 				y = float(ny)
 				ro = [0.0]*(ny//2+2)
 				from math import exp
-				for i in xrange(len(ro)):  ro[i] = \
+				for i in range(len(ro)):  ro[i] = \
 				  (1.0+1.0*exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.10)/0.025)**2)+1.0*exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.215)/0.025)**2))
 				fftip(vol)
 				filt_table(vol, ro)
 				del ro
 			if not local_filter:
-				if( type(Tracker["lowpass"]) == types.ListType ):
+				if( type(Tracker["lowpass"]) == list ):
 					vol = filt_table(vol, Tracker["lowpass"])
 				else:
 					vol = filt_tanl(vol, Tracker["lowpass"], Tracker["falloff"])
 			if Tracker["constants"]["sausage"]: vol = fft(vol)
 
 	if local_filter:
-		from morphology import binarize
+		from .morphology import binarize
 		if(myid == 0): nx = mask3D.get_xsize()
 		else:  nx = 0
 		nx = bcast_number_to_all(nx, source_node = 0)
@@ -1094,7 +1094,7 @@ def do_volume_mrk02(ref_data):
 			lx = locres.get_xsize()
 			if(lx != nx):
 				if(lx < nx):
-					from fundamentals import fdecimate, rot_shift3D
+					from .fundamentals import fdecimate, rot_shift3D
 					mask = Util.window(rot_shift3D(mask,scale=float(lx)/float(nx)),lx,lx,lx)
 					vol = fdecimate(vol, lx,lx,lx)
 				else:  ERROR("local filter cannot be larger than input volume","user function",1)
@@ -1108,12 +1108,12 @@ def do_volume_mrk02(ref_data):
 		lx = bcast_number_to_all(lx, source_node = 0)
 		if( myid != 0 ):  mask = model_blank(lx,lx,lx)
 		bcast_EMData_to_all(mask, myid, 0, comm=mpi_comm)
-		from filter import filterlocal
+		from .filter import filterlocal
 		vol = filterlocal( locres, vol, mask, Tracker["falloff"], myid, 0, nproc)
 
 		if myid == 0:
 			if(lx < nx):
-				from fundamentals import fpol
+				from .fundamentals import fpol
 				vol = fpol(vol, nx,nx,nx)
 			vol = threshold(vol)
 			vol = filt_btwl(vol, 0.38, 0.5)#  This will have to be corrected.
@@ -1148,10 +1148,10 @@ def do_volume_mrk03(ref_data):
 	"""
 	from EMAN2          import Util
 	from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
-	from filter         import filt_table
-	from reconstruction import recons3d_4nn_MPI, recons3d_4nnw_MPI  #  recons3d_4nn_ctf_MPI
-	from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
-	from fundamentals   import rops_table, fftip, fft
+	from .filter         import filt_table
+	from .reconstruction import recons3d_4nn_MPI, recons3d_4nnw_MPI  #  recons3d_4nn_ctf_MPI
+	from .utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
+	from .fundamentals   import rops_table, fftip, fft
 	import types
 
 	# Retrieve the function specific input arguments from ref_data
@@ -1166,7 +1166,7 @@ def do_volume_mrk03(ref_data):
 	except:  local_filter = False
 	#=========================================================================
 	# volume reconstruction
-	if( type(data) == types.ListType ):
+	if( type(data) == list ):
 		if Tracker["constants"]["CTF"]:
 			#vol = recons3d_4nn_ctf_MPI(myid, data, Tracker["constants"]["snr"], \
 			#		symmetry=Tracker["constants"]["sym"], npad=Tracker["constants"]["npad"], mpi_comm=mpi_comm, smearstep = Tracker["smearstep"])
@@ -1179,34 +1179,34 @@ def do_volume_mrk03(ref_data):
 		vol = data
 
 	if myid == 0:
-		from morphology import threshold
-		from filter     import filt_tanl, filt_btwl
-		from utilities  import model_circle, get_im
+		from .morphology import threshold
+		from .filter     import filt_tanl, filt_btwl
+		from .utilities  import model_circle, get_im
 		import types
 		nx = vol.get_xsize()
 		if(Tracker["constants"]["mask3D"] == None):
 			mask3D = model_circle(int(Tracker["constants"]["radius"]*float(nx)/float(Tracker["constants"]["nnxo"])+0.5), nx, nx, nx)
 		elif(Tracker["constants"]["mask3D"] == "auto"):
-			from utilities import adaptive_mask
+			from .utilities import adaptive_mask
 			mask3D = adaptive_mask(vol)
 		else:
-			if( type(Tracker["constants"]["mask3D"]) == types.StringType ):  mask3D = get_im(Tracker["constants"]["mask3D"])
+			if( type(Tracker["constants"]["mask3D"]) == bytes ):  mask3D = get_im(Tracker["constants"]["mask3D"])
 			else:  mask3D = (Tracker["constants"]["mask3D"]).copy()
 			nxm = mask3D.get_xsize()
 			if( nx != nxm ):
-				from fundamentals import rot_shift3D
+				from .fundamentals import rot_shift3D
 				mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
 				nxm = mask3D.get_xsize()
 				assert(nx == nxm)
 
 		if not local_filter:
-			if( type(Tracker["lowpass"]) == types.ListType ):
+			if( type(Tracker["lowpass"]) == list ):
 				vol = filt_table(vol, Tracker["lowpass"])
 			else:
 				vol = filt_tanl(vol, Tracker["lowpass"], Tracker["falloff"])
 
 	if local_filter:
-		from morphology import binarize
+		from .morphology import binarize
 		if(myid == 0): nx = mask3D.get_xsize()
 		else:  nx = 0
 		if( nproc > 1 ): nx = bcast_number_to_all(nx, source_node = 0)
@@ -1217,7 +1217,7 @@ def do_volume_mrk03(ref_data):
 			lx = locres.get_xsize()
 			if(lx != nx):
 				if(lx < nx):
-					from fundamentals import fdecimate, rot_shift3D
+					from .fundamentals import fdecimate, rot_shift3D
 					mask = Util.window(rot_shift3D(mask,scale=float(lx)/float(nx)),lx,lx,lx)
 					vol = fdecimate(vol, lx,lx,lx)
 				else:  ERROR("local filter cannot be larger than input volume","user function",1)
@@ -1232,12 +1232,12 @@ def do_volume_mrk03(ref_data):
 			lx = bcast_number_to_all(lx, source_node = 0)
 			if( myid != 0 ):  mask = model_blank(lx,lx,lx)
 			bcast_EMData_to_all(mask, myid, 0, comm=mpi_comm)
-		from filter import filterlocal
+		from .filter import filterlocal
 		vol = filterlocal( locres, vol, mask, Tracker["falloff"], myid, 0, nproc)
 
 		if myid == 0:
 			if(lx < nx):
-				from fundamentals import fpol
+				from .fundamentals import fpol
 				vol = fpol(vol, nx,nx,nx)
 			vol = threshold(vol)
 			Util.mul_img(vol, mask3D)
@@ -1273,10 +1273,10 @@ def do_volume_mrk04(ref_data):
 	"""
 	from EMAN2          import Util
 	from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
-	from filter         import filt_table
-	from reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
-	from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
-	from fundamentals   import rops_table, fftip, fft
+	from .filter         import filt_table
+	from .reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
+	from .utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
+	from .fundamentals   import rops_table, fftip, fft
 	import types
 
 	# Retrieve the function specific input arguments from ref_data
@@ -1291,7 +1291,7 @@ def do_volume_mrk04(ref_data):
 	except:  local_filter = False
 	#=========================================================================
 	# volume reconstruction
-	if( type(data) == types.ListType ):
+	if( type(data) == list ):
 		if Tracker["constants"]["CTF"]:
 			ERROR("should not be here","mrk04",1)
 			vol = recons3d_4nn_ctf_MPI(myid, data, Tracker["constants"]["snr"], \
@@ -1303,22 +1303,22 @@ def do_volume_mrk04(ref_data):
 		vol = data
 
 	if myid == 0:
-		from morphology import threshold
-		from filter     import filt_tanl, filt_btwl
-		from utilities  import model_circle, get_im
+		from .morphology import threshold
+		from .filter     import filt_tanl, filt_btwl
+		from .utilities  import model_circle, get_im
 		import types
 		nx = vol.get_xsize()
 		if(Tracker["constants"]["mask3D"] == None):
 			mask3D = model_circle(int(Tracker["constants"]["radius"]*float(nx)/float(Tracker["constants"]["nnxo"])+0.5), nx, nx, nx)
 		elif(Tracker["constants"]["mask3D"] == "auto"):
-			from utilities import adaptive_mask
+			from .utilities import adaptive_mask
 			mask3D = adaptive_mask(vol)
 		else:
-			if( type(Tracker["constants"]["mask3D"]) == types.StringType ):  mask3D = get_im(Tracker["constants"]["mask3D"])
+			if( type(Tracker["constants"]["mask3D"]) == bytes ):  mask3D = get_im(Tracker["constants"]["mask3D"])
 			else:  mask3D = (Tracker["constants"]["mask3D"]).copy()
 			nxm = mask3D.get_xsize()
 			if( nx != nxm):
-				from fundamentals import rot_shift3D
+				from .fundamentals import rot_shift3D
 				mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
 				nxm = mask3D.get_xsize()
 				assert(nx == nxm)
@@ -1330,7 +1330,7 @@ def do_volume_mrk04(ref_data):
 		Util.mul_img(vol, mask3D)
 
 	if local_filter:
-		from morphology import binarize
+		from .morphology import binarize
 		if(myid == 0): nx = mask3D.get_xsize()
 		else:  nx = 0
 		if( nproc > 1 ):  nx = bcast_number_to_all(nx, source_node = 0)
@@ -1341,7 +1341,7 @@ def do_volume_mrk04(ref_data):
 			lx = locres.get_xsize()
 			if(lx != nx):
 				if(lx < nx):
-					from fundamentals import fdecimate, rot_shift3D
+					from .fundamentals import fdecimate, rot_shift3D
 					mask = Util.window(rot_shift3D(mask,scale=float(lx)/float(nx)),lx,lx,lx)
 					vol = fdecimate(vol, lx,lx,lx)
 				else:  ERROR("local filter cannot be larger than input volume","user function",1)
@@ -1356,12 +1356,12 @@ def do_volume_mrk04(ref_data):
 			lx = bcast_number_to_all(lx, source_node = 0)
 			if( myid != 0 ):  mask = model_blank(lx,lx,lx)
 			bcast_EMData_to_all(mask, myid, 0, comm=mpi_comm)
-		from filter import filterlocal
+		from .filter import filterlocal
 		vol = filterlocal( locres, vol, mask, Tracker["falloff"], myid, 0, nproc)
 
 		if myid == 0:
 			if(lx < nx):
-				from fundamentals import fpol
+				from .fundamentals import fpol
 				vol = fpol(vol, nx,nx,nx)
 			vol = threshold(vol)
 			vol = filt_btwl(vol, 0.38, 0.5)#  This will have to be corrected.
@@ -1397,32 +1397,32 @@ def do_volume_mrk05(ref_data):
 	"""
 	from EMAN2          import Util
 	from mpi            import mpi_comm_rank, mpi_comm_size, MPI_COMM_WORLD
-	from filter         import filt_table
-	from reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
-	from utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
-	from fundamentals   import rops_table, fftip, fft
+	from .filter         import filt_table
+	from .reconstruction import recons3d_4nn_MPI, recons3d_4nn_ctf_MPI
+	from .utilities      import bcast_EMData_to_all, bcast_number_to_all, model_blank
+	from .fundamentals   import rops_table, fftip, fft
 	import types
 
 	# Retrieve the function specific input arguments from ref_data
 	vol     = ref_data[0]
 	Tracker = ref_data[1]
 	
-	from morphology import threshold
-	from filter     import filt_tanl, filt_btwl
-	from utilities  import model_circle, get_im
+	from .morphology import threshold
+	from .filter     import filt_tanl, filt_btwl
+	from .utilities  import model_circle, get_im
 	import types
 	nx = vol.get_xsize()
 	if(Tracker["constants"]["mask3D"] == None):
 		mask3D = model_circle(int(Tracker["constants"]["radius"]*float(nx)/float(Tracker["constants"]["nnxo"])+0.5), nx, nx, nx)
 	elif(Tracker["constants"]["mask3D"] == "auto"):
-		from utilities import adaptive_mask
+		from .utilities import adaptive_mask
 		mask3D = adaptive_mask(vol)
 	else:
-		if( type(Tracker["constants"]["mask3D"]) == types.StringType ):  mask3D = get_im(Tracker["constants"]["mask3D"])
+		if( type(Tracker["constants"]["mask3D"]) == bytes ):  mask3D = get_im(Tracker["constants"]["mask3D"])
 		else:  mask3D = (Tracker["constants"]["mask3D"]).copy()
 		nxm = mask3D.get_xsize()
 		if( nx != nxm):
-			from fundamentals import rot_shift3D
+			from .fundamentals import rot_shift3D
 			mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
 			nxm = mask3D.get_xsize()
 			assert(nx == nxm)
@@ -1554,13 +1554,13 @@ def build_user_function(module_name=None,function_name=None,path_name=None):
 	try:
 		(file,path,descript) = imp.find_module(module_name,path_list)
 	except ImportError:
-		print "could not find module "+str(module_name)+" in path "+str(path_name)
+		print("could not find module "+str(module_name)+" in path "+str(path_name))
 		return None
 
 	try:
 		dynamic_mod = imp.load_module(module_name,file,path,descript)
 	except ImportError:
-		print "could not load module "+str(module_name)+" in path "+str(path)
+		print("could not load module "+str(module_name)+" in path "+str(path))
 		return None
 		
 	# function name has to be taken from dict, since otherwise we would be trying an
@@ -1569,11 +1569,11 @@ def build_user_function(module_name=None,function_name=None,path_name=None):
 		dynamic_func = dynamic_mod.__dict__[function_name]
 	except KeyError:
 		# key error means function is not defined in the module....
-		print "could not import user function "+str(function_name)+" from module"
-		print str(path)
+		print("could not import user function "+str(function_name)+" from module")
+		print(str(path))
 		return None
 	except:
-		print "unknown error getting function!"
+		print("unknown error getting function!")
 		return None
 	else:
 		return dynamic_func

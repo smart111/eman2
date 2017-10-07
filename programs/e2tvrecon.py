@@ -53,8 +53,8 @@ def get_usage():
 
 def print_usage():
 	usage = get_usage()
-	print("usage " + usage);
-	print("Please run '" + progname + " -h' for detailed options")
+	print(("usage " + usage));
+	print(("Please run '" + progname + " -h' for detailed options"))
 	
 	return
 
@@ -116,8 +116,8 @@ def main():
 	nimgs = EMUtil.get_image_count( options.tiltseries )
 	nangles = len( tiltangles )
 	if nimgs != nangles:
-		print("""\nERROR: The number of images in the tiltseries, %d, does not match
-			the number of angles in the tlt file, %d""" % ( nimgs, nangles ))
+		print(("""\nERROR: The number of images in the tiltseries, %d, does not match
+			the number of angles in the tlt file, %d""" % ( nimgs, nangles )))
 		sys.exit(1)
 	
 	#Read essential info from image header
@@ -133,7 +133,7 @@ def main():
 	options = makepath( options, options.path)
 	
 	if options.verbose > 2: 
-		print("\nGenerating this new directory to save results to:", options.path)
+		print(("\nGenerating this new directory to save results to:", options.path))
 	
 	options.path = os.getcwd() + "/" + options.path
 	
@@ -159,7 +159,7 @@ def main():
 
 	results = get_results(etc,tids,options)
 	if options.verbose:
-		print("\nThese many results %d were computed because there were these many tasks %d" % ( len(results), len(tasks) ))
+		print(("\nThese many results %d were computed because there were these many tasks %d" % ( len(results), len(tasks) )))
 	
 	results.sort()
 	np_recons = []
@@ -238,7 +238,7 @@ def get_results(etc,tids,options):
 		
 		tidsleft=[j for i,j in enumerate(tidsleft) if proglist[i]!=100]		# remove any completed tasks from the list we ask about
 		if options.verbose:
-			print("  %d tasks, %d complete, %d waiting to start        \r"%(len(tids),ncomplete,nwait))
+			print(("  %d tasks, %d complete, %d waiting to start        \r"%(len(tids),ncomplete,nwait)))
 			sys.stdout.flush()
 	
 		if len(tidsleft)==0: break
@@ -266,7 +266,7 @@ def make_sinogram( options, y, xlen, ylen, num_imgs ):
 			sinogram.append( prj )
 		
 	if options.verbose > 2:
-		print("\n(e2tvrecon3d.py)(make_sinogram) Generated sinogram %i of %i" %( y+1, ylen ))
+		print(("\n(e2tvrecon3d.py)(make_sinogram) Generated sinogram %i of %i" %( y+1, ylen )))
 	if options.inmemory:
 		return sinogram
 	else:
@@ -298,14 +298,14 @@ def twod_recon( options, sinogram, y, projection_operator, tiltangles, ylen ):
 			from_numpy(projections[i*xlen:(i+1)*xlen]).write_image(options.path + '/projections' + str(y).zfill( len( str( ylen ))) + '.hdf',i)
 	
 	if options.verbose > 2: 
-		print("\nStarting reconstruction for slice", y)
+		print(("\nStarting reconstruction for slice", y))
 		
 	t1 = time.time()
 	recon, energies = fista_tv( options, tiltangles, projections, projection_operator, None )
 	t2 = time.time()
 	
 	if options.verbose > 3: 
-		print("Reconstruction completed in %s s"%(str(t2-t1)))
+		print(("Reconstruction completed in %s s"%(str(t2-t1))))
 	
 	return recon[-1]
 
@@ -522,7 +522,7 @@ def fista_tv( options, angles, y, H, mask=None):
 	t_old = 1
 	for i in range( options.iter ):
 		if options.verbose > 9:
-			print("\nFistaTV iteration", i)
+			print(("\nFistaTV iteration", i))
 		eps = 1.e-4
 		err = H * x - y
 		back_proj = Ht * err
@@ -797,10 +797,10 @@ def makepath(options, stem=''):
 			else:
 				components.append('00')
 			options.path = '_'.join(components)
-	if options.verbose > 5: print("The new options.path is", options.path)
+	if options.verbose > 5: print(("The new options.path is", options.path))
 	if options.path not in files:
 		if options.verbose > 5:
-			print("Creating the following path: ", options.path)
+			print(("Creating the following path: ", options.path))
 		os.system('mkdir ' + options.path)
 	return options
 

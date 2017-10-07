@@ -4,7 +4,7 @@ from EMAN2 import *
 from sys import argv
 import sys
 import threading
-import Queue
+import queue
 from Simplex import Simplex
 from numpy import array
 from time import sleep,time
@@ -16,16 +16,16 @@ VERBOSE=1
 DOFSC=0
 
 if len(argv)<3 :
-	print """Usage:
+	print("""Usage:
 	movie_ccf <movie stack> <num threads> [gain norm img]
 
 Will align a movie stack using all-vs-all CCFs with a global optimization strategy. Several outputs
 including different frame subsets are produced, as well as a text file with the translation vector map.
-"""
+""")
 
 if len(argv)>3 :
 	normimg=EMData(argv[3])
-	print "Normalizing with ",argv[3]
+	print("Normalizing with ",argv[3])
 else: normimg=None
 
 NTHREADS=int(argv[2])
@@ -36,10 +36,10 @@ if normimg!=None:
 n=len(data)
 nx=data[0]["nx"]
 ny=data[0]["ny"]
-print "{} frames read {} x {}".format(n,nx,ny)
+print("{} frames read {} x {}".format(n,nx,ny))
 
 
-ccfs=Queue.Queue(0)
+ccfs=queue.Queue(0)
 
 # CCF calculation
 def calc_ccf(N,box,step,dataa,datab,out):
@@ -77,7 +77,7 @@ def qsum(imlist):
 # this is threaded as well
 immx=[0]*n
 thds=[threading.Thread(target=split_fft,args=(data[i],i,BOX,STEP,ccfs)) for i in range(n)]
-print "Precompute FFTs: {} threads".format(len(thds))
+print("Precompute FFTs: {} threads".format(len(thds)))
 t0=time()
 
 thrtolaunch=0
@@ -104,7 +104,7 @@ for ima in range(n-1):
 		thds.append(threading.Thread(target=calc_ccf,args=((ima,imb),BOX,STEP,immx[ima],immx[imb],ccfs)))
 		i+=1
 
-print "{:1.1f} s\nCompute ccfs: {} threads".format(time()-t0,len(thds))
+print("{:1.1f} s\nCompute ccfs: {} threads".format(time()-t0,len(thds)))
 t0=time()
 
 # here we run the threads and save the results, no actual alignment done here
@@ -127,14 +127,14 @@ while thrtolaunch<len(thds) or threading.active_count()>1:
 		csum2[i]=d
 
 	if VERBOSE: 
-		print "  {}/{} {}\r".format(thrtolaunch,len(thds),threading.active_count()),
+		print("  {}/{} {}\r".format(thrtolaunch,len(thds),threading.active_count()), end=' ')
 		sys.stdout.flush()
 	
 		
 for th in thds: th.join()
 
 avgr=Averagers.get("minmax",{"max":0})
-avgr.add_image_list(csum2.values())
+avgr.add_image_list(list(csum2.values()))
 csum=avgr.finish()
 #csum=sum(csum2.values())
 #csum.mult(1.0/len(csum2))
@@ -177,8 +177,8 @@ def qual(locs,ccfs):
 	nrg=0.0
 	cen=ccfs[(0,1)]["nx"]/2
 	n=len(locs)/2
-	for i in xrange(n-1):
-		for j in xrange(i+1,n):
+	for i in range(n-1):
+		for j in range(i+1,n):
 #			nrg-=ccfs[(i,j)].sget_value_at_interp(int(cen+locs[j*2]-locs[i*2]),int(cen+locs[j*2+1]-locs[i*2+1]))
 			# This is a recognition that we will tend to get better correlation with near neighbors in the sequence
 			nrg-=ccfs[(i,j)].sget_value_at_interp(int(cen+locs[j*2]-locs[i*2]),int(cen+locs[j*2+1]-locs[i*2+1]))*sqrt(float(n-fabs(i-j))/n)
@@ -188,30 +188,30 @@ def qual(locs,ccfs):
 			
 #print csum2.keys()
 
-print "{:1.1f} s\nAlignment optimization".format(time()-t0)
+print("{:1.1f} s\nAlignment optimization".format(time()-t0))
 t0=time()
 
 # we start with a heavy filter, optimize, then repeat for successively less filtration
 for scale in [0.02,0.04,0.07,0.1,0.5]:
-	csum3={k:csum2[k].process("filter.lowpass.gauss",{"cutoff_abs":scale}) for k in csum2.keys()}
+	csum3={k:csum2[k].process("filter.lowpass.gauss",{"cutoff_abs":scale}) for k in list(csum2.keys())}
 
 	incr=[16]*len(locs)
 	incr[-1]=incr[-2]=4	# if step is zero for last 2, it gets stuck as an outlier, so we just make the starting step smaller
 	simp=Simplex(qual,locs,incr,data=csum3)
 	locs=simp.minimize(maxiters=int(100/scale),epsilon=.01)[0]
 	locs=[int(floor(i*10+.5))/10.0 for i in locs]
-	print locs
+	print(locs)
 	if VERBOSE:
 		out=file("path_{:02d}.txt".format(int(1.0/scale)),"w")
-		for i in xrange(0,len(locs),2): out.write("%f\t%f\n"%(locs[i],locs[i+1]))
+		for i in range(0,len(locs),2): out.write("%f\t%f\n"%(locs[i],locs[i+1]))
 	
 
 
 # compute the quality of each frame
 quals=[0]*n			# quality of each frame based on its correlation peak summed over all images
 cen=csum2[(0,1)]["nx"]/2
-for i in xrange(n-1):
-	for j in xrange(i+1,n):
+for i in range(n-1):
+	for j in range(i+1,n):
 		val=csum2[(i,j)].sget_value_at_interp(int(cen+locs[j*2]-locs[i*2]),int(cen+locs[j*2+1]-locs[i*2+1]))*sqrt(float(n-fabs(i-j))/n)
 		quals[i]+=val
 		quals[j]+=val
@@ -220,14 +220,14 @@ for i in xrange(n-1):
 # round for integer only shifting
 #locs=[int(floor(i+.5)) for i in locs]
 
-print "{:1.1f}Write unaligned".format(time()-t0)
+print("{:1.1f}Write unaligned".format(time()-t0))
 t0=time()
 
 #write out the unaligned average movie
 out=qsum(data)
 out.write_image(argv[1].rsplit(".",1)[0]+"_noali.hdf",0)
 
-print "Shift images ({})".format(time()-t0)
+print("Shift images ({})".format(time()-t0))
 t0=time()
 #write individual aligned frames
 for i,im in enumerate(data):
@@ -258,7 +258,7 @@ if DOFSC:
 	
 		Util.save_data(s[1],s[1]-s[0],fs[1:-1],argv[1].rsplit(".",1)[0]+"_fsc_{:02d}.txt".format(i))
 
-print "{:1.1f}\nSubsets".format(time()-t0)
+print("{:1.1f}\nSubsets".format(time()-t0))
 t0=time()
 # write translations and qualities 
 out=open(argv[1].rsplit(".",1)[0]+"_info.txt","w")
@@ -269,13 +269,13 @@ for i in range(n):
 thr=max(quals)*0.6	# max correlation cutoff for inclusion
 best=[im for i,im in enumerate(data) if quals[i]>thr]
 out=qsum(best)
-print "Keeping {}/{} frames".format(len(best),len(data))
+print("Keeping {}/{} frames".format(len(best),len(data)))
 out.write_image(argv[1].rsplit(".",1)[0]+"_goodali.hdf",0)
 
 thr=max(quals)*0.75	# max correlation cutoff for inclusion
 best=[im for i,im in enumerate(data) if quals[i]>thr]
 out=qsum(best)
-print "Keeping {}/{} frames".format(len(best),len(data))
+print("Keeping {}/{} frames".format(len(best),len(data)))
 out.write_image(argv[1].rsplit(".",1)[0]+"_bestali.hdf",0)
 
 # skip the first 4 frames then keep 10
@@ -290,4 +290,4 @@ out.write_image(argv[1].rsplit(".",1)[0]+"_4-14.hdf",0)
 #	csum2[k].translate(-int(locs[j*2]-locs[i*2]),-int(locs[j*2+1]-locs[i*2+1]),0)
 #	csum2[k].write_image("aa.hdf",ii)
 
-print "{:1.1f}\nDone".format(time()-t0)
+print("{:1.1f}\nDone".format(time()-t0))

@@ -86,10 +86,10 @@ print_col(kernel,n//2)
 a = model_circle(0.5,mx,my)
  
 scale = fc/0.5
-print ttime()
+print(ttime())
 #b = rsconvolution(a,kernel)
 b = a.downsample(sb, scale)
-print ttime()
+print(ttime())
 info(a)
 info(b)
 mmx = b.get_xsize()
@@ -98,19 +98,19 @@ drop_image(b, "ito.hdf")
 p = power(periodogram(b),0.5)*mmx*mmy
 drop_image(p, "oto.hdf")
 d = []
-for i in xrange(mmx):
+for i in range(mmx):
 	d.append(p.get_value_at(i,mmy//2))
 del p
 write_text_file(d,'toto.txt')
-print ttime()
+print(ttime())
 
 b = filt_tanl(a, fc, 0.05)
 
-print ttime()
+print(ttime())
 exit()
 mmx = smallprime(mx,3)
 mmy = smallprime(my,3)
 a = Util.window(a,mmx,mmy,1,0,0,0)
 b = filt_gaussl(a, 0.2)
-print ttime()
+print(ttime())
 

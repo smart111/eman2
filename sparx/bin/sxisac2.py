@@ -48,7 +48,7 @@ from mpi   import  *
 from math  import  *
 from time import *
 from	optparse import OptionParser, SUPPRESS_HELP
-import	ConfigParser
+import	configparser
 from inspect import currentframe, getframeinfo
 
 import	os
@@ -157,9 +157,9 @@ def delay(myid, tt):
 	from time import sleep
 	from mpi import mpi_finalize
 
-	for j in xrange(50):
-		for i  in xrange(1000000): q = i+float(i)**2.1234
-	if myid == 0 :  print  tt
+	for j in range(50):
+		for i  in range(1000000): q = i+float(i)**2.1234
+	if myid == 0 :  print(tt)
 	#sleep(100)
 	#mpi_finalize()
 	#exit()
@@ -230,7 +230,7 @@ def iter_isac_pap(alldata, ir, ou, rs, xr, yr, ts, maxit, CTF, snr, dst, FL, FH,
 	ndata = len(alldata)
 	data = [None]*ndata
 	tdummy = Transform({"type":"2D"})
-	for im in xrange(ndata):
+	for im in range(ndata):
 		# This is the absolute ID, the only time we use it is
 		# when setting the members of 4-way output. All other times, the id in 'members' is 
 		# the relative ID.
@@ -247,8 +247,8 @@ def iter_isac_pap(alldata, ir, ou, rs, xr, yr, ts, maxit, CTF, snr, dst, FL, FH,
 	K = ndata/img_per_grp
 
 	if myid == main_node:
-		print "     We will process:  %d current images divided equally between %d groups"%(ndata, K)
-		print "*************************************************************************************"
+		print("     We will process:  %d current images divided equally between %d groups"%(ndata, K))
+		print("*************************************************************************************")
 
 	# Generate random averages for each group
 	if key == group_main_node:
@@ -257,9 +257,9 @@ def iter_isac_pap(alldata, ir, ou, rs, xr, yr, ts, maxit, CTF, snr, dst, FL, FH,
 		#refi = generate_random_averages(data, K, -1)
 		###for j in xrange(len(refi)):  refi[j].write_image("refim_%d.hdf"%color, j)
 	else:
-		refi = [model_blank(nx, nx) for i in xrange(K)]
+		refi = [model_blank(nx, nx) for i in range(K)]
 
-	for i in xrange(K):
+	for i in range(K):
 		bcast_EMData_to_all(refi[i], key, group_main_node, group_comm)
 
 	#  create d[K*ndata] matrix 
@@ -317,9 +317,9 @@ def iter_isac_pap(alldata, ir, ou, rs, xr, yr, ts, maxit, CTF, snr, dst, FL, FH,
 		for i,im in enumerate(data):
 			alpha, sx, sy, mirror, scale = get_params2D(im)
 			all_ali_params[i] = [alpha, sx, sy, mirror]
-		print "****************************************************************************************************"
-		print "*         Generation finished                 "+strftime("%a, %d %b %Y %H:%M:%S", localtime())+"                            *"
-		print "****************************************************************************************************"
+		print("****************************************************************************************************")
+		print("*         Generation finished                 "+strftime("%a, %d %b %Y %H:%M:%S", localtime())+"                            *")
+		print("****************************************************************************************************")
 		return refi, all_ali_params
 	else:  return [], []
 
@@ -368,7 +368,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 
 	if type(stack) == type(""):
 		#read all data
-		print "  SHOULD NOT BE HERE"
+		print("  SHOULD NOT BE HERE")
 		sys.exit()
 		alldata = EMData.read_images(stack)
 	else:
@@ -378,7 +378,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 
 	nima = len(alldata)
 	#  Explicitly force all parameters to be zero on input
-	for im in xrange(nima):  set_params2D(alldata[im], [0.,0.,0.,0, 1.0])
+	for im in range(nima):  set_params2D(alldata[im], [0.,0.,0.,0, 1.0])
 
 	#delay(myid," in isac_MPI_pap")
 
@@ -386,7 +386,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 
 	if maskfile:
 		import  types
-		if type(maskfile) is types.StringType:  mask = get_image(maskfile)
+		if type(maskfile) is bytes:  mask = get_image(maskfile)
 		else: mask = maskfile
 	else : mask = model_circle(last_ring, nx, nx)
 	if type(refim) == type(""):
@@ -397,8 +397,8 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 		#   This is really strange.  It takes much memory without any need.  PAP 01/17/2015
 		#      However, later I made changes so refi is deleted from time to time.  All to be checked.
 		# refi = refim
-		refi = [None for i in xrange(len(refim))]
-		for i in xrange(len(refim)):  refi[i] = refim[i].copy()
+		refi = [None for i in range(len(refim))]
+		for i in range(len(refim)):  refi[i] = refim[i].copy()
 	numref = len(refi)
 
 	#  CTF stuff
@@ -423,7 +423,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 
 	previous_agreement = 0.0
 	previous_members = [None]*numref
-	for j in xrange(numref):  previous_members[j] = set()
+	for j in range(numref):  previous_members[j] = set()
 
 	fl = FL
 	Iter = -1
@@ -431,9 +431,9 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 	terminate = 0
 	while( (main_iter < max_iter) and (terminate == 0) ):
 		Iter += 1
-		if my_abs_id == main_node: print "Iteration within isac_MPI Iter =>", Iter, "	main_iter = ", main_iter, "	len data = ", image_end-image_start,"   ",strftime("%a, %d %b %Y %H:%M:%S", localtime())
+		if my_abs_id == main_node: print("Iteration within isac_MPI Iter =>", Iter, "	main_iter = ", main_iter, "	len data = ", image_end-image_start,"   ",strftime("%a, %d %b %Y %H:%M:%S", localtime()))
 		mashi = cnx-ou-2
-		for j in xrange(numref):
+		for j in range(numref):
 			refi[j].process_inplace("normalize.mask", {"mask":mask, "no_sigma":1}) # normalize reference images to N(0,1)
 			###if myid == main_node:
 			###	refi[j].write_image("refincoming%02d_round%02d.hdf"%(color, Iter), j)
@@ -444,7 +444,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 		#delay(myid, "after conversion of refi to polar")
 
 		#if CTF: ctf2 = [[[0.0]*lctf for k in xrange(2)] for j in xrange(numref)]
-		peak_list = [zeros(4*(image_end-image_start), dtype=float32) for i in xrange(numref)]
+		peak_list = [zeros(4*(image_end-image_start), dtype=float32) for i in range(numref)]
 		#  nima is the total number of images, not the one on this node, the latter is (image_end-image_start)
 		#    d matrix required by EQ-Kmeans can be huge!!  PAP 01/17/2015
 		#d = zeros(numref*nima, dtype=float32)
@@ -453,7 +453,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 
 		# begin MPI section
 		##if my_abs_id == main_node: print "begin MPI section = ", strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>", Iter, "	main_iter = ", main_iter, "	len data = ", image_end-image_start, localtime()[0:5], myid
-		for im in xrange(image_start, image_end):
+		for im in range(image_start, image_end):
 			alpha, sx, sy, mirror, scale = get_params2D(alldata[im])
 			##  TEST WHETHER PARAMETERS ARE WITHIN RANGE
 			alphai, sxi, syi, scalei = inverse_transform2(alpha, sx, sy)
@@ -471,7 +471,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 
 			# align current image to references
 			temp = Util.multiref_polar_ali_2d_peaklist(alldata[im], refi, txrng, tyrng, step, mode, numr, cnx+sxi, cny+syi)
-			for iref in xrange(numref):
+			for iref in range(numref):
 				[alphan, sxn, syn, mn] = \
 				   combine_params2(0.0, -sxi, -syi, 0, temp[iref*5+1], temp[iref*5+2], temp[iref*5+3], int(temp[iref*5+4]))
 				peak_list[iref][(im-image_start)*4+0] = alphan
@@ -489,7 +489,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 			if(Blockdata["no_of_groups"] > 1):
 				# do reduction using numref chunks nima long (it does not matter what is the actual ordering in d)
 				at = time()
-				for j in xrange(numref):
+				for j in range(numref):
 					dbuf = np.zeros(nima, dtype=np.float32)
 					np.copyto(dbuf,d[j*nima:(j+1)*nima])
 					dbuf = mpi_reduce(dbuf, nima, MPI_FLOAT, MPI_SUM, main_node, Blockdata["subgroup_comm"])  #  RETURNS numpy array
@@ -506,15 +506,15 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 			#  PAP 03/20/2015  added cleaning of long lists...
 			id_list_long = Util.assign_groups(str(d.__array_interface__['data'][0]), numref, nima) # string with memory address is passed as parameters
 			#del d
-			id_list = [[] for i in xrange(numref)]
+			id_list = [[] for i in range(numref)]
 			maxasi = nima/numref
-			for i in xrange(maxasi*numref):   id_list[i/maxasi].append(id_list_long[i])
-			for i in xrange(nima%maxasi):     id_list[id_list_long[-1]].append(id_list_long[maxasi*numref+i])
-			for iref in xrange(numref):       id_list[iref].sort()
+			for i in range(maxasi*numref):   id_list[i/maxasi].append(id_list_long[i])
+			for i in range(nima%maxasi):     id_list[id_list_long[-1]].append(id_list_long[maxasi*numref+i])
+			for iref in range(numref):       id_list[iref].sort()
 			del id_list_long
 
 			belongsto = [0]*nima
-			for iref in xrange(numref):
+			for iref in range(numref):
 				for im in id_list[iref]:
 					belongsto[im] = iref
 			del id_list
@@ -522,15 +522,15 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 			belongsto = [0]*nima
 		mpi_barrier(comm)
 		belongsto = mpi_bcast(belongsto, nima, MPI_INT, main_node, comm)
-		belongsto = map(int, belongsto)
+		belongsto = list(map(int, belongsto))
 		##if my_abs_id == main_node: print "Completed EQ-mref within isac_MPI = ", Iter, "	main_iter = ", main_iter , localtime()[0:5], color, myid
 
 		#  Compute partial averages
 		members = [0]*numref
 		sx_sum = [0.0]*numref
 		sy_sum = [0.0]*numref
-		refi = [model_blank(nx,ny) for j in xrange(numref)]
-		for im in xrange(image_start, image_end):
+		refi = [model_blank(nx,ny) for j in range(numref)]
+		for im in range(image_start, image_end):
 			matchref = belongsto[im]
 			alphan = float(peak_list[matchref][(im-image_start)*4+0])
 			sxn = float(peak_list[matchref][(im-image_start)*4+1])
@@ -555,15 +555,15 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 		sx_sum = mpi_bcast(sx_sum, numref, MPI_FLOAT, main_node, comm)
 		sy_sum = mpi_bcast(sy_sum, numref, MPI_FLOAT, main_node, comm)
 		members = mpi_bcast(members, numref, MPI_INT, main_node, comm)
-		sx_sum = map(float, sx_sum)
-		sy_sum = map(float, sy_sum)
-		members = map(int, members)
+		sx_sum = list(map(float, sx_sum))
+		sy_sum = list(map(float, sy_sum))
+		members = list(map(int, members))
 
-		for j in xrange(numref):
+		for j in range(numref):
 			sx_sum[j] /= float(members[j])
 			sy_sum[j] /= float(members[j])
 
-		for im in xrange(image_start, image_end):
+		for im in range(image_start, image_end):
 			matchref = belongsto[im]
 			alphan = float(peak_list[matchref][(im-image_start)*4+0])
 			sxn = float(peak_list[matchref][(im-image_start)*4+1])
@@ -576,7 +576,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 
 		del peak_list
 
-		for j in xrange(numref):
+		for j in range(numref):
 			reduce_EMData_to_root(refi[j], myid, main_node, comm)
 			if myid == main_node:
 				# Golden rule when to do within group refinement
@@ -590,16 +590,16 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 			#      it has to be checked and probably a better method used PAP 01/17/2015
 			dummy = within_group_refinement(refi, mask, True, first_ring, last_ring, rstep, [xrng], [yrng], [step], dst, maxit, FH, FF)
 			ref_ali_params = []
-			for j in xrange(numref):
+			for j in range(numref):
 				alpha, sx, sy, mirror, scale = get_params2D(refi[j])
 				refi[j] = rot_shift2D(refi[j], alpha, sx, sy, mirror)
 				ref_ali_params.extend([alpha, sx, sy, mirror])
 		else:
 			ref_ali_params = [0.0]*(numref*4)
 		ref_ali_params = mpi_bcast(ref_ali_params, numref*4, MPI_FLOAT, main_node, comm)
-		ref_ali_params = map(float, ref_ali_params)
+		ref_ali_params = list(map(float, ref_ali_params))
 
-		for j in xrange(numref):
+		for j in range(numref):
 			bcast_EMData_to_all(refi[j], myid, main_node, comm)
 
 		###if myid == main_node:
@@ -608,7 +608,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 		###		refi[j].write_image("refaligned%02d_round%02d.hdf"%(color, Iter), j)
 
 		# Compensate the centering to averages
-		for im in xrange(image_start, image_end):
+		for im in range(image_start, image_end):
 			matchref = belongsto[im]
 			alpha, sx, sy, mirror, scale = get_params2D(alldata[im])
 			alphan, sxn, syn, mirrorn = combine_params2(alpha, sx, sy, mirror, ref_ali_params[matchref*4], ref_ali_params[matchref*4+1], \
@@ -631,18 +631,18 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 			##if my_abs_id == main_node: print "Doing within group alignment .......", localtime()[0:5],color, main_iter
 
 			# Broadcast the alignment parameters to all nodes
-			for i in xrange(number_of_proc):
+			for i in range(number_of_proc):
 				im_start, im_end = MPI_start_end(nima, number_of_proc, i)
 				if myid == i:
 					ali_params = []
-					for im in xrange(image_start, image_end):
+					for im in range(image_start, image_end):
 						alpha, sx, sy, mirror, scale = get_params2D(alldata[im])
 						ali_params.extend([alpha, sx, sy, mirror])
 				else:
 					ali_params = [0.0]*((im_end-im_start)*4)
 				ali_params = mpi_bcast(ali_params, len(ali_params), MPI_FLOAT, i, comm)
-				ali_params = map(float, ali_params)
-				for im in xrange(im_start, im_end):
+				ali_params = list(map(float, ali_params))
+				for im in range(im_start, im_end):
 					alpha = ali_params[(im-im_start)*4]
 					sx = ali_params[(im-im_start)*4+1]
 					sy = ali_params[(im-im_start)*4+2]
@@ -666,9 +666,9 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 			##if my_abs_id == main_node: print "Within group refinement and checking within group stability, original approach .......", check_stability, "  ",localtime()[0:5]
 			# ====================================== standard approach is used, calculations are parallelized by scatter groups (averages) among MPI processes
 			gpixer = []
-			for j in xrange(myid, numref, number_of_proc):
+			for j in range(myid, numref, number_of_proc):
 				assign = []
-				for im in xrange(nima):
+				for im in range(nima):
 					if j == belongsto[im]:  assign.append(im)
 
 				randomize = True  # I think there is no reason not to be True
@@ -678,12 +678,12 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 
 				if check_stability:
 					###if my_abs_id == main_node: print "Checking within group stability, original approach .......", check_stability, "  ",localtime()[0:5]
-					ali_params = [[] for qq in xrange(stab_ali)]
-					for ii in xrange(stab_ali):
+					ali_params = [[] for qq in range(stab_ali)]
+					for ii in range(stab_ali):
 						if ii > 0:  # The first one does not have to be repeated
 							dummy = within_group_refinement(class_data, mask, randomize, first_ring, last_ring, rstep, [xrng], [yrng], [step], \
 															dst, maxit, FH, FF, method = method)
-						for im in xrange(len(class_data)):
+						for im in range(len(class_data)):
 							alpha, sx, sy, mirror, scale = get_params2D(class_data[im])
 							ali_params[ii].extend([alpha, sx, sy, mirror])
 
@@ -720,7 +720,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 				del assign
 			mpi_barrier(comm)
 
-			for im in xrange(nima):
+			for im in range(nima):
 				done_on_node = belongsto[im]%number_of_proc
 				if myid == done_on_node:
 					alpha, sx, sy, mirror, scale = get_params2D(alldata[im])
@@ -728,17 +728,17 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 				else:
 					ali_params = [0.0]*4
 				ali_params = mpi_bcast(ali_params, 4, MPI_FLOAT, done_on_node, comm)
-				ali_params = map(float, ali_params)
+				ali_params = list(map(float, ali_params))
 				set_params2D(alldata[im], [ali_params[0], ali_params[1], ali_params[2], int(ali_params[3]), 1.0])
 
 
-			for j in xrange(numref):
+			for j in range(numref):
 				bcast_EMData_to_all(refi[j], myid, j%number_of_proc, comm)
 
 			terminate = 0
 			if check_stability:
 				# In this case, we need to set the 'members' attr using stable members from the stability test
-				for j in xrange(numref):
+				for j in range(numref):
 					#print " SSS ",Blockdata["myid"],j
 					done_on_node = j%number_of_proc
 					if done_on_node != main_node:
@@ -746,7 +746,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 							mem_len = mpi_recv(1, MPI_INT, done_on_node, SPARX_MPI_TAG_UNIVERSAL, comm)
 							mem_len = int(mem_len[0])
 							members = mpi_recv(mem_len, MPI_INT, done_on_node, SPARX_MPI_TAG_UNIVERSAL, comm)
-							members = map(int, members)
+							members = list(map(int, members))
 							refi[j].set_attr_dict({'members': members,'n_objects': mem_len})
 						elif myid == done_on_node:
 							members = refi[j].get_attr('members')
@@ -758,7 +758,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 					totprevious = 0.0
 					totcurrent = 0.0
 					common = 0.0
-					for j in xrange(numref):
+					for j in range(numref):
 						totprevious += len(previous_members[j])
 						members = set(refi[j].get_attr('members'))
 						totcurrent += len(members)
@@ -769,7 +769,7 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 					j = agreement - previous_agreement
 					if( (agreement>0.5) and (j > 0.0) and (j < 0.05) ): terminate = 1
 					previous_agreement = agreement
-					print  ">>>  Assignment agreement with previous iteration  %5.1f"%(agreement*100),"   ",strftime("%a, %d %b %Y %H:%M:%S", localtime())
+					print(">>>  Assignment agreement with previous iteration  %5.1f"%(agreement*100),"   ",strftime("%a, %d %b %Y %H:%M:%S", localtime()))
 				terminate = bcast_number_to_all(terminate, source_node = main_node)
 
 
@@ -781,9 +781,9 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 					from statistics   import hist_list
 					lhist = 12
 					region, histo = hist_list(gpixer, lhist)
-					print  "\n=== Histogram of average within-class pixel errors prior to class pruning ==="
-					for lhx in xrange(lhist):  print   "     %10.3f     %7d"%(region[lhx], histo[lhx])
-					print  "=============================================================================\n"
+					print("\n=== Histogram of average within-class pixel errors prior to class pruning ===")
+					for lhx in range(lhist):  print("     %10.3f     %7d"%(region[lhx], histo[lhx]))
+					print("=============================================================================\n")
 				del gpixer
 
 
@@ -801,12 +801,12 @@ def isac_MPI_pap(stack, refim, d, maskfile = None, ir=1, ou=-1, rs=1, xrng=0, yr
 		#for j in xrange(numref):
 		#	refi[j].set_attr_dict({'members': id_list[j], 'n_objects': i[j]})
 		#del id_list
-		i = [refi[j].get_attr("n_objects") for j in xrange(numref)]
+		i = [refi[j].get_attr("n_objects") for j in range(numref)]
 		lhist = max(12, numref/2)
 		region, histo = hist_list(i, lhist)
-		print  "\n=== Histogram of group sizes ================================================"
-		for lhx in xrange(lhist):  print   "     %10.1f     %7d"%(region[lhx], histo[lhx])
-		print  "=============================================================================\n"
+		print("\n=== Histogram of group sizes ================================================")
+		for lhx in range(lhist):  print("     %10.1f     %7d"%(region[lhx], histo[lhx]))
+		print("=============================================================================\n")
 	mpi_barrier(comm)
 
 	return refi
@@ -870,7 +870,7 @@ def do_generation(main_iter, generation_iter, target_nx, target_xr, target_yr, t
 	if( Blockdata["myid_on_node"] == 0 ):
 		#  read data on process 0 of each node
 		#print "  READING DATA FIRST :",Blockdata["myid"],Blockdata["stack_ali2d"],len(plist)
-		for i in xrange(nimastack):
+		for i in range(nimastack):
 			bigbuffer.insert_clip(get_im(Blockdata["stack_ali2d"],plist[i]),(0,0,i))
 		del plist
 		#print "  ALL READ  ",Blockdata["myid"],Blockdata["myid_on_node"],target_nx
@@ -882,7 +882,7 @@ def do_generation(main_iter, generation_iter, target_nx, target_xr, target_yr, t
 	emnumpy3 = [None]*nimastack
 
 	msk = model_blank(target_nx, target_nx,1,1)
-	for i in xrange(nimastack):
+	for i in range(nimastack):
 		pointer_location = base_ptr + i*size_of_one_image*disp_unit
 		img_buffer = np.frombuffer(np.core.multiarray.int_asbuffer(pointer_location, size_of_one_image*disp_unit), dtype = 'f4')
 		img_buffer = img_buffer.reshape(target_nx, target_nx)
@@ -898,8 +898,8 @@ def do_generation(main_iter, generation_iter, target_nx, target_xr, target_yr, t
 	max_round = 0
 	dummy_main_iter = 0
 	if( Blockdata["myid"] == 0 ):
-		print "*************************************************************************************"
-		print "     Main iteration: %3d,  Generation: %3d. "%(main_iter,generation_iter)+"   "+strftime("%a, %d %b %Y %H:%M:%S", localtime())
+		print("*************************************************************************************")
+		print("     Main iteration: %3d,  Generation: %3d. "%(main_iter,generation_iter)+"   "+strftime("%a, %d %b %Y %H:%M:%S", localtime()))
 
 	ave, all_params = iter_isac_pap(alldata, options.ir, target_radius, options.rs, target_xr, target_yr, options.ts, options.maxit, False, 1.0,\
 		options.dst, options.FL, options.FH, options.FF, options.init_iter, dummy_main_iter, options.iter_reali, match_first, \
@@ -911,7 +911,7 @@ def do_generation(main_iter, generation_iter, target_nx, target_xr, target_yr, t
 	mpi_win_free(win_sm)
 	emnumpy2.unregister_numpy_from_emdata()
 	del emnumpy2
-	for i in xrange(nimastack):  emnumpy3[i].unregister_numpy_from_emdata()
+	for i in range(nimastack):  emnumpy3[i].unregister_numpy_from_emdata()
 	del alldata
 	#delay(Blockdata["myid"],"  CLEANED")
 
@@ -987,7 +987,7 @@ def do_generation(main_iter, generation_iter, target_nx, target_xr, target_yr, t
 					junk = cmdexecute(cmd)
 					cmd = "{} {}".format("touch", os.path.join(Blockdata["masterdir"], "finished"))
 					junk = cmdexecute(cmd)
-					print "*         There are no more images to form averages, program finishes     "+strftime("%a, %d %b %Y %H:%M:%S", localtime())+"     *"
+					print("*         There are no more images to form averages, program finishes     "+strftime("%a, %d %b %Y %H:%M:%S", localtime())+"     *")
 				else:
 					#  Will have to increase main, which means putting all bad left as new good, 
 					keepdoing_main = True
@@ -1069,8 +1069,8 @@ def main(args):
 	(options, args) = parser.parse_args(args)
 
 	if len(args) > 2:
-		print "usage: " + usage
-		print "Please run '" + progname + " -h' for detailed options"
+		print("usage: " + usage)
+		print("Please run '" + progname + " -h' for detailed options")
 		sys.exit()
 	elif( len(args) == 2):
 		Blockdata["stack"] 	= args[0]
@@ -1120,19 +1120,19 @@ def main(args):
 	Blockdata["stack_ali2d"] = "bdb:" + os.path.join(Blockdata["masterdir"], "stack_ali2d" )
 	
 	if(myid == main_node):
-		print "****************************************************************************************************"
-		print "*                                                                                                  *"
-		print "* ISAC (Iterative Stable Alignment and Clustering)   "+strftime("%a, %d %b %Y %H:%M:%S", localtime())+"                     *"
-		print "* By Zhengfan Yang, Jia Fang, Francisco Asturias and Pawel A. Penczek                              *"
-		print "*                                                                                                  *"
-		print '* REFERENCE: Z. Yang, J. Fang, J. Chittuluru, F. J. Asturias and P. A. Penczek, "Iterative Stable  *'
-		print '*            Alignment and Clustering of 2D Transmission Electron Microscope Images",              *' 
-		print '*            Structure 20, 237-247, February 8, 2012.                                              *'
-		print "*                                                                                                  *"
-		print "* Last updated: 05/30/2017 PAP                                                                     *"
-		print "****************************************************************************************************"
+		print("****************************************************************************************************")
+		print("*                                                                                                  *")
+		print("* ISAC (Iterative Stable Alignment and Clustering)   "+strftime("%a, %d %b %Y %H:%M:%S", localtime())+"                     *")
+		print("* By Zhengfan Yang, Jia Fang, Francisco Asturias and Pawel A. Penczek                              *")
+		print("*                                                                                                  *")
+		print('* REFERENCE: Z. Yang, J. Fang, J. Chittuluru, F. J. Asturias and P. A. Penczek, "Iterative Stable  *')
+		print('*            Alignment and Clustering of 2D Transmission Electron Microscope Images",              *') 
+		print('*            Structure 20, 237-247, February 8, 2012.                                              *')
+		print("*                                                                                                  *")
+		print("* Last updated: 05/30/2017 PAP                                                                     *")
+		print("****************************************************************************************************")
 		Util.version()
-		print "****************************************************************************************************"
+		print("****************************************************************************************************")
 		sys.stdout.flush()
 
 		i = "  "
@@ -1140,16 +1140,16 @@ def main(args):
 			i +=a+"  "
 		print("* shell line command: ")
 		print(i)
-		print "*                                                                                                  *"
-		print "* Master directory: %s"%Blockdata["masterdir"]
-		print "****************************************************************************************************"
+		print("*                                                                                                  *")
+		print("* Master directory: %s"%Blockdata["masterdir"])
+		print("****************************************************************************************************")
 	mpi_barrier(MPI_COMM_WORLD)
 
 	# Making sure all required options appeared.
 	for required_option in required_option_list:
 		if not options.__dict__[required_option]:
-			print "\n ==%s== mandatory option is missing.\n"%required_option
-			print "Please run '" + progname + " -h' for detailed options"
+			print("\n ==%s== mandatory option is missing.\n"%required_option)
+			print("Please run '" + progname + " -h' for detailed options")
 			return 1
 
 
@@ -1229,13 +1229,13 @@ def main(args):
 
 		image_start, image_end = MPI_start_end(Blockdata["total_nima"], nproc, myid)
 
-		original_images = EMData.read_images(Blockdata["stack"], range(image_start,image_end))
+		original_images = EMData.read_images(Blockdata["stack"], list(range(image_start,image_end)))
 		if options.VPP:
 			ntp = len(rops_table(original_images[0]))
 			rpw = [0.0]*ntp
 			for q in original_images:
 				tpw = rops_table(q)
-				for i in xrange(ntp):  rpw[i] += sqrt(tpw[i])
+				for i in range(ntp):  rpw[i] += sqrt(tpw[i])
 			del tpw
 			rpw = mpi_reduce(rpw, ntp, MPI_FLOAT, MPI_SUM, main_node, MPI_COMM_WORLD)
 			if(myid == 0):
@@ -1244,7 +1244,7 @@ def main(args):
 				write_text_file(rpw,os.path.join(Blockdata["masterdir"], "rpw.txt"))
 			else:  rpw = []
 			rpw = bcast_list_to_all(rpw, myid, source_node = main_node, mpi_comm = MPI_COMM_WORLD)
-			for i in xrange(len(original_images)):  original_images[i] = filt_table(original_images[i], rpw)
+			for i in range(len(original_images)):  original_images[i] = filt_table(original_images[i], rpw)
 			del rpw
 		else:
 			if(myid == 0):
@@ -1252,12 +1252,12 @@ def main(args):
 				write_text_file([0.0]*ntp,os.path.join(Blockdata["masterdir"], "rpw.txt"))
 
 		if options.skip_prealignment:
-			params2d = [[0.0,0.0,0.0,0] for i in xrange(image_start, image_end)]
+			params2d = [[0.0,0.0,0.0,0] for i in range(image_start, image_end)]
 		else:
 			#  We assume the target radius will be 29, and xr = 1.
 			shrink_ratio = float(target_radius)/float(radi)
 
-			for im in xrange(len(original_images)):
+			for im in range(len(original_images)):
 				if(shrink_ratio != 1.0):
 					original_images[im] = resample(original_images[im], shrink_ratio)
 
@@ -1280,14 +1280,14 @@ def main(args):
 			
 			# section ali2d_base
 
-			if(Blockdata["myid"] == 0): print "* 2D alignment   "+strftime("%a, %d %b %Y %H:%M:%S", localtime())
+			if(Blockdata["myid"] == 0): print("* 2D alignment   "+strftime("%a, %d %b %Y %H:%M:%S", localtime()))
 			params2d = ali2d_base(original_images, init2dir, None, 1, target_radius, 1, txr, txr, tss, \
 				False, 90.0, center_method, 14, options.CTF, 1.0, False, \
 				"ref_ali2d", "", log2d, nproc, myid, main_node, MPI_COMM_WORLD, write_headers = False)
 
 			del original_images
 
-			for i in xrange(len(params2d)):
+			for i in range(len(params2d)):
 				alpha, sx, sy, mirror = combine_params2(0, params2d[i][1],params2d[i][2], 0, -params2d[i][0], 0, 0, 0)
 				sx /= shrink_ratio
 				sy /= shrink_ratio
@@ -1302,9 +1302,9 @@ def main(args):
 		tmp = wrap_mpi_gatherv(tmp, main_node, MPI_COMM_WORLD)
 		if( myid == main_node ):		
 			if options.skip_prealignment:
-				print "========================================="
-				print "There is no alignment step, '%s' params are set to zero for later use."%os.path.join(init2dir, "initial2Dparams.txt")
-				print "========================================="
+				print("=========================================")
+				print("There is no alignment step, '%s' params are set to zero for later use."%os.path.join(init2dir, "initial2Dparams.txt"))
+				print("=========================================")
 			write_text_row(tmp,os.path.join(init2dir, "initial2Dparams.txt"))
 		del tmp
 		mpi_barrier(MPI_COMM_WORLD)
@@ -1313,7 +1313,7 @@ def main(args):
 		#  Note images can be also padded, in which case shrink_ratio > 1.
 		shrink_ratio = float(target_radius)/float(radi)
 		
-		aligned_images = EMData.read_images(Blockdata["stack"], range(image_start,image_end))
+		aligned_images = EMData.read_images(Blockdata["stack"], list(range(image_start,image_end)))
 		nx = aligned_images[0].get_xsize()
 		nima = len(aligned_images)
 		newx = int(nx*shrink_ratio + 0.5)
@@ -1334,7 +1334,7 @@ def main(args):
 			if myid == 0:  rpw = read_text_file(os.path.join(Blockdata["masterdir"], "rpw.txt"))
 			else:  rpw = [0.0]
 			rpw = bcast_list_to_all(rpw, myid, source_node = main_node, mpi_comm = MPI_COMM_WORLD)
-		for im in xrange(nima):
+		for im in range(nima):
 			st = Util.infomask(aligned_images[im], msk, False)
 			aligned_images[im] -= st[0]
 			if options.CTF:
@@ -1345,7 +1345,7 @@ def main(args):
 		if(shrink_ratio < 1.0):
 			if    newx > target_nx  :
 				msk = model_circle(target_radius, target_nx, target_nx)
-				for im in xrange(nima):
+				for im in range(nima):
 					#  Here we should use only shifts
 					#alpha, sx, sy, mirror, scale = get_params2D(aligned_images[im])
 					#alpha, sx, sy, mirror = combine_params2(0, sx,sy, 0, -alpha, 0, 0, 0)
@@ -1359,7 +1359,7 @@ def main(args):
 					aligned_images[im] /= p[1]
 			elif  newx == target_nx :
 				msk = model_circle(target_radius, target_nx, target_nx)
-				for im in xrange(nima):
+				for im in range(nima):
 					#  Here we should use only shifts
 					#alpha, sx, sy, mirror, scale = get_params2D(aligned_images[im])
 					#alpha, sx, sy, mirror = combine_params2(0, sx,sy, 0, -alpha, 0, 0, 0)
@@ -1371,7 +1371,7 @@ def main(args):
 					aligned_images[im] /= p[1]
 			elif  newx < target_nx  :	
 				msk = model_circle(newx//2-2, newx,  newx)
-				for im in xrange(nima):
+				for im in range(nima):
 					#  Here we should use only shifts
 					#alpha, sx, sy, mirror, scale = get_params2D(aligned_images[im])
 					#alpha, sx, sy, mirror = combine_params2(0, sx,sy, 0, -alpha, 0, 0, 0)
@@ -1385,7 +1385,7 @@ def main(args):
 		elif(shrink_ratio == 1.0):
 			if    newx > target_nx  :
 				msk = model_circle(target_radius, target_nx, target_nx)
-				for im in xrange(nima):
+				for im in range(nima):
 					#  Here we should use only shifts
 					#alpha, sx, sy, mirror, scale = get_params2D(aligned_images[im])
 					#alpha, sx, sy, mirror = combine_params2(0, sx,sy, 0, -alpha, 0, 0, 0)
@@ -1397,7 +1397,7 @@ def main(args):
 					aligned_images[im] /= p[1]
 			elif  newx == target_nx :
 				msk = model_circle(target_radius, target_nx, target_nx)
-				for im in xrange(nima):
+				for im in range(nima):
 					#  Here we should use only shifts
 					#alpha, sx, sy, mirror, scale = get_params2D(aligned_images[im])
 					#alpha, sx, sy, mirror = combine_params2(0, sx,sy, 0, -alpha, 0, 0, 0)
@@ -1408,7 +1408,7 @@ def main(args):
 					aligned_images[im] /= p[1]
 			elif  newx < target_nx  :			
 				msk = model_circle(newx//2-2, newx,  newx)
-				for im in xrange(nima):
+				for im in range(nima):
 					#  Here we should use only shifts
 					#alpha, sx, sy, mirror, scale = get_params2D(aligned_images[im])
 					#alpha, sx, sy, mirror = combine_params2(0, sx,sy, 0, -alpha, 0, 0, 0)
@@ -1422,7 +1422,7 @@ def main(args):
 		elif(shrink_ratio > 1.0):
 			if    newx > target_nx  :
 				msk = model_circle(target_radius, target_nx, target_nx)
-				for im in xrange(nima):
+				for im in range(nima):
 					#  Here we should use only shifts
 					#alpha, sx, sy, mirror, scale = get_params2D(aligned_images[im])
 					#alpha, sx, sy, mirror = combine_params2(0, sx,sy, 0, -alpha, 0, 0, 0)
@@ -1435,7 +1435,7 @@ def main(args):
 					aligned_images[im] /= p[1]
 			elif  newx == target_nx :
 				msk = model_circle(target_radius, target_nx, target_nx)
-				for im in xrange(nima):
+				for im in range(nima):
 					#  Here we should use only shifts
 					#alpha, sx, sy, mirror, scale = get_params2D(aligned_images[im])
 					#alpha, sx, sy, mirror = combine_params2(0, sx,sy, 0, -alpha, 0, 0, 0)
@@ -1447,7 +1447,7 @@ def main(args):
 					aligned_images[im] /= p[1]
 			elif  newx < target_nx  :
 				msk = model_circle(newx//2-2, newx,  newx)
-				for im in xrange(nima):
+				for im in range(nima):
 					#  Here we should use only shifts
 					#alpha, sx, sy, mirror, scale = get_params2D(aligned_images[im])
 					#alpha, sx, sy, mirror = combine_params2(0, sx,sy, 0, -alpha, 0, 0, 0)
@@ -1485,21 +1485,21 @@ def main(args):
 			the following file: README_shrink_ratio.txt
 			"""%(shrink_ratio, radi)
 			fp.write(output_text); fp.flush() ;fp.close()
-			print output_text
+			print(output_text)
 			junk = cmdexecute("sxheader.py  --consecutive  --params=originalid   %s"%Blockdata["stack_ali2d"])
 
 
 			fp = open(os.path.join(init2dir, "Finished_initial_2d_alignment.txt"), "w"); fp.flush() ;fp.close()
 	else:
 		if( Blockdata["myid"] == Blockdata["main_node"] ):
-			print "Skipping 2D alignment since it was already done!"
+			print("Skipping 2D alignment since it was already done!")
 
 	error = 0
 	if( Blockdata["myid"] == Blockdata["main_node"] ):
 		if( not os.path.exists( os.path.join(Blockdata["masterdir"], "main001", "generation000") ) ):
 			#  We do not create processed_images.txt selection file as it has to be initially empty
 			#  We do create all params filled with zeroes.
-			write_text_row([[0.0,0.0,0.0,-1] for i in xrange(Blockdata["total_nima"])], os.path.join(Blockdata["masterdir"], "all_parameters.txt") )
+			write_text_row([[0.0,0.0,0.0,-1] for i in range(Blockdata["total_nima"])], os.path.join(Blockdata["masterdir"], "all_parameters.txt") )
 			if(options.restart > -1): error=1
 		else:
 			if(options.restart == 0):
@@ -1568,7 +1568,7 @@ def main(args):
 						os.path.join(Blockdata["masterdir"], "main%03d"%main_iter, "generation%03d"%generation_iter, "to_process_next_%03d_%03d.txt"%(main_iter,generation_iter) ))
 						junk = cmdexecute(cmd)
 					else:
-						write_text_file(range(Blockdata["total_nima"]),\
+						write_text_file(list(range(Blockdata["total_nima"])),\
 						os.path.join(Blockdata["masterdir"], "main%03d"%main_iter, "generation%03d"%generation_iter, "to_process_next_%03d_%03d.txt"%(main_iter,generation_iter) ))
 				mpi_barrier(MPI_COMM_WORLD)
 
@@ -1621,7 +1621,7 @@ def main(args):
 			cmd = "{} {}".format("rm -rf", os.path.join(Blockdata["masterdir"], "junk.hdf") )
 			junk = cmdexecute(cmd)
 		else:
-			print " ISAC could not find any stable class averaging, terminating..."
+			print(" ISAC could not find any stable class averaging, terminating...")
 
 	mpi_finalize()
 	exit()

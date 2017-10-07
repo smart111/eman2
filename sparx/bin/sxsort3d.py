@@ -67,8 +67,8 @@ def main():
 	parser.add_option("--interpolation",                 type   ="string",        default ="4nn",                 help="3-d reconstruction interpolation method, two options trl and 4nn")
 	(options, args) = parser.parse_args(arglist[1:])
 	if len(args) < 1  or len(args) > 4:
-    		print "usage: " + usage
-    		print "Please run '" + progname + " -h' for detailed options"
+    		print("usage: " + usage)
+    		print("Please run '" + progname + " -h' for detailed options")
 	else:
 
 		if len(args)>2:
@@ -198,7 +198,7 @@ def main():
 		from utilities import get_shrink_data_huang
 		if(myid == main_node):
 			line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-			print(line+"Initialization of 3-D sorting")
+			print((line+"Initialization of 3-D sorting"))
 			a = get_im(orgstack)
 			nnxo = a.get_xsize()
 			if( Tracker["nxinit"] > nnxo ):
@@ -268,7 +268,7 @@ def main():
 		mpi_barrier(MPI_COMM_WORLD)
 		from time import sleep
 		while not os.path.exists(masterdir):
-				print  "Node ",myid,"  waiting..."
+				print("Node ",myid,"  waiting...")
 				sleep(5)
 		mpi_barrier(MPI_COMM_WORLD)
 		if myid == main_node:
@@ -344,10 +344,10 @@ def main():
 		Tracker["P_chunk1"]   = len(chunk_two)/float(total_stack)
 		### create two volumes to estimate resolution
 		if myid == main_node:
-			for index in xrange(2): write_text_file(chunk_list[index],os.path.join(masterdir,"chunk%01d.txt"%index))
+			for index in range(2): write_text_file(chunk_list[index],os.path.join(masterdir,"chunk%01d.txt"%index))
 		mpi_barrier(MPI_COMM_WORLD)
 		vols = []
-		for index in xrange(2):
+		for index in range(2):
 			data,old_shifts = get_shrink_data_huang(Tracker,Tracker["constants"]["nxinit"], os.path.join(masterdir,"chunk%01d.txt"%index), Tracker["constants"]["partstack"],myid,main_node,nproc,preshift=True)
 			vol             = recons3d_4nn_ctf_MPI(myid=myid, prjlist=data,symmetry=Tracker["constants"]["sym"], finfo=None)
 			if myid == main_node:
@@ -390,7 +390,7 @@ def main():
 			log_main.add("equivalent to %f Angstrom resolution"%(Tracker["constants"]["pixel_size"]/Tracker["currentres"]/Tracker["shrinkage"]))
 			log_main.add("the user provided enforced low_pass_filter is %f"%Tracker["constants"]["low_pass_filter"])
 			#log_main.add("equivalent to %f Angstrom resolution"%(Tracker["constants"]["pixel_size"]/Tracker["constants"]["low_pass_filter"]))
-			for index in xrange(2):
+			for index in range(2):
 				filt_tanl(get_im(os.path.join(masterdir,"vol%01d.hdf"%index)), Tracker["low_pass_filter"],Tracker["falloff"]).write_image(os.path.join(masterdir, "volf%01d.hdf"%index))
 		mpi_barrier(MPI_COMM_WORLD)
 		from utilities import get_input_from_string
@@ -424,16 +424,16 @@ def main():
 			cmd="{} {}".format("mkdir",workdir)
 			os.system(cmd)
 		mpi_barrier(MPI_COMM_WORLD)
-		list_to_be_processed = range(Tracker["constants"]["total_stack"])
+		list_to_be_processed = list(range(Tracker["constants"]["total_stack"]))
 		Tracker["this_data_list"] = list_to_be_processed
 		create_random_list(Tracker)
 		#################################
 		full_dict ={}
-		for iptl in xrange(Tracker["constants"]["total_stack"]):
+		for iptl in range(Tracker["constants"]["total_stack"]):
 			 full_dict[iptl]    = iptl
 		Tracker["full_ID_dict"] = full_dict
 		################################# 	
-		for indep_run in xrange(Tracker["constants"]["indep_runs"]):
+		for indep_run in range(Tracker["constants"]["indep_runs"]):
 			Tracker["this_particle_list"] = Tracker["this_indep_list"][indep_run]
 			ref_vol =  recons_mref(Tracker)
 			if myid == main_node: log_main.add("independent run  %10d"%indep_run)
@@ -456,7 +456,7 @@ def main():
 		ref_vol_list = []
 		from time import sleep
 		number_of_ref_class = []
-		for igrp in xrange(len(Tracker["two_way_stable_member"])):
+		for igrp in range(len(Tracker["two_way_stable_member"])):
 			Tracker["this_data_list"]      = Tracker["two_way_stable_member"][igrp]
 			Tracker["this_data_list_file"] = os.path.join(workdir,"stable_class%d.txt"%igrp)
 			if myid == main_node:
@@ -474,7 +474,7 @@ def main():
 		else:
 			Tracker["PWadjustment"] = Tracker["constants"]["PWadjustment"]	 # no PW adjustment
 		if myid == main_node:
-			for iref in xrange(len(ref_vol_list)):
+			for iref in range(len(ref_vol_list)):
 				refdata    = [None]*4
 				refdata[0] = ref_vol_list[iref]
 				refdata[1] = Tracker
@@ -495,7 +495,7 @@ def main():
 		number_of_groups    = len(res_groups)
 		vol_list            = []
 		number_of_ref_class = []
-		for igrp in xrange(number_of_groups):
+		for igrp in range(number_of_groups):
 			data,old_shifts = get_shrink_data_huang(Tracker, Tracker["constants"]["nnxo"], os.path.join(outdir,"Class%d.txt"%igrp), Tracker["constants"]["partstack"],myid,main_node,nproc,preshift = True)
 			volref          = recons3d_4nn_ctf_MPI(myid=myid, prjlist = data, symmetry=Tracker["constants"]["sym"], finfo=None)
 			vol_list.append(volref)
@@ -515,7 +515,7 @@ def main():
 			Tracker["PWadjustment"]=Tracker["constants"]["PWadjustment"]	
 
 		if myid == main_node:
-			for ivol in xrange(len(vol_list)):
+			for ivol in range(len(vol_list)):
 				refdata     =[None]*4
 				refdata[0] = vol_list[ivol]
 				refdata[1] = Tracker
@@ -546,7 +546,7 @@ def main():
 				os.system(cmd)
 			mpi_barrier(MPI_COMM_WORLD)
 			create_random_list(Tracker)
-			for indep_run in xrange(Tracker["constants"]["indep_runs"]):
+			for indep_run in range(Tracker["constants"]["indep_runs"]):
 				Tracker["this_particle_list"] = Tracker["this_indep_list"][indep_run]
 				ref_vol                       = recons_mref(Tracker)
 				if myid == main_node:
@@ -566,7 +566,7 @@ def main():
 			###############################
 			ref_vol_list        = []
 			number_of_ref_class = []
-			for igrp in xrange(len(Tracker["two_way_stable_member"])):
+			for igrp in range(len(Tracker["two_way_stable_member"])):
 				Tracker["this_data_list"]      = Tracker["two_way_stable_member"][igrp]
 				Tracker["this_data_list_file"] = os.path.join(workdir,"stable_class%d.txt"%igrp)
 				if myid == main_node: write_text_file(Tracker["this_data_list"], Tracker["this_data_list_file"])
@@ -592,7 +592,7 @@ def main():
 			mpi_barrier(MPI_COMM_WORLD)
 			update_full_dict(Tracker["this_unaccounted_list"],Tracker)
 			vol_list = []
-			for igrp in xrange(number_of_groups):
+			for igrp in range(number_of_groups):
 				data,old_shifts = get_shrink_data_huang(Tracker,Tracker["constants"]["nnxo"], os.path.join(outdir,"Class%d.txt"%igrp), Tracker["constants"]["partstack"], myid, main_node, nproc,preshift = True)
 				volref = recons3d_4nn_ctf_MPI(myid=myid, prjlist = data, symmetry=Tracker["constants"]["sym"],finfo= None)
 				vol_list.append(volref)
@@ -605,7 +605,7 @@ def main():
 				Tracker["PWadjustment"] = Tracker["constants"]["PWadjustment"]	
 
 			if myid == main_node:
-				for ivol in xrange(len(vol_list)):
+				for ivol in range(len(vol_list)):
 					refdata    = [None]*4
 					refdata[0] = vol_list[ivol]
 					refdata[1] = Tracker

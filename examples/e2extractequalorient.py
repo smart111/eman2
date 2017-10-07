@@ -7,7 +7,7 @@ from sys import argv
 import sys
 
 if len(argv)<4 :
-	   print """Usage: e2extractequalorient.py <refine_xx> <iter #> <output> [micrograph restrict]
+	   print("""Usage: e2extractequalorient.py <refine_xx> <iter #> <output> [micrograph restrict]
 
 Extracts particles trying to achieve a reasonably uniform orientation distribution. After launching, 
 provides some interactive statistics and asks for a limiting number. It will include at most this 
@@ -15,7 +15,7 @@ number of particles from each orientation in the refinement. <ouptut> should be 
 folder in which to put particles/. [micrograph restrict] is a text file containing the names of
 particle image files to include in the output. This is an additional restriction on top of the 
 count restriction.
-	   """
+	   """)
 	   sys.exit(1)
 
 even=EMData.read_images("{}/classes_{:02d}_even.hdf".format(argv[1],int(argv[2])),None,True)
@@ -23,7 +23,7 @@ odd =EMData.read_images("{}/classes_{:02d}_odd.hdf".format(argv[1],int(argv[2]))
 
 ncls=min(len(even),len(odd))
 # Number of particles in each orientation
-counts=[even[i]["ptcl_repr"]+odd[i]["ptcl_repr"] for i in xrange(ncls)]
+counts=[even[i]["ptcl_repr"]+odd[i]["ptcl_repr"] for i in range(ncls)]
 
 # This allows us to restrict the ouput to specific micrographs in addition to the orientation leveling
 if len(argv)==5 :
@@ -38,8 +38,8 @@ except:
 	pass
 
 # Exctract the aggregate list of good particles for each class
-ptcls=[[] for i in xrange(ncls)]
-for i in xrange(ncls):
+ptcls=[[] for i in range(ncls)]
+for i in range(ncls):
 	if not even[i].has_attr("class_ptcl_idxs") : lst=[]
 	elif isinstance(even[i]["class_ptcl_idxs"],int) : lst=[even[i]["class_ptcl_idxs"]]
 	else: lst=even[i]["class_ptcl_idxs"]
@@ -51,15 +51,15 @@ for i in xrange(ncls):
 	ptcls[i].append(lst)
 	
 
-print "class particle counts range from {} - {} in {} classes".format(min(counts),max(counts),len(counts))
-ntk=int(raw_input("How many particles to keep per orientation (at most): "))
+print("class particle counts range from {} - {} in {} classes".format(min(counts),max(counts),len(counts)))
+ntk=int(input("How many particles to keep per orientation (at most): "))
 
 # even and odd .lst files referencing original particles
 lsx=[LSXFile(even[0]["class_ptcl_src"]),LSXFile( odd[0]["class_ptcl_src"])]
 
 # This is where we actually identify which particles to keep
 outfiles={}
-for cls in xrange(ncls):
+for cls in range(ncls):
 	nk=0
 	for eo in (0,1):
 		for p in ptcls[cls][eo]:

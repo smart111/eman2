@@ -52,8 +52,8 @@ def main():
     
 
     if len(args) < 4:
-        print "usage: " + usage
-	print "Please run '" + progname + " -h' for details"
+        print("usage: " + usage)
+	print("Please run '" + progname + " -h' for details")
     else:
         from string import atoi
         input_stack  = args[0]
@@ -68,7 +68,7 @@ def main():
 		disable_bdb_cache()
         from applications import varimax
 	global_def.BATCH = True
-        varimax(input_stack, range(imgstart, imgend), output_stack, mask, options.rad, options.verbose)
+        varimax(input_stack, list(range(imgstart, imgend)), output_stack, mask, options.rad, options.verbose)
 	global_def.BATCH = False
 
 if __name__ == "__main__":

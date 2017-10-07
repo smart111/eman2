@@ -52,7 +52,7 @@ from valslider import ValSlider, ValBox
 
 	
 def run(cmd):
-	print cmd
+	print(cmd)
 	launch_childprocess(cmd)
 	
 def main():
@@ -288,7 +288,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		info=js_open_dict(self.jsonfile)
 		self.sets={}
 		self.boxsize={}
-		if info.has_key("class_list"):
+		if "class_list" in info:
 			clslst=info["class_list"]
 			for k in sorted(clslst.keys()):
 				if type(clslst[k])==dict:
@@ -306,7 +306,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		self.setcolors=[clr("blue"),clr("green"),clr("red"),clr("cyan"),clr("purple"),clr("orange"), clr("yellow"),clr("hotpink"),clr("gold")]
 		self.sets_visible={}
 		
-		if info.has_key("boxes_3d"):
+		if "boxes_3d" in info:
 			box=info["boxes_3d"]
 			for i,b in enumerate(box):
 				#### X-center,Y-center,Z-center,method,[score,[class #]]
@@ -315,7 +315,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 					bdf[j]=b[j]
 				
 				
-				if bdf[5] not in self.sets.keys():
+				if bdf[5] not in list(self.sets.keys()):
 					clsi=int(bdf[5])
 					self.sets[clsi]="particles_{:02d}".format(clsi)
 				
@@ -325,12 +325,12 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		info.close()
 		if len(self.sets)==0:
 			self.new_set("particles_00")
-		self.sets_visible[self.sets.keys()[0]]=0
+		self.sets_visible[list(self.sets.keys())[0]]=0
 		self.currentset=sorted(self.sets.keys())[0]
 		self.setspanel.update_sets()
 	
 		self.e = None
-		print self.sets
+		print(self.sets)
 		for i in range(len(self.boxes)):
 			self.update_box(i)
 		
@@ -342,7 +342,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 #	def menu_win_average(self) : self.averageviewer.show()
 
 	def set_datafile(self,datafile):
-		print "\nIn set_datafile, received datafile", datafile
+		print("\nIn set_datafile, received datafile", datafile)
 		if datafile==None :
 			self.datafile=None
 			self.data=None
@@ -547,7 +547,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 			try:
 				ret= int(self.boxsize[clsid])
 			except:
-				print "No box size saved for {}..".format(clsid)
+				print("No box size saved for {}..".format(clsid))
 				ret=32
 			return ret
 
@@ -637,10 +637,10 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		
 		fsp=os.path.join("particles3d",self.basename)+name
 		fspprjs=os.path.join("particles",self.basename)+name.replace('.hdf','_prjs.hdf')
-		print "Saving 3D particles to {},\n Saving particle projections to {}".format(fsp, fspprjs)
+		print("Saving 3D particles to {},\n Saving particle projections to {}".format(fsp, fspprjs))
 		for f in [fsp, fspprjs]:
 			if os.path.isfile(f):
-				print "{} exist. Overwritting...".format(f)
+				print("{} exist. Overwritting...".format(f))
 				os.remove(f)
 		
 		progress = QtGui.QProgressDialog("Saving", "Abort", 0, len(self.boxes),None)
@@ -658,7 +658,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 				boxsz=bs
 			else:
 				if boxsz!=bs:
-					print "Inconsistant box size in the particles to save.. Using {:d}..".format(boxsz)
+					print("Inconsistant box size in the particles to save.. Using {:d}..".format(boxsz))
 					bs=boxsz
 			
 			sz=[0,0,0]
@@ -1047,7 +1047,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 			self.setspanel.update_sets()
 
 	def add_helix_box(self, xf, yf, zf, xi, yi, zi):
-		print xf, yf, zf, xi, yi, zi
+		print(xf, yf, zf, xi, yi, zi)
 		if options.yshort:
 			self.helixboxes.append([xf, zf, yf, xi, zi, yi])
 		else:
@@ -1382,7 +1382,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 	
 	def save_set(self):
 		
-		self.save_boxes(self.sets_visible.keys())
+		self.save_boxes(list(self.sets_visible.keys()))
 		return
 	
 	
@@ -1397,11 +1397,11 @@ class EMTomoBoxer(QtGui.QMainWindow):
 
 	
 	def closeEvent(self,event):
-		print "Exiting"
+		print("Exiting")
 		info=js_open_dict(self.jsonfile)
 		info["boxes_3d"]=self.boxes
 		clslst={}
-		for key in self.sets.keys():
+		for key in list(self.sets.keys()):
 			clslst[int(key)]={
 				"name":self.sets[key],
 				"boxsize":self.boxsize[key],
@@ -1653,7 +1653,7 @@ class EMTomoSetsPanel(QtGui.QWidget):
 		if not ok : return
 		name=str(name)
 		if name in self.target().sets :
-			print "Set name exists"
+			print("Set name exists")
 			return
 
 		self.target().new_set(name)
@@ -1669,7 +1669,7 @@ class EMTomoSetsPanel(QtGui.QWidget):
 		name=str(name)
 		
 		if name in self.target().sets :
-			print "Set name exists"
+			print("Set name exists")
 			return
 		
 		self.target().rename_set(sels[0], name)

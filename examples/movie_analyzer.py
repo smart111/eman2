@@ -41,11 +41,11 @@ pkgs = {"EMAN2":"e2ddd_movie.py",
 		"LMBFGS":"alignframes_lmbfgs.exe"}
 
 found = []
-for pkg in pkgs.keys():
+for pkg in list(pkgs.keys()):
 	path = which(pkgs[pkg])
 	pkgs[pkg] = path # replace program name with the output of "which"
 	if path != "": found.append(pkg)
-print("Found the following alignment packages in your current environment: {}\n".format(", ".join(found)))
+print(("Found the following alignment packages in your current environment: {}\n".format(", ".join(found))))
 
 def main():
 	progname = os.path.basename(sys.argv[0])
@@ -84,7 +84,7 @@ def main():
 	(options, args) = parser.parse_args()
 
 	if len(args) < 1:
-		print usage
+		print(usage)
 		parser.error("You must specify a single DDD movie stack in HDF or MRC format.")
 		sys.exit(1)
 
@@ -104,7 +104,7 @@ def main():
 	nsigmas = options.nsigmas
 
 	if not options.skipalign:
-		print("Performing alignments with the following packages: {}\n".format(", ".join(options.include)))
+		print(("Performing alignments with the following packages: {}\n".format(", ".join(options.include))))
 
 	logid=E2init(sys.argv,options.ppid)
 
@@ -113,7 +113,7 @@ def main():
 		fname = arg
 		hdr = EMData(fname,0,True)
 
-		if options.verbose: print("Processing {}".format(fname))
+		if options.verbose: print(("Processing {}".format(fname)))
 
 		# PART 1: Setup alignment data
 		(basen,ext) = os.path.splitext(fname)
@@ -219,8 +219,8 @@ def main():
 			if pkg in options.include:
 				prog = pkgs[pkg].split("/")[-1]
 
-				if not options.skipalign: print("Running {} on {}".format(prog,fname))
-				else: print("Parsing previous {} alignment results".format(prog,fname))
+				if not options.skipalign: print(("Running {} on {}".format(prog,fname)))
+				else: print(("Parsing previous {} alignment results".format(prog,fname)))
 
 				pdir = "{}/{}".format(bdir,pkg)
 				try: os.makedirs(pdir)
@@ -454,7 +454,7 @@ eot
 		# Question 1: How quickly do frame alignment alorithms run
 		print("RUNTIMES")
 		with open("{}/runtimes.txt".format(bdir),"r") as f:
-			for l in f: print(l.strip())
+			for l in f: print((l.strip()))
 
 		print("")
 
@@ -547,7 +547,7 @@ def parse_eman2(fn,middle):
 def plot_traj(trans,bdir,lbl,nsig=1,plot=False):
 	ats = np.hstack([trans[k] for k in sorted(trans.keys())])
 	np.savetxt("{}/all_trans_{}.txt".format(bdir,lbl),ats)
-	trans["ALL"] = np.dstack([trans[key] for key in trans.keys()])
+	trans["ALL"] = np.dstack([trans[key] for key in list(trans.keys())])
 	trans["MEAN"] = np.mean(trans["ALL"],axis=2)
 	trans["VAR"] = np.var(trans["ALL"],axis=2)
 	trans["STD"] = np.std(trans["ALL"],axis=2)
@@ -557,13 +557,13 @@ def plot_traj(trans,bdir,lbl,nsig=1,plot=False):
 	exclude = ["STD","VAR","ALL"]
 	xx = np.arange(1,len(trans["MEAN"][:,0])+1,1)
 	mags = {"MEAN":np.sqrt(trans["MEAN"][:,0]**2+trans["MEAN"][:,1]**2)}
-	for key in trans.keys():
+	for key in list(trans.keys()):
 		if key not in exclude + ["MEAN"]:
 			mags[key] = np.sqrt(trans[key][:,0]**2+trans[key][:,1]**2) - mags["MEAN"]
 	fig = plt.figure(figsize=(16,16))
 	ax1 = fig.add_subplot(111)
 	cctr = 0
-	for key in trans.keys():
+	for key in list(trans.keys()):
 		if key not in exclude:
 			if key != "MEAN":
 				ax1.plot(trans[key][:,0],trans[key][:,1],colors[cctr],label=key,alpha=0.8)
@@ -581,14 +581,14 @@ def plot_traj(trans,bdir,lbl,nsig=1,plot=False):
 	#ax2 = fig.add_subplot(212)
 	#cctr = 0
 	print("PKG\tABS(DIST)")
-	for key in mags.keys():
+	for key in list(mags.keys()):
 		#if key != "MEAN":
 			#ax2.plot(xx,mags[key],colors[cctr],label=key,alpha=1)
 		#else:
 		#	ax2.plot(xx,np.zeros_like(xx),"k--",label=key,alpha=1)
 		#	ax2.errorbar(xx,np.zeros_like(xx),xerr=err[:,0],yerr=err[:,1],color='k',alpha=0.6,label=siglabel)
 		#cctr+=1
-		print("{}\t{}".format(key,np.sum(np.abs(mags[key]))))
+		print(("{}\t{}".format(key,np.sum(np.abs(mags[key])))))
 	#ax2.set_xlabel("Frame Number (#)")
 	#ax2.set_ylabel("Relative shift magnitude (pixels)")
 	#ax2.set_title("Frame shift magnitude (relative to MEAN)")
@@ -613,12 +613,12 @@ def plot_differences(trans_hi,trans_lo,bdir,nsig=1,plot=False):
 	lts = np.hstack(lts)
 	np.savetxt("{}/lo_trans.txt".format(bdir),lts)
 
-	trans_hi["ALL"] = np.dstack([trans_hi[key] for key in trans_hi.keys()])
+	trans_hi["ALL"] = np.dstack([trans_hi[key] for key in list(trans_hi.keys())])
 	trans_hi["MEAN"] = np.mean(trans_hi["ALL"],axis=2)
 	trans_hi["VAR"] = np.var(trans_hi["ALL"],axis=2)
 	trans_hi["STD"] = np.std(trans_hi["ALL"],axis=2)
 	err_hi = nsig * trans_hi["STD"]
-	trans_lo["ALL"] = np.dstack([trans_lo[key] for key in trans_lo.keys()])
+	trans_lo["ALL"] = np.dstack([trans_lo[key] for key in list(trans_lo.keys())])
 	trans_lo["MEAN"] = np.mean(trans_lo["ALL"],axis=2)
 	trans_lo["VAR"] = np.var(trans_lo["ALL"],axis=2)
 	trans_lo["STD"] = np.std(trans_lo["ALL"],axis=2)
@@ -630,7 +630,7 @@ def plot_differences(trans_hi,trans_lo,bdir,nsig=1,plot=False):
 	xx_lo = np.arange(1,len(trans_lo["MEAN"][:,0])+1,1)
 	mags_hi = {"MEAN":np.sqrt(trans_hi["MEAN"][:,0]**2+trans_hi["MEAN"][:,1]**2)}
 	mags_lo = {"MEAN":np.sqrt(trans_lo["MEAN"][:,0]**2+trans_lo["MEAN"][:,1]**2)}
-	for key in trans_hi.keys():
+	for key in list(trans_hi.keys()):
 		if key not in exclude + ["MEAN"]:
 			mags_hi[key] = np.sqrt(trans_hi[key][:,0]**2+trans_hi[key][:,1]**2) - mags_hi["MEAN"]
 			mags_lo[key] = np.sqrt(trans_lo[key][:,0]**2+trans_lo[key][:,1]**2) - mags_lo["MEAN"]
@@ -641,11 +641,11 @@ def plot_differences(trans_hi,trans_lo,bdir,nsig=1,plot=False):
 	cctr = 0
 	print("PKG\tRMSD(HI,LO)")
 	with open("{}/sse.txt".format(bdir),"w") as sse:
-		for key in trans_hi.keys():
+		for key in list(trans_hi.keys()):
 			if key not in exclude:
 				ssdf = np.sum(np.square((trans_hi[key][:len(trans_lo[key])]-trans_lo[key])),axis=0)
 				ssdfs[key] = np.linalg.norm(ssdf,axis=0)
-				print("{}\t{}".format(key,ssdfs[key]))
+				print(("{}\t{}".format(key,ssdfs[key])))
 				if key != "MEAN":
 					ax1.plot(trans_hi[key][:,0],trans_hi[key][:,1],"{}-".format(colors[cctr]),label="{} high".format(key))
 					ax1.plot(trans_lo[key][:,0],trans_lo[key][:,1],"{}--".format(colors[cctr]),label="{} low".format(key))
@@ -697,9 +697,9 @@ def calc_incoherent_pws(frames,bs=2048):
 	mx = np.arange(bs+50,frames[0]['nx']-bs+50,bs)
 	my = np.arange(bs+50,frames[1]['ny']-bs+50,bs)
 	regions = {}
-	for i in xrange(len(frames)): regions[i] = [[x,y] for y in my for x in mx]
+	for i in range(len(frames)): regions[i] = [[x,y] for y in my for x in mx]
 	ips = Averagers.get('mean')
-	for i in xrange(len(frames)):
+	for i in range(len(frames)):
 		img = frames[i].copy()
 		frame_avg = Averagers.get('mean')
 		for r in regions[i]:
@@ -721,13 +721,13 @@ def calc_coherent_pws(frames,bs=2048):
 	mx = np.arange(bs+50,frames[0]['nx']-bs+50,bs)
 	my = np.arange(bs+50,frames[1]['ny']-bs+50,bs)
 	regions = {}
-	for i in xrange(len(frames)):
+	for i in range(len(frames)):
 		regions[i] = [[x,y] for y in my for x in mx]
 	stacks = {}
-	for ir in xrange(len(regions[0])):
-		stacks[ir] = [regions[i][ir] for i in xrange(len(frames))]
+	for ir in range(len(regions[0])):
+		stacks[ir] = [regions[i][ir] for i in range(len(frames))]
 	cps = Averagers.get('mean')
-	for s in xrange(len(stacks)):
+	for s in range(len(stacks)):
 		stack_avg = Averagers.get('mean')
 		for i,r in enumerate(stacks[s]):
 			stack_avg.add_image(frames[i].copy().get_clip(Region(r[0],r[1],bs,bs)))
@@ -747,7 +747,7 @@ def calc_coherence(frames_hi,frames_lo,all_trans_hi,all_trans_lo,bdir,plot=False
 	lo_oned_pws = js_open_dict('{}/loctrst_onedpws.json'.format(bdir))
 
 	bs = 784
-	print("HIGH IPS ({})".format(bs))
+	print(("HIGH IPS ({})".format(bs)))
 	
 
 	hi_twod_ips = calc_incoherent_pws(frames_hi,bs)
@@ -757,7 +757,7 @@ def calc_coherence(frames_hi,frames_lo,all_trans_hi,all_trans_lo,bdir,plot=False
 	hi_oned_pws["IPS (bg)"] = hi_ips_bg
 	hi_oned_pws["IPS (orig)"] = hi_ips
 
-	if len(all_trans_lo.keys()) != 0:
+	if len(list(all_trans_lo.keys())) != 0:
 		print("LOW IPS")
 		lo_twod_ips = calc_incoherent_pws(frames_lo, bs)
 		lo_twod_ips.write_image("{}/loctrst_twod_ips.hdf".format(bdir))
@@ -774,7 +774,7 @@ def calc_coherence(frames_hi,frames_lo,all_trans_hi,all_trans_lo,bdir,plot=False
 	hi_oned_pws["CPS (bg)"] = hi_cps_bg
 	hi_oned_pws["CPS (orig)"] = hi_cps
 
-	if len(all_trans_lo.keys()) != 0:
+	if len(list(all_trans_lo.keys())) != 0:
 		print("LOW CPS")
 		lo_twod_cps = calc_coherent_pws(frames_lo, bs)
 		lo_twod_cps.write_image("{}/loctrst_twod_cps_noali.hdf".format(bdir))
@@ -783,9 +783,9 @@ def calc_coherence(frames_hi,frames_lo,all_trans_hi,all_trans_lo,bdir,plot=False
 		lo_oned_pws["CPS (bg)"] = lo_cps_bg
 		lo_oned_pws["CPS (orig)"] = lo_cps
 
-	for key in all_trans_hi.keys():
+	for key in list(all_trans_hi.keys()):
 		if key not in ["STD","ALL","MEAN","VAR"]:
-			print("HIGH "+key)
+			print(("HIGH "+key))
 			shifted_hi = shift_frames(frames_hi,all_trans_hi[key])
 			hi_twod_cps = calc_coherent_pws(shifted_hi, bs)
 			hi_twod_cps.write_image("{}/{}/hictrst_twod_cps.hdf".format(bdir,key))
@@ -794,8 +794,8 @@ def calc_coherence(frames_hi,frames_lo,all_trans_hi,all_trans_lo,bdir,plot=False
 			hi_oned_pws["{} (bg)".format(key)] = hi_cps_bg
 			hi_oned_pws["{} (orig)".format(key)] = hi_cps
 
-			if len(all_trans_lo.keys()) != 0:
-				print("LOW "+key)
+			if len(list(all_trans_lo.keys())) != 0:
+				print(("LOW "+key))
 				shifted_lo = shift_frames(frames_lo,all_trans_lo[key])
 				lo_twod_cps = calc_coherent_pws(shifted_lo, bs)
 				lo_twod_cps.write_image("{}/{}/loctrst_twod_cps.hdf".format(bdir,key))
@@ -816,7 +816,7 @@ def plot_oned_spectra(hi_pws,lo_pws,bdir):
 	ax0 = fig.add_subplot(111)
 	#ax1 = fig.add_subplot(312)
 	#ax2 = fig.add_subplot(313)
-	for i in hi_pws.items():
+	for i in list(hi_pws.items()):
 		#if "sub" in i[0]:
 		ax0.plot(i[1],label=i[0].replace("(bg)",""))
 		#elif "sub" in i[0]:
@@ -832,12 +832,12 @@ def plot_oned_spectra(hi_pws,lo_pws,bdir):
 	plt.savefig("{}/hictrst_cips_agreement.png".format(bdir))
 	plt.show()
 
-	if len(lo_pws.keys()) != 0:
+	if len(list(lo_pws.keys())) != 0:
 		fig = plt.figure(figsize=(12,8))
 		ax0 = fig.add_subplot(311)
 		#ax1 = fig.add_subplot(312)
 		#ax2 = fig.add_subplot(313)
-		for i in lo_pws.items():
+		for i in list(lo_pws.items()):
 			#if "bg" in i[0]:
 			#	ax0.plot(i[1],label=i[0].replace("(bg)",""))
 			#if "sub" in i[0]:
@@ -864,7 +864,7 @@ def plot_oned_spectra(hi_pws,lo_pws,bdir):
 def calc_cips_scores(ftypes,bs=1024): #cips = coherent & incoherent power spectra
 	# for comparison of coherent and incoherent power spectra...not such a good metric.
 	scores = {}
-	for pkg in [pkg for pkg in pkgs.keys() if pkg in options.include]:
+	for pkg in [pkg for pkg in list(pkgs.keys()) if pkg in options.include]:
 		scores[pkg] = []
 		for ftype in sorted(ftypes.keys()):
 			cps = calc_coherent_pws(ftypes[ftype][pkg],bs)
@@ -882,7 +882,7 @@ def plot_scores(scores,bdir): # 1 axis per metric
 	fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(16,16))
 	for (i,j),metric in np.ndenumerate(metrics):
 		ax = axs[i][j]
-		for key in scores.keys():
+		for key in list(scores.keys()):
 			if metric == "frc":
 				ax.plot(scores[key][:,0],label=key)
 			elif metric == "dot":
@@ -932,7 +932,7 @@ def average_frames(frames):
 	return avgr.finish()
 
 def failed(pkg):
-	print("ERROR: Could not find frame shifts for {} aligner.".format(pkg))
+	print(("ERROR: Could not find frame shifts for {} aligner.".format(pkg)))
 	sys.exit(1)
 
 def shift_frames(frames,trans):
@@ -954,7 +954,7 @@ def write_runtime(bdir,pkg,device,times,threads):
 			rt.write("{}\t{}\t{}\t{}\t{}\t{}\n".format(pkg,device,walltime,usrtime,systime,threads))
 
 def run(cmd,shell=False,cwd=None,exe="/bin/sh",clear=False):
-	if options.verbose: print(cmd.replace("\n"," "))
+	if options.verbose: print((cmd.replace("\n"," ")))
 	if cwd == None:
 		cwd = os.getcwd()
 	if shell == False:
@@ -974,7 +974,7 @@ def run(cmd,shell=False,cwd=None,exe="/bin/sh",clear=False):
 
 	times = [float(wt.split(" ")[-1]),float(ut.split(" ")[-1]),float(st.split(" ")[-1])]
 
-	if options.verbose: print(err.strip())
+	if options.verbose: print((err.strip()))
 
 	return times
 
@@ -999,7 +999,7 @@ def fit_defocus(img):
 		ctf.defocus=df
 		curve=np.array(ctf.compute_1d(ns*2,ds,Ctf.CtfType.CTF_AMP)[1:])
 		curve*=curve
-		zeros=[int(ctf.zero(i)/ds) for i in xrange(15)]
+		zeros=[int(ctf.zero(i)/ds) for i in range(15)]
 		zeros=[i for i in zeros if i<len(curve) and i>0]
 		onedbg,bg=bgsub(oned,zeros)
 		qual=curve.dot(onedbg)
@@ -1021,7 +1021,7 @@ def bgsub(curve,zeros):
 	itpy[0]=curve[:floc].min()
 	itpx=np.array(itpx)
 	itpy=np.array(itpy)
-	bg = np.interp(range(len(curve)),itpx,itpy)
+	bg = np.interp(list(range(len(curve))),itpx,itpy)
 	ret=curve-bg
 	ret[:floc]=0
 	return ret,bg

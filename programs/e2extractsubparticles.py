@@ -103,7 +103,7 @@ will be examined automatically to extract the corresponding particles and projec
 		print("====\nError reading classification matrix. Must be full classification matrix with alignments")
 		sys.exit(1)
 
-	if options.verbose: print("{} even and {} odd particles in classmx".format(nptcl[0],nptcl[1]))
+	if options.verbose: print(("{} even and {} odd particles in classmx".format(nptcl[0],nptcl[1])))
 
 	# path to the even/odd particles used for the refinement
 	cptcl=js_open_dict("{}/0_refine_parms.json".format(args[0]))["input"]
@@ -146,7 +146,7 @@ will be examined automatically to extract the corresponding particles and projec
 	# each symmetry-related orientation, after careful scaling. Note that we don't have a list of which particle is in each class,
 	# but rather a list of which class each particle is in, so we do this a bit inefficiently for now
 	for i in range(nref):
-		if options.verbose>1 : print("--- Class %d"%i)
+		if options.verbose>1 : print(("--- Class %d"%i))
 
 		# The first projection is unmasked, used for scaling
 		# We regenerate the masked volumes for each class to avoid using too much RAM
@@ -174,9 +174,9 @@ will be examined automatically to extract the corresponding particles and projec
 		for eo in range(2):
 			for j in range(nptcl[eo]):
 				if classmx[eo][0,j]!=i : 
-					if options.debug: print("XXX {}\t{}\t{}\t{}".format(i,("even","odd")[eo],j,classmx[eo][0,j]))
+					if options.debug: print(("XXX {}\t{}\t{}\t{}".format(i,("even","odd")[eo],j,classmx[eo][0,j])))
 					continue		# only proceed if the particle is in this class
-				if options.verbose: print("{}\t{}\t{}".format(i,("even","odd")[eo],j))
+				if options.verbose: print(("{}\t{}\t{}".format(i,("even","odd")[eo],j)))
 
 				ptcl=EMData(cptcl[eo],j)
 #				ptcl.write_image(options.output,-1)
