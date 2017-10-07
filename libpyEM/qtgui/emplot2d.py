@@ -1031,10 +1031,10 @@ class EMPolarPlot2DWidget(EMGLWidget):
 		self.xticklabels = True		# Default is to draw X tick labels
 
 		def set_yticklabels(self, boolvalue):
-		self.yticklabels = boolvalue
+			self.yticklabels = boolvalue
 
 		def set_xticklabels(self, boolvalue):
-		self.xticklabels = boolvalue
+			self.xticklabels = boolvalue
 
 	def initializeGL(self):
 		GL.glClearColor(0,0,0,0)
