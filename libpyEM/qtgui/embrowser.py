@@ -1590,8 +1590,8 @@ class EMDirEntry(object) :
 	def fillDetails(self) :
 		"""Fills in the expensive metadata about this entry. Returns False if no update was necessary.
 		Returns 0 if nothing was done
-       		 1 if the metadata was filled in by probing the file
-       		 2 if the metadata was filled in from the cache"""
+			 1 if the metadata was filled in by probing the file
+			 2 if the metadata was filled in from the cache"""
 
 		if self.filetype != None : return 0		# must all ready be filled in
 
@@ -3028,8 +3028,8 @@ class EMBrowserWidget(QtGui.QWidget) :
 		self.setWindowTitle("e2display.py Browser") # Jesus
 
 		# label = QtGui.QLabel(self);
-      # label.setText("Window Title");
-      # self.setWindowTitle("Window Title");
+	  # label.setText("Window Title");
+	  # self.setWindowTitle("Window Title");
 
 		self.withmodal = withmodal
 		self.multiselect = multiselect
@@ -3434,14 +3434,14 @@ class EMBrowserWidget(QtGui.QWidget) :
 		qism = self.wtree.selectionModel().selectedRows()
 		self.result = [i.internalPointer().path().replace(os.getcwd(), ".") for i in qism]
 		self.updtimer.stop()
- 		self.emit(QtCore.SIGNAL("ok")) # this signal is important when e2ctf is being used by a program running its own eve
+		self.emit(QtCore.SIGNAL("ok")) # this signal is important when e2ctf is being used by a program running its own eve
 
 	def buttonCancel(self, tog) :
 		"""When the Cancel button is pressed, a signal is emitted, but getResult should not be called."""
 
 		self.result = []
 		self.updtimer.stop()
- 		self.emit(QtCore.SIGNAL("cancel")) # this signal is important when e2ctf is being used by a program running its own eve
+		self.emit(QtCore.SIGNAL("cancel")) # this signal is important when e2ctf is being used by a program running its own eve
 		self.close()
 
 	def selectAll(self) :
@@ -3621,7 +3621,7 @@ class EMBrowserWidget(QtGui.QWidget) :
 				self.curmodel = inimodel(path, dirregex = filt)
 			except :
 				self.curmodel = inimodel(path)
- 				filt = None
+				filt = None
 #				QtGui.QMessageBox.warning(None, "Error", "Filtering not allowed.")
 				print("Filtering is not implemented in this instance of the file browser.")
 		else :
