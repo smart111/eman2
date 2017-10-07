@@ -1242,10 +1242,10 @@ def check_files_are_em_images(filenames):
 	'''
 	for file in filenames:
 		if not os.path.exists(file):
-		  	try:
-		  		is_db = db_check_dict(file)
-		  		if not is_db: raise
-		  	except: return False, "File doesn't exist:"+file
+			try:
+				is_db = db_check_dict(file)
+				if not is_db: raise
+			except: return False, "File doesn't exist:"+file
 
 		read_header_only = True
 		a = EMData()
@@ -1800,7 +1800,7 @@ class EMAbstractFactory:
 		_args = [constructor]
 		_args.extend(args)
 #		setattr(self, methodName,Functor(_args, kargs))
- 		setattr(self, methodName, EMFunctor(*_args, **kargs))
+		setattr(self, methodName, EMFunctor(*_args, **kargs))
 
 	def unregister(self, methodName):
 		"""unregister a constructor"""

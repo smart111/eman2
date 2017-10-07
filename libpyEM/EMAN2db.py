@@ -298,7 +298,7 @@ def db_check_dict(url,readonly=True):
 	read/write (or just read). Deals only with bdb: urls. Returns false for other specifiers"""
 
 	if len(url) < 4 or url[:4] != "bdb:": return False
-  	path,dictname,keys=db_parse_path(url)
+	path,dictname,keys=db_parse_path(url)
 
 	path=path+"/EMAN2DB/"+dictname+".bdb"
 #	print path
@@ -327,40 +327,40 @@ def db_list_dicts(url):
 ##########
 def db_emd_init(self,*parms):
 	"""
-    __init__( (object)arg1) -> object :
+	__init__( (object)arg1) -> object :
 
-        C++ signature :
-            void* __init__(_object*)
+		C++ signature :
+			void* __init__(_object*)
 
-    __init__( (object)arg1, (object)that) -> object :
-        Construct from an EMData (copy constructor).
-        Performs a deep copy.
+	__init__( (object)arg1, (object)that) -> object :
+		Construct from an EMData (copy constructor).
+		Performs a deep copy.
 
-        that - the EMData to copy
+		that - the EMData to copy
 
-        C++ signature :
-            void* __init__(_object*,EMAN::EMData)
+		C++ signature :
+			void* __init__(_object*,EMAN::EMData)
 
-    __init__( (object)arg1, (object)filename [[, (object)image_index],header_only]) -> object :
-        Construct from an image file.
+	__init__( (object)arg1, (object)filename [[, (object)image_index],header_only]) -> object :
+		Construct from an image file.
 
-        filename - the image file name
-        image_index the image index for stack image file(default = 0)
+		filename - the image file name
+		image_index the image index for stack image file(default = 0)
 
-        C++ signature :
-            void* __init__(_object*,std::string [,int])
+		C++ signature :
+			void* __init__(_object*,std::string [,int])
 
-    __init__( (object)arg1, (object)nx, (object)ny [, (object)nz [, (object)is_real]]) -> object :
-        makes an image of the specified size, either real or complex.
-        For complex image, the user would specify the real-space dimensions.
+	__init__( (object)arg1, (object)nx, (object)ny [, (object)nz [, (object)is_real]]) -> object :
+		makes an image of the specified size, either real or complex.
+		For complex image, the user would specify the real-space dimensions.
 
-        nx - size for x dimension
-        ny - size for y dimension
-        nz size for z dimension(default=1)
-        is_real - boolean to specify real(true) or complex(false) image(default=True)
+		nx - size for x dimension
+		ny - size for y dimension
+		nz size for z dimension(default=1)
+		is_real - boolean to specify real(true) or complex(false) image(default=True)
 
-        C++ signature :
-            void* __init__(_object*,int,int [,int [,bool]])
+		C++ signature :
+			void* __init__(_object*,int,int [,int [,bool]])
 """
 	if len(parms)<5 and len(parms)>0 and isinstance(parms[0],str) and parms[0][:4].lower()=="bdb:":
 		self.__initc()
