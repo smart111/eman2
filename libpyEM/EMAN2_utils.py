@@ -80,12 +80,12 @@ def get_img(fft):
 
 ### interpolate points. Same as np.interp, but the output can have >1 dimension
 def interp_points(pts, npt=50, pmin=0., pmax=1.):
-    pos=np.append(0,np.cumsum(np.linalg.norm(np.diff(pts, axis=0), axis=1)))
-    fun_ax=interp1d(pos, pts.T, fill_value='extrapolate')
-    mx=np.max(pos)
-    rg=np.arange(npt,dtype=float)/(npt-1)*(pmax-pmin)*mx + pmin*mx
-    ax=fun_ax(rg).T
-    return ax
+	pos=np.append(0,np.cumsum(np.linalg.norm(np.diff(pts, axis=0), axis=1)))
+	fun_ax=interp1d(pos, pts.T, fill_value='extrapolate')
+	mx=np.max(pos)
+	rg=np.arange(npt,dtype=float)/(npt-1)*(pmax-pmin)*mx + pmin*mx
+	ax=fun_ax(rg).T
+	return ax
 
 #### Distance from a point to a line segment
 #### copied from stackoverflow..
@@ -138,8 +138,8 @@ def calc_rot_mat(v):
 
 #### numpy version of EMAN2Ctf.compute_1d(). Takes vector of defocus input and output a matrix of CTF curves
 def calc_ctf(defocus, bxsz=256, voltage=300, cs=4.7, apix=1. ,ampcnt=0.):
-    
-    
+	
+	
 	b2=bxsz/2
 	ds=1.0/(apix*bxsz)
 	ns=min(int(np.floor(.25/ds)),bxsz/2)

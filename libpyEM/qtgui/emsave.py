@@ -377,8 +377,8 @@ class EMStackSaveDialog(EMFileSaver):
 		if hasattr(item_object,"get_item_from_emsave"): # this is True EMMXDataCache
 			fine = True
 		elif isinstance(item_object,list):
-		    if hasattr(item_object[0],"get_attr_dict"):
-		    	fine = True
+			if hasattr(item_object[0],"get_attr_dict"):
+				fine = True
 
 		return fine
 	# mimic a static function

@@ -2151,7 +2151,7 @@ class EM3DModel(QtCore.QObject):
 				#self.inspector.set_xyz_trans(self.cam.cam_x,self.cam.cam_y,self.cam.cam_z)
 	def mousePressEvent(self, event):
 #		lc=self.scrtoimg((event.x(),event.y()))
-	   	
+		
 		if event.button()==Qt.MidButton or (event.button()==Qt.LeftButton and event.modifiers()&Qt.AltModifier):
 			self.show_inspector(1)
 			if self.inspector == None: return
