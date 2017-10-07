@@ -83,8 +83,8 @@ class EMMatrixPanel:
 		[self.ystart,self.visiblerows,self.visiblecols] = self.visible_row_col(view_width,view_height,view_scale,view_data,y)
 		if self.ystart == None:
 			return False
-		  	# if you uncomment this code it will automatically set the scale in the main window so that the mxs stay visible
-		  	# it's not what we wanted but it's left here in case anyone wants to experiment
+			# if you uncomment this code it will automatically set the scale in the main window so that the mxs stay visible
+			# it's not what we wanted but it's left here in case anyone wants to experiment
 #			scale = self.get_min_scale(view_width,view_height,view_scale,view_data)
 #			target.scale = scale
 #			view_scale = taget.scale
@@ -483,11 +483,11 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 #		print "commit ",self.file_name,self.infoname
 		if self.infoname==None : return	# an in-ram stack of particles, no place to save to...
 
-        # convert sets into tuples for more legible files
+		# convert sets into tuples for more legible files
 		# sets={i:tuple(self.sets[i]) for i in self.sets}				
 		sets = dict((i,tuple(self.sets[i])) for i in self.sets)
 
-        # convert sets into tuples for more legible files
+		# convert sets into tuples for more legible files
 		js_open_dict(self.infoname)["sets"]=sets
 
 	def clear_set(self,update_gl=True):
@@ -1253,7 +1253,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 		c = [color[0],color[1],color[2],1.0]
 		glMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE,c)
 		glMaterial(GL_FRONT,GL_SPECULAR,c)
-	  	glMaterial(GL_FRONT,GL_SHININESS,100.0)
+		glMaterial(GL_FRONT,GL_SHININESS,100.0)
 #		if set == 0:
 #			glMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE,(.2,.2,.8,1.0))
 #			glMaterial(GL_FRONT,GL_SPECULAR,(.2,.2,.8,1.0))
@@ -1732,7 +1732,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 
 	def __drag_mode_mouse_down(self,event):
 #		return
-	   	# this is currently disabled because it causes seg faults on MAC. FIXME investigate and establish the functionality that we want for mouse dragging and dropping
+		# this is currently disabled because it causes seg faults on MAC. FIXME investigate and establish the functionality that we want for mouse dragging and dropping
 		if event.button()==Qt.LeftButton:
 			lc= self.scr_to_img((event.x(),event.y()))
 			if lc == None:
@@ -1815,12 +1815,12 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 						#print "%6d %s\n       %s"%(idx,str(xfm),str(ad["xform.align2d"]))
 					i+=1
 					progress.setValue(i)
- 					get_application().processEvents()
+					get_application().processEvents()
 
-		 			if progress.wasCanceled():
-		 				progress.close()
-		 				get_application().setOverrideCursor(Qt.ArrowCursor)
-			 			return
+					if progress.wasCanceled():
+						progress.close()
+						get_application().setOverrideCursor(Qt.ArrowCursor)
+						return
 
 				idxseim = []
 				for idx in idxse:
@@ -1831,12 +1831,12 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 					idxseim.append(i)
 					i+=1
 					progress.setValue(i)
- 					get_application().processEvents()
+					get_application().processEvents()
 
-		 			if progress.wasCanceled():
-		 				progress.close()
-		 				get_application().setOverrideCursor(Qt.ArrowCursor)
-			 			return
+					if progress.wasCanceled():
+						progress.close()
+						get_application().setOverrideCursor(Qt.ArrowCursor)
+						return
 
 
 				progress.close()
