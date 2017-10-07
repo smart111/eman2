@@ -148,7 +148,7 @@ def main():
 	':<nx>:<ny>:<expression_in_x_y>' or ':<nx>:<ny>:<nz>:<expression_in_x_y_z>' as an input filename,
 	where 0 <= x < nx, 0 <= y < ny, 0 <= z < nz, and the expression can be just a number.
 
-        If performing certain operations which do not require an output file, specify "none" as the output file.
+		If performing certain operations which do not require an output file, specify "none" as the output file.
 
 	Examples:
 
@@ -663,15 +663,15 @@ def main():
 					else: d.process_inplace(processorname, param_dict)
 					index_d[option1] += 1
 
-                                elif option1 == "extractboxes":
-                                    try:
-                                        bf=base_name(d["ptcl_source_image"])
-                                        bl=d["ptcl_source_coord"]
-                                        if bf in boxes : boxes[bf].append(bl)
-                                        else : boxes[bf]=[bl]
-                                        boxsize=d["nx"]
-                                    except:
-                                        boxesbad+=1
+								elif option1 == "extractboxes":
+									try:
+										bf=base_name(d["ptcl_source_image"])
+										bl=d["ptcl_source_coord"]
+										if bf in boxes : boxes[bf].append(bl)
+										else : boxes[bf]=[bl]
+										boxsize=d["nx"]
+									except:
+										boxesbad+=1
 
 				elif option1 == "addfile":
 					af=EMData(options.addfile[index_d[option1]],0)
@@ -1005,7 +1005,7 @@ def main():
 						else :
 							if not min_max_set :
 								d["render_min"] = d["minimum"]
-				  				d["render_max"] = d["maximum"]
+								d["render_max"] = d["maximum"]
 
 					if not options.average:	# skip writing the input image to output file
 						# write processed image to file
@@ -1156,11 +1156,11 @@ def main():
 		options.threed2twod   = opt3to2
 		options.twod2threed   = opt2to3
 
-        if options.extractboxes:
-            for k in list(boxes.keys()):
-                out=file(k+".box","w")
-                for c in boxes[k]:
-                    out.write("{:1d}\t{:1d}\t{:1d}\t{:1d}\n".format(int(c[0]-boxsize/2),int(c[1]-boxsize/2),int(boxsize),int(boxsize)))
+		if options.extractboxes:
+			for k in list(boxes.keys()):
+				out=file(k+".box","w")
+				for c in boxes[k]:
+					out.write("{:1d}\t{:1d}\t{:1d}\t{:1d}\n".format(int(c[0]-boxsize/2),int(c[1]-boxsize/2),int(boxsize),int(boxsize)))
 
 	E2end(logid)
 

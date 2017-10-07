@@ -91,4 +91,4 @@ Evaluates density at C-alpha positions from a PDB model
 
 				
 if __name__ == "__main__":
-    main()
+	main()

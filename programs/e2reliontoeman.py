@@ -154,4 +154,4 @@ will be extracted from the STAR file and will be automatically processed through
 	E2end(logid)
 
 if __name__ == "__main__":
-    main()
+	main()

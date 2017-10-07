@@ -4535,5 +4535,5 @@ def classmx_ptcls(classmx,n):
 
 	
 if __name__ == "__main__":
-    main()
-    sys.stdout.flush()
+	main()
+	sys.stdout.flush()

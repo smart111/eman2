@@ -362,5 +362,5 @@ def apply_sym(data,sym):
 
 
 if __name__ == "__main__":
-    main()
+	main()
 

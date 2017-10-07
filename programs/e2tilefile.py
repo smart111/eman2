@@ -226,4 +226,4 @@ def build_tiles(img,tilefile,tilesize,options=[]):
 	tf.close()
 
 if __name__ == "__main__":
-    main()
+	main()

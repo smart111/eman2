@@ -133,4 +133,4 @@ class EvenOddReso(Strategy):
 		tomo_db.close()
 		
 if __name__ == "__main__":
-    main()
+	main()

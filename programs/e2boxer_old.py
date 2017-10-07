@@ -94,7 +94,7 @@ e2boxer.py ????.mrc --boxsize=256
 	parser.add_argument("--ppid", type=int, help="Set the PID of the parent process, used for cross platform PPID",default=-1)
 	parser.add_argument("--gui", action="store_true", default=True, help="Dummy option; used in older version of e2boxer")
 	parser.add_argument("--verbose", "-v", dest="verbose", action="store", metavar="n", type=int, default=0, help="verbose level [0-9], higner number means higher level of verboseness")
- 	parser.add_argument("--gauss_autoboxer",type=str,help="Name of autoboxed file whose autoboxing parameters (obtained via some previous run of Gauss autoboxer via the GUI) should be used for automatic boxing.",default=None)
+	parser.add_argument("--gauss_autoboxer",type=str,help="Name of autoboxed file whose autoboxing parameters (obtained via some previous run of Gauss autoboxer via the GUI) should be used for automatic boxing.",default=None)
 	parser.add_argument("--do_ctf",type=str,help="Name of file whose ctf estimation parameters (obtained via some previous run of Gauss autoboxer via the GUI) should be used for automatic ctf estimation.",default=None)
 
 	# ctf estimation using cter
@@ -1606,7 +1606,7 @@ class SwarmBoxer:
 					self.move_ref(box_num,image_name,dx,dy,allow_template_update=False)
 
 
-	   	boxes.sort(compare_box_correlation) # sorting like this will often put large ice contaminations in a group, thanks Pawel Penczek
+		boxes.sort(compare_box_correlation) # sorting like this will often put large ice contaminations in a group, thanks Pawel Penczek
 		self.target().add_boxes(boxes, self.proximity_threshold == None)
 
 		if self.proximity_threshold != None:
@@ -1720,8 +1720,8 @@ class SwarmBoxer:
 		@param box_size the size of the box used to center
 		Returns the dx and dy parameters, i.e. does not actually alter the box
 		'''
-	  	global BigImageCache
-	  	image = BigImageCache.get_image_directly(image_name)
+		global BigImageCache
+		image = BigImageCache.get_image_directly(image_name)
 
 		xc = box[0]-box_size/2
 		yc = box[1]-box_size/2
@@ -1951,7 +1951,7 @@ class GaussPanel:
 		#self.nbin = self.width()
 		# hardcode nbin to 256 for now, which is the hardcoded width of the ccf histogram widget in sxboxer...
 		self.nbin = 256
-                self.data = histogram1d( data, self.nbin, self.PRESIZE )
+				self.data = histogram1d( data, self.nbin, self.PRESIZE )
 
 		hmin = self.data[0][0]
 		hmax = self.data[0][-1]
@@ -2246,8 +2246,8 @@ class GaussPanel:
 		from math import pow
 		s = "%.3f" % pow(10.0, v*0.01)
 		if self.setgwbox:
-		        self.gauss_width.setText( s )
-		        self.target().set_gauss_width(float(self.gauss_width.text()))
+				self.gauss_width.setText( s )
+				self.target().set_gauss_width(float(self.gauss_width.text()))
 
 	def gauss_width_edited(self):
 		from string import atof
@@ -2433,7 +2433,7 @@ class GaussPanel:
 		from fundamentals import welch_pw2
 		# XXX: check image dimensions, especially box size for welch_pw2!
 		power_sp = welch_pw2(img, win_size=ctf_window_size, overlp_x=ctf_overlap_size, overlp_y=ctf_overlap_size,
-				     edge_x=ctf_edge_size, edge_y=ctf_edge_size)
+					 edge_x=ctf_edge_size, edge_y=ctf_edge_size)
 		from fundamentals import rot_avg_table
 		avg_sp = rot_avg_table(power_sp)
 		del power_sp
@@ -2480,8 +2480,8 @@ class GaussPanel:
 		set_ctf(altimg, [defocus, ctf_cs, ctf_volt, output_pixel_size, 0, ctf_ampcont])
 		BigImageCache.get_object(image_name).register_alternate(altimg)
 		print([defocus, ctf_cs, ctf_volt, output_pixel_size, 0, ctf_ampcont])
- 		print("CTF estimation done.")
- 		#print "Estimated defocus value: ", defocus
+		print("CTF estimation done.")
+		#print "Estimated defocus value: ", defocus
 
 		##############################################################################
 		#### save ctf estimation parameters to db for command line batch processing
@@ -2586,8 +2586,8 @@ class GaussPanel:
 		set_ctf(altimg, [defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont, ast_amp, ast_agl])
 		BigImageCache.get_object(image_name).register_alternate(altimg)
 		print([defocus, ctf_cs, ctf_volt, input_pixel_size, 0, ctf_ampcont, ast_amp, ast_agl])
- 		print("CTF estimation using CTER done.")
- 		#print "Estimated defocus value: ", defocus
+		print("CTF estimation using CTER done.")
+		#print "Estimated defocus value: ", defocus
 
 		##############################################################################
 		#### save ctf estimation parameters to db for command line batch processing
@@ -2626,15 +2626,15 @@ class GaussBoxer:
 
 		self.panel_object = None # maybe it doesn't exist
 
-                self.pixel_input = 1.0
-                self.pixel_output = 1.0
-                self.frequency_cutoff = 0
-                self.window_size_min = 15
-                self.gauss_width = 1.0
-                self.use_variance = True
-                self.invert = False
-                self.thr_low = None
-                self.thr_hgh = None
+				self.pixel_input = 1.0
+				self.pixel_output = 1.0
+				self.frequency_cutoff = 0
+				self.window_size_min = 15
+				self.gauss_width = 1.0
+				self.use_variance = True
+				self.invert = False
+				self.thr_low = None
+				self.thr_hgh = None
 		self.gui_mode = False # set this to False to stop any calls to Qt - such as the act of making the cursor busy...
 
 		self.mvt_cache = [] # we have to remember if any of the auto selected boxes were moved, so if the user reboxes then the movements they previously supplied will be applied
@@ -2834,14 +2834,14 @@ class GaussBoxer:
 		self.panel_object.setgwbox=True
 		tlowtext = self.panel_object.THRNA
 		if self.thr_low != None:
-		        tlowtext = str(self.thr_low )
+				tlowtext = str(self.thr_low )
 		self.panel_object.thr_low_edit.setText(tlowtext)
 		self.panel_object.new_thr_low()
 		thitext = self.panel_object.THRNA
 		if self.thr_hgh != None:
-		        thitext = str(self.thr_hgh )
-                self.panel_object.thr_hi_edit.setText(thitext)
-                self.panel_object.new_thr_hi()
+				thitext = str(self.thr_hgh )
+				self.panel_object.thr_hi_edit.setText(thitext)
+				self.panel_object.new_thr_hi()
 
 		self.panel_object.use_variance_chk.setChecked(self.use_variance)
 		self.panel_object.use_variance_checked( self.use_variance)

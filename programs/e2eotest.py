@@ -51,4 +51,4 @@ will show a variety of resolution and convergence plots for your convenience. Th
 also available as refine_xx/fsc*, and can be opened by double-clicking on them in the browser""")
 
 if __name__ == "__main__":
-    main()
+	main()

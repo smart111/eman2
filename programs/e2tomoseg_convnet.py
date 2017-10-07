@@ -943,8 +943,8 @@ class LeNetConvPoolLayer(object):
 		""" Computes the reconstructed input given the values of the hidden layer """
 
 		repeated_conv = conv.conv2d(input = self.hidden,
-			      filters = self.W_prime,
-			      border_mode='full')
+				  filters = self.W_prime,
+				  border_mode='full')
 		#repeated_conv=repeated_conv[:,:,1:-1,1:-1]
 		bp=(self.filter_shape[2]-1)/2
 		repeated_conv=repeated_conv[:,:,bp:-bp,bp:-bp]
@@ -1040,4 +1040,4 @@ class LeNetConvPoolLayer(object):
 			return (cost, updates)
 
 if __name__ == '__main__':
-    main()
+	main()

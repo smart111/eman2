@@ -69,12 +69,12 @@ def check_exists(outfile, overwrite=False):
 		
 
 def cross_product(a,b):
-    """Cross product of two 3-d vectors. from http://www-hep.colorado.edu/~fperez/python/python-c/weave_examples.html"""
-    cross = [0]*3
-    cross[0] = a[1]*b[2]-a[2]*b[1]
-    cross[1] = a[2]*b[0]-a[0]*b[2]
-    cross[2] = a[0]*b[1]-a[1]*b[0]
-    return numpy.array(cross)
+	"""Cross product of two 3-d vectors. from http://www-hep.colorado.edu/~fperez/python/python-c/weave_examples.html"""
+	cross = [0]*3
+	cross[0] = a[1]*b[2]-a[2]*b[1]
+	cross[1] = a[2]*b[0]-a[0]*b[2]
+	cross[2] = a[0]*b[1]-a[1]*b[0]
+	return numpy.array(cross)
 
 
 
@@ -664,7 +664,7 @@ class PathWalker(object):
 			r2.append(j)
 		
 		rmax = max(r2)
-	 	score_fragment = float(rmax) / float(len(r2))
+		score_fragment = float(rmax) / float(len(r2))
 
 		correctbonds = len(path)-len(breaks)
 		score_path = float(correctbonds) / len(path)

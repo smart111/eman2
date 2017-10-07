@@ -111,10 +111,10 @@ nx,ny,nz=header['nx'],header['ny'],header['nz']
 num_images = EMUtil.get_image_count(set_name)
 mrc = False
 if num_images > nz:
-        num_ptcl = num_images
+		num_ptcl = num_images
 else:
-        num_ptcl = nz
-        mrc = True
+		num_ptcl = nz
+		mrc = True
 project_db = js_open_dict("info/project.json")
 
 if options.apix == None:
@@ -124,44 +124,44 @@ if options.apix == None:
 		apix = header['ctf'].to_dict()['apix']
 	if header.get_attr_dict().__contains__('apix_x'):
 		apix = header['apix_x']
-        else:
-                print("An Angstrom per pixel was not found in the project database, the images themselves, and was not provided via a command line option. Please provide another input file")
-                print("Exiting e2refinetorelion2d")
-                shutil.rmtree(E2RLN)
-                exit(-1)
+		else:
+				print("An Angstrom per pixel was not found in the project database, the images themselves, and was not provided via a command line option. Please provide another input file")
+				print("Exiting e2refinetorelion2d")
+				shutil.rmtree(E2RLN)
+				exit(-1)
 else:
-        apix = options.apix
+		apix = options.apix
 
 if options.cs == None:
 	if project_db.__contains__('global.microscope_cs'):
 		cs = project_db['global.microscope_cs']		  
 	elif header.get_attr_dict().__contains__('ctf'):
 		cs = header['ctf'].to_dict()['cs']
-        elif header.get_attr_dict().__contains__('cs'):
-                cs = header['cs']
-        else:
-                print("A spherical aberration value was not found in the project database, the images themselves, and was not provided via a command line option. Please provide another input file")
-                print("Exiting e2refinetorelion2d")
-                shutil.rmtree(E2RLN)
-                exit(-1)
+		elif header.get_attr_dict().__contains__('cs'):
+				cs = header['cs']
+		else:
+				print("A spherical aberration value was not found in the project database, the images themselves, and was not provided via a command line option. Please provide another input file")
+				print("Exiting e2refinetorelion2d")
+				shutil.rmtree(E2RLN)
+				exit(-1)
 else:
-        cs = options.cs
+		cs = options.cs
 
 if options.voltage == None:
-        
-        if project_db.__contains__('global.microscope_voltage'):
-                voltage = project_db['global.microscope_voltage']
-        elif header.get_attr_dict().__contains__('ctf'):
+		
+		if project_db.__contains__('global.microscope_voltage'):
+				voltage = project_db['global.microscope_voltage']
+		elif header.get_attr_dict().__contains__('ctf'):
 		voltage = header['ctf'].to_dict()['voltage']
 	elif header.get_attr_dict().__contains__('voltage'):
 		voltage = header['voltage']
-        else:
-                print("A microscope voltage was not found in the project database, the images themselves, and was not provided via a command line option. Please provide another input file")
-                print("Exiting e2refinetorelion2d")
-                shutil.rmtree(E2RLN)
-                exit(-1)
+		else:
+				print("A microscope voltage was not found in the project database, the images themselves, and was not provided via a command line option. Please provide another input file")
+				print("Exiting e2refinetorelion2d")
+				shutil.rmtree(E2RLN)
+				exit(-1)
 else:
-        voltage = options.voltage
+		voltage = options.voltage
 
 
 # Create the particle stack files (.mrcs files) and the .star file that RELION needs as an inputs.
@@ -169,9 +169,9 @@ set_orig = set_name
 i = 0
 old_src = EMData(set_name,0).get_attr_dict()['data_source'].replace("particles/",'')
 if mrc:
-        s =  "e2proc2d.py " + set_orig + " " + E2RLN + "/ptcl_stack.hdf --threed2twod --process=normalize.edgemean --verbose=" + str(options.verbosity)
+		s =  "e2proc2d.py " + set_orig + " " + E2RLN + "/ptcl_stack.hdf --threed2twod --process=normalize.edgemean --verbose=" + str(options.verbosity)
 else:
-        s =  "e2proc2d.py " + set_orig + " " + E2RLN + "/ptcl_stack.hdf --process=normalize.edgemean --verbose=" + str(options.verbosity)
+		s =  "e2proc2d.py " + set_orig + " " + E2RLN + "/ptcl_stack.hdf --process=normalize.edgemean --verbose=" + str(options.verbosity)
 call(s,shell=True)
 
 ctf_corr = 0

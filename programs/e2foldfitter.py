@@ -391,4 +391,4 @@ both box sizes should be multiples of 8."""
 #	print best2[-1]
 		
 if __name__ == "__main__":
-    main()
+	main()

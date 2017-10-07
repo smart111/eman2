@@ -91,9 +91,9 @@ i = 1
 found = 1
 while found == 1:
    if i < 10:
-      fa_run = '0' + str(i)
+	  fa_run = '0' + str(i)
    else:
-      fa_run = str(i)
+	  fa_run = str(i)
    found = os.path.exists("frealign_" + fa_run)
    i = i+1
 
@@ -185,28 +185,28 @@ for i in range(len(all_set_data)):
    ctf_dict = ptcl['ctf'].to_dict()
    defocus = ctf_dict['defocus'] * 10000
    for item in film_dict:
-      if ctf_dict == film_dict[item]:
-         film = item
-         bool_found = 1
+	  if ctf_dict == film_dict[item]:
+		 film = item
+		 bool_found = 1
    if not bool_found:
-      film = len(film_dict)
-      film_dict[film] = ctf_dict
+	  film = len(film_dict)
+	  film_dict[film] = ctf_dict
    bool_found = 0
    mag = APERPIX / ctf_dict['apix']
    apix_shift = ctf_dict['apix']
    class_num = cls_class_list[i]
    try:
-      if i%2==0:
-         az=classes_even[int(class_num)].get_attr_dict()['xform.projection'].get_rotation("eman")['az']
-         alt=classes_even[int(class_num)].get_attr_dict()['xform.projection'].get_rotation("eman")['alt']
-      else:
-         az=classes_odd[int(class_num)].get_attr_dict()['xform.projection'].get_rotation("eman")['az']
-         alt=classes_odd[int(class_num)].get_attr_dict()['xform.projection'].get_rotation("eman")['alt']
+	  if i%2==0:
+		 az=classes_even[int(class_num)].get_attr_dict()['xform.projection'].get_rotation("eman")['az']
+		 alt=classes_even[int(class_num)].get_attr_dict()['xform.projection'].get_rotation("eman")['alt']
+	  else:
+		 az=classes_odd[int(class_num)].get_attr_dict()['xform.projection'].get_rotation("eman")['az']
+		 alt=classes_odd[int(class_num)].get_attr_dict()['xform.projection'].get_rotation("eman")['alt']
    except: continue
    if flip_list[i] == 1:
-      t = Transform({"type":"eman","az":az+180,"alt":180-alt,"phi":dalpha_list[i]*-1,"tx":dx_list[i],"ty":dy_list[i]})
+	  t = Transform({"type":"eman","az":az+180,"alt":180-alt,"phi":dalpha_list[i]*-1,"tx":dx_list[i],"ty":dy_list[i]})
    else:
-      t = Transform({"type":"eman","az":az,"alt":alt,"phi":dalpha_list[i],"tx":dx_list[i],"ty":dy_list[i]})
+	  t = Transform({"type":"eman","az":az,"alt":alt,"phi":dalpha_list[i],"tx":dx_list[i],"ty":dy_list[i]})
    t = t.inverse()
    s = '{0:7d}{1:8.2f}{2:8.2f}{3:8.2f}{4:8.2f}{5:8.2f}{6:7.0f}.{7:6d}{8:9.1f}{9:9.1f}{10:8.2f}{11:7.2f}{12:6.2f}\n'.format(i+1, t.get_rotation("spider")['phi'], t.get_rotation("spider")['theta'], t.get_rotation("spider")['psi'], t.get_trans()[0]*apix_shift, t.get_trans()[1]*apix_shift, mag, film + 1, defocus, defocus, ANGAST, PRESA, PRESA)
    #s = '{0:7d}{1:8.2f}{2:8.2f}{3:8.2f}{4:8.2f}{5:8.2f}{6:7.0f}.{7:6d}{8:9.1f}{9:9.1f}{10:8.2f}{11:7.2f}{12:6.2f}\n'.format(i+1, t.get_rotation("eman")['az'], t.get_rotation("eman")['alt'], t.get_rotation("eman")['phi'], t.get_trans()[0], t.get_trans()[1], mag, film + 1, defocus, defocus, ANGAST, PRESA, PRESA)
@@ -228,7 +228,7 @@ for option1 in optionList:
 		FBEAUT = 'T'
 	elif option1 == "ffilt":
 		FFILT = 'T'
-  	elif option1 == "rrec":
+	elif option1 == "rrec":
 		RREC = str(options.rrec)
 	elif option1 == "reslow":
 		RMAX1 = str(options.reslow)

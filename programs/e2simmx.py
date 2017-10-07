@@ -886,13 +886,13 @@ def check(options,verbose):
 					error = True
 
 	if hasattr(options,"parallel") and options.parallel != None:
-  		if len(options.parallel) < 2:
-  			print("The parallel option %s does not make sense" %options.parallel)
-  			error = True
+		if len(options.parallel) < 2:
+			print("The parallel option %s does not make sense" %options.parallel)
+			error = True
 
 	return error
 
 
 
 if __name__ == "__main__":
-    main()
+	main()

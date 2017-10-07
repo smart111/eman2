@@ -409,7 +409,7 @@ class ClassSplitTask(JSTask):
 		#if len(options["particles"])<5 :
 			#z=EMData(str(files[ptcls[0][0]]),ptcls[0][1]).to_zero()
 			#return {"avg":z,"basis":[z,z,z,z,z]}
-		 		
+				
 #		print files,ptcls[0]
 		# read in all particles and append each to element to ptcls
 		avgr=Averagers.get("mean")
@@ -509,4 +509,4 @@ jsonclasses["ClassSplitTask"]=ClassSplitTask.from_jsondict
 
 
 if __name__ == "__main__":
-    main()
+	main()

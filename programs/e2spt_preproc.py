@@ -569,5 +569,5 @@ def get_results(etc,tids,options):
 
 	
 if __name__ == "__main__":
-    main()
-    
+	main()
+	

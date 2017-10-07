@@ -70,31 +70,31 @@ def main():
 def run_daemon(options,args):
 	import sys, os 
 
-    # UNIX double-fork magic
-    try: 
-        pid = os.fork() 
-        if pid > 0: sys.exit(0) # exit parent once
-    except OSError, e: 
-        print "Daemon error" 
-        sys.exit(1)
+	# UNIX double-fork magic
+	try: 
+		pid = os.fork() 
+		if pid > 0: sys.exit(0) # exit parent once
+	except OSError, e: 
+		print "Daemon error" 
+		sys.exit(1)
 
-    try: 
+	try: 
 		os.setsid() 
 		os.umask(0) 	# do we really want this
 		os.chdir("/") 	# or this ?
 	except:
 		pass
 
-    # do second fork
-    try: 
-        pid = os.fork() 
-        if pid > 0: sys.exit(0) 	# exit the second time
-    except OSError, e: 
-        print "Daemon error 2" 
-        sys.exit(1) 
+	# do second fork
+	try: 
+		pid = os.fork() 
+		if pid > 0: sys.exit(0) 	# exit the second time
+	except OSError, e: 
+		print "Daemon error 2" 
+		sys.exit(1) 
 
 	# ok, we got here, so we should be running in a parentless daemon now
-    
+	
 class daemon:
 	
 	def __init__(self,options,args):
@@ -116,8 +116,8 @@ class daemon:
 		out=file(path=e2gethome()+"/.eman2/remoted.txt","w")
 		out.write("%s\n%d\n%d\n"%(self.magic,self.listen_port,os.getpid()))
 		out.close()
-    
-    
+	
+	
 def client_error(stdout,msg):
 	"Return an error to the server in the form of !!!!message\n"
 	msg=msg.replace("\n","")

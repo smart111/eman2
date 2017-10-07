@@ -86,4 +86,4 @@ def main():
 	out.write_image(args[1])
 	
 if __name__ == "__main__":
-    main()
+	main()

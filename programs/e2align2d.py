@@ -102,4 +102,4 @@ def alignstack(inp,out,ref,align,aligncmp,ralign=None,raligncmp=None,fincmp=None
 		aim.write_image(out,i)
 
 if __name__ == "__main__":
-    main()
+	main()

@@ -254,5 +254,5 @@ def mapcmp(m1,m2):
 	return c1
 
 if __name__ == "__main__":
-    main()
+	main()
 

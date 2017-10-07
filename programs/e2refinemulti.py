@@ -78,7 +78,7 @@ To run this program, you would normally specify only the following options:
   --model=<starting map to seed refinement>
   --nmodels=<number of starting models to generate from model>
   --mapfragment          Optional. If specified will generate starting maps via segmentation and random exclusion
-                         instead of phase randomization. This option may be appropriate for heterogenous assemblies.
+						 instead of phase randomization. This option may be appropriate for heterogenous assemblies.
   OR
   --models=<starting map 1>,<starting map 2>,...
 
@@ -86,26 +86,26 @@ To run this program, you would normally specify only the following options:
   --input=<lst file referencing phase-flipped particles in HDF format>
 
   --targetres=<in A>     Resolution to target in Angstroms in this refinement run. Do not be overoptimistic !
-                         Generally begin with something conservative like 25, then use --startfrom and reduce
-                         to ~12, only after that try for high (3-8 A). Data permitting, of course. Low resolution
-                         attempts will run MUCH faster due to more efficient parameters.
+						 Generally begin with something conservative like 25, then use --startfrom and reduce
+						 to ~12, only after that try for high (3-8 A). Data permitting, of course. Low resolution
+						 attempts will run MUCH faster due to more efficient parameters.
   --speed=<1-7>          Default=5. Larger values will run faster, with a coarser angular step. Smaller values will
-                         sample the angular step more finely than strictly required and increase sep=. Usually a
-                         larger value here combined with a smaller value in the subsequent single-model refinements
-                         will produce good results.
+						 sample the angular step more finely than strictly required and increase sep=. Usually a
+						 larger value here combined with a smaller value in the subsequent single-model refinements
+						 will produce good results.
   --sym=<symmetry>       Symmetry to enforce during refinement (Cn, Dn, icos, oct, cub).
-                         Default=c1 (no symmetry)
+						 Default=c1 (no symmetry)
   --mass=<in kDa>        Putative mass of object in kDa, but as desired volume varies with resolution
-                         actual number may vary by as much a ~2x from the true value. The goal is to
-                         have a good isosurface in the final map with a threshold of 1.0.
+						 actual number may vary by as much a ~2x from the true value. The goal is to
+						 have a good isosurface in the final map with a threshold of 1.0.
   --parallel=<par spec>  While not strictly required, without this option the refinement will run on a single CPU
-                         and you will likely wait a very long time. To use more than one core on a single computer,
-                         just say thread:N (eg - thread:4). For other options, like MPI, see:
-                         http://blake.bcm.edu/emanwiki/EMAN2/Parallel for details.
+						 and you will likely wait a very long time. To use more than one core on a single computer,
+						 just say thread:N (eg - thread:4). For other options, like MPI, see:
+						 http://blake.bcm.edu/emanwiki/EMAN2/Parallel for details.
   --threads=<ncpu>       For some algorithms, processing in parallel over the network (MPI) works poorly.
-                         Running on multiple processors on a single machine may still be worthwhile. If you specify this
-                         option, in specific cases it will replace your specified --parallel option. Specify
-                         the number of cores that can be used on a single machine.
+						 Running on multiple processors on a single machine may still be worthwhile. If you specify this
+						 option, in specific cases it will replace your specified --parallel option. Specify
+						 the number of cores that can be used on a single machine.
 
   Optional:
   --apix=<A/pix>         The value will normally come from the particle data if present. You can override with this.
@@ -114,11 +114,11 @@ To run this program, you would normally specify only the following options:
   --m3dkeep=<frac>       fraction of class-averages to use in 3-D map. Default=auto
   --classautomask        applies an automask when aligning particles for improved alignment
   --m3dpostprocess       <name>:<parm>=<value>:...  An arbitrary processor
-                         (e2help.py processors -v2) to apply to the 3-D map after each
-                         iteration. Default=none
+						 (e2help.py processors -v2) to apply to the 3-D map after each
+						 iteration. Default=none
   --path=<path>          Normally the new directory will be named automatically. If you prefer your own convention
-                         you can override, but it may cause minor GUI problems if you break the standard naming
-                         convention.
+						 you can override, but it may cause minor GUI problems if you break the standard naming
+						 convention.
 
 ========================================================================
   There are numerous additional options based on the original e2refine.py command. These options are not available from
@@ -458,7 +458,7 @@ Based on your requested resolution and box-size, modified by --speed, I will use
 		if nx>=256 : shrinks1="--shrinks1 4"
 		elif nx>=96: shrinks1="--shrinks1 2"
 		else : shrinks1=""
-        else : shrinks1="--shrinks1 {}".format(options.shrinks1) #must pass shrinks1 to e2simmx2stage
+		else : shrinks1="--shrinks1 {}".format(options.shrinks1) #must pass shrinks1 to e2simmx2stage
 	if options.classaligncmp==None :
 		options.classaligncmp="ccc"
 
@@ -789,4 +789,4 @@ def run(command):
 	return
 
 if __name__ == "__main__":
-    main()
+	main()

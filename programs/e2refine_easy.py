@@ -94,54 +94,54 @@ To run this program, you would normally specify only the following options:
   --startfrom=<path to existing refine_xx directory to continue from>
 
   --targetres=<in A>     Resolution to target in Angstroms in this refinement run. Do not be overoptimistic !
-                         Generally begin with something conservative like 25, then use --startfrom and reduce
-                         to ~12, only after that try for high (3-8 A). Data permitting, of course. Low resolution
-                         attempts will run MUCH faster due to more efficient parameters.
+						 Generally begin with something conservative like 25, then use --startfrom and reduce
+						 to ~12, only after that try for high (3-8 A). Data permitting, of course. Low resolution
+						 attempts will run MUCH faster due to more efficient parameters.
   --speed=<1-7>          Default=5. Larger values will run faster but slightly decrease measured resolution. 7 may
-                         be useful for initial refinement runs. 5 is good for routine refinement. You may consider 1
-                         when all other possibilities are exhausted and you are ready to push for a final published map.
-                         This option modifies several parameters, including the angular step, sep= and even the
-                         specific alignment and similarity metric options. The resolution difference between 1 and 7 is
-                         generally no more than 10%%.
+						 be useful for initial refinement runs. 5 is good for routine refinement. You may consider 1
+						 when all other possibilities are exhausted and you are ready to push for a final published map.
+						 This option modifies several parameters, including the angular step, sep= and even the
+						 specific alignment and similarity metric options. The resolution difference between 1 and 7 is
+						 generally no more than 10%%.
   --sym=<symmetry>       Symmetry to enforce during refinement (Cn, Dn, icos, oct, cub).
-                         Default=c1 (no symmetry)
+						 Default=c1 (no symmetry)
   --mass=<in kDa>        Putative mass of object in kDa, but as desired volume varies with resolution
-                         actual number may vary by as much a ~2x from the true value. The goal is to
-                         have a good isosurface in the final map with a threshold of 1.0.
+						 actual number may vary by as much a ~2x from the true value. The goal is to
+						 have a good isosurface in the final map with a threshold of 1.0.
   --parallel=<par spec>  While not strictly required, without this option the refinement will run on a single CPU
-                         and you will likely wait a very long time. To use more than one core on a single computer,
-                         just say thread:N (eg - thread:4). For other options, like MPI, see:
-                         http://blake.bcm.edu/emanwiki/EMAN2/Parallel for details.
+						 and you will likely wait a very long time. To use more than one core on a single computer,
+						 just say thread:N (eg - thread:4). For other options, like MPI, see:
+						 http://blake.bcm.edu/emanwiki/EMAN2/Parallel for details.
   --threads=<ncpu>       For some algorithms, processing in parallel over the network (MPI) works poorly.
-                         Running on multiple processors on a single machine may still be worthwhile. If you specify this
-                         option, in specific cases it will replace your specified --parallel option. Specify
-                         the number of cores that can be used on a single machine.
+						 Running on multiple processors on a single machine may still be worthwhile. If you specify this
+						 option, in specific cases it will replace your specified --parallel option. Specify
+						 the number of cores that can be used on a single machine.
 
   Optional:
   --tophat=<local,global>  Some other packages (Relion) apply a tophat filter to the final map which helps exaggerate
-                           the apperance of sidechains at near atomic resolution, but can also cause some artifacts.
-                           'local' will produce a similar effect in the final map (but probably should be limited to
-                           subnanometer resolution.
-                           'global' uses a local resolution computation to locally filter the map. This can actually
-                           lead to better resolution (in the good domains). While new, this may be a good idea to
-                           use in pretty much all refinements.
-                           To disable tophat, don't specify it, or specify "none".
+						   the apperance of sidechains at near atomic resolution, but can also cause some artifacts.
+						   'local' will produce a similar effect in the final map (but probably should be limited to
+						   subnanometer resolution.
+						   'global' uses a local resolution computation to locally filter the map. This can actually
+						   lead to better resolution (in the good domains). While new, this may be a good idea to
+						   use in pretty much all refinements.
+						   To disable tophat, don't specify it, or specify "none".
   --nogoldfinal            Normally used in conjunction with tophat=local. During a refinement, the even/odd maps may
-                           diverge slightly if there is any structural variability in the maps. This will disable 
-                           gold-standard refinement mode in the final iteration to produce a more accurate filter.
-                           This may cause the FSC curve to be somewhat exxagerated as well, though.
+						   diverge slightly if there is any structural variability in the maps. This will disable 
+						   gold-standard refinement mode in the final iteration to produce a more accurate filter.
+						   This may cause the FSC curve to be somewhat exxagerated as well, though.
   --apix=<A/pix>           The value will normally come from the particle data if present (set to -1). You can 
-                           override if necessary.
+						   override if necessary.
   --sep=<classes/ptcl>     each particle will be put into N classes. Improves contrast at cost of rotational blur.
   --classkeep=<frac>       fraction of particles to use in final average. Default 90%%. Should be >50%%
   --m3dkeep=<frac>         fraction of class-averages to use in 3-D map. Default=auto
   --classautomask          applies an automask when aligning particles for improved alignment
   --m3dpostprocess         <name>:<parm>=<value>:...  An arbitrary processor
-                           (e2help.py processors -v2) to apply to the 3-D map after each
-                           iteration. Default=none
+						   (e2help.py processors -v2) to apply to the 3-D map after each
+						   iteration. Default=none
   --path=<path>            Normally the new directory will be named automatically. If you prefer your own convention
-                           you can override, but it may cause minor GUI problems if you break the standard naming
-                           convention.
+						   you can override, but it may cause minor GUI problems if you break the standard naming
+						   convention.
 
 Since many parameters are now selected automatically, if you are curious exactly what the differences are between any
 two refinements, on Linux/Mac, you can run, for example, diff refine_01/0_refine_parms.json refine_02/0_refine_parms.json
@@ -1188,4 +1188,4 @@ def run(command):
 	return
 
 if __name__ == "__main__":
-    main()
+	main()

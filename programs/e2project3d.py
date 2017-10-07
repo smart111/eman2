@@ -422,9 +422,9 @@ def check(options, verbose=0):
 			error = True
 
 	if hasattr(options,"parallel") and options.parallel != None:
-  		if len(options.parallel) < 2:
-  			print(("The parallel option %s does not make sense" %options.parallel))
-  			error = True
+		if len(options.parallel) < 2:
+			print(("The parallel option %s does not make sense" %options.parallel))
+			error = True
 
 	return error
 

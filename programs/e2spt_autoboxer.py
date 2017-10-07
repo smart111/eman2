@@ -1560,14 +1560,14 @@ def rmsdpruner( datar, options ):
 	elementstoremove = set()
 	data = list(datar)     #list of lists with per particle info [ [score1,x1,y1,z1], [score2,x2,y2,z2],...,[scoren,xn,yn,zn] ]
 	print("\nin rmsdpruner data length is", len(data))
-    #perform all-vs-all comparisons with two nested loops
+	#perform all-vs-all comparisons with two nested loops
 	numcomp = (len(data)*(len(data)-1))/2
 	print("which will require %d comparisons\n" %(numcomp))
 	cn=0
 	ntoremove = 0
 	for d in range( len(data) ):
-    	
-        #model each particle center as a vector
+		
+		#model each particle center as a vector
 		dvector = numpy.array( [ data[d][1],data[d][2],data[d][3] ] )
 		dcoeff = data[d][0]
 	
@@ -1582,7 +1582,7 @@ def rmsdpruner( datar, options ):
 			print("dvector",dvector)
 			print("evector",evector)
 			
-            #compute the angle and rmsd between the two particle vectors
+			#compute the angle and rmsd between the two particle vectors
 			angle = float( numpy.degrees( numpy.arccos( numpy.dot(dvector,evector) / ( numpy.dot(evector,evector) * numpy.dot(dvector,dvector) ) )) )
 			rmsd = float( numpy.linalg.norm(dvector - evector) )
 			print("rmsd is", rmsd)
@@ -1598,10 +1598,10 @@ def rmsdpruner( datar, options ):
 					ntoremove+=1
 					print(rmsd < diameter)
 					#however, if two particles overlap, keep the one with the highest score
-	        		elementoremove = data[e]
-	        		#if dcoeff > ecoeff:
-	        		if ecoeff > dcoeff:
-	        			elementoremove = data[d]
+					elementoremove = data[e]
+					#if dcoeff > ecoeff:
+					if ecoeff > dcoeff:
+						elementoremove = data[d]
 					print("elementoremove",elementoremove)
 					elementstoremove.add( elementoremove )
 				
@@ -1698,16 +1698,16 @@ def plothistogram(  options, scores ):
 	plottitle = 'CC scores distribution histogram'
 	plt.title( plottitle )
 
-  	matplotlib.rc('xtick', labelsize=16) 
+	matplotlib.rc('xtick', labelsize=16) 
 	matplotlib.rc('ytick', labelsize=16) 
-  		 	
-  	font = {'weight':'bold','size':16}
+			
+	font = {'weight':'bold','size':16}
 	matplotlib.rc('font', **font)
-  		 	
+			
 	pylab.rc("axes", linewidth=2.0)
 		
 	pylab.xlabel('CC score (au)', fontsize=16, fontweight='bold')
-  	pylab.ylabel('Number of particles', fontsize=16, fontweight='bold')
+	pylab.ylabel('Number of particles', fontsize=16, fontweight='bold')
 	
 	plt.savefig(options.path + '/histogram.png')
 	plt.clf()

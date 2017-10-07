@@ -351,4 +351,4 @@ def sortstackptcl(stack,nsort):
 	return stack[:nsort]
 
 if __name__ == "__main__":
-    main()
+	main()

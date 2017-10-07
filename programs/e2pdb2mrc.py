@@ -478,4 +478,4 @@ def pdb_2_mrc(file_name,apix=1.0,res=2.8,het=False,box=None,chains=None,model=No
 	return outmap
 
 if __name__ == "__main__":
-    main()
+	main()

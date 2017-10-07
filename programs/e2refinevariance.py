@@ -398,4 +398,4 @@ def get_classaverage_cmd(options,check=False,nofilecheck=False):
 	return e2cacmd
 
 if __name__ == "__main__":
-    main()
+	main()

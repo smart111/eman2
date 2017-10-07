@@ -42,7 +42,7 @@ from random import random
 def main() :
 	global threshold
 	
-        usage = """prog [options] <input> <output>
+		usage = """prog [options] <input> <output>
 
 
 	This program attempts to extract one subunit from a volume by starting at
@@ -134,4 +134,4 @@ def ilist(d,l,x,y,z):
 	if v>threshold : insort(l,(v,x,y,z))
 	
 if __name__ == "__main__":
-    main()
+	main()

@@ -205,7 +205,7 @@ def main():
 		try:
 			filelist = [ tmpf for tmpf in os.listdir(".") if 'erasegold_tmp' in tmpf ]
 			for tf in filelist:
-			    os.remove(tf)
+				os.remove(tf)
 		except:
 			print("WARNING: cleanup failed.")
 
@@ -407,7 +407,7 @@ if __name__ == "__main__":
 
  # Redundant code. Staged for removal.
 
- 		#if options.verbose: print("processing {} ({} images)".format(arg, EMUtil.get_image_count(arg)))
+		#if options.verbose: print("processing {} ({} images)".format(arg, EMUtil.get_image_count(arg)))
 
 		#Averaging can be outsorced to e2proc2d via the command line, and the average can be read in as the new input
 		#if options.average:

@@ -613,10 +613,10 @@ class SymAlignTask(JSTask):
 jsonclasses["SymAlignTask"]=SymAlignTask.from_jsondict
 
 if __name__ == "__main__":
-    main()
-    
-    
-    
+	main()
+	
+	
+	
 """
 PROGRAM SCRAPS
 

@@ -76,14 +76,14 @@ FINAL_META_FILE = OUT_META_FILE
 #for i in range(len(l3)):
    #lst=l3[i].split()
    #if l3[i][0] == 'C' and len(lst) > 1:
-      #if lst[1] =='Average' and lst[2] != 'phase':
-         #break
+	  #if lst[1] =='Average' and lst[2] != 'phase':
+		 #break
    #if start == 1:
-      #nyquist.append(1/float(lst[2]))
-      #fsc_val.append(float(lst[5]))
+	  #nyquist.append(1/float(lst[2]))
+	  #fsc_val.append(float(lst[5]))
    #if l3[i][0] == 'C' and len(lst) > 1:
-      #if lst[1] =='NO.':
-         #start = 1
+	  #if lst[1] =='NO.':
+		 #start = 1
 #s = 'even_odd_fsc'
 #fsc_dict[s] = [nyquist,fsc_val]
 
@@ -97,14 +97,14 @@ for i in range(len(l2)):
    ptcl = {}
    lst = l2[i].split()
    if l2[i][0] == 'C':
-      k = k+1
+	  k = k+1
    else:
-      ptcl[0] = lst[1] # Psi
-      ptcl[1] = lst[2] # Theta
-      ptcl[2] = lst[3] # Phi
-      ptcl[3] = lst[4] # Shift in X
-      ptcl[4] = lst[5] # Shift in Y
-      ptcl_dict_in[i-k] = ptcl
+	  ptcl[0] = lst[1] # Psi
+	  ptcl[1] = lst[2] # Theta
+	  ptcl[2] = lst[3] # Phi
+	  ptcl[3] = lst[4] # Shift in X
+	  ptcl[4] = lst[5] # Shift in Y
+	  ptcl_dict_in[i-k] = ptcl
 f = open(dir + "/" + OUT_META_FILE, 'r')
 l = f.readlines()
 f.close()
@@ -114,14 +114,14 @@ for i in range(len(l)):
    ptcl = {}
    lst = l[i].split()
    if l[i][0] == 'C':
-      k = k+1
+	  k = k+1
    else:
-      ptcl[0] = lst[1] # Psi
-      ptcl[1] = lst[2] # Theta
-      ptcl[2] = lst[3] # Phi
-      ptcl[3] = lst[4] # Shift in X
-      ptcl[4] = lst[5] # Shift in Y
-      ptcl_dict_out[i-k] = ptcl
+	  ptcl[0] = lst[1] # Psi
+	  ptcl[1] = lst[2] # Theta
+	  ptcl[2] = lst[3] # Phi
+	  ptcl[3] = lst[4] # Shift in X
+	  ptcl[4] = lst[5] # Shift in Y
+	  ptcl_dict_out[i-k] = ptcl
 
 
 if len(ptcl_dict_out) != len(ptcl_dict_in):
@@ -133,23 +133,23 @@ phi_sum = theta_sum = psi_sum = x_sum = y_sum = 0
 for i in range(len(ptcl_dict_in)):
    s='{0:8d}{1:12.3f}{2:13.3f}{3:11.3f}{4:15.3f}{5:14.3f}\n'.format(i+1, float(ptcl_dict_in[i][0])-float(ptcl_dict_out[i][0]), float(ptcl_dict_in[i][1])-float(ptcl_dict_out[i][1]), float(ptcl_dict_in[i][2])-float(ptcl_dict_out[i][2]), float(ptcl_dict_in[i][3])-float(ptcl_dict_out[i][3]), float(ptcl_dict_in[i][4])-float(ptcl_dict_out[i][4]))
    if abs(float(ptcl_dict_in[i][0])-float(ptcl_dict_out[i][0])) > 180:
-      phi_sum = phi_sum + 360 - abs(float(ptcl_dict_in[i][0])-float(ptcl_dict_out[i][0]))
+	  phi_sum = phi_sum + 360 - abs(float(ptcl_dict_in[i][0])-float(ptcl_dict_out[i][0]))
    else:       
-      phi_sum = phi_sum + abs(float(ptcl_dict_in[i][0])-float(ptcl_dict_out[i][0]))
+	  phi_sum = phi_sum + abs(float(ptcl_dict_in[i][0])-float(ptcl_dict_out[i][0]))
 
    if abs(float(ptcl_dict_in[i][1])-float(ptcl_dict_out[i][1])) > 180:
-      theta_sum = theta_sum + 360 - abs(float(ptcl_dict_in[i][1])-float(ptcl_dict_out[i][1]))
+	  theta_sum = theta_sum + 360 - abs(float(ptcl_dict_in[i][1])-float(ptcl_dict_out[i][1]))
    else:
-      theta_sum = theta_sum + abs(float(ptcl_dict_in[i][1])-float(ptcl_dict_out[i][1]))
+	  theta_sum = theta_sum + abs(float(ptcl_dict_in[i][1])-float(ptcl_dict_out[i][1]))
 
    if abs(float(ptcl_dict_in[i][2])-float(ptcl_dict_out[i][2])) > 180:
-      psi_sum = psi_sum + 360 - abs(float(ptcl_dict_in[i][2])-float(ptcl_dict_out[i][2]))
+	  psi_sum = psi_sum + 360 - abs(float(ptcl_dict_in[i][2])-float(ptcl_dict_out[i][2]))
    else:
-      psi_sum = psi_sum + abs(float(ptcl_dict_in[i][2])-float(ptcl_dict_out[i][2]))
+	  psi_sum = psi_sum + abs(float(ptcl_dict_in[i][2])-float(ptcl_dict_out[i][2]))
  
-      x_sum = x_sum + abs(float(ptcl_dict_in[i][3])-float(ptcl_dict_out[i][3]))
+	  x_sum = x_sum + abs(float(ptcl_dict_in[i][3])-float(ptcl_dict_out[i][3]))
 
-      y_sum = y_sum + abs(float(ptcl_dict_in[i][4])-float(ptcl_dict_out[i][4]))            
+	  y_sum = y_sum + abs(float(ptcl_dict_in[i][4])-float(ptcl_dict_out[i][4]))            
    f.write(s)    
 s=' Average{0:12.3f}{1:13.3f}{2:11.3f}{3:15.3f}{4:14.3f}\n'.format(phi_sum/len(ptcl_dict_in), theta_sum/len(ptcl_dict_in), psi_sum/len(ptcl_dict_in), x_sum/len(ptcl_dict_in), y_sum/len(ptcl_dict_in))
 f.write(s)

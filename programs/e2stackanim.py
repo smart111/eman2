@@ -93,4 +93,4 @@ def main():
 	stacktoanim(a,args[1],ntk)
 
 if __name__ == "__main__":
-    main()
+	main()

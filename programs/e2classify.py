@@ -220,4 +220,4 @@ def check(options,verbose):
 	return error
 
 if __name__ == "__main__":
-    main()
+	main()

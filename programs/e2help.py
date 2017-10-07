@@ -165,4 +165,4 @@ act as a filter on the names of the algorithms."""
 				if len(k)>1: print("")
 
 if __name__ == "__main__":
-    main()
+	main()
