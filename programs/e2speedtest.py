@@ -73,9 +73,9 @@ improved with time."""
 	SIZE = options.size
 	NTT = 105
 
-	print 'This could take a few minutes. Please be patient.'
+	print('This could take a few minutes. Please be patient.')
 
-	print 'Initializing'
+	print('Initializing')
 
 #	 pat = EMData();
 #	 pat.set_size(SIZE, SIZE, 1)
@@ -89,10 +89,10 @@ improved with time."""
 	pat.process_inplace('normalize.circlemean')
 	pat.process_inplace("mask.sharp", {"outer_radius":pat.get_xsize()/2.0})
 
-	data = [None for i in xrange(NTT)]
+	data = [None for i in range(NTT)]
 
 	tmpl=test_image(0,size=(SIZE,SIZE))
-	for i in xrange(NTT):
+	for i in range(NTT):
 		data[i]=tmpl.process("xform",{"transform":Transform({"type":"2d","alpha":uniform(0,360.0),"tx":uniform(-4.0,4.0),"ty":uniform(-4.0,4.0)})})
 		noise=test_image(1,size=(SIZE,SIZE))
 		noise.process_inplace("filter.lowpass.gauss",{"cutoff_abs":.1})
@@ -105,62 +105,62 @@ improved with time."""
 #			 data[i].write_image('speed.hed', i, EMUtil.ImageType.IMAGE_IMAGIC)
 
 	if options.low:
-		print 'Low level tests starting. Please note that compiling with optimization may \
+		print('Low level tests starting. Please note that compiling with optimization may \
 invalidate certain tests. Also note that overhead is difficult to compensate for, \
-so in most cases it is not dealt with.'
+so in most cases it is not dealt with.')
 		t1 = time.clock()
-		for fj in xrange(500):
-			for i in xrange(NTT/2):
+		for fj in range(500):
+			for i in range(NTT/2):
 				data[i].dot(data[i + NTT / 2])
 		t2 = time.clock()
 		ti = t2-t1
-		print 'Baseline 1: %d, %d x %d dot()s in %1.1f sec	%1.1f/sec-> ~%1.2f mflops' % \
-			( 500 * NTT / 2, SIZE, SIZE, ti, 500 * NTT / (2.0 * ti), SIZE * SIZE * 4 * 500.0 * NTT / (1000000.0 * ti))
+		print('Baseline 1: %d, %d x %d dot()s in %1.1f sec	%1.1f/sec-> ~%1.2f mflops' % \
+			( 500 * NTT / 2, SIZE, SIZE, ti, 500 * NTT / (2.0 * ti), SIZE * SIZE * 4 * 500.0 * NTT / (1000000.0 * ti)))
 
 		t1 = time.clock()
-		for fj in xrange(500):
-			for i in xrange(NTT/2):
+		for fj in range(500):
+			for i in range(NTT/2):
 				data[1].dot(data[12])
 		t2 = time.clock()
 		ti = t2-t1
-		print 'Baseline 1a: %d, %d x %d optimized cached dot()s in %1.1f s %1.1f/s-> ~%1.2f mflops' % \
-			(500 * NTT / 2, SIZE, SIZE, ti, 500 * NTT / (2.0 * ti), SIZE * SIZE * 4 * 500.0 * NTT / (1000000.0 * ti))
+		print('Baseline 1a: %d, %d x %d optimized cached dot()s in %1.1f s %1.1f/s-> ~%1.2f mflops' % \
+			(500 * NTT / 2, SIZE, SIZE, ti, 500 * NTT / (2.0 * ti), SIZE * SIZE * 4 * 500.0 * NTT / (1000000.0 * ti)))
 
 		t1 = time.clock()
-		for fj in xrange(100):
-			for i in xrange(NTT/2):
+		for fj in range(100):
+			for i in range(NTT/2):
 				tmp=data[i].do_fft()
 		t2 = time.clock()
 		ti = t2-t1
-		print 'Baseline 2: %d, %d x %d FFTs in %1.1f s %1.1f/s' % \
-			(100 * NTT / 2, SIZE, SIZE, ti, 100 * NTT / (2.0 * ti))
+		print('Baseline 2: %d, %d x %d FFTs in %1.1f s %1.1f/s' % \
+			(100 * NTT / 2, SIZE, SIZE, ti, 100 * NTT / (2.0 * ti)))
 		
 		t1 = time.clock()
-		for fj in xrange(100):
-			for i in xrange(NTT/2):
+		for fj in range(100):
+			for i in range(NTT/2):
 				tmp=data[i].process("math.squared")
 		t2 = time.clock()
 		ti = t2-t1
-		print 'Baseline 3: %d, %d x %d math.squared in %1.1f s %1.1f/s' % \
-			(100 * NTT / 2, SIZE, SIZE, ti, 100 * NTT / (2.0 * ti))
+		print('Baseline 3: %d, %d x %d math.squared in %1.1f s %1.1f/s' % \
+			(100 * NTT / 2, SIZE, SIZE, ti, 100 * NTT / (2.0 * ti)))
 
 		t1 = time.clock()
-		for fj in xrange(100):
-			for i in xrange(NTT/2):
+		for fj in range(100):
+			for i in range(NTT/2):
 				tmp=data[i].process("math.sqrt")
 		t2 = time.clock()
 		ti = t2-t1
-		print 'Baseline 4: %d, %d x %d math.sqrt in %1.1f s %1.1f/s' % \
-			(100 * NTT / 2, SIZE, SIZE, ti, 100 * NTT / (2.0 * ti))
+		print('Baseline 4: %d, %d x %d math.sqrt in %1.1f s %1.1f/s' % \
+			(100 * NTT / 2, SIZE, SIZE, ti, 100 * NTT / (2.0 * ti)))
 	
 		t1 = time.clock()
-		for fj in xrange(100):
-			for i in xrange(NTT/2):
+		for fj in range(100):
+			for i in range(NTT/2):
 				tmp=data[i].translate(-32,-32,0)
 		t2 = time.clock()
 		ti = t2-t1
-		print 'Baseline 5: %d, %d x %d 32 pix translate in %1.1f s %1.1f/s' % \
-			(100 * NTT / 2, SIZE, SIZE, ti, 100 * NTT / (2.0 * ti))
+		print('Baseline 5: %d, %d x %d 32 pix translate in %1.1f s %1.1f/s' % \
+			(100 * NTT / 2, SIZE, SIZE, ti, 100 * NTT / (2.0 * ti)))
 
 		return
 
@@ -170,9 +170,9 @@ so in most cases it is not dealt with.'
 		NTT=NTT/2
 		rng=1
 	else: rng=8
-	for i in xrange(rng):
+	for i in range(rng):
 		t11 = time.clock()
-		for j in xrange(5, NTT):
+		for j in range(5, NTT):
 			if options.best:
 				tmp = data[i].align('rtf_best', data[j], {"flip":None, "maxshift":SIZE/8})
 			elif options.slow:
@@ -188,22 +188,22 @@ so in most cases it is not dealt with.'
 				sys.stdout.write('.')
 				sys.stdout.flush()
 		tms.append(time.clock()-t11)
-		print
+		print()
 	t2 = time.clock()
 	tms=array(tms)
 
 	ti = t2 - t1
 
 	if SIZE==256 and not options.short:
-		print 'For comparison (Values approximate. Repeated runs will give some variation.)'
-		print 'A 2011 MacBook Pro (2.2ghz core-i7) -----------------------------'
-		print 'An Intel Xeon E5645 2.4Ghz SF -----------------------------------'
-		print 'An Intel Core i5-2500 3.30GHz (depends on turbo) ----------------'
-		print 'An Intel Xeon E5-2670 2.6Ghz SF ---------------------------------'
-		print 'An Intel Xeon X5675 3.07Ghz SF ----------------------------------'
-		print 'An Intel Core i7-3960X 3.3Ghz SF --------------------------------'
+		print('For comparison (Values approximate. Repeated runs will give some variation.)')
+		print('A 2011 MacBook Pro (2.2ghz core-i7) -----------------------------')
+		print('An Intel Xeon E5645 2.4Ghz SF -----------------------------------')
+		print('An Intel Core i5-2500 3.30GHz (depends on turbo) ----------------')
+		print('An Intel Xeon E5-2670 2.6Ghz SF ---------------------------------')
+		print('An Intel Xeon X5675 3.07Ghz SF ----------------------------------')
+		print('An Intel Core i7-3960X 3.3Ghz SF --------------------------------')
 
-	if not options.short: print '\nYour machines speed factor = %1.4f +- %1.4f (%1.4f +- %1.5f sec)\n' % (2.3/tms.mean(),2.3/tms.mean()-2.3/(tms.mean()+tms.std()),tms.mean()/(NTT-5.0),tms.std()/(NTT-5.0))
+	if not options.short: print('\nYour machines speed factor = %1.4f +- %1.4f (%1.4f +- %1.5f sec)\n' % (2.3/tms.mean(),2.3/tms.mean()-2.3/(tms.mean()+tms.std()),tms.mean()/(NTT-5.0),tms.std()/(NTT-5.0)))
 	
 	try:
 		for l in file("/proc/cpuinfo","r"):

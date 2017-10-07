@@ -79,7 +79,7 @@ together."""
 	(options, args) = parser.parse_args()
 	if len(args)<1 : parser.error("Input image required")
 	
-	print "Classify by k-means"
+	print("Classify by k-means")
 	logid=E2init(sys.argv, options.ppid)
 	if options.onein :
 		d=EMData(args[0],0)
@@ -99,7 +99,7 @@ together."""
 			data[-1].set_attr("ref_flip",d.get_value_at(3,i))
 	else: data=EMData.read_images(args[0])
 	nimg=len(data)						# we need this for the classification matrix when exclude is used
-	filen=range(len(data))				# when exclude is used, this will map to actual file image numbers
+	filen=list(range(len(data)))				# when exclude is used, this will map to actual file image numbers
 
 	if options.exclude: 
 		try:
@@ -109,9 +109,9 @@ together."""
 			for i in excl : 
 				del data[i]
 				del filen[i]
-		except: print "Warning: exclude file failed"		# it's ok if this fails
+		except: print("Warning: exclude file failed")		# it's ok if this fails
 
-	print len(data)," images to classify."
+	print(len(data)," images to classify.")
 
 	if options.minchange<=0 : options.minchange=len(data)/(options.ncls*25)+1
 	if options.fastseed : slowseed=0
@@ -125,7 +125,7 @@ together."""
 	nrep=[i.get_attr("ptcl_repr") for i in centers[:options.ncls]]
 	maxcls=max(nrep)
 	for n,i in enumerate(nrep):
-		print "%d) %s (%d)"%(n,"#"*int(i*72/maxcls),i)
+		print("%d) %s (%d)"%(n,"#"*int(i*72/maxcls),i))
 		
 	classes=[[] for i in range(options.ncls)]
 	for n,i in enumerate(data):
@@ -210,7 +210,7 @@ together."""
 					
 		
 	if (options.clsfiles) :
-		map(os.remove, glob.glob('cls????.lst'))
+		list(map(os.remove, glob.glob('cls????.lst')))
 		stackname=argv[1]
 		if options.original : stackname=options.original
 		for j in range(options.ncls):

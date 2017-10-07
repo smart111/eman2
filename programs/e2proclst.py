@@ -88,7 +88,7 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 
 		for f in args:
 			lst=LSXFile(f,True)
-			for i in xrange(len(lst)):
+			for i in range(len(lst)):
 				out.write("{}\n".format(lst[i][0]))
 
 	if options.dereforig:
@@ -96,22 +96,22 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 
 		for f in args:
 			n=EMUtil.get_image_count(f)
-			for i in xrange(n):
+			for i in range(n):
 				im=EMData(f,i,True)
 				newlst.write(-1,im["data_n"],im["data_source"])
 
 	if options.create:
 
 		if '.lst' not in options.create and '.lsx' not in options.create:
-			print "\nERROR: the extension of the output file in --create must be .lst or .lsx"
+			print("\nERROR: the extension of the output file in --create must be .lst or .lsx")
 			sys.exit(1)
 
 		lst=LSXFile(options.create,False)
 		
 		if options.mergeeo:
-			print "Merging two image stacks..."
+			print("Merging two image stacks...")
 			if len(args)!=2:
-				print "Error: Need two inputs..."
+				print("Error: Need two inputs...")
 				exit()
 			n0=EMUtil.get_image_count(args[0])
 			n1=EMUtil.get_image_count(args[1])
@@ -151,13 +151,13 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 				
 				
 
-				indxsinclude = xrange(n) #by default, assume all particles in input file will be part of output lsx; otherwise, modify indexes to include according to options
+				indxsinclude = range(n) #by default, assume all particles in input file will be part of output lsx; otherwise, modify indexes to include according to options
 
 				if options.range:
 					indxsinclude = eval("range({})".format(options.range))
 		
 				elif options.exclude:
-					indxs=set(xrange(n))
+					indxs=set(range(n))
 					indxsexclude = set(options.exclude.split(','))
 					indxsinclude = [int(j) for j in indxs-indxsexclude]
 
@@ -175,11 +175,11 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 						if line:	#check that the line is not empty
 							indxsinclude.append( int(line.replace('\n','')))
 						else:
-							print "\nWARNING, line {} in {} seems to be empty!".format(k,options.list) 
+							print("\nWARNING, line {} in {} seems to be empty!".format(k,options.list)) 
 						k+=1
 				
 				if options.verbose :
-					print "Processing {} images in {}".format(len(indxsinclude),f)
+					print("Processing {} images in {}".format(len(indxsinclude),f))
 					
 
 				kk=0
@@ -206,7 +206,7 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 
 	if options.retype != None:
 		if options.minlosnr>0 or options.minhisnr>0 :
-			print "ERROR: --minlosnr and --minhisnr not compatible with --retype"
+			print("ERROR: --minlosnr and --minhisnr not compatible with --retype")
 			sys.exit(1)
 
 		# if the user provided the leading __ for us, we strip it off and add it back later
@@ -214,33 +214,33 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 			options.retype=options.retype[2:]
 
 		for f in args:
-			if options.verbose : print "Processing ",f
+			if options.verbose : print("Processing ",f)
 			lst=LSXFile(f,True)
 
 			a=lst.read(0)
 			if a[1][:10]!="particles/" :
-				print "To use the --retype option, the .lst file must reference image files in particles/*"
+				print("To use the --retype option, the .lst file must reference image files in particles/*")
 
 			if options.verbose>1 :
 				b=base_name(a[1])
-				print "{} -> {}".format(a[1],b+"__"+options.retype+".hdf")
+				print("{} -> {}".format(a[1],b+"__"+options.retype+".hdf"))
 
 			# loop over the images in the lst file
-			for i in xrange(len(lst)):
+			for i in range(len(lst)):
 				im=lst.read(i)
 				outname="particles/{}__{}.hdf".format(base_name(im[1]),options.retype)
 				lst.write(i,im[0],outname,im[2])
 
 			lst.normalize()			# clean up at the end
 
-			if options.verbose>1 : print len(lst)," particles adjusted"
+			if options.verbose>1 : print(len(lst)," particles adjusted")
 
-		if options.verbose : print "Done processing {} files".format(len(args))
+		if options.verbose : print("Done processing {} files".format(len(args)))
 
 	if options.merge!=None:
 
 		if options.minlosnr>0 or options.minhisnr>0 :
-			print "ERROR: --minlosnr and --minhisnr not compatible with --merge. Please use --mergesort instead."
+			print("ERROR: --minlosnr and --minhisnr not compatible with --merge. Please use --mergesort instead.")
 			sys.exit(1)
 
 		# create/update output lst
@@ -252,11 +252,11 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 			lst=LSXFile(f,True)
 			ntot+=len(lst)
 
-			for i in xrange(len(lst)):
+			for i in range(len(lst)):
 				im=lst.read(i)
 				lsto.write(-1,im[0],im[1],im[2])
 
-		if options.verbose : print "{} particles added to {}".format(ntot,options.merge)
+		if options.verbose : print("{} particles added to {}".format(ntot,options.merge))
 
 	if options.mergesort!=None:
 		# create/update output lst
@@ -270,7 +270,7 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 			lst=LSXFile(f,True)
 			ntot+=len(lst)
 
-			for i in xrange(len(lst)):
+			for i in range(len(lst)):
 				im=lst.read(i)
 				ptcls.append((im[1],im[0],im[2]))
 				pfiles.add(im[1])
@@ -292,7 +292,7 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 				hisnr=sum(ctf.snr[r3:r4])/(r4-r3)
 				if losnr<options.minlosnr or hisnr<options.minhisnr:
 					pfiles.remove(pfile)
-					if options.verbose: print pfile," removed due to SNR criteria"
+					if options.verbose: print(pfile," removed due to SNR criteria")
 
 		nwrt=0
 		for i in ptcls:
@@ -301,8 +301,8 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 				nwrt+=1
 
 		if options.verbose :
-			if nwrt==ntot : print "{} particles in {}".format(ntot,options.mergesort)
-			else : print "{} of {} particles written to {}".format(nwrt,ntot,options.mergesort)
+			if nwrt==ntot : print("{} particles in {}".format(ntot,options.mergesort))
+			else : print("{} of {} particles written to {}".format(nwrt,ntot,options.mergesort))
 
 	E2end(logid)
 

@@ -105,7 +105,7 @@ class EvenOddReso(Strategy):
 		oddavgr = Averagers.get(self.options.averager)
 		
 		# Compute the even odd maps
-		for tomo in xrange(0, len(tomo_db)/2, 2):
+		for tomo in range(0, len(tomo_db)/2, 2):
 			evenavgr.add_image(tomo_db[tomo*2])
 			oddavgr.add_image(tomo_db[tomo*2 + 1])
 			

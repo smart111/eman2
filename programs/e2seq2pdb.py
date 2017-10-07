@@ -33,7 +33,7 @@ import sys
 from EMAN2 import *
 from optparse import OptionParser
 import os
-import commands
+import subprocess
 from sys import argv
 
 #           1         2         3         4         5         6         7

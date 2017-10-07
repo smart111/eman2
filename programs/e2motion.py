@@ -43,7 +43,7 @@ from emapplication import get_application, EMApp
 from emimage2d import EMImage2DWidget
 from emimagemx import EMImageMXWidget
 from valslider import *
-import Queue
+import queue
 import embrowser
 
 def main():
@@ -85,7 +85,7 @@ def main():
 		fls=[int(i[-2:]) for i in os.listdir(".") if i[:4]=="m2d_" and len(i)==6 and str.isdigit(i[-2:])]
 		if len(fls)==0 : fls=[1]
 		options.path = "m2d_{:02d}".format(max(fls))
-		if options.verbose : print "Using --path ",options.path
+		if options.verbose : print("Using --path ",options.path)
 		
 	if not os.path.exists(options.path) :
 		os.mkdir(options.path)
@@ -93,10 +93,10 @@ def main():
 		
 	parms=js_open_dict("{}/0_a2d_parms.json".format(options.path))
 	
-	if not parms.has_key(options.iter) :
-		try: options.iter=max([int(i) for i in parms.keys()])
+	if options.iter not in parms :
+		try: options.iter=max([int(i) for i in list(parms.keys())])
 		except: options.iter=0
-		print "Iteration: ",options.iter
+		print("Iteration: ",options.iter)
 
 	pid=E2init(argv)
 	
@@ -463,13 +463,13 @@ class EMMotion(QtGui.QMainWindow):
 		
 		try: 
 			dct=js_open_dict("{}/particle_parms_{:02d}.json".format(self.path,itr))
-			self.particles=[(j["score"],j["xform.align2d"],eval(i)[0],int(eval(i)[1])) for i,j in dct.items()]
+			self.particles=[(j["score"],j["xform.align2d"],eval(i)[0],int(eval(i)[1])) for i,j in list(dct.items())]
 			self.particles.sort()
 			if len(self.particles)==0 : raise Exception
 		except:
 			self.particles=None
 			self.wlnptcl.setText("No Data")
-			print "Warning: no particle alignment data found for iter=",itr
+			print("Warning: no particle alignment data found for iter=",itr)
 			return
 		
 		m=0
@@ -550,7 +550,7 @@ class EMMotion(QtGui.QMainWindow):
 		#launch_childprocess(task)
 		
 		#self.initPath(self.path)
-		print "does nothing"
+		print("does nothing")
 	
 	def threadAlign(self,curlist,ref,refnomask,outstack):
 		"""This method is designed to run in a thread and perform alignments of a stack of inputs to a single reference"""
@@ -634,7 +634,7 @@ class EMMotion(QtGui.QMainWindow):
 		QtGui.qApp.processEvents()
 		nthr=int(self.wvbcores.getValue())		# number of threads to use for faster alignments
 
-		print "bs1"
+		print("bs1")
 		tree=[]
 		# launch nthr threads to do the alignments
 		thrs=[]
@@ -645,7 +645,7 @@ class EMMotion(QtGui.QMainWindow):
 		
 		self.waitThreads(thrs,tree,len(self.particles))
 		
-		print "bs2"
+		print("bs2")
 		lock=threading.Lock()
 		
 		while len(tree)>1:
@@ -677,7 +677,7 @@ class EMMotion(QtGui.QMainWindow):
 		tree[0].rotate(ml,0,0)				# put the initial reference in the preferred orientation
 		#tree[0].write_image("zzz.hdf",0)
 		
-		print "bs3"
+		print("bs3")
 		# One final alignment pass
 		self.particles_ali=[]
 		self.alisig=EMData(self.particles[0]["nx"],self.particles[0]["ny"],1)
@@ -691,7 +691,7 @@ class EMMotion(QtGui.QMainWindow):
 
 		self.waitThreads(thrs,self.particles_ali,len(self.particles))
 		
-		print "bs4"
+		print("bs4")
 		self.particles_ali.sort()
 		
 		#out=file("x.txt","w")
@@ -709,7 +709,7 @@ class EMMotion(QtGui.QMainWindow):
 		#self.aliimg.write_image("zzz.hdf",1)
 		#self.alisig.write_image("zzz.hdf",2)
 		
-		print "bs5"
+		print("bs5")
 		self.setAliRef(self.aliimg)
 		
 		self.wpbprogress.reset()
@@ -785,7 +785,7 @@ class EMMotion(QtGui.QMainWindow):
 		
 		nthr=int(self.wvbcores.getValue())		# number of threads to use for faster alignments
 		
-		jsd=Queue.Queue(0)
+		jsd=queue.Queue(0)
 		self.particles_ali=[]
 		thrs=[]
 		# launch nthr threads to do the alignments
@@ -814,7 +814,7 @@ class EMMotion(QtGui.QMainWindow):
 		
 		nthr=int(self.wvbcores.getValue())		# number of threads to use for faster alignments
 
-		jsd=Queue.Queue(0)
+		jsd=queue.Queue(0)
 		n2use=self.wvsnum.getValue()
 		thrs=[]
 		# launch nthr threads to do the alignments
@@ -920,7 +920,7 @@ class EMMotion(QtGui.QMainWindow):
 		
 		# Find a class number in the current iteration
 		clnums=[i.split("_")[-1][:2] for i in os.listdir(self.path) if "classes_{:02d}".format(self.iter) in i]
-		for i in xrange(len(clnums)):
+		for i in range(len(clnums)):
 			try: clnums[i]=int(clnums[i])
 			except: clnums[i]=0
 		clnums.append(0)
@@ -969,7 +969,7 @@ class EMMotion(QtGui.QMainWindow):
 		
 		# Make class-averages
 		fsp="{}/classes_{:02d}_{:02d}.hdf".format(self.path,self.iter,clnum)
-		print fsp
+		print(fsp)
 		for i,c in enumerate(classes): 
 			self.wpbprogress.setValue(67+20*i/len(classes))
 			c.process_inplace("normalize.edgemean")
@@ -979,15 +979,15 @@ class EMMotion(QtGui.QMainWindow):
 			c["class_ptcl_src"]=toclass[0][2]
 
 		# put the class with the most particles first
-		m=max(map(lambda i:(i["ptcl_repr"],i),classes))
+		m=max([(i["ptcl_repr"],i) for i in classes])
 		classes.remove(m[1])
 		classes.insert(0,m[1])
 
 		# now start from this one for the sort
-		for c in xrange(1,len(classes)-1):
+		for c in range(1,len(classes)-1):
 			self.wpbprogress.setValue(87+12*c/len(classes))
 			b=classes[c-1].cmp("frc",classes[c])
-			for c2 in xrange(c+1,len(classes)):
+			for c2 in range(c+1,len(classes)):
 				ccc=classes[c-1].cmp("frc",classes[c2])
 				if ccc<b :
 					b=ccc
@@ -1026,7 +1026,7 @@ class EMMotion(QtGui.QMainWindow):
 		self.classes=[]
 		clssz=len(tosort)/nclasses		# particles per class
 		
-		for cl in xrange(nclasses):
+		for cl in range(nclasses):
 			avgr=Averagers.get("mean")
 			for i in tosort[cl*clssz:(cl+1)*clssz]: avgr.add_image(i[1])
 			self.classes.append(avgr.finish())

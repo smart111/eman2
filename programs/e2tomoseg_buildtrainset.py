@@ -98,7 +98,7 @@ def main():
 			p_copy=options.ncopy
 		try: os.remove(options.trainset_output)
 		except: pass
-		print "making {} copies for particles, and {} copies for negative samples".format(p_copy,options.ncopy)
+		print("making {} copies for particles, and {} copies for negative samples".format(p_copy,options.ncopy))
 		imgs=[]
 		if tomo_in and seg_in:
 			n_ptcl=EMUtil.get_image_count(tomo_in)
@@ -138,12 +138,12 @@ def main():
 					#e.write_image(options.trainset_output,-1)
 					imgs.append(e)
 
-		print "Shuffling particles..."
+		print("Shuffling particles...")
 		### randomize
 		n=len(imgs)
 		
 		#n=EMUtil.get_image_count(options.trainset_output)
-		idx=range(int((ngood/2)*(1-options.validset)))+range((ngood/2), int(n/2*(1-options.validset)))
+		idx=list(range(int((ngood/2)*(1-options.validset))))+list(range((ngood/2), int(n/2*(1-options.validset))))
 		random.shuffle(idx)
 		for i in idx:
 			imgs[i*2]["valid_set"]=0
@@ -151,7 +151,7 @@ def main():
 			imgs[i*2+1]["valid_set"]=0
 			imgs[i*2+1].write_image(options.trainset_output,-1)
 			
-		idx=range(int((ngood/2)*(1-options.validset)), ngood/2)+range( int(n/2*(1-options.validset)), n/2)
+		idx=list(range(int((ngood/2)*(1-options.validset)), ngood/2))+list(range( int(n/2*(1-options.validset)), n/2))
 		random.shuffle(idx)
 		for i in idx:
 			imgs[i*2]["valid_set"]=1
@@ -164,13 +164,13 @@ def main():
 			#e=EMData(options.trainset_output,i*2+1)
 			#e.write_image(tmpfile,-1)
 		#shutil.move(tmpfile,options.trainset_output)
-		print "Generate a training set of {:d} samples.".format(n/2)
+		print("Generate a training set of {:d} samples.".format(n/2))
 		
-	print "Done"
+	print("Done")
 	E2end(logid)
 	
 def run(cmd):
-	print cmd
+	print(cmd)
 	launch_childprocess(cmd)
 	
 def get_box(fname, idx, nz):
@@ -190,7 +190,7 @@ def get_box(fname, idx, nz):
 		hdr=EMData(src,0,True)
 		zmax=hdr["nz"]
 		if boxz<nz*sep or boxz>zmax-nz*sep:
-			print "skipping box ",idx
+			print("skipping box ",idx)
 			return None
 		
 		c=EMData(src,0,False,Region(box[0]-sz/2,box[1]-sz/2,boxz,sz,sz,1))

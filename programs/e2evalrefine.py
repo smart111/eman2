@@ -50,7 +50,7 @@ try:
 	import matplotlib.pyplot as plt
 	pltcolors=["k","b","g","r","m","c","darkblue","darkgreen","darkred","darkmagenta","darkcyan","0.5"]
 except:
-	print "Matplotlib not available, plotting options will not be available"
+	print("Matplotlib not available, plotting options will not be available")
 
 #@profile
 def pqual(n,ptclincls,jsd,includeproj,verbose):
@@ -71,14 +71,14 @@ def pqual(n,ptclincls,jsd,includeproj,verbose):
 				#if classmx[eo+2*it][0,j]!=n :
 ##						if options.debug: print "XXX {}\t{}\t{}\t{}".format(i,("even","odd")[eo],j,classmx[eo][0,j])
 					#continue		# only proceed if the particle is in this class
-				if verbose >= 6: print "{}\t{}\t{}".format(cptcl[eo],("even","odd")[eo],j,it)
+				if verbose >= 6: print("{}\t{}\t{}".format(cptcl[eo],("even","odd")[eo],j,it))
 
 				truenum=j*2+eo 	# This is the particle number within the full file
 
 				# the particle itself
 				try: ptcl=EMData(cptcl[eo],j)
 				except:
-					print "Unable to read particle: {} ({})".format(cptcl[eo],j)
+					print("Unable to read particle: {} ({})".format(cptcl[eo],j))
 					sys.exit(1)
 				try: defocus=ptcl["ctf"].defocus
 				except: defocus=-1.0
@@ -102,7 +102,7 @@ def pqual(n,ptclincls,jsd,includeproj,verbose):
 				third = len(fsc)/3
 				fsc=array(fsc[third:third*2])
 #					snr=fsc/(1.0-fsc)
-				result[(truenum,it)]=[sum(fsc[rings[k]:rings[k+1]])/(rings[k+1]-rings[k]) for k in xrange(4)]+[alt,az,n,defocus,ptcl["data_source"],ptcl["data_n"]]		# sum the fsc into 5 range values
+				result[(truenum,it)]=[sum(fsc[rings[k]:rings[k+1]])/(rings[k+1]-rings[k]) for k in range(4)]+[alt,az,n,defocus,ptcl["data_source"],ptcl["data_n"]]		# sum the fsc into 5 range values
 #					sums=[sum(snr[rings[k]:rings[k+1]])/(rings[k+1]-rings[k]) for k in xrange(4)]		# sum the fsc into 5 range values
 
 	jsd.put(result)
@@ -153,18 +153,18 @@ def main():
 				options.iter=int(jsparm["last_map"].split("_")[-1][:2])
 				options.sym=jsparm["sym"]
 			except:
-				print "Could not find a completed iteration in ",args[0]
+				print("Could not find a completed iteration in ",args[0])
 				sys.exit(1)
 		
 		if options.evalptclqual:
 			if iter==1 :
-				print "evalptclqual requires at least 2 completed iterations (3 or 4 preferred), and will use the specified --iter and the iteration preceeding it. This is not possible if --iter=1."
+				print("evalptclqual requires at least 2 completed iterations (3 or 4 preferred), and will use the specified --iter and the iteration preceeding it. This is not possible if --iter=1.")
 				sys.exit(1)
 		
-		print "Using --iter=",options.iter
+		print("Using --iter=",options.iter)
 
 	if options.anisotropy>=0 :
-		print "Anisotropy evaluation mode"
+		print("Anisotropy evaluation mode")
 
 		try:
 			pathmx="{}/classmx_{:02d}_even.hdf".format(args[0],options.iter)
@@ -184,10 +184,10 @@ def main():
 			cmxmirror.append(EMData(pathmx,5))
 		except:
 			traceback.print_exc()
-			print "====\nError reading classification matrix. Must be full classification matrix with alignments"
+			print("====\nError reading classification matrix. Must be full classification matrix with alignments")
 			sys.exit(1)
 
-		if options.verbose: print "{} even and {} odd particles in classmx".format(nptcl[0],nptcl[1])
+		if options.verbose: print("{} even and {} odd particles in classmx".format(nptcl[0],nptcl[1]))
 
 		# path to the even/odd particles used for the refinement
 		cptcl=jsparm["input"]
@@ -217,7 +217,7 @@ def main():
 		fout=open("aniso_{:02d}.txt".format(options.anisotropy),"w")
 		# generate a projection for each particle so we can compare
 		for i in [options.anisotropy]:							# this is left as a loop in case we decide to do multiple classes later on
-			if options.verbose>1 : print "--- Class %d"%i
+			if options.verbose>1 : print("--- Class %d"%i)
 
 			# The first projection is unmasked, used for scaling
 			proj=threed.project("standard",{"transform":eulers[i]})
@@ -227,22 +227,22 @@ def main():
 			az=eulers[i].get_rotation("eman")["az"]
 			best=(0,0,1.01)
 
-			for angle in xrange(0,180,5):
+			for angle in range(0,180,5):
 				rt=Transform({"type":"2d","alpha":angle})
 				xf=rt*Transform([1.01,0,0,0,0,1/1.01,0,0,0,0,1,0])*rt.inverse()
 				esum=0
 
 				for eo in range(2):
-					for j in xrange(nptcl[eo]):
+					for j in range(nptcl[eo]):
 						if classmx[eo][0,j]!=i :
 	#						if options.debug: print "XXX {}\t{}\t{}\t{}".format(i,("even","odd")[eo],j,classmx[eo][0,j])
 							continue		# only proceed if the particle is in this class
-						if options.verbose: print "{}\t{}\t{}".format(i,("even","odd")[eo],j)
+						if options.verbose: print("{}\t{}\t{}".format(i,("even","odd")[eo],j))
 
 						# the particle itself
 						try: ptcl=EMData(cptcl[eo],j)
 						except:
-							print "Unable to read particle: {} ({})".format(cptcl[eo],j)
+							print("Unable to read particle: {} ({})".format(cptcl[eo],j))
 							sys.exit(1)
 						#try: defocus=ptcl["ctf"].defocus
 						#except: defocus=-1.0
@@ -269,28 +269,28 @@ def main():
 	#					fout.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t# {};{}\n".format(sums[0],sums[1],sums[2],sums[3],alt,az,i,defocus,j,cptcl[eo]))
 				fout.write("{}\t{}\t{}\n".format(angle,1.01,esum))
 
-			if options.verbose>1 : print "--- Class %d"%i
+			if options.verbose>1 : print("--- Class %d"%i)
 
 			angle=best[1]
-			print best
+			print(best)
 
-			for aniso in xrange(0,30):
+			for aniso in range(0,30):
 				ai=aniso/1000.0+1.0
 				rt=Transform({"type":"2d","alpha":angle})
 				xf=rt*Transform([ai,0,0,0,0,1/ai,0,0,0,0,1,0])*rt.inverse()
 				esum=0
 
 				for eo in range(2):
-					for j in xrange(nptcl[eo]):
+					for j in range(nptcl[eo]):
 						if classmx[eo][0,j]!=i :
 	#						if options.debug: print "XXX {}\t{}\t{}\t{}".format(i,("even","odd")[eo],j,classmx[eo][0,j])
 							continue		# only proceed if the particle is in this class
-						if options.verbose: print "{}\t{}\t{}".format(i,("even","odd")[eo],j)
+						if options.verbose: print("{}\t{}\t{}".format(i,("even","odd")[eo],j))
 
 						# the particle itself
 						try: ptcl=EMData(cptcl[eo],j)
 						except:
-							print "Unable to read particle: {} ({})".format(cptcl[eo],j)
+							print("Unable to read particle: {} ({})".format(cptcl[eo],j))
 							sys.exit(1)
 						#try: defocus=ptcl["ctf"].defocus
 						#except: defocus=-1.0
@@ -314,20 +314,20 @@ def main():
 
 				fout.write("{}\t{}\t{}\n".format(angle,ai,esum))
 
-			print best
+			print(best)
 		sys.exit(0)
 
 	if options.evalptclqual:
 #		from multiprocessing import Pool
-		import threading,Queue
-		print "Particle quality evaluation mode"
+		import threading,queue
+		print("Particle quality evaluation mode")
 		
 		# This is not great programming process, but greatly simplifies threading, and reduces potential memory usage
 
 		try:
 			pathmx=["{}/classmx_{:02d}_even.hdf".format(args[0],options.iter-1),"{}/classmx_{:02d}_odd.hdf".format(args[0],options.iter-1),"{}/classmx_{:02d}_even.hdf".format(args[0],options.iter),"{}/classmx_{:02d}_odd.hdf".format(args[0],options.iter)]
 			classmx=[EMData(f,0) for f in pathmx]
-			nptcl=[classmx[i]["ny"] for i in xrange(len(pathmx))]
+			nptcl=[classmx[i]["ny"] for i in range(len(pathmx))]
 			cmxtx=[EMData(f,2) for f in pathmx]
 			cmxty=[EMData(f,3) for f in pathmx]
 			cmxalpha=[EMData(f,4) for f in pathmx]
@@ -335,10 +335,10 @@ def main():
 
 		except:
 			traceback.print_exc()
-			print "====\nError reading classification matrix. Must be full classification matrix with alignments"
+			print("====\nError reading classification matrix. Must be full classification matrix with alignments")
 			sys.exit(1)
 
-		if options.verbose: print "{} even and {} odd particles in classmx".format(nptcl[0],nptcl[1])
+		if options.verbose: print("{} even and {} odd particles in classmx".format(nptcl[0],nptcl[1]))
 
 		logid=E2init(sys.argv,options.ppid)
 
@@ -360,7 +360,7 @@ def main():
 		apix=threed[0]["apix_x"]
 
 		rings=[int(2*nx*apix/res) for res in (100,30,18,10,4)]
-		print("Frequency Bands: {lowest},{low},{mid},{high},{highest}".format(lowest=rings[0],low=rings[1],mid=rings[2],high=rings[3],highest=rings[4]))
+		print(("Frequency Bands: {lowest},{low},{mid},{high},{highest}".format(lowest=rings[0],low=rings[1],mid=rings[2],high=rings[3],highest=rings[4])))
 
 		# We expand the mask a bit, since we want to consider problems with "touching" particles
 		ptclmask.process_inplace("threshold.binary",{"value":0.2})
@@ -381,16 +381,16 @@ def main():
 		tlast=time()
 		# Put particles in class lists
 		classptcls={}
-		for it in xrange(2):			# note that this is 0,1 not actual iteration
+		for it in range(2):			# note that this is 0,1 not actual iteration
 			for eo in range(2):
-				for j in xrange(nptcl[eo]):
+				for j in range(nptcl[eo]):
 					cls=int(classmx[eo+2*it][0,j])
 					try: classptcls[cls].append((it,eo,j))
 					except: classptcls[cls]=[(it,eo,j)]
 
 		# Create Thread objects
-		jsd=Queue.Queue(0)
-		thrds=[threading.Thread(target=pqual,args=(i,classptcls[i],jsd,options.includeprojs,options.verbose)) for i in classptcls.keys()]
+		jsd=queue.Queue(0)
+		thrds=[threading.Thread(target=pqual,args=(i,classptcls[i],jsd,options.includeprojs,options.verbose)) for i in list(classptcls.keys())]
 		result={}
 		thrtolaunch=0
 
@@ -401,7 +401,7 @@ def main():
 			if thrtolaunch<len(thrds) :
 				while (threading.active_count()==options.threads+1 ) : sleep(.01)
 				if options.verbose : 
-					print " Starting thread {}/{}      \r".format(thrtolaunch,len(thrds)),
+					print(" Starting thread {}/{}      \r".format(thrtolaunch,len(thrds)), end=' ')
 					sys.stdout.flush()
 				thrds[thrtolaunch].start()
 				thrtolaunch+=1
@@ -410,7 +410,7 @@ def main():
 			while not jsd.empty():
 				rd=jsd.get()
 				result.update(rd)
-		if options.verbose: print "Threads complete             "
+		if options.verbose: print("Threads complete             ")
 
 		for t in thrds:
 			t.join()
@@ -419,15 +419,15 @@ def main():
 		fout.write("# 100-30 it1; 30-18 it1; 18-10 it1; 10-4 it1; 100-30 it2; 30-18 it2; 18-10 it2; 10-4 it2; it12rmsd; alt1; az1; cls1; alt2; az2; cls2; defocus\n")
 		# loop over all particles and print results
 		rmsds=[]
-		for j in xrange(nptcl[0]+nptcl[1]):
+		for j in range(nptcl[0]+nptcl[1]):
 			try:
 				r=result[(j,0)][:8]+result[(j,1)]		# we strip out the filename and number from the first result
 			except:
-				print "Missing results ptcl:",j,
+				print("Missing results ptcl:",j, end=' ')
 				try:
-					print result[(j,0)],
-					print result[(j,1)]
-				except: print " "
+					print(result[(j,0)], end=' ')
+					print(result[(j,1)])
+				except: print(" ")
 				continue
 			jj=j/2
 			eo=j%2
@@ -445,7 +445,7 @@ def main():
 		an=Analyzers.get("kmeans")
 		an.set_params({"ncls":4,"seedmode":1,"minchange":len(rmsds)//100,"verbose":0,"slowseed":0,"mininclass":5})
 		quals=[]
-		for j in xrange(nptcl[0]+nptcl[1]):
+		for j in range(nptcl[0]+nptcl[1]):
 			d=EMData(3,1,1)
 			# We use the first 3 resolution bands, taking the max value from the 2 iterations, and upweight the second by 2x, since higher res info
 			# is important, and very low res is impacted by defocus
@@ -456,18 +456,18 @@ def main():
 		an.insert_images_list(quals)
 
 		centers=an.analyze()
-		print "Centers: {}({:1.3f},{:1.3f},{:1.3f}), {}({:1.3f},{:1.3f},{:1.3f}), {}({:1.3f},{:1.3f},{:1.3f}, {}({:1.3f},{:1.3f},{:1.3f})".format(
+		print("Centers: {}({:1.3f},{:1.3f},{:1.3f}), {}({:1.3f},{:1.3f},{:1.3f}), {}({:1.3f},{:1.3f},{:1.3f}, {}({:1.3f},{:1.3f},{:1.3f})".format(
 			centers[0]["ptcl_repr"],centers[0][0],centers[0][1],centers[0][2],
 			centers[1]["ptcl_repr"],centers[1][0],centers[1][1],centers[1][2],
 			centers[2]["ptcl_repr"],centers[2][0],centers[2][1],centers[2][2],
-			centers[3]["ptcl_repr"],centers[3][0],centers[3][1],centers[3][2] )
+			centers[3]["ptcl_repr"],centers[3][0],centers[3][1],centers[3][2] ))
 		
 		badcls=min([(centers[i]["mean"],i) for i in (0,1,2,3)])[1]	# this confusing expression finds the number of the class with the smallest summed vector
-		print "Class {} is the bad class".format(badcls)
+		print("Class {} is the bad class".format(badcls))
 		
 		rmsds=array(rmsds)
 		rmsdthresh=rmsds.std()*2.5
-		print "Within consistency thr {:0.4f}: {}/{}".format(rmsdthresh,len(rmsds[rmsds<rmsdthresh]),len(rmsds))
+		print("Within consistency thr {:0.4f}: {}/{}".format(rmsdthresh,len(rmsds[rmsds<rmsdthresh]),len(rmsds)))
 
 		bname = base_name(ptclfsc)
 		try: os.unlink("sets/{}_bad.lst".format(bname))
@@ -484,9 +484,9 @@ def main():
 				outg.write(-1,r[-1],r[-2],"{:6.4f},{:6.4f},{:6.4f},{:6.4f}".format(quals[i][0],quals[i][1],quals[i][2],rmsds[i]))
 				ngood+=1
 
-		print "{}/{} kept as good".format(ngood,len(quals))
+		print("{}/{} kept as good".format(ngood,len(quals)))
 
-		print "Evaluation complete.\nParticles best resembling results from {ref} at low/intermediate resolution have been saved in 'sets/{bn}_good.lst' and can be used in further refinements.\nNote that this method will identify the worst particles as bad, regardless of whether they actually are (bad), and that it may be wise to do your own classification on these results instead, as described in the tutorial.".format(ref=args[0],bn=bname)
+		print("Evaluation complete.\nParticles best resembling results from {ref} at low/intermediate resolution have been saved in 'sets/{bn}_good.lst' and can be used in further refinements.\nNote that this method will identify the worst particles as bad, regardless of whether they actually are (bad), and that it may be wise to do your own classification on these results instead, as described in the tutorial.".format(ref=args[0],bn=bname))
 
 		E2end(logid)
 		sys.exit(0)
@@ -588,7 +588,7 @@ def main():
 		#sys.exit(0)
 
 	if options.evalclassqual:
-		print "Class quality evaluation mode"
+		print("Class quality evaluation mode")
 
 		logid=E2init(sys.argv,options.ppid)
 
@@ -606,12 +606,12 @@ def main():
 		apix=timg["apix_x"]
 
 		rings=[int(2*nx*apix/res) for res in (100,30,15,8,4)]
-		print("Frequency Bands: {lowest},{low},{mid},{high},{highest}".format(lowest=rings[0],low=rings[1],mid=rings[2],high=rings[3],highest=rings[4]))
+		print(("Frequency Bands: {lowest},{low},{mid},{high},{highest}".format(lowest=rings[0],low=rings[1],mid=rings[2],high=rings[3],highest=rings[4])))
 
 		classfsc="classfsc_{}_{}.txt".format(args[0][-2:],options.iter)
 		fout=open(classfsc,"w")
-		for eo in xrange(2):
-			for i in xrange(n):
+		for eo in range(2):
+			for i in range(n):
 				cl=EMData(classes[eo],i)
 				pr=EMData(projections[eo],i)
 				alt=pr["xform.projection"].get_rotation("eman")["alt"]
@@ -624,7 +624,7 @@ def main():
 
 				third = len(fsc)/3
 				fsc=array(fsc[third:third*2])
-				sums=[sum(fsc[rings[k]:rings[k+1]])/(rings[k+1]-rings[k]) for k in xrange(4)]		# sum the fsc into 5 range values
+				sums=[sum(fsc[rings[k]:rings[k+1]])/(rings[k+1]-rings[k]) for k in range(4)]		# sum the fsc into 5 range values
 				
 				fout.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t# {};{};{};{}\n".format(sums[0],sums[1],sums[2],sums[3],cl["ptcl_repr"],alt,az,phi,i,classes[eo],i,projections[eo]))
 
@@ -635,7 +635,7 @@ def main():
 	if options.resolution:
 
 		if not os.path.isdir(args[0]):
-			print "You must provide the name of the refine_XX folder"
+			print("You must provide the name of the refine_XX folder")
 			sys.exit(1)
 
 		### Convergenece plot
@@ -664,7 +664,7 @@ def main():
 		plt.xticks(xticlocs,xticlbl)
 		plt.yticks(yticlocs2,yticlbl2)
 		plt.savefig("converge_{}.pdf".format(args[0][-2:]))
-		print "Generated : converge_{}.pdf".format(args[0][-2:])
+		print("Generated : converge_{}.pdf".format(args[0][-2:]))
 		plt.clf()
 
 		######################
@@ -694,7 +694,7 @@ def main():
 			# find the resolution from the first curve (the highest numbered one)
 			if f==fscs[0]:
 				# find the 0.143 crossing
-				for si in xrange(2,len(d[0])-2):
+				for si in range(2,len(d[0])-2):
 					if d[1][si-1]>0.143 and d[1][si]<=0.143 :
 						frac=(0.143-d[1][si])/(d[1][si-1]-d[1][si])		# 1.0 if 0.143 at si-1, 0.0 if .143 at si
 						lastres=d[0][si]*(1.0-frac)+d[0][si-1]*frac
@@ -712,7 +712,7 @@ def main():
 		plt.xticks(xticlocs,xticlbl)
 		plt.yticks(yticlocs,yticlbl)
 		plt.savefig("goldstandard_{}.pdf".format(args[0][-2:]))
-		print "Generated: goldstandard_{}.pdf".format(args[0][-2:])
+		print("Generated: goldstandard_{}.pdf".format(args[0][-2:]))
 		plt.clf()
 
 	if options.resolution_all:
@@ -753,7 +753,7 @@ def main():
 		plt.xticks(xticlocs,xticlbl)
 		plt.yticks(yticlocs,yticlbl)
 		plt.savefig("goldstandard.pdf")
-		print "Generated: goldstandard.pdf"
+		print("Generated: goldstandard.pdf")
 		plt.clf()
 
 		os.system("e2display.py --plot "+" ".join(fscs))
@@ -778,14 +778,14 @@ def main():
 				speed=jsparm["speed"]
 				nptcl=EMUtil.get_image_count(str(jsparm["input"][0]))+EMUtil.get_image_count(str(jsparm["input"][1]))
 
-				print "{path}\t{nptcl} ptcls\t{niter} iter\t{cores} cores\t{h:02d}:{m:02d} walltime\t{cpuh:1.1f} CPU-h\t{cpuhpi:1.2f} CPU-h/it\t{bs} box\t{targ:1.1f} targetres\tspd={speed}".format(
+				print("{path}\t{nptcl} ptcls\t{niter} iter\t{cores} cores\t{h:02d}:{m:02d} walltime\t{cpuh:1.1f} CPU-h\t{cpuhpi:1.2f} CPU-h/it\t{bs} box\t{targ:1.1f} targetres\tspd={speed}".format(
 					path=d,niter=lastiter,cores=cores,h=int((endtime-starttime)//3600),m=int(((endtime-starttime)%3600)//60),
-					cpuh=cores*(endtime-starttime)/3600,cpuhpi=cores*(endtime-starttime)/(3600*lastiter),bs=box,targ=targetres,speed=speed,nptcl=nptcl)
+					cpuh=cores*(endtime-starttime)/3600,cpuhpi=cores*(endtime-starttime)/(3600*lastiter),bs=box,targ=targetres,speed=speed,nptcl=nptcl))
 			except: 
 				if options.verbose: traceback.print_exc()
-				print "No timing for ",d
+				print("No timing for ",d)
 
-		print "\nWarning: scaling with number of CPUs can be very nonlinear, particularly with small jobs. The larger the number of particles the larger the number of cores which will produce near-linear speedup."
+		print("\nWarning: scaling with number of CPUs can be very nonlinear, particularly with small jobs. The larger the number of particles the larger the number of cores which will produce near-linear speedup.")
 
 
 	if options.timing:
@@ -811,12 +811,12 @@ def main():
 			if hist[n][0] in ("e2refine.py","e2refine_easy.py"):
 				pl=com.find("--path=")
 				parl=com.find("--parallel=")
-				print "%s\t%1.2f hours\te2refine %s"%(difftime(ttime),ttime/3600.0,com[pl+7:].split()[0]),
-				if parl>0: print com[parl+11:].split()[0]
-				else: print " "
+				print("%s\t%1.2f hours\te2refine %s"%(difftime(ttime),ttime/3600.0,com[pl+7:].split()[0]), end=' ')
+				if parl>0: print(com[parl+11:].split()[0])
+				else: print(" ")
 
 			else:
-				print "\t%s\t%1.2f hours\t%s"%(difftime(ttime),ttime/3600.0,hist[n][0])
+				print("\t%s\t%1.2f hours\t%s"%(difftime(ttime),ttime/3600.0,hist[n][0]))
 
 			n+=1
 

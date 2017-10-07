@@ -85,7 +85,7 @@ def main():
 	rlen=EMUtil.get_image_count(args[1])
 	clen_stg1=3*int(sqrt(clen))
 
-	print "%d references, using %d stage 1 averaged references"%(clen,clen_stg1)
+	print("%d references, using %d stage 1 averaged references"%(clen,clen_stg1))
 
 	#if options.align[:21]=="rotate_translate_tree" :
 		#options.shrink=None
@@ -104,18 +104,18 @@ def main():
 		cmd="e2simmx.py %s %s %s %s --align=rotate_translate_tree --aligncmp=sqeuclidean:normto=1 --cmp=sqeuclidean --saveali --force --verbose=%d"%(args[0],args[0],args[3],options.shrinks1, options.verbose-1)
 		if options.prefilt : cmd+=" --prefilt"
 		if options.parallel!=None : cmd+=" --parallel="+options.parallel
-		print "executing ",cmd
+		print("executing ",cmd)
 		launch_childprocess(cmd)
 
 		E2progress(E2n,0.10)
 		# Go through the reference self-simmx and determine the most self-dissimilar set of references
-		print "Finding %d dissimilar classification centers"%clen_stg1
+		print("Finding %d dissimilar classification centers"%clen_stg1)
 		ref_simmx=EMData(args[3],0)
 		ref_orts=EMData.read_images(args[3],(1,2,3,4))
 		centers=[0]		# start with the first (generally a top view) image regardless
-		for i in xrange(clen_stg1-1) :
+		for i in range(clen_stg1-1) :
 			best=(0,-1)
-			for j in xrange(clen):
+			for j in range(clen):
 				if j in centers : continue
 
 				#here we find the sum of the distances to this point
@@ -134,23 +134,23 @@ def main():
 
 	#	print centers
 		# Re-sort references by similarity
-		print "Sort references"
+		print("Sort references")
 		for i in range(1,clen_stg1-1):
 			for j in range(i+1,clen_stg1):
 				if ref_simmx[centers[i-1],centers[i]]>ref_simmx[centers[i-1],centers[j]] : centers[i],centers[j]=centers[j],centers[i]
 
 		# now associate each reference with the closest center
-		print "Associating references with centers"
+		print("Associating references with centers")
 		classes=[[] for i in centers]	# each center becomes a list to start the process
-		for i in xrange(clen):
+		for i in range(clen):
 			quals=[(ref_simmx[i,k],j) for j,k in enumerate(centers)]
 			quals.sort()
 #			for j in xrange(4): classes[quals[j][1]].append(i)		# we used to associate each reference with 3 closest centers
 #			classes[quals[0][1]].append(i)							# now we just associate it with the closest one, but use multiple centers when searching
-			for j in xrange(2): classes[quals[j][1]].append(i)		# bring this idea back again with 2 closest centers
+			for j in range(2): classes[quals[j][1]].append(i)		# bring this idea back again with 2 closest centers
 
 		# now generate an averaged reference for each center
-		print "Averaging each center"
+		print("Averaging each center")
 		for ii,i in enumerate(classes):
 	#		print "%d.  %d"%(ii,len(i)),i[:6]
 			avg=EMData(args[0],i[0])
@@ -169,14 +169,14 @@ def main():
 
 		E2progress(E2n,0.15)
 		############### Step 2 - classify the particles against the averaged references
-		print "First stage particle classification"
+		print("First stage particle classification")
 		cmd="e2simmx.py %s %s %s %s --align=%s --aligncmp=%s  --cmp=%s  --saveali --force --verbose=%d"%(args[4],args[1],args[5],options.shrinks1,
 			options.align,options.aligncmp,options.cmp, options.verbose-1)
 		if options.prefilt : cmd+=" --prefilt"
 		if options.ralign!=None : cmd+=" --ralign=%s --raligncmp=%s"%(options.ralign,options.raligncmp)
 		if options.parallel!=None : cmd+=" --parallel="+options.parallel
 		if options.exclude!=None : cmd+=" --exclude="+options.exclude
-		print "executing ",cmd
+		print("executing ",cmd)
 		launch_childprocess(cmd)
 	else :
 		# reread classification info
@@ -186,18 +186,18 @@ def main():
 	E2progress(E2n,0.60)
 	############### Step 3 - classify particles against subset of original projections
 	# Now we need to convert this small classification into a 'seed' for the large classification matrix for simplicity
-	print "Seeding full classification matrix (%d x %d) -> %s"%(clen,rlen,args[2])
+	print("Seeding full classification matrix (%d x %d) -> %s"%(clen,rlen,args[2]))
 	mxstg1=EMData(args[5],0)
 	mx=EMData(clen,rlen,1)
 	mx.add(-1.0e38)	# a large negative value to be replaced later
 
-	for ptcl in xrange(rlen):
+	for ptcl in range(rlen):
 		# find the best classes from the coarse search
 		vals=[(mxstg1[cls1,ptcl],cls1) for cls1 in range(clen_stg1)]
 		vals.sort()
 
 		# then set the corresponding values in the best 4 stage 1 classes in the full matrix to 0
-		for j in xrange(4):
+		for j in range(4):
 			for i in classes[vals[j][1]]: mx[i,ptcl]=0.0
 
 	mx.update()
@@ -206,7 +206,7 @@ def main():
 
 	mx.to_zero()
 	if options.saveali:
-		for i in xrange(1,6):
+		for i in range(1,6):
 			mx.write_image(args[2],i)		# seed alignment data with nothing
 #			mx.write_image("bdb:refine_02#simmx_00_x",i)
 
@@ -230,7 +230,7 @@ def main():
 	if (options.shrink):
 		cmd += " --shrink="+str(options.shrink)
 
-	print "executing ",cmd
+	print("executing ",cmd)
 	launch_childprocess(cmd)
 
 	E2progress(E2n,1.0)

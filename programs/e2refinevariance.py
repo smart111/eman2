@@ -108,7 +108,7 @@ def main():
 	if options.sym.lower()=="none" : options.sym="c1"
 	
 	if options.iteration<0 :
-		print "You must specify a refinement iteration to use as a basis for the variance map."
+		print("You must specify a refinement iteration to use as a basis for the variance map.")
 		sys.exit(1)
 
 	
@@ -135,7 +135,7 @@ def main():
 	
 	if options.input==None :
 		options.input=db["input"][0].replace("_even","")
-		print "No --input specified, using: ",options.input
+		print("No --input specified, using: ",options.input)
 	
 	if options.output == None:
 		fls=[int(i[-2:]) for i in os.listdir(".") if i[:10]=="refinevar_" and len(i)==12 and str.isdigit(i[-2:])]
@@ -173,35 +173,35 @@ def main():
 	nprogress=options.nmodels*2.0+1.0
 	
 	# this loops over each of the n models we create to compute the variance
-	for mod in xrange(options.nmodels) :
+	for mod in range(options.nmodels) :
 		if not options.volfiles :
-			if options.verbose : print "Class-averaging"
+			if options.verbose : print("Class-averaging")
 			# Compute class-averages with the --resample option
 			
 			options.classifyfile="%s/classify.hdf"%(options.output)
 			options.projfile="%s/projections.hdf"%(options.output)
 			options.cafile="%s/variance_classes_tmp.hdf"%(options.output)
-			print get_classaverage_cmd(options)
+			print(get_classaverage_cmd(options))
 			if ( launch_childprocess(get_classaverage_cmd(options)) != 0 ):
-				print "Failed to execute %s" %get_classaverage_cmd(options)
+				print("Failed to execute %s" %get_classaverage_cmd(options))
 				sys.exit(1)
 			E2progress(logid,(mod*2.0+1)/nprogress)
 			
 			# deal with shrink3d
 			if options.shrink3d : 
-				if options.verbose : print "Shrinking"
-				print "e2proc2d.py %s %s --meanshrink=%d --inplace --writejunk"%(options.cafile,"%s/variance_classes_tmp_s.hdf"%(options.output),options.shrink3d)
+				if options.verbose : print("Shrinking")
+				print("e2proc2d.py %s %s --meanshrink=%d --inplace --writejunk"%(options.cafile,"%s/variance_classes_tmp_s.hdf"%(options.output),options.shrink3d))
 				if ( launch_childprocess("e2proc2d.py %s %s --meanshrink=%d --inplace --writejunk"%(options.cafile,"%s/variance_classes_tmp_s.hdf"%(options.output),options.shrink3d)) != 0 ):
-					print "Failed to execute CA shrink"
+					print("Failed to execute CA shrink")
 					sys.exit(1)
 				options.cafile="%s/variance_classes_tmp_s.hdf"%(options.output)
 			
-			if options.verbose : print "3-D Reconstruction"
+			if options.verbose : print("3-D Reconstruction")
 			# build a new 3-D map
 			options.model="%s/variance_threed_tmp.hdf"%(options.output)
-			print get_make3d_cmd(options)
+			print(get_make3d_cmd(options))
 			if ( launch_childprocess(get_make3d_cmd(options)) != 0 ):
-				print "Failed to execute %s" %get_make3d_cmd(options)
+				print("Failed to execute %s" %get_make3d_cmd(options))
 				sys.exit(1)
 			E2progress(logid,(mod*2.0+2.0)/nprogress)
 
@@ -209,7 +209,7 @@ def main():
 			if options.sym.lower()!="c1" :
 				launch_childprocess("e2proc3d.py %s %s --sym=%s"%(options.model,options.model,options.sym))
 
-			if options.verbose : print "Post-processing"
+			if options.verbose : print("Post-processing")
 
 			cur_map=EMData(options.model,0)
 			nx=cur_map["nx"]
@@ -273,12 +273,12 @@ def main():
 	
 	w=weight.copy()
 	# A line along Z
-	for i in xrange(0,nz): w[nx/2,ny/2,i]=1.0
+	for i in range(0,nz): w[nx/2,ny/2,i]=1.0
 
 	# replicate the line under symmetry
 	t=Transform()
 	ns=t.get_nsym(options.sym)
-	for i in xrange(ns):
+	for i in range(ns):
 		t2=t.get_sym(options.sym,i)
 		wc=w.process("xform",{"transform":t2})		# transformed version of weight
 		weight.add(wc)

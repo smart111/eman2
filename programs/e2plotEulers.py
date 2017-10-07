@@ -62,7 +62,7 @@ def main():
 	
 	# We use a hash data structure to count same Eulers(could also use an array an sort it)
 	eulerhash = {}
-	for i in xrange(data[0].get_ysize()):
+	for i in range(data[0].get_ysize()):
 		# Get Eulers
 		projnum = int(data[0][i])
 		euler = projections[projnum].get_attr('xform.projection')
@@ -73,7 +73,7 @@ def main():
 		
 			# Use has to count unique eulers
 			hashkey = "%3.2f %3.2f"%(eulerangles['az'],eulerangles['alt'])
-			if eulerhash.has_key(hashkey):
+			if hashkey in eulerhash:
 				eulerhash[hashkey] += 1
 			else:
 				eulerhash[hashkey] = 1
@@ -82,7 +82,7 @@ def main():
 	theta = []
 	r = []
 	size = []
-	for euler, count in eulerhash.items():
+	for euler, count in list(eulerhash.items()):
 		eulers = euler.split()
 		theta.append(float(eulers[0]))
 		r.append(float(eulers[1]))

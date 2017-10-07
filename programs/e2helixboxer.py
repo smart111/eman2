@@ -47,10 +47,10 @@ try:
 
 	ENABLE_GUI = True
 
-except ImportError, e:
-	print "Importing GUI libraries failed!"
-	print e
-	print "GUI features are disabled."
+except ImportError as e:
+	print("Importing GUI libraries failed!")
+	print(e)
+	print("GUI features are disabled.")
 	ENABLE_GUI = False
 
 """
@@ -93,7 +93,7 @@ def main():
 	(options, args) = parser.parse_args()
 
 	if len(args)==0 :
-		print "ERROR: please provide a list of files to be boxed at the command line"
+		print("ERROR: please provide a list of files to be boxed at the command line")
 		sys.exit(1)
 
 	if options.helix_width < 1:
@@ -147,10 +147,10 @@ def main():
 
 			E2end(logid)
 		elif len(args) == 0:
-			print 'You must specify a micrograph file or use the "--gui" option.'
+			print('You must specify a micrograph file or use the "--gui" option.')
 			return
 		elif len(args) > 1:
-			print 'Multiple micrographs can only be specified with the "--gui" option'
+			print('Multiple micrographs can only be specified with the "--gui" option')
 			return
 
 def counterGen():
@@ -448,7 +448,7 @@ def save_particle_coords(helix_particle_coords_dict, output_filepath, micrograph
 	out_file.write("#micrograph: " + micrograph_filepath + "\n")
 	out_file.write("#particle length: " + str(ptcl_length) + "\n")
 	out_file.write("#particle width: " + str(ptcl_width) + "\n")
-	for helix_coords in helix_particle_coords_dict.keys():
+	for helix_coords in list(helix_particle_coords_dict.keys()):
 		out_file.write("#helix: " + str(tuple(helix_coords[0:2])) + "," + str(tuple(helix_coords[2:4])) + "," + str(helix_coords[4]) + "\n")
 		particle_list = helix_particle_coords_dict[helix_coords]
 		for ptcl_center in particle_list:
@@ -480,11 +480,11 @@ def save_particles(particles, ptcl_filepath, do_edge_norm=False, stack_file_mode
 	testfilename = ".HelixBoxerTestFile%s" % ext
 	try:
 		testdata.write_image(testfilename, 0) #Test for write support
-	except RuntimeError, e:
+	except RuntimeError as e:
 		ext = ".hdf"
 	try:
 		testdata.write_image(testfilename, 1) #Test for stack file support
-	except RuntimeError, e:
+	except RuntimeError as e:
 		stack_file_mode = "none"
 	finally:
 		if os.access(testfilename, os.F_OK):
@@ -652,7 +652,7 @@ def db_save_particles(micrograph_filepath, ptcl_filepath = None, px_overlap = No
 			helix_particles = get_rotated_particles(micrograph, coords, px_overlap, px_length, px_width, gridding, mic_name = micrograph_filename)
 		else:
 			helix_particles = get_unrotated_particles(micrograph, coords, px_overlap, px_length, px_width,mic_name = micrograph_filename)
-		for ii in xrange(len(helix_particles)):
+		for ii in range(len(helix_particles)):
 			(helix_particles[ii]).set_attr("filament", micrograph_filename+"%04d"%nhelix)
 		nhelix = nhelix + 1
 		all_particles.append(helix_particles)
@@ -904,7 +904,7 @@ if ENABLE_GUI:
 			if self.helices_groupbox.isChecked():
 				if self.helices_coords_groupbox.isChecked():
 					path = str( self.helices_coords_line_edit.text() )
-					save_helix_coords(helices_dict.keys(), path)
+					save_helix_coords(list(helices_dict.keys()), path)
 				if self.helices_images_groupbox.isChecked():
 					helix_filepath = str(self.helices_images_line_edit.text())
 					i = 0
@@ -939,7 +939,7 @@ if ENABLE_GUI:
 						elif self.ptcls_no_rotation_radiobutton.isChecked():
 							side = max(px_length, px_width)
 							helix_particles = get_unrotated_particles(micrograph, coords_key, px_overlap, side, side, mic_name=self.micrograph_filename)
-						for ii in xrange(len(helix_particles)):
+						for ii in range(len(helix_particles)):
 							(helix_particles[ii]).set_attr("filament", self.micrograph_filename+"%04d"%nhelix)
 						nhelix = nhelix + 1
 						all_particles.append(helix_particles)
@@ -1106,7 +1106,7 @@ if ENABLE_GUI:
 			creates a unique key for a new "rectline" EMShape, which is used for boxing a helix
 			@return: a string that is the key for the new "rectline" EMShape
 			"""
-			i = self.counter.next()
+			i = next(self.counter)
 			return "rectline%i" % i
 		def get_width(self):
 			"""
@@ -1201,7 +1201,7 @@ if ENABLE_GUI:
 
 			width = self.box_width
 			if self.helices_dict:
-				first_coords = self.helices_dict.keys()[0]
+				first_coords = list(self.helices_dict.keys())[0]
 				width = first_coords[4]
 			self.box_width_spinbox.setValue(width)
 		def main_image_closed(self):
@@ -1273,7 +1273,7 @@ if ENABLE_GUI:
 			#resize current boxes
 			#TODO: this is similar to part of self.mouse_up ==> make both methods call a function with common code
 			shapes = self.main_image.get_shapes() #an EMShapeDict of EMShapes
-			for box_key in shapes.keys():
+			for box_key in list(shapes.keys()):
 				old_emshape = shapes.get(box_key)
 				old_coords = old_emshape.getShape()[4:9]
 				new_coords = (old_coords[0], old_coords[1], old_coords[2], old_coords[3], width)
@@ -1521,7 +1521,7 @@ if ENABLE_GUI:
 			"""
 
 			if self.current_boxkey and self.edit_mode != "delete":
-				if self.helices_dict.has_key(self.initial_helix_box_data_tuple):
+				if self.initial_helix_box_data_tuple in self.helices_dict:
 					self.helices_dict.pop(self.initial_helix_box_data_tuple)
 				if self.initial_helix_box_data_tuple in self.get_db_item("helixboxes"):
 					self.remove_box_from_db(self.initial_helix_box_data_tuple)

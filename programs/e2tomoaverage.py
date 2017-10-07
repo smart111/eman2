@@ -210,11 +210,11 @@ class EMBootStrappedAverages:
 			yes = True
 			# if any of the indices have already been encountered then they can not form a couple
 			try:
-				(val for val in taken if val == i ).next()
+				next((val for val in taken if val == i ))
 				yes = False
 			except: pass
 			try:
-				(val for val in taken if val == j ).next()
+				next((val for val in taken if val == j ))
 				yes = False
 			except: pass
 			
@@ -224,7 +224,7 @@ class EMBootStrappedAverages:
 			else:
 				# it can't be made into a couple so add any indices into the taken list that are not already there
 				for idx in [i,j]:
-					try:  (val for val in taken if idx == val ).next()
+					try:  next((val for val in taken if idx == val ))
 					except: taken.append(idx)
 			
 			cmp_data_copy.set(best[0],best[1],cmp_max)
@@ -303,7 +303,7 @@ class EMBootStrappedAverages:
 		# this loop 
 		while True:
 			couples = self.get_couples(images[0])
-			taken = range(images[0].get_xsize())
+			taken = list(range(images[0].get_xsize()))
 			
 			done = False
 			if len(couples) == 1 and len(taken) == 2: done = True
@@ -390,7 +390,7 @@ class EMBootStrappedAverages:
 			current_files = new_files
 			images = new_images
 			iter += 1
-			print couples,taken
+			print(couples,taken)
 			
 			
 		if self.logger: E2progress(self.logger,1.0)
@@ -532,7 +532,7 @@ class EMTomoAlignments:
 			if options.shrink:
 				scratch_name_1 = numbered_bdb("bdb:tomo_scratch#scratch_shrink")
 				scratch_name_2 = numbered_bdb("bdb:tomo_scratch##scratch_shrink")
-			else: print "no shrink" 
+			else: print("no shrink") 
 
 			for i,j in alignment_jobs:
 				if options.shrink or options.filter:
@@ -587,7 +587,7 @@ class EMTomoAlignments:
 				target = EMData(files[j],0)
 				
 				if options.filter:
-					print "filtered"
+					print("filtered")
 					filter_params = EMAN2.parsemodopt(options.filter)
 					probe.process_inplace(filter_params[0],filter_params[1])
 					target.process_inplace(filter_params[0],filter_params[1])
@@ -596,7 +596,7 @@ class EMTomoAlignments:
 					probe.process_inplace("math.meanshrink",{"n":options.shrink})
 					target.process_inplace("math.meanshrink",{"n":options.shrink})
 				else:
-					print "no shrink"
+					print("no shrink")
 				
 				data["target"] = target
 				data["probe"] = probe
@@ -629,9 +629,9 @@ class EMTomoAlignments:
 		n = len(task_customers)
 		while 1:
 			if len(task_customers) == 0: break
-			print len(task_customers),"tomo averaging tasks left in main loop"
+			print(len(task_customers),"tomo averaging tasks left in main loop")
 			st_vals = task_customers[0].check_task(tids)
-			for i in xrange(len(task_customers)-1,-1,-1):
+			for i in range(len(task_customers)-1,-1,-1):
 				st = st_vals[i]
 				if st==100:
 					task_customer = task_customers[i]
@@ -677,7 +677,7 @@ class EMTomoAlignTask:
 		self.align_data = data["align"]
 		self.align_cmp_data = data["aligncmp"]
 		self.cmp_data = data["cmp"]
-		if data.has_key("ralign"):
+		if "ralign" in data:
 			self.ralign_data = data["ralign"]
 			self.ralign_cmp_data = data["raligncmp"]
 		else:
@@ -708,7 +708,7 @@ class EMTomoAlignTask:
 			probe.set_gpu_rw_current()
 			probe.cuda_lock()
 		
-		print probe.get_xsize()
+		print(probe.get_xsize())
 		progress = 0.0
 		max_progress = 3
 		progress += 1.0
@@ -824,7 +824,7 @@ def main():
 
 	(options, args) = parser.parse_args()
 	
-	print options.shrink
+	print(options.shrink)
 	
 	error_messages = check_options(options,args)
 	if len(error_messages) != 0:
@@ -840,7 +840,7 @@ def main():
 		module = EMBootStrappedAverages(args,options,logger)
 		module.execute()
 	else:
-		print "boot strap only supported technique"
+		print("boot strap only supported technique")
 	E2end(logger)
 	
 	

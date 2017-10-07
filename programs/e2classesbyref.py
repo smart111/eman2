@@ -36,7 +36,7 @@ import os
 import sys
 from EMAN2db import db_check_dict
 from EMAN2 import *
-import Queue
+import queue
 from numpy import array
 
 def main():
@@ -90,10 +90,10 @@ def main():
 	try:
 		nrefbs=EMUtil.get_image_count(refsbsfs)
 		if nrefbs!=len(refs) :
-			print "Reference bispectrum file too short :",nrefbs,len(refs)
+			print("Reference bispectrum file too short :",nrefbs,len(refs))
 			raise Exception
 	except:
-		print "No good bispecta found for refs. Building"
+		print("No good bispecta found for refs. Building")
 		com="e2proc2dpar.py {} {} --process filter.highpass.gauss:cutoff_freq=0.01 --process normalize.edgemean --process math.bispectrum.slice:size={}:ffp={} --threads {}".format(args[0],refsbsfs,bispec_invar_parm[0],bispec_invar_parm[1],options.threads)
 		run(com)
 	
@@ -108,7 +108,7 @@ def main():
 			bsfs=args[1].split("__ctf_flip")[0]+"__ctf_flip_bispec.lst"
 		nptclbs=EMUtil.get_image_count(bsfs)
 		if nptclbs!=nptcl : 
-			print nptclbs,nptcl
+			print(nptclbs,nptcl)
 			raise Exception
 	else:
 		if "even" in args[1]: bsfs=args[1].split("_even")[0]+"_bispec_even.lst"
@@ -117,7 +117,7 @@ def main():
 	### initialize output files
 	
 	# class, weight, dx,dy,dalpha,flip
-	clsmx=[EMData(options.sep,nptcl,1) for i in xrange(6)]
+	clsmx=[EMData(options.sep,nptcl,1) for i in range(6)]
 	
 	# JSON style output, classes keyed by class number
 	clsinfo={}
@@ -125,22 +125,22 @@ def main():
 	# avgs
 	if options.classes!=None: 
 		options.averager=parsemodopt(options.averager)
-		avgrs=[Averagers.get(options.averager[0],options.averager[1]) for i in xrange(nref)]
+		avgrs=[Averagers.get(options.averager[0],options.averager[1]) for i in range(nref)]
 	
 	# Actual threads doing the processing
 	N=nptcl
 	npt=max(min(100,N/(options.threads-2)),1)
 	
-	jsd=Queue.Queue(0)
+	jsd=queue.Queue(0)
 	# these start as arguments, but get replaced with actual threads
-	thrds=[(jsd,refs,refsbs,args[1],bsfs,options,i,i*npt,min(i*npt+npt,N)) for i in xrange(N/npt+1)]
+	thrds=[(jsd,refs,refsbs,args[1],bsfs,options,i,i*npt,min(i*npt+npt,N)) for i in range(N/npt+1)]
 	
 	thrtolaunch=0
 	while thrtolaunch<len(thrds) or threading.active_count()>1:
 		if thrtolaunch<len(thrds):
 			while (threading.active_count()>=options.threads) : time.sleep(0.1)
 			if options.verbose>0 : 
-				print "\r Starting thread {}/{}      ".format(thrtolaunch,len(thrds)),
+				print("\r Starting thread {}/{}      ".format(thrtolaunch,len(thrds)), end=' ')
 				sys.stdout.flush()
 			thrds[thrtolaunch]=threading.Thread(target=clsfn,args=thrds[thrtolaunch])		# replace args
 			thrds[thrtolaunch].start()
@@ -172,7 +172,7 @@ def main():
 				thrds[rd[1]]=None
 			
 				if options.verbose>1:
-					print "{} done. ".format(rd[1]),
+					print("{} done. ".format(rd[1]), end=' ')
 
 	### Write output files
 	if options.classmx!=None:
@@ -195,7 +195,7 @@ def main():
 		empty.to_zero()
 		empty["ptcl_repr"]=0
 		for i,avgr in enumerate(avgrs):
-			if clsinfo.has_key(i):
+			if i in clsinfo:
 				avg=avgr.finish()
 				avg.process_inplace("normalize.circlemean",{"radius":avg["ny"]/2-4})
 				avg.process_inplace("mask.soft",{"outer_radius":avg["ny"]/2-4,"width":3})
@@ -217,7 +217,7 @@ def main():
 
 	E2end(E2n)
 
-	print "Classification complete, writing classmx"
+	print("Classification complete, writing classmx")
 
 def clsfn(jsd,refs,refsbs_org,ptclfs,ptclbsfs,options,grp,n0,n1):
 	from bisect import insort
@@ -226,7 +226,7 @@ def clsfn(jsd,refs,refsbs_org,ptclfs,ptclbsfs,options,grp,n0,n1):
 	lastdf=-999.0
 	lastdfn=-1
 	
-	for i in xrange(n0,n1):
+	for i in range(n0,n1):
 		ptcl=EMData(ptclfs,i)
 		ptclbs=EMData(ptclbsfs,i)
 		
@@ -263,7 +263,7 @@ def clsfn(jsd,refs,refsbs_org,ptclfs,ptclbsfs,options,grp,n0,n1):
 			if retali: insort(newbest,(c,b[1],b[0],prm["tx"],prm["ty"],prm["alpha"],prm["mirror"],ptcl.process("xform",{"transform":t})))		# cls,bs_sim,tx,ty,alpha,mirror,ptcl
 			else: insort(newbest,(c,b[1],b[0],prm["tx"],prm["ty"],prm["alpha"],prm["mirror"]))		# cls,bs_sim,cls,tx,ty,alpha,mirror
 		
-		for j in xrange(options.sep):
+		for j in range(options.sep):
 			ret.append(newbest[j])
 		jsd.put((ret,grp,i==n1-1))	# third value indicates whether this is the final result from this thread
 			
@@ -271,13 +271,13 @@ def clsfn(jsd,refs,refsbs_org,ptclfs,ptclbsfs,options,grp,n0,n1):
 def run(command):
 	"Mostly here for debugging, allows you to control how commands are executed"
 
-	print "{}: {}".format(time.ctime(time.time()),command)
+	print("{}: {}".format(time.ctime(time.time()),command))
 
 	ret=launch_childprocess(command)
 
 	# We put the exit here since this is what we'd do in every case anyway. Saves replication of error detection code above.
 	if ret !=0 :
-		print "Error running: ",command
+		print("Error running: ",command)
 		sys.exit(1)
 
 	return

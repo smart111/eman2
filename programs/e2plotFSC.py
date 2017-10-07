@@ -71,10 +71,10 @@ def main():
 		# Get data from data base
 		db_name = "bdb:"+args[0]+"#convergence.results"
 		if not db_check_dict(db_name):
-			print "Rubbish!!!, no FSC curves found!!!"
+			print("Rubbish!!!, no FSC curves found!!!")
 			return
 		db = db_open_dict(db_name,ro=True)
-		keys = db.keys()
+		keys = list(db.keys())
 	
 		# Load desired FSC curves
 		res = []

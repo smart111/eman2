@@ -32,7 +32,7 @@ from EMAN2 import *
 import time
 import os
 import threading
-import Queue
+import queue
 from sys import argv,exit
 
 def maskfile(jsd,n,fsp,classes,masks,clsmap,options):
@@ -40,7 +40,7 @@ def maskfile(jsd,n,fsp,classes,masks,clsmap,options):
 	fspout=fsp.rsplit(".",1)[0].split("__")[0]+"__ctf_flip_masked.hdf"
 	fspbout=fsp.rsplit(".",1)[0].split("__")[0]+"__ctf_flip_bispec.hdf"
 
-	for i in xrange(len(clsmap)):
+	for i in range(len(clsmap)):
 		ptcl=EMData(fsp,i)
 		# if the particle isn't in any classes we put the unmasked image in the output file
 		if clsmap[i]!=-1 :
@@ -116,21 +116,21 @@ once complete, bispectra can be recomputed based on the masked particles, or the
 	if not options.nofullresok :
 		for fsp in ptcls:
 			if "ctf_flip_fullres" not in fsp:
-				print "ERROR: This program is meant to be used with full resolution phase flipped particles (__ctf_flip_fullres). ",fsp," does not appear to be this type of file. You can override this behavior with --nofullresok"
+				print("ERROR: This program is meant to be used with full resolution phase flipped particles (__ctf_flip_fullres). ",fsp," does not appear to be this type of file. You can override this behavior with --nofullresok")
 
 	if options.verbose:
-		print sum([i.count(-1) for i in ptcls.values()])," missing particles in classes. They will be unmasked"
+		print(sum([i.count(-1) for i in list(ptcls.values())])," missing particles in classes. They will be unmasked")
 
 # 	import pprint
 # 	pprint.pprint(ptcls)
 
-	jsd=Queue.Queue(0)
+	jsd=queue.Queue(0)
 
 	n=-1
 	thrds=[(jsd,i,k,classes,masks,ptcls[k],options) for i,k in enumerate(ptcls)]
 
 	# here we run the threads and save the results, no actual alignment done here
-	print len(thrds)," threads"
+	print(len(thrds)," threads")
 	thrtolaunch=0
 	while thrtolaunch<len(thrds) or threading.active_count()>1:
 		# If we haven't launched all threads yet, then we wait for an empty slot, and launch another
@@ -138,7 +138,7 @@ once complete, bispectra can be recomputed based on the masked particles, or the
 		# thread hasn't finished.
 		if thrtolaunch<len(thrds) :
 			while (threading.active_count()==NTHREADS ) : time.sleep(.1)
-			if options.verbose : print "Starting thread {}/{}".format(thrtolaunch,len(thrds))
+			if options.verbose : print("Starting thread {}/{}".format(thrtolaunch,len(thrds)))
 			thrds[thrtolaunch]=threading.Thread(target=maskfile,args=thrds[thrtolaunch])
 			thrds[thrtolaunch].start()
 			thrtolaunch+=1
@@ -150,7 +150,7 @@ once complete, bispectra can be recomputed based on the masked particles, or the
 			thrds[n].join()
 			thrds[n]=None
 
-	if options.verbose: print "Finished processing ",len(ptcls), "particle files"
+	if options.verbose: print("Finished processing ",len(ptcls), "particle files")
 	E2end(logid)
 
 

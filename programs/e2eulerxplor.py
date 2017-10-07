@@ -162,7 +162,7 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 #		print vv
 #
 		# the problem with this approach is that depth testing is not part of picking
-		sb = [0 for i in xrange(0,512)]
+		sb = [0 for i in range(0,512)]
 		glSelectBuffer(512)
 		glRenderMode(GL_SELECT)
 		glInitNames()
@@ -262,7 +262,7 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 
 		# this object will have
 		if self.au_data != None:
-			combo_entries = self.au_data.keys()
+			combo_entries = list(self.au_data.keys())
 			combo_entries.sort()
 			combo_entries.reverse()
 
@@ -330,7 +330,7 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 				except: dirs.pop(i)
 
 		self.dirs = dirs
-		print dirs
+		print(dirs)
 
 		self.au_data = {}
 		for dir in self.dirs:
@@ -350,10 +350,10 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 			nums=[int(i[7:9]) for i in files if "threed" in i and "even" not in i and "odd" not in i]
 			maxnum=max(nums)
 		except :
-			print "Nothing in ",dir
+			print("Nothing in ",dir)
 			return {}
 
-		for i in xrange(1,maxnum+1):
+		for i in range(1,maxnum+1):
 			exte="_{:02d}_even.hdf".format(i)
 			exto="_{:02d}_odd.hdf".format(i)
 			data[dir].append([sadd(dir,s1,exte),sadd(dir,s2,exte),sadd(dir,s3,exte),sadd(dir,s4,exte),sadd(dir,s5,exte)])
@@ -464,7 +464,7 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 			self.average.process_inplace("normalize.toimage",{"to":self.projection})
 			try:
 				self.class_idx = self.average.get_attr("projection_image_idx")
-				print "%d (%d)"%(self.class_idx,self.average["ptcl_repr"])
+				print("%d (%d)"%(self.class_idx,self.average["ptcl_repr"]))
 			except:
 				self.class_idx = -1
 		else: return
@@ -630,7 +630,7 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 								index = j
 								break
 					if index == -1:
-						print "couldn't find"
+						print("couldn't find")
 						get_application().setOverrideCursor(Qt.ArrowCursor)
 						return
 
@@ -678,7 +678,7 @@ class EMEulerExplorer(EM3DSymModel,Animator):
 
 	def set_events_mode(self,mode):
 		if not mode in self.events_mode_list:
-			print "error, unknown events mode", mode
+			print("error, unknown events mode", mode)
 			return
 
 		else:
@@ -716,7 +716,7 @@ class EMAsymmetricUnitInspector(EMSymInspector):
 		self.au_tab.vbl = QtGui.QVBoxLayout(self.au_tab)
 
 		self.au_data = self.target().au_data
-		combo_entries = self.au_data.keys()
+		combo_entries = list(self.au_data.keys())
 		combo_entries.sort()
 		combo_entries.reverse()
 		self.combo = QtGui.QComboBox(self)

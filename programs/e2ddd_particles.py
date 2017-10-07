@@ -78,7 +78,7 @@ def main():
 	(options, args) = parser.parse_args()
 	
 	if len(args)!=1:
-		print usage
+		print(usage)
 		parser.error("Specify refine_xx folder")
 
 	# If called with parallelism, the program calls itself with frac. If both were specified, bad things would happen
@@ -87,14 +87,14 @@ def main():
 			options.frac=[int(i) for i in options.frac.split(",")]
 			if len(options.frac)!=2 : raise Exception
 		except: 
-			print "--frac should not be specified manually"
+			print("--frac should not be specified manually")
 			sys.exit(1)
 		nthreads=1
 	else:
 		if options.threads : nthreads=options.threads
 		elif options.parallel!=None :
 			if options.parallel[:7]!="thread:":
-				print "ERROR: only thread:<n> parallelism supported by this program. It is i/o limited."
+				print("ERROR: only thread:<n> parallelism supported by this program. It is i/o limited.")
 				sys.exit(1)
 			nthreads=int(options.parallel[7:])
 		else: nthreads=1
@@ -105,7 +105,7 @@ def main():
 		options.step=[int(i) for i in options.step.split(",")]
 		if len(options.step)==2 : options.step.append(1)
 	except:
-		print "ERROR: Specify step as <first>,<last>,<step>"
+		print("ERROR: Specify step as <first>,<last>,<step>")
 		sys.exit(1)
 
 	if options.frac==None : pid=E2init(sys.argv)
@@ -115,15 +115,15 @@ def main():
 	refineparms=js_open_dict(args[0]+"/0_refine_parms.json")
 	inlst=refineparms["input"]
 	if inlst[0][-4:]!=".lst" :
-		print "Error: refine_xx must be run with a 'set' as --input following canonical EMAN2.1 guidelines"
+		print("Error: refine_xx must be run with a 'set' as --input following canonical EMAN2.1 guidelines")
 		sys.exit(1)
 	
 	clsout=sorted([args[0]+"/"+i for i in os.listdir(args[0]) if "cls_result" in i])[-2:]
 	if not "even" in clsout[0] : 
-		print "ERROR: last 2 cls_result files not even/odd pair. Delete any incomplete iterations from refine folder!"
+		print("ERROR: last 2 cls_result files not even/odd pair. Delete any incomplete iterations from refine folder!")
 		sys.exit(1)
 
-	if options.verbose: print "running on:",clsout
+	if options.verbose: print("running on:",clsout)
 
 	#newproj="../"+os.getcwd().split("/")[-1]+"_m"
 	#try: os.makedirs(newproj+"/particles")
@@ -139,10 +139,10 @@ def main():
 	# allnames lists all files referenced in the sets. We make it a list so we can iterate sensibly
 	lstmap={}
 	allnames=set()
-	for i in xrange(len(lst[0])): 
+	for i in range(len(lst[0])): 
 		lstmap[(lst[0][i][1],lst[0][i][0])]=(0,i)
 		allnames.add(lst[0][i][1])
-	for i in xrange(len(lst[1])): 
+	for i in range(len(lst[1])): 
 		lstmap[(lst[1][i][1],lst[1][i][0])]=(1,i)
 		allnames.add(lst[0][i][1])
 	
@@ -163,22 +163,22 @@ def main():
 			try: 
 				if os.path.exists(dest) : raise Exception
 				os.rename(src,dest)
-				if options.verbose>1: print "Renaming {} to {}".format(src,dest)
+				if options.verbose>1: print("Renaming {} to {}".format(src,dest))
 				file(src,"w").write(file(dest,"r").read())			# copy the original data back to the source file so we don't have gaps for unaligned particles, but only if the rename worked
 				n+=1
 			except: 
-				if options.verbose>1: print "Failed to rename ",name
+				if options.verbose>1: print("Failed to rename ",name)
 				pass
 	
-		if options.verbose==1: print n," stacks renamed to __orig"
+		if options.verbose==1: print(n," stacks renamed to __orig")
 	
 	### Deal with threads (spawn more instances of ourselves as separate processes)
 	if nthreads>1:
-		print "Running in parallel with ",nthreads," threads"
-		threads=[threading.Thread(target=os.system,args=[" ".join(sys.argv+["--frac={},{}".format(i,nthreads)])]) for i in xrange(nthreads)]
+		print("Running in parallel with ",nthreads," threads")
+		threads=[threading.Thread(target=os.system,args=[" ".join(sys.argv+["--frac={},{}".format(i,nthreads)])]) for i in range(nthreads)]
 		for t in threads: t.start()
 		for t in threads: t.join()
-		print "Parallel fitting complete"
+		print("Parallel fitting complete")
 		sys.exit(0)
 	
 	### iterate over the particle files. We just skip any that aren't in the set that was refined
@@ -186,7 +186,7 @@ def main():
 		if options.filefilt!=None and not options.filefilt in name : continue
 		base=base_name(name)
 		db=js_open_dict(info_name(name))
-		if options.verbose : print "### Processing {} ({})".format(base,options.frac[0]+1)
+		if options.verbose : print("### Processing {} ({})".format(base,options.frac[0]+1))
 		
 		movie="movieparticles/{}_ptcls.hdf".format(base)
 		movieim=EMData(movie,0)
@@ -199,7 +199,7 @@ def main():
 		except:
 			try: ctf=db["ctf_frame"][1]
 			except:
-				print "ERROR: no CTF info for {}. Skipping file".format(name)
+				print("ERROR: no CTF info for {}. Skipping file".format(name))
 				continue
 		
 		# We need this to filter the projections
@@ -212,11 +212,11 @@ def main():
 		#ctfim.mult(ctfflip)		# an intensity image with phase flipping!
 	
 		# loop over the particles in this frame
-		for n in xrange(movienptcl):
+		for n in range(movienptcl):
 			# read the frames for this particle, limited by --step
 			if options.step[1]<=0 : end=movienfr+options.step[1]
 			else: end=options.step[1]
-			stack=EMData.read_images(movie,range(n*movienfr+options.step[0],n*movienfr+end,options.step[2]))
+			stack=EMData.read_images(movie,list(range(n*movienfr+options.step[0],n*movienfr+end,options.step[2])))
 			if options.invert:
 				for i in stack: i.mult(-1)
 			for i in stack: 
@@ -225,7 +225,7 @@ def main():
 			# if we can't find the particle in the lst file
 			try: eo,lstn=lstmap[(name,n)]
 			except:
-				if options.verbose>1 : print "skipping",name,n
+				if options.verbose>1 : print("skipping",name,n)
 				unaliavg=sum(stack)
 				avg=unaliavg		# on failure we just use the straight average
 				try: avg=avg.get_clip(Region((nx-pnx)/2,(nx-pnx)/2,pnx,pnx))		# resize to original particle size
@@ -287,9 +287,9 @@ def main():
 				pk=ccf.calc_max_location()
 				dx=-(pk[0]-nx/2)
 				dy=-(pk[1]-nx/2)
-				if options.verbose>1 : print base,n,i,dx,dy
+				if options.verbose>1 : print(base,n,i,dx,dy)
 				if dx==nx/2 or dy==nx/2 :
-					print base,n, "failed"
+					print(base,n, "failed")
 					bad=1
 					break
 				
@@ -310,7 +310,7 @@ def main():
 			# we do a little ad-hoc smoothing on the alignment vectors
 			natx=[atx[0]]
 			naty=[aty[0]]
-			for i in xrange(1,len(atx)-1):
+			for i in range(1,len(atx)-1):
 				natx.append(int((atx[i-1]+2.0*atx[i]+atx[i+1])/4.0))
 				naty.append(int((aty[i-1]+2.0*aty[i]+aty[i+1])/4.0))
 			natx.append(atx[-1])

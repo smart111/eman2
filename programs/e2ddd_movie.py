@@ -39,7 +39,7 @@ import sys
 from sys import argv
 from time import sleep,time
 import threading
-import Queue
+import queue
 import numpy as np
 from sklearn import linear_model
 from scipy import optimize
@@ -127,7 +127,7 @@ def main():
 			sigd.to_zero()
 			a=Averagers.get("mean",{"sigma":sigd,"ignore0":1})
 			print("Summing dark")
-			for i in xrange(0,nd):
+			for i in range(0,nd):
 				if options.verbose:
 					sys.stdout.write(" {}/{}   \r".format(i+1,nd))
 					sys.stdout.flush()
@@ -152,7 +152,7 @@ def main():
 			sigg.to_zero()
 			a=Averagers.get("mean",{"sigma":sigg,"ignore0":1})
 			print("Summing gain")
-			for i in xrange(0,nd):
+			for i in range(0,nd):
 				if options.verbose:
 					sys.stdout.write(" {}/{}   \r".format(i+1,nd))
 					sys.stdout.flush()
@@ -211,11 +211,11 @@ def main():
 	first = int(step[0])
 	step  = int(step[1])
 
-	if options.verbose : print("Range = {} - {}, Step = {}".format(first, last, step))
+	if options.verbose : print(("Range = {} - {}, Step = {}".format(first, last, step)))
 
 	# the user may provide multiple movies to process at once
 	for fsp in args:
-		if options.verbose : print("Processing {}".format(fsp))
+		if options.verbose : print(("Processing {}".format(fsp)))
 
 		n = EMUtil.get_image_count(fsp)
 
@@ -223,7 +223,7 @@ def main():
 			hdr = EMData(fsp, 0, True)
 
 			if hdr["nz"] < 2 :
-				print("ERROR: {} has only {} images. Min 3 required.".format(fsp, n))
+				print(("ERROR: {} has only {} images. Min 3 required.".format(fsp, n)))
 				continue
 
 			n = hdr["nz"]
@@ -249,7 +249,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 		outim=[]
 		nfs = 0
 		t = time()
-		for ii in xrange(first,flast,step):
+		for ii in range(first,flast,step):
 			if options.verbose:
 				sys.stdout.write(" {}/{}   \r".format(ii-first+1,flast-first+1))
 				sys.stdout.flush()
@@ -273,7 +273,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 			#im.write_image(outname,ii-first)
 
 		t1 = time()-t
-		print("{:.1f} s".format(time()-t))
+		print(("{:.1f} s".format(time()-t)))
 
 		nx=outim[0]["nx"]
 		ny=outim[0]["ny"]
@@ -294,9 +294,9 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 			nx=outim[0]["nx"]
 			ny=outim[0]["ny"]
 
-			print("{} frames read {} x {}".format(n,nx,ny))
+			print(("{} frames read {} x {}".format(n,nx,ny)))
 
-			ccfs=Queue.Queue(0)
+			ccfs=queue.Queue(0)
 			#outim=Queue.Queue(0)
 
 			# prepare image data (outim) by clipping and FFT'ing all tiles (this is threaded as well)
@@ -328,14 +328,14 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 
 			# create threads
 			thds=[]
-			peak_locs=Queue.Queue(0)
+			peak_locs=queue.Queue(0)
 			i=-1
 			for ima in range(n-1):
 				for imb in range(ima+1,n):
 					if options.verbose>3: i+=1		# if i>0 then it will write pre-processed CCF images to disk for debugging
 					thds.append(threading.Thread(target=calc_ccf_wrapper,args=(options,(ima,imb),options.optbox,options.optstep,immx[ima],immx[imb],ccfs,peak_locs,i,fsp)))
 
-			print("{:1.1f} s\nCompute {} ccfs".format(time()-t0,len(thds)))
+			print(("{:1.1f} s\nCompute {} ccfs".format(time()-t0,len(thds))))
 			t0=time()
 
 			# here we run the threads and save the results, no actual alignment done here
@@ -370,7 +370,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 			# 		csum2[k].write_image("ccfs.hdf",i)
 
 			avgr=Averagers.get("minmax",{"max":0})
-			avgr.add_image_list(csum2.values())
+			avgr.add_image_list(list(csum2.values()))
 			csum=avgr.finish()
 
 			#####
@@ -380,7 +380,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 			# array of x,y locations of each frame, all relative to the last frame in the series, which will always have 0,0 shift
 			locs=[0]*(n*2) # we store the value for the last frame as well as a conveience
 
-			print("{:1.1f} s\nAlign {} frames".format(time()-t0,n))
+			print(("{:1.1f} s\nAlign {} frames".format(time()-t0,n)))
 			t0=time()
 
 			#from IPython import embed
@@ -448,16 +448,16 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 			locs = traj.ravel()
 			quals=[0]*n # quality of each frame based on its correlation peak summed over all images
 			cen=options.optbox/2#csum2[(0,1)]["nx"]/2
-			for i in xrange(n-1):
-				for j in xrange(i+1,n):
+			for i in range(n-1):
+				for j in range(i+1,n):
 					val=csum2[(i,j)].sget_value_at_interp(int(cen+locs[j*2]-locs[i*2]),int(cen+locs[j*2+1]-locs[i*2+1]))*sqrt(float(n-fabs(i-j))/n)
 					quals[i]+=val
 					quals[j]+=val
 
-			print("{:1.1f} s".format(time()-t0,n))
+			print(("{:1.1f} s".format(time()-t0,n)))
 			
 			runtime = time()-start
-			print("Runtime: {:.1f} s".format(runtime))
+			print(("Runtime: {:.1f} s".format(runtime)))
 
 			# round for integer only shifting
 			#locs=[int(floor(i+.5)) for i in locs]
@@ -470,7 +470,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 				ax[0].set_title("Trajectory (x/y pixels)")
 				ax[1].set_title("Quality (cumulative pairwise ccf value)")
 				ax[1].plot(quals,'k')
-				for k in peak_locs.keys():
+				for k in list(peak_locs.keys()):
 					try:
 						p = peak_locs[k]
 						ax[2].scatter(p[0],p[1])
@@ -493,7 +493,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 				out=qsum(outim)
 				out.write_image("{}__noali.hdf".format(alioutname),0)
 
-			print("{:1.1f} s\nShift images".format(time()-t0))
+			print(("{:1.1f} s\nShift images".format(time()-t0)))
 			#t0=time()
 			#write individual aligned frames
 			for i,im in enumerate(outim):
@@ -537,7 +537,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 				thr=(max(quals[1:])-min(quals))*0.4+min(quals)	# max correlation cutoff for inclusion
 				best=[im for i,im in enumerate(outim) if quals[i]>thr]
 				out=qsum(best)
-				print("Keeping {}/{} frames".format(len(best),len(outim)))
+				print(("Keeping {}/{} frames".format(len(best),len(outim))))
 				if options.debug: out.write_image("{}__goodali_{}.hdf".format(alioutname,options.round),0)
 				else: out.write_image("{}__goodali.hdf".format(alioutname),0)
 
@@ -545,7 +545,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 				thr=(max(quals[1:])-min(quals))*0.6+min(quals)	# max correlation cutoff for inclusion
 				best=[im for i,im in enumerate(outim) if quals[i]>thr]
 				out=qsum(best)
-				print("Keeping {}/{} frames".format(len(best),len(outim)))
+				print(("Keeping {}/{} frames".format(len(best),len(outim))))
 				if options.debug: out.write_image("{}__bestali_{}.hdf".format(alioutname,options.round),0)
 				else: out.write_image("{}__bestali.hdf".format(alioutname),0)
 
@@ -558,7 +558,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 			if len(options.rangeali)>0:
 				try: rng=[int(i) for i in options.rangeali.split("-")]
 				except:
-					print "Error: please specify --rangeali as X-Y where X and Y are inclusive starting with 0"
+					print("Error: please specify --rangeali as X-Y where X and Y are inclusive starting with 0")
 					sys.exit(1)
 				out=qsum(outim[rng[0]:rng[1]+1])
 				if options.debug: out.write_image("{}__{}-{}_{}.hdf".format(alioutname,rng[0],rng[1],options.round),0)
@@ -642,20 +642,23 @@ def split_fft(options,img,i,box,step,out):
 			lst.append(clp.do_fft())
 	out.put((i,lst))
 
-def correlation_peak_model((x, y), xo, yo, sigma, amp):
+def correlation_peak_model(xxx_todo_changeme, xo, yo, sigma, amp):
+	(x, y) = xxx_todo_changeme
 	xo = float(xo)
 	yo = float(yo)
 	g = amp*np.exp(-(((x-xo)**2)+((y-yo)**2))/(2*sigma**2))
 	return g.ravel()
 
-def fixedbg_peak_model((x, y), sigma, amp):
+def fixedbg_peak_model(xxx_todo_changeme1, sigma, amp):
+	(x, y) = xxx_todo_changeme1
 	xo = float(len(x)/2)
 	yo = float(len(y)/2)
 	g = amp*np.exp(-(((x-xo)**2)+((y-yo)**2))/(2*sigma**2))
 	return g.ravel()
 
-def twod_bimodal((x,y),x1,y1,sig1,amp1,sig2,amp2):
+def twod_bimodal(xxx_todo_changeme2,x1,y1,sig1,amp1,sig2,amp2):
 	#correlation_peak = correlation_peak_model((x,y),x1,y1,sig1,amp1)
+	(x,y) = xxx_todo_changeme2
 	cp = amp1*np.exp(-(((x-x1)**2+(y-y1)**2))/(2*sig1**2)).ravel()
 	#fixedbg_peak = fixedbg_peak_model((x,y),sig2,amp2)
 	fp = amp2*np.exp(-(((x-float(len(x)/2))**2+(y-float(len(y)/2))**2))/(2*sig2**2)).ravel()
@@ -712,8 +715,8 @@ def qual(locs,ccfs):
 	nrg=0.0
 	cen=ccfs[(0,1)]["nx"]/2
 	n=len(locs)/2
-	for i in xrange(n-1):
-		for j in xrange(i+1,n):
+	for i in range(n-1):
+		for j in range(i+1,n):
 			penalty = sqrt(float(n-fabs(i-j))/n)**2 # This is a recognition that we will tend to get better correlation with near neighbors in the sequence
 			locx = int(cen+locs[j*2]-locs[i*2])
 			locy = int(cen+locs[j*2+1]-locs[i*2+1])

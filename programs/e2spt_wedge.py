@@ -82,14 +82,14 @@ def main():
 			else:
 				a['spt_wedge_mean'] = mean
 				a['spt_wedge_sigma'] = sigma
-				print "The mean and sigma for subvolume %d are: mean=%f, sigma=%f" % (i,mean,sigma)
+				print("The mean and sigma for subvolume %d are: mean=%f, sigma=%f" % (i,mean,sigma))
 				a.write_image(stack,i)
 		
 		if options.averagestats:
 			meanavg = sum(means)/len(means)
 			sigmaavg = sum(sigmas)/len(sigmas)
 			
-			print "The average mean and sigma for the wedges in the stack are", meanavg, sigmaavg
+			print("The average mean and sigma for the wedges in the stack are", meanavg, sigmaavg)
 			for i in range(n):
 				a = EMData(stack,i)
 				a['spt_wedge_mean'] = meanavg
@@ -160,7 +160,7 @@ class MissingWedgeViewer(QtGui.QWidget):
 		self.setLayout(grid)
 		
 		# Fill combox box
-		for i in xrange(len(self.volumes)):
+		for i in range(len(self.volumes)):
 			self.volcombobox.addItem(str(i))
 			
 		#Add actions

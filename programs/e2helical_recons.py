@@ -31,29 +31,29 @@ def main():
   
 ############above are paramter sets#######################  
   ptcls=EMData.read_images(options.input) # read in the original particle set, this typically does not change 
-  print options.input  # input is the original particles set
-  print "total %d particles"%len(ptcls) # print out how many particles in the set
+  print(options.input)  # input is the original particles set
+  print("total %d particles"%len(ptcls)) # print out how many particles in the set
   reso=90 # define projections number, more projections mean higher resolution
   #ret=EMData.read_images(update_vol1) # read in the volume set
-  orts=[Transform({"type":"eman","az":360/reso*j,"phi":0,"alt":90}) for j in xrange(reso)]
+  orts=[Transform({"type":"eman","az":360/reso*j,"phi":0,"alt":90}) for j in range(reso)]
    
-  for cycle1 in xrange(100):   # the model refinement cycle
+  for cycle1 in range(100):   # the model refinement cycle
   #### the projections has to be cleared before next run
     
     cycle=len(ret)+2*cycle1
-    print "this is cycle %d" %cycle
+    print("this is cycle %d" %cycle)
     proj1=proj0+"cycle_%d" %cycle
-    print proj1
+    print(proj1)
     ret=EMData.read_images(update_vol1) # volume set is updated, need reload
-    print "len(ret)=%d" %len(ret)
+    print("len(ret)=%d" %len(ret))
     
     projs=[ret[cycle].project("standard",ort) for ort in orts] # orts is the list of transformations, projs is the projections list corresponding those transformations
     
     try: os.mkdir("projections")
     except: pass
     #dcts=db_list_dicts("bdb:projections")
-    for i in xrange(reso):
-      print "this is projection %d" %i
+    for i in range(reso):
+      print("this is projection %d" %i)
 
       projs[i].write_image("%s" %proj1,-1) # write out the 90 projections of volume to file for the following e2simmx.py to use
     #os.system("rm -rf simmx") # clean the simmx folder
@@ -67,14 +67,14 @@ def main():
     
     score=EMData.read_images("%s" %simx1) # read the scrore from similarity matrix simmx_02022011a 
     bslst=[]
-    for i in xrange(len(ptcls)):
+    for i in range(len(ptcls)):
       bs=[]
-      bs=[score[0][j] for j in xrange(i*reso,(i+1)*reso)] # for each particle find all scores corresponding to each projection, the score is stored in the first line score[0][j] (score[0][j] means the score of praticle i and jth projection).
+      bs=[score[0][j] for j in range(i*reso,(i+1)*reso)] # for each particle find all scores corresponding to each projection, the score is stored in the first line score[0][j] (score[0][j] means the score of praticle i and jth projection).
       best_score=min(bs) # bs is the list of scores of ith particle and the 90 projections, best_score is the smallest number of the scrore in bs  
       bslst.append((best_score,i)) # bslst is the best score list of all the particles, ith particle has a best score and stored in bslst and so on for the other particle.
       n=bs.index(best_score) # find the projection number n corresponding best score of particle i.
       ptcls[i]["match_n"]=n # assign n to particle i
-      if i%30==0: print "%d, %2d%% complete!" %(i,i*100/len(ptcls))
+      if i%30==0: print("%d, %2d%% complete!" %(i,i*100/len(ptcls)))
       ptcls[i]["match_qual"]=best_score 
       ptcls[i]["xform.projection"]=orts[n]
 
@@ -83,11 +83,11 @@ def main():
     bslst.sort() # sort the best score list from smallest to bigger (-1 is best)
     #bslst.reverse()
     aptcls=[] # aligned particles set
-    for i in xrange(int(len(ptcls)*60/100.0)): # use the 70% total particles which has better best_score
+    for i in range(int(len(ptcls)*60/100.0)): # use the 70% total particles which has better best_score
       n=ptcls[bslst[i][1]]["match_n"] # the ith best score corresponds particle bslst[i][1]
       aptcls.append(ptcls[bslst[i][1]].align("rotate_translate_flip",projs[n],{},"dot",{}))
       #aptcls[-1].process_inplace("xform.centerofmass",{})
-      if i%30==0: print "score=%f, %d, %2d%% complete!" %(bslst[i][0], i,i*100*8/6/len(ptcls))
+      if i%30==0: print("score=%f, %d, %2d%% complete!" %(bslst[i][0], i,i*100*8/6/len(ptcls)))
       #aptcls[i].process_inplace("xform.centerofmass",{})
       #aptcls[i].write_image(aligned1,-1) # write out the aligned particle set
 
@@ -95,7 +95,7 @@ def main():
     try: os.mkdir("updated_models") 
     except: pass
     vol.write_image(update_vol1,-1) # write out the volume file to the end of list
-    print "back projection completed"
+    print("back projection completed")
    # display(vol) 
     
     new_volume=vol.copy()  # new_volume is the volume in the volume set new_vol
@@ -105,8 +105,8 @@ def main():
     dz=15.06 # initial guessing of dz
     phi_array=[]
     std_array=[]
-    for ite in xrange(1): 
-      print "this is %d cycle" %ite
+    for ite in range(1): 
+      print("this is %d cycle" %ite)
       d_phi=35.+0.05*ite # initial guessing of d_phi, the unit is degree
   ################## change the volume to cyliner
       '''
@@ -118,9 +118,9 @@ def main():
       '''
       avg_vol=EMData(nx,nx,nx) # initialize the averaged volume for 9 subunits
       mean_std=0.0 # intialize mean squared deviation
-      for k in xrange(int (nx-dz)/2, int (nx+dz)/2): # k ranged from lower plane to upper plane ---> width of central volume
-        for i in xrange(nx):
-          for j in xrange(nx):
+      for k in range(int (nx-dz)/2, int (nx+dz)/2): # k ranged from lower plane to upper plane ---> width of central volume
+        for i in range(nx):
+          for j in range(nx):
             if new_volume.get(i,j,k)!=0.0: # the voxel should not be 0.0
               sublst=[] # sublst is the list containning the 9 voxel value of the neighboring subunits
               r=sqrt((i-nx/2-0.5)*(i-nx/2-0.5)+(j-nx/2-0.5)*(j-nx/2-0.5))  # find r, the distance to the center (nx/2-0.5,nx/2-0.5)
@@ -128,7 +128,7 @@ def main():
               if i<nx/2:
 	        theta+=180.0 # this is very important, since atan(theta) range from -pi/2 to pi/2
               #print "r=%f\t theta=%f" %(r,theta) 
-              for units in xrange(-4,5): #use 8 neighboring subunits from -4 to +4: -4 -3 -2 -1 0 1 2 3 4
+              for units in range(-4,5): #use 8 neighboring subunits from -4 to +4: -4 -3 -2 -1 0 1 2 3 4
                 if units==0:
                   sublst.append(new_volume.get(i,j,k)) # put the central subunit to the list      
                 else:
@@ -142,11 +142,11 @@ def main():
               avg_vol.set_value_at(i,j,k,temp_mean)
               temp_std=numpy.std(sublst)
               mean_std+=temp_std 
-        print "i,j,k=%d,%d,%d\t std=%f" %(i,j,k,mean_std)
-      print "dz=%f\t d_phi=%f\t mean_deviation=%f\n" %(dz,d_phi,mean_std)
+        print("i,j,k=%d,%d,%d\t std=%f" %(i,j,k,mean_std))
+      print("dz=%f\t d_phi=%f\t mean_deviation=%f\n" %(dz,d_phi,mean_std))
     
       thisfile=file(least_output1,'a') # output the least square data to file
-      print>>thisfile,dz,d_phi,mean_std
+      print(dz,d_phi,mean_std, file=thisfile)
       thisfile.close()
       phi_array.append(d_phi)
       std_array.append(mean_std)
@@ -163,7 +163,7 @@ def main():
     #display(avg_vol)
     dcopy=avg_vol.copy() # dcopy is the copy of the averaged volume
     sym_str="h4,20,%d,%d" %(d_phi,dz) # define h-symmetry parameter string
-    for i in xrange(17):
+    for i in range(17):
       temp_av=avg_vol.copy()
       temp_av.transform(xf.get_sym(sym_str,i)) # dc is the h-symmetrized subunit
       dcopy.add(temp_av)

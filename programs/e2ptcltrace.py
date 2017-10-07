@@ -96,7 +96,7 @@ def main():
 				cs = c.replace("classmx","classes")
 				if os.path.isfile(p): proj.append(p)
 				if os.path.isfile(cs): classes.append(cs)
-			else: print("{} is not a classmx file. It will not be processed.".format(f))
+			else: print(("{} is not a classmx file. It will not be processed.".format(f)))
 
 		if len(cmx) < 2:
 			print("ERROR: You must specify at least two classmx files.")
@@ -111,7 +111,7 @@ def main():
 
 		for i in cls[1:]:
 			if i[0]["ny"]!=nptcl:
-				print "ERROR: classmx files must have exactly the same number of particles"
+				print("ERROR: classmx files must have exactly the same number of particles")
 				sys.exit(1)
 
 	# wait until after error checking
@@ -125,7 +125,7 @@ def main():
 	for x,p,c in zip(cmx,proj,classes):
 		ncls=EMUtil.get_image_count(p)
 		orts = []
-		for i in xrange(ncls):
+		for i in range(ncls):
 			if options.verbose:
 				sys.stdout.write('\r{}\t{}\t{}/{}\t'.format(x,p,i+1,ncls))
 			orts.append( EMData(p,i,True)["xform.projection"] )
@@ -139,7 +139,7 @@ def main():
 	
 	with open(options.output,"w") as outf:
 	
-		for p in xrange(nptcl):
+		for p in range(nptcl):
 			isodd = p%2
 			
 			if options.verbose:
@@ -147,7 +147,7 @@ def main():
 			
 			dat = []
 			
-			for i in xrange(1,len(cls)):
+			for i in range(1,len(cls)):
 				ort1=clsort[i-1][int(cls[i-1][0][0,p])] # orientation of particle in first classmx
 				ort2=clsort[i][int(cls[i][0][0,p])]		# orientation of particle in second classmx
 
@@ -244,7 +244,7 @@ def main():
 				keyfile.write("\n".join([x for x in k])+"\n")
 				ctr+=len(k)
 
-	print("Particle trace results stored in {}.\nThe file {} describes the contents of each column.".format(options.output,kf))
+	print(("Particle trace results stored in {}.\nThe file {} describes the contents of each column.".format(options.output,kf)))
 
 	E2end(E2n)
 

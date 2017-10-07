@@ -50,7 +50,7 @@ try:
 	from emshape import *
 	from valslider import *
 except:
-	print "Warning: PyQt4 must be installed"
+	print("Warning: PyQt4 must be installed")
 	sys.exit(1)
 
 from Simplex import Simplex
@@ -122,12 +122,12 @@ class GUIEvalImage(QtGui.QWidget):
 		try:
 			from emimage2d import EMImage2DWidget
 		except:
-			print "Cannot import EMAN image GUI objects (EMImage2DWidget)"
+			print("Cannot import EMAN image GUI objects (EMImage2DWidget)")
 			sys.exit(1)
 		try:
 			from emplot2d import EMPlot2DWidget
 		except:
-			print "Cannot import EMAN plot GUI objects (is matplotlib installed?)"
+			print("Cannot import EMAN plot GUI objects (is matplotlib installed?)")
 			sys.exit(1)
 
 		QtGui.QWidget.__init__(self,None)
@@ -165,12 +165,12 @@ class GUIEvalImage(QtGui.QWidget):
 		for i in images:
 			n=EMUtil.get_image_count(i)
 			if n!=1:
-				for j in xrange(n): newimages.append(i+",%d"%j)
+				for j in range(n): newimages.append(i+",%d"%j)
 			else:
 				h=EMData(i,0,True)		# read header
 				n=h["nz"]
 				if n!=1:
-					for j in xrange(n): newimages.append(i+";%d"%j)
+					for j in range(n): newimages.append(i+";%d"%j)
 				else : newimages.append(i)
 		images=newimages
 
@@ -191,7 +191,7 @@ class GUIEvalImage(QtGui.QWidget):
 				if self.defaultcs!=None : ctf.cs=self.defaultcs
 				if self.defaultapix!=None : ctf.apix=self.defaultapix
 				parms=[int(box),ctf,(256,256),set(),5,1]
-				print "Initialize new parms for: ",base_name(i)
+				print("Initialize new parms for: ",base_name(i))
 
 			if self.constbfactor>0 : parms[1].bfactor=self.constbfactor
 
@@ -496,7 +496,7 @@ class GUIEvalImage(QtGui.QWidget):
 		if self.plotmode==0:
 			try: bgsub=self.fft1d-bg1d
 			except:
-				print "Error computing bgsub on this image"
+				print("Error computing bgsub on this image")
 				return
 			self.wplot.set_data((s,bgsub),"fg-bg",quiet=True,color=0,linetype=0)
 
@@ -524,7 +524,7 @@ class GUIEvalImage(QtGui.QWidget):
 		elif self.plotmode==2:
 			if self.fft1dang==None: self.recalc_real()
 			bgsub=self.fft1d-bg1d
-			bgsuba=[array(self.fft1dang[i])-bg1d for i in xrange(4)]
+			bgsuba=[array(self.fft1dang[i])-bg1d for i in range(4)]
 					# Write the current image parameters to the database
 
 #			for i in xrange(4): bgsuba[i][0]=0
@@ -555,9 +555,9 @@ class GUIEvalImage(QtGui.QWidget):
 			#bgsub=self.fft1d-bg1d
 			#bgsuba=[array(self.fft1dang[i])-bg1d for i in xrange(4)]
 			fg=self.fft1d
-			fga=[array(self.fft1dang[i]) for i in xrange(4)]
+			fga=[array(self.fft1dang[i]) for i in range(4)]
 
-			for i in xrange(4): fga[i][0]=0
+			for i in range(4): fga[i][0]=0
 			self.wplot.set_data((s,fg),"fg",quiet=True,color=0,linetype=0)
 			self.wplot.set_data((s,fga[0]),"fg 0-45",quiet=True,color=2,linetype=0)
 			self.wplot.set_data((s,fga[1]),"fg 45-90",quiet=True,color=3,linetype=0)
@@ -636,7 +636,7 @@ class GUIEvalImage(QtGui.QWidget):
 				if self.fitastig : e2ctf.ctf_fit_stig(self.fft,self.fftbg,parms[1],verbose=1)
 
 		except:
-			print "CTF Autofit Failed"
+			print("CTF Autofit Failed")
 			traceback.print_exc()
 			parms[1].defocus=1.0
 
@@ -649,14 +649,14 @@ class GUIEvalImage(QtGui.QWidget):
 
 
 	def unImport(self,val=None):
-		print "unimport ",base_name(self.setlist.item(self.curset).text(),nodir=self.nodir)
+		print("unimport ",base_name(self.setlist.item(self.curset).text(),nodir=self.nodir))
 		item=base_name(self.setlist.item(self.curset).text(),nodir=self.nodir)
 		try: os.unlink("micrographs/%s.hdf"%item)
-		except: print "Couldn't delete micrographs/%s.hdf"%item
+		except: print("Couldn't delete micrographs/%s.hdf"%item)
 
 	def doImport(self,val=None):
 		"""Imports the currently selected image into a project"""
-		print "import ",base_name(self.setlist.item(self.curset).text(),nodir=self.nodir)
+		print("import ",base_name(self.setlist.item(self.curset).text(),nodir=self.nodir))
 
 		# This is just the (presumably) unique portion of the filename
 		item=base_name(self.setlist.item(self.curset).text(),nodir=self.nodir)
@@ -952,14 +952,14 @@ class GUIEvalImage(QtGui.QWidget):
 			# Find the minimum value near the origin, which we'll use as a zero (though it likely should not be)
 			mv=(self.fft1d[1],1)
 			fz=int(ctf.zero(0)/(ds*2))
-			for lz in xrange(1,fz):
+			for lz in range(1,fz):
 				mv=min(mv,(self.fft1d[lz],lz))
 
 #			print mv,int(ctf.zero(0)/(ds*2)),min(self.fft1d[1:int(ctf.zero(0)/(ds*2))])
 			xyd.insort(mv[1],mv[0])
 
 			# now we add all of the zero locations to our XYData object
-			for i in xrange(100):
+			for i in range(100):
 				z=int(ctf.zero(i)/ds)
 				if z>=len(bg_1d)-1: break
 				if self.fft1d[z-1]<self.fft1d[z] and self.fft1d[z-1]<self.fft1d[z+1]: mv=(z-1,self.fft1d[z-1])
@@ -968,17 +968,17 @@ class GUIEvalImage(QtGui.QWidget):
 				xyd.insort(mv[0],mv[1])
 
 			# new background is interpolated XYData
-			parms[1].background=[xyd.get_yatx_smooth(i,1) for i in xrange(len(bg_1d))]
+			parms[1].background=[xyd.get_yatx_smooth(i,1) for i in range(len(bg_1d))]
 
 			# if our first point (between the origin and the first 0) is too high, we readjust it once
-			bs=[self.fft1d[i]-parms[1].background[i] for i in xrange(fz)]
+			bs=[self.fft1d[i]-parms[1].background[i] for i in range(fz)]
 			if min(bs)<0 :
 				mv=(bs[0],self.fft1d[0],0)
-				for i in xrange(1,fz): mv=min(mv,(bs[i],self.fft1d[i],i))
+				for i in range(1,fz): mv=min(mv,(bs[i],self.fft1d[i],i))
 				xyd.set_x(0,mv[2])
 				xyd.set_y(0,mv[1])
 				
-				parms[1].background=[xyd.get_yatx_smooth(i,1) for i in xrange(len(bg_1d))]
+				parms[1].background=[xyd.get_yatx_smooth(i,1) for i in range(len(bg_1d))]
 
 		self.needredisp=True
 
