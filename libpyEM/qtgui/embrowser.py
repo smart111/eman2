@@ -33,7 +33,6 @@
 from EMAN2 import *
 from EMAN2jsondb import js_open_dict
 from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import QChar, QString, Qt
 from emapplication import EMApp
 from emimage2d import *
 from emimagemx import *
