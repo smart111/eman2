@@ -296,6 +296,32 @@ if(NOT WIN32)
 			)
 endif()
 
+add_custom_target(py-compile
+				  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+				  )
+
+file(GENERATE OUTPUT "parse_errors.sh"
+	 CONTENT "
+	 awk '/Error compiling/{
+	 read_next=1
+	res=$0
+	 sub(/.* Error compiling /,\"\", res)
+	 sub(/\\.\\.\\./,\"\", res)
+	 }
+	 /Sorry: TabError:/ && read_next==1{
+	 sub(/.*\\, line /,\"\")
+	 sub(/\\)/,\"\")
+	 printf(\"%s:%d\\n\", res, $0 )
+	 read_next=0
+	 }
+	 '
+"
+	 )
+add_custom_command(TARGET py-compile
+				   COMMAND ${PYTHON_EXECUTABLE} -m compileall -q ${CMAKE_SOURCE_DIR} | bash "${CMAKE_BINARY_DIR}/parse_errors.sh"
+				   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
 enable_testing()
 
 add_custom_target(test-verbose
