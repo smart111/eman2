@@ -206,7 +206,7 @@ def main():
 	
 	
 	points,count,atomnumber=read_pdb(options.pdbin)
-	if options.edgefile<>None:
+	if options.edgefile!=None:
 		hlxid=read_helix(options.edgefile)
 	else:
 		hlxid=set()

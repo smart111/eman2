@@ -5260,7 +5260,7 @@ def string_found_in_file(myregex, filename):
 	import re
 	pattern = re.compile(myregex)
 	for line in open(filename):
-		if re.findall(pattern, line) <> []:
+		if re.findall(pattern, line) != []:
 			return True
 	return False
 
