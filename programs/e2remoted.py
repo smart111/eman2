@@ -74,7 +74,7 @@ def run_daemon(options,args):
 	try: 
 		pid = os.fork() 
 		if pid > 0: sys.exit(0) # exit parent once
-	except OSError, e: 
+	except OSError as e: 
 		print("Daemon error") 
 		sys.exit(1)
 
@@ -89,7 +89,7 @@ def run_daemon(options,args):
 	try: 
 		pid = os.fork() 
 		if pid > 0: sys.exit(0) 	# exit the second time
-	except OSError, e: 
+	except OSError as e: 
 		print("Daemon error 2") 
 		sys.exit(1) 
 
@@ -134,8 +134,8 @@ def read_obj(stdin):
 	size=stdin.readline()
 	try: size=int(size)
 	except:
-		if size[:4]=="!!!!" : raise Exception,size[4:]
-		raise Exception,"Unknown error : "+size
+		if size[:4]=="!!!!" : raise Exception(size[4:])
+		raise Exception("Unknown error : "+size)
 	return loads(decompress(stdin.read(size)))
 
 def write_chunk(stdout,obj):
@@ -152,8 +152,8 @@ def read_chunk(stdin):
 	size=stdin.readline()
 	try: size=int(size)
 	except:
-		if size[:4]=="!!!!" : raise Exception,size[4:]
-		raise Exception,"Unknown error : "+size
+		if size[:4]=="!!!!" : raise Exception(size[4:])
+		raise Exception("Unknown error : "+size)
 	if size==0 : return ""
 	return decompress(stdin.read(size))
 
@@ -373,7 +373,7 @@ class scp_proxy:
 		self.stdin.write("mkdir\n%s\n"%path)
 		self.stdin.flush()
 		r=self.stdout.readline().strip()
-		if r!="OK" : raise Exception,"Error in creating remote path (%s)"%(r)
+		if r!="OK" : raise Exception("Error in creating remote path (%s)"%(r))
 
 	def listrecurse(self,path,basepath=""):
 		"""Recursively list the contents of a remote path, may be a directory or a BDB specifier. If specified

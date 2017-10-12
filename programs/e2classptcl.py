@@ -87,13 +87,13 @@ def extract_classav_vstack(inpath,classes,outpath,verbose=0):
 			imgsrc=av["class_ptcl_src"]
 			imgns=av["class_ptcl_idxs"]
 		except:
-			raise Exception,"Particle doesn't have source image info (%s,d)"%(inpath,avn)
+			raise Exception("Particle doesn't have source image info (%s,d)"%(inpath,avn))
 
 		# If we are writing to a virtual stack
 		try:
 			src=db_open_dict(imgsrc)		# this is the source database file
 		except:
-			raise Exception,"Cannot open source images as BDB (%s)"%imgsrc
+			raise Exception("Cannot open source images as BDB (%s)"%imgsrc)
 		
 		for n in imgns:
 			# here we make the new entry in the vstack
@@ -121,7 +121,7 @@ def extract_classav(inpath,classes,outpath,verbose=0):
 			imgsrc=av["class_ptcl_src"]
 			imgns=av["class_ptcl_idxs"]
 		except:
-			raise Exception,"Particle doesn't have source image info (%s,d)"%(inpath,avn)
+			raise Exception("Particle doesn't have source image info (%s,d)"%(inpath,avn))
 
 		# If we are writing to a virtual stack
 		

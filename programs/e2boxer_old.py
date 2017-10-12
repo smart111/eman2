@@ -1818,7 +1818,7 @@ class SwarmTool(SwarmBoxer,EMBoxingTool):
 					self.moving=[m,box_num,box.type]
 #					self.target().moving_box_established(box_num)
 			else:
-				raise EMUnknownBoxType,box.type
+				raise EMUnknownBoxType(box.type)
 
 
 
@@ -1829,7 +1829,7 @@ class SwarmTool(SwarmBoxer,EMBoxingTool):
 			self.target().remove_box(box_num)
 			self.remove_ref(box,self.target().current_file())
 		else:
-			raise EMUnknownBoxType,box.type
+			raise EMUnknownBoxType(box.type)
 
 	def mouse_drag(self,event) :
 		m=self.get_2d_window().scr_to_img((event.x(),event.y()))
@@ -1863,7 +1863,7 @@ class SwarmTool(SwarmBoxer,EMBoxingTool):
 	def moving_ptcl_established(self,box_num,x,y):
 		box = self.target().get_box(box_num)
 		if box.type not in [SwarmBoxer.REF_NAME,SwarmBoxer.AUTO_NAME,SwarmBoxer.WEAK_REF_NAME]:
-			raise EMUnknownBoxType,box.type
+			raise EMUnknownBoxType(box.type)
 
 		self.ptcl_moving_data = [x,y,box_num]
 
@@ -1893,7 +1893,7 @@ class SwarmTool(SwarmBoxer,EMBoxingTool):
 	def delete_ptcl(self,box_num):
 		box = self.target().get_box(box_num)
 		if box.type not in [SwarmBoxer.REF_NAME,SwarmBoxer.AUTO_NAME,SwarmBoxer.WEAK_REF_NAME]:
-			raise EMUnknownBoxType,box.type
+			raise EMUnknownBoxType(box.type)
 
 		self.handle_box_delete(self.target().get_box(box_num),box_num)
 
@@ -2416,7 +2416,7 @@ class GaussPanel:
 			ctf_cs           = float(self.ctf_cs.text())
 			ctf_ampcont      = float(self.ctf_ampcont.text())
 
-		except ValueError,extras:
+		except ValueError as extras:
 			# conversion of a value failed!
 			print("integer conversion failed.")
 			if not(extras.args is None):
@@ -2535,7 +2535,7 @@ class GaussPanel:
 			ctf_ampcont      = float(self.ctf_ampcont.text())
 			ctf_kboot        = int(self.ctf_kboot.text())
 
-		except ValueError,extras:
+		except ValueError as extras:
 			# conversion of a value failed!
 			print("integer conversion failed.")
 			if not(extras.args is None):
@@ -3108,7 +3108,7 @@ class GaussTool(GaussBoxer,EMBoxingTool):
 			self.target().remove_box(box_num)
 			self.remove_ref(box,self.target().current_file())
 		else:
-			raise EMUnknownBoxType,box.type
+			raise EMUnknownBoxType(box.type)
 
 	def mouse_drag(self,event) :
 		m=self.get_2d_window().scr_to_img((event.x(),event.y()))
@@ -3142,7 +3142,7 @@ class GaussTool(GaussBoxer,EMBoxingTool):
 	def moving_ptcl_established(self,box_num,x,y):
 		box = self.target().get_box(box_num)
 		if box.type not in [GaussBoxer.REF_NAME,GaussBoxer.AUTO_NAME,GaussBoxer.WEAK_REF_NAME]:
-			raise EMUnknownBoxType,box.type
+			raise EMUnknownBoxType(box.type)
 
 		self.ptcl_moving_data = [x,y,box_num]
 
@@ -3172,7 +3172,7 @@ class GaussTool(GaussBoxer,EMBoxingTool):
 	def delete_ptcl(self,box_num):
 		box = self.target().get_box(box_num)
 		if box.type not in [GaussBoxer.REF_NAME,GaussBoxer.AUTO_NAME,GaussBoxer.WEAK_REF_NAME]:
-			raise EMUnknownBoxType,box.type
+			raise EMUnknownBoxType(box.type)
 
 		self.handle_box_delete(self.target().get_box(box_num),box_num)
 
