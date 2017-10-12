@@ -145,13 +145,13 @@ NOTE: This program should be run from the project directory, not from within the
 	(options, args) = parser.parse_args()
 
 	if options.dbds!=None :
-		print "--dbds no longer supported, as this was part of the retired e2workflow interface. Exiting."
+		print("--dbds no longer supported, as this was part of the retired e2workflow interface. Exiting.")
 		sys.exit(1)
 
 	if options.threads : nthreads=options.threads
 	elif options.parallel!=None :
 		if options.parallel[:7]!="thread:":
-			print "ERROR: only thread:<n> parallelism supported by this program"
+			print("ERROR: only thread:<n> parallelism supported by this program")
 			sys.exit(1)
 		nthreads=int(options.parallel[7:])
 	else: nthreads=1
@@ -159,36 +159,36 @@ NOTE: This program should be run from the project directory, not from within the
 	if options.allparticles:
 		args=["particles/"+i for i in os.listdir("particles") if "__ctf" not in i and i[0]!="." and ".hed" not in i ]
 		args.sort()
-		if options.verbose : print "%d particle stacks identified"%len(args)
+		if options.verbose : print("%d particle stacks identified"%len(args))
 
 	if options.chunk!=None:
-		print sys.argv
+		print(sys.argv)
 		ninchunk,nchunk=options.chunk.split(",")
 		ninchunk=int(ninchunk)
 		nchunk=int(nchunk)
-		if options.verbose : print "{} stacks with chunks of {}".format(len(args),ninchunk)
+		if options.verbose : print("{} stacks with chunks of {}".format(len(args),ninchunk))
 		args=args[ninchunk*nchunk:ninchunk*(nchunk+1)]
-		if options.verbose: print "{} stacks in specified chunk".format(len(args))
+		if options.verbose: print("{} stacks in specified chunk".format(len(args)))
 		nthreads=1		# no threading with chunks
 
 	if options.onlynobispec:
-		print "%d files to process"%len(args)
+		print("%d files to process"%len(args))
 		dl=os.listdir("particles")
 		args=[i for i in args if not base_name(i)+"__ctf_flip_bispec.hdf" in dl]
-		if options.verbose: print "{} stacks after onlynobispec filter".format(len(args))
+		if options.verbose: print("{} stacks after onlynobispec filter".format(len(args)))
 
 	if options.onlynew:
-		print "%d files to process"%len(args)
+		print("%d files to process"%len(args))
 		dl=os.listdir("particles")
 		args=[i for i in args if not base_name(i)+"__ctf_flip.hdf" in dl]
-		if options.verbose: print "{} stacks after onlynew filter".format(len(args))
+		if options.verbose: print("{} stacks after onlynew filter".format(len(args)))
 
 
 #	if len(args)<1 : parser.error("Input image required")
 	if options.autofit:
 		if options.voltage==0 : parser.error("Please specify voltage")
 		if options.cs==0 : parser.error("Please specify Cs")
-	if options.apix==0 : print "Using A/pix from header"
+	if options.apix==0 : print("Using A/pix from header")
 
 	debug=options.debug
 	img_sets=None
@@ -208,7 +208,7 @@ NOTE: This program should be run from the project directory, not from within the
 	# remove any files that don't have enough particles from the list
 	if options.minptcl>0 :
 		args=[i for i in args if imcount(i)>=options.minptcl]
-		if options.verbose: print "{} stacks after minptcl filter".format(len(args))
+		if options.verbose: print("{} stacks after minptcl filter".format(len(args)))
 
 
 	# remove files with quality too low
@@ -221,24 +221,24 @@ NOTE: This program should be run from the project directory, not from within the
 				js.close()
 			except:
 #				traceback.print_exc()
-				print "Unknown quality for {}, including it".format(info_name(i))
+				print("Unknown quality for {}, including it".format(info_name(i)))
 				outargs.append(i)
 
 		args=outargs
 
-		if options.verbose: print "{} stacks after quality filter".format(len(args))
+		if options.verbose: print("{} stacks after quality filter".format(len(args)))
 
 	options.filenames = args
 
 	### Power spectrum and CTF fitting
 	if nthreads>1:
-		print "Fitting in parallel with ",nthreads," threads"
+		print("Fitting in parallel with ",nthreads," threads")
 		chunksize=int(ceil(float(len(args))/nthreads))
 #		print " ".join(sys.argv+["--chunk={},{}".format(chunksize,0)])
 		threads=[threading.Thread(target=os.system,args=[" ".join(sys.argv+["--chunk={},{}".format(chunksize,i)])]) for i in xrange(nthreads)]
 		for t in threads: t.start()
 		for t in threads: t.join()
-		print "Parallel fitting complete"
+		print("Parallel fitting complete")
 		E2end(logid)
 		sys.exit(0)
 	else:
@@ -275,7 +275,7 @@ NOTE: This program should be run from the project directory, not from within the
 		refine_and_smoothsnr(options,sfcurve2,debug=False)
 
 	### Process input files
-	if debug : print "Phase flipping / Wiener filtration"
+	if debug : print("Phase flipping / Wiener filtration")
 	# write wiener filtered and/or phase flipped particle data to the local database
 	if options.phaseflip or options.wiener or options.phasefliphp or options.phaseflipsmall or options.phaseflipproc or options.storeparm: # only put this if statement here to make the program flow obvious
 		write_e2ctf_output(options) # converted to a function so to work with the workflow
@@ -284,7 +284,7 @@ NOTE: This program should be run from the project directory, not from within the
 		img_sets = get_gui_arg_img_sets(options.filenames)
 		if options.constbfactor>0:
 			for i in img_sets: i[1].bfactor=options.constbfactor
-		print "Recomputing structure factor"
+		print("Recomputing structure factor")
 		envelope=compute_envelope(img_sets)
 
 #		print envelope
@@ -334,7 +334,7 @@ def init_sfcurve(opt):
 		sfcurve.set_y(i,pow(10.0,cv[i]))
 
 	if sfcurve2==None:
-		print "No  structure factor found, using default internal structure factor. If fitting results are poor, consider rerunning --autofit once structure factor has been computed."
+		print("No  structure factor found, using default internal structure factor. If fitting results are poor, consider rerunning --autofit once structure factor has been computed.")
 		sfcurve2=sfcurve
 		hasgoodsf=False
 
@@ -353,9 +353,9 @@ def get_gui_arg_img_sets(filenames):
 			if len(img_set)==3: 
 				img_set.append(js_parms["ctf_im2d"])
 				img_set.append(js_parms["ctf_bg2d"])
-				if not isinstance(img_set[4],EMData): print img_set[4]
+				if not isinstance(img_set[4],EMData): print(img_set[4])
 		except:
-			print "Warning, you must run auto-fit before running the GUI. No parameters for ",info_name(fsp)
+			print("Warning, you must run auto-fit before running the GUI. No parameters for ",info_name(fsp))
 #			traceback.print_exc()
 			continue
 		try:
@@ -396,10 +396,10 @@ def write_e2ctf_output(options):
 	if options.phaseflip or options.wiener or options.phasefliphp or options.phaseflipproc!=None or options.storeparm:
 		for i,filename in enumerate(options.filenames):
 			name=base_name(filename)
-			if debug: print "Processing ",filename
+			if debug: print("Processing ",filename)
 			try: im=EMData(filename,0,True)
 			except:
-				print "Error processing {}. Does not appear to be an image stack. Skipping.".format(filename)
+				print("Error processing {}. Does not appear to be an image stack. Skipping.".format(filename))
 				continue
 
 			if options.phaseflip: phaseout=get_ptcl_name(filename, "flip")
@@ -437,15 +437,15 @@ def write_e2ctf_output(options):
 				ctf=js["ctf"][0]		# EMAN2CTF object from disk
 				js.close()
 			except:
-				print "No CTF parameters found in {}, skipping {}.".format(info_name(filename),filename)
+				print("No CTF parameters found in {}, skipping {}.".format(info_name(filename),filename))
 				continue
 			if options.constbfactor>0: ctf.bfactor=options.constbfactor
 
-			if phaseout : print "Phase image out: ",phaseout,"\t",
-			if phaseprocout : print "Processed phase image out: ",phaseprocout[0],"\t",
-			if phasehpout : print "Phase-hp image out: ",phasehpout,"\t",
-			if wienerout : print "Wiener image out: ",wienerout,
-			print "  defocus=",ctf.defocus
+			if phaseout : print("Phase image out: ",phaseout,"\t", end=' ')
+			if phaseprocout : print("Processed phase image out: ",phaseprocout[0],"\t", end=' ')
+			if phasehpout : print("Phase-hp image out: ",phasehpout,"\t", end=' ')
+			if wienerout : print("Wiener image out: ",wienerout, end=' ')
+			print("  defocus=",ctf.defocus)
 
 			process_stack(filename,phaseout,phasehpout,phasesmout,wienerout,phaseprocout,options.extrapad,not options.nonorm,options.oversamp,ctf,invert=options.invert,storeparm=options.storeparm,source_image=options.source_image,zero_ok=options.zerook)
 
@@ -513,7 +513,7 @@ def compute_envelope(img_sets,smax=.06):
 			out.write("{}\t{}\n".format(j[0],j[1]))
 
 		sc=j[1]/sfact(j[0])
-		print "\nTransitioning to internal structure factor at %1.1f A with scale factor %1.2f"%(1/j[0],sc)
+		print("\nTransitioning to internal structure factor at %1.1f A with scale factor %1.2f"%(1/j[0],sc))
 		ds=envelope[i][0]-envelope[i-1][0]
 		envelope=envelope[:i]
 		s=j[0]
@@ -541,7 +541,7 @@ def fixnegbg(bg_1d,im_1d,ds):
 			ratio=(im_1d[i]+im_1d[i+1]+im_1d[i-1])/(bg_1d[i]+bg_1d[i+1]+bg_1d[i-1])
 
 	# return the corrected background
-	print "BG correction ratio %1.4f"%ratio
+	print("BG correction ratio %1.4f"%ratio)
 	return [i*ratio for i in bg_1d]
 
 def pspec_and_ctf_fit(options,debug=False):
@@ -557,11 +557,11 @@ def pspec_and_ctf_fit(options,debug=False):
 		name=base_name(filename)
 		try : js_parms=js_open_dict(info_name(filename))
 		except :
-			print "ERROR: Cannot open {} for metadata storage. Exiting.".format(info_name(filename))
+			print("ERROR: Cannot open {} for metadata storage. Exiting.".format(info_name(filename)))
 			sys.exit(1)
 
 		# compute the power spectra
-		if options.verbose or debug : print "Processing ",filename
+		if options.verbose or debug : print("Processing ",filename)
 		apix=options.apix
 		if apix<=0 : apix=EMData(filename,0,1)["apix_x"]
 
@@ -570,11 +570,11 @@ def pspec_and_ctf_fit(options,debug=False):
 		else: ps=list((powspec_with_bg(filename,options.source_image,radius=options.bgmask,edgenorm=not options.nonorm,oversamp=options.oversamp,apix=apix,zero_ok=options.zerook,wholeimage=options.wholeimage,highdensity=options.highdensity),))
 		# im_1d,bg_1d,im_2d,bg_2d,bg_1d_low,micro_1d/none
 		if ps==None :
-			print "Error fitting CTF on ",filename
+			print("Error fitting CTF on ",filename)
 			continue
 		try: ds=1.0/(apix*ps[0][2].get_ysize())
 		except:
-			print "Error fitting CTF (ds) on ",filename
+			print("Error fitting CTF (ds) on ",filename)
 			continue
 
 		for j,p in enumerate(ps):
@@ -589,7 +589,7 @@ def pspec_and_ctf_fit(options,debug=False):
 			if debug: Util.save_data(0,ds,bg_1d,"ctf.bgb4.txt")
 
 			# Fit the CTF parameters
-			if debug : print "Fit CTF"
+			if debug : print("Fit CTF")
 			if options.curdefocushint or options.curdefocusfix:
 				try:
 					if options.useframedf : raise Exception		# a bit of a hack...
@@ -600,7 +600,7 @@ def pspec_and_ctf_fit(options,debug=False):
 					curdfang=ctf.dfang
 					if options.curdefocushint: dfhint=(curdf-0.1,curdf+0.1)
 					else: dfhint=(curdf-.001,curdf+.001)
-					print "Using existing defocus as hint :",dfhint
+					print("Using existing defocus as hint :",dfhint)
 				except :
 					try:
 						ctf=js_parms["ctf_frame"][1]
@@ -610,10 +610,10 @@ def pspec_and_ctf_fit(options,debug=False):
 						curdfang=ctf.dfang
 						if options.curdefocushint: dfhint=(curdf-0.1,curdf+0.1)
 						else: dfhint=(curdf-.001,curdf+.001)
-						print "Using existing defocus from frame as hint :",dfhint
+						print("Using existing defocus from frame as hint :",dfhint)
 					except:
 						dfhint=None
-						print "No existing defocus to start with"
+						print("No existing defocus to start with")
 			else: dfhint=(options.defocusmin,options.defocusmax)
 			ctf=ctf_fit(im_1d,bg_1d,bg_1d_low,im_2d,bg_2d,options.voltage,max(options.cs,0.01),options.ac,apix,bgadj=not options.nosmooth,autohp=options.autohp,dfhint=dfhint,highdensity=options.highdensity,verbose=options.verbose)
 			if options.astigmatism and not options.curdefocusfix : ctf_fit_stig(im_2d,bg_2d,ctf,verbose=1)
@@ -651,7 +651,7 @@ def pspec_and_ctf_fit(options,debug=False):
 	project_db = js_open_dict("info/project.json")
 	try: project_db.update({ "global.microscope_voltage":options.voltage, "global.microscope_cs":options.cs, "global.apix":apix })
 	except:
-		print "ERROR: apix not found. This probably means that no CTF curves were sucessfully fit !"
+		print("ERROR: apix not found. This probably means that no CTF curves were sucessfully fit !")
 
 	return img_sets
 
@@ -671,18 +671,18 @@ def refine_and_smoothsnr(options,strfact,debug=False):
 		name=base_name(filename)
 		js_parms=js_open_dict(info_name(filename))
 
-		if debug : print "Processing ",filename
+		if debug : print("Processing ",filename)
 
 		try:
 			orig=js_parms["ctf"]
 			ctf=orig[0]
 		except:
-			print "Error: no fit data for {}. Skipping.".format(name)
+			print("Error: no fit data for {}. Skipping.".format(name))
 			skipped+=1
 			continue
 
 		if ctf.dfdiff!=0 :
-			print "Skipping {}. SSNR based refinement not available for astigmatic images.".format(name)
+			print("Skipping {}. SSNR based refinement not available for astigmatic images.".format(name))
 			skipped+=1
 			continue
 
@@ -698,7 +698,7 @@ def refine_and_smoothsnr(options,strfact,debug=False):
 		ctf.snr=[snr_safe(im_1d[i],bg_1d[i]) for i in range(len(im_1d))]
 
 		# Tune the defocus to maximize high res snr
-		if debug : print "Fit Defocus"
+		if debug : print("Fit Defocus")
 		best=(0,olddf[-1])
 		for df in [olddf[-1]+ddf/1000.0 for ddf in xrange(-100,101)]:
 			ctf.defocus=df
@@ -709,7 +709,7 @@ def refine_and_smoothsnr(options,strfact,debug=False):
 			best=max(best,(qual,df))
 
 		newdf.append(best[1])
-		if options.verbose : print "%s: %1.4f -> %1.4f"%(filename,olddf[-1],best[1])
+		if options.verbose : print("%s: %1.4f -> %1.4f"%(filename,olddf[-1],best[1]))
 
 		ctf.defocus=best[1]
 		ctf.snr=ctf.compute_1d(len(s)*2,ds,Ctf.CtfType.CTF_SNR_SMOOTH,strfact)
@@ -717,8 +717,8 @@ def refine_and_smoothsnr(options,strfact,debug=False):
 
 		if logid : E2progress(logid,float(i+1)/len(options.filenames))
 
-	if skipped>0 : print "Warning: %d files skipped"%skipped
-	if len(olddf)>0 : print "Mean defocus adjustment : %1.4f um"%((sum([fabs(olddf[ii]-newdf[ii]) for ii in xrange(len(olddf))]))/len(olddf))
+	if skipped>0 : print("Warning: %d files skipped"%skipped)
+	if len(olddf)>0 : print("Mean defocus adjustment : %1.4f um"%((sum([fabs(olddf[ii]-newdf[ii]) for ii in xrange(len(olddf))]))/len(olddf)))
 
 
 def env_cmp(sca,envelopes):
@@ -773,7 +773,7 @@ def process_stack(stackfile,phaseflip=None,phasehp=None,phasesmall=None,wiener=N
 		js_parms=js_open_dict(info_name(stackfile))
 		ctf=js_parms["ctf"]
 	except :
-		print "ERROR: Cannot find CTF parameters in {}. Skipping.".format(info_name(filename))
+		print("ERROR: Cannot find CTF parameters in {}. Skipping.".format(info_name(filename)))
 		return
 
 	if phasehp:
@@ -789,7 +789,7 @@ def process_stack(stackfile,phaseflip=None,phasehp=None,phasesmall=None,wiener=N
 			except: hpfilt[i]=0.0
 
 		oscor=2.0*len(p1d)/ys
-		if oscor!=floor(oscor) : print "Warning, incompatible oversampling from earlier results %d vs %d"%(len(p1d),ys/2)
+		if oscor!=floor(oscor) : print("Warning, incompatible oversampling from earlier results %d vs %d"%(len(p1d),ys/2))
 
 		oscor=int(oscor)
 #		print hpfilt[:c+4]
@@ -806,7 +806,7 @@ def process_stack(stackfile,phaseflip=None,phasehp=None,phasesmall=None,wiener=N
 			try:
 				if im1["ptcl_source_image"]!=source_image : continue
 			except:
-				print "Image %d doesn't have the ptcl_source_image parameter. Skipping."%i
+				print("Image %d doesn't have the ptcl_source_image parameter. Skipping."%i)
 				continue
 
 		try: im1 = EMData(stackfile,i)
@@ -815,7 +815,7 @@ def process_stack(stackfile,phaseflip=None,phasehp=None,phasesmall=None,wiener=N
 
 		# If we detected a zero edge, we mark the particle as bad
 		if not zero_ok and im1.has_attr("hadzeroedge") and im1["hadzeroedge"]!=0:
-			print "Particle outside of micrograph detected, marking as bad ({},{})".format(stackfile,i)
+			print("Particle outside of micrograph detected, marking as bad ({},{})".format(stackfile,i))
 			js=js_open_dict(info_name(stackfile))
 			try:
 				s=js["sets"]
@@ -830,7 +830,7 @@ def process_stack(stackfile,phaseflip=None,phasehp=None,phasesmall=None,wiener=N
 		except : ctf=default_ctf
 		if storeparm :
 			if stackfile[-4:].lower()!=".hdf" and stackfile[:4].lower()!="bdb:" :
-				if i==0: print "Warning, --storeparm option ignored. Input paticle stack must be HDF or BDB for this option to work."
+				if i==0: print("Warning, --storeparm option ignored. Input paticle stack must be HDF or BDB for this option to work.")
 			else :
 				ctf=default_ctf		# otherwise we're stuck with the values in the file forever
 				im1["ctf"]=ctf
@@ -863,9 +863,9 @@ def process_stack(stackfile,phaseflip=None,phasehp=None,phasesmall=None,wiener=N
 				try:
 					out.write_image(phaseflip,i)
 				except:
-					print(phaseflip,i)
+					print((phaseflip,i))
 					x = EMData(phaseflip,i,False)
-					print(x.get_attr_dict())
+					print((x.get_attr_dict()))
 					display(x)
 			if phaseproc!=None:
 				out2=out.copy()				# processor may or may not be in Fourier space
@@ -947,10 +947,10 @@ def process_stack(stackfile,phaseflip=None,phasehp=None,phasesmall=None,wiener=N
 			out.process("normalize.edgemean")
 			try: out.write_image(wiener,i)
 			except:
-				print wiener,i
+				print(wiener,i)
 				try: out.write_image(wiener,i)
 				except:
-					print "!!! ",wiener,i
+					print("!!! ",wiener,i)
 					out.write_image("error.hed",-1)
 
 		#if virtualout:
@@ -983,7 +983,7 @@ def powspec(stackfile,source_image=None,mask=None,edgenorm=True):
 			try:
 				if im1["ptcl_source_image"]!=source_image : continue
 			except:
-				print "Image %d doesn't have the ptcl_source_image parameter. Skipping."%i
+				print("Image %d doesn't have the ptcl_source_image parameter. Skipping."%i)
 				continue
 
 		im=EMData(stackfile,i)
@@ -1058,7 +1058,7 @@ def powspec_with_bg(stackfile,source_image=None,radius=0,edgenorm=True,oversamp=
 			try:
 				if im1["ptcl_source_image"]!=source_image : continue
 			except:
-				print "Image %d doesn't have the ptcl_source_image parameter. Skipping."%i
+				print("Image %d doesn't have the ptcl_source_image parameter. Skipping."%i)
 				continue
 
 		im1.read_image(stackfile,i)
@@ -1067,7 +1067,7 @@ def powspec_with_bg(stackfile,source_image=None,radius=0,edgenorm=True,oversamp=
 		if not zero_ok :
 			im1.process_inplace("mask.zeroedgefill",{"nonzero":1})		# This tries to deal with particles that were boxed off the edge of the micrograph
 			if im1.has_attr("hadzeroedge") and im1["hadzeroedge"]!=0:
-				print "Skipped particle with bad edge ({}:{})".format(stackfile,i)
+				print("Skipped particle with bad edge ({}:{})".format(stackfile,i))
 				continue
 
 		nn+=1
@@ -1127,7 +1127,7 @@ def powspec_with_bg(stackfile,source_image=None,radius=0,edgenorm=True,oversamp=
 	if wholeimage:
 		try: micro=EMData("micrographs/{}.hdf".format(base_name(stackfile)))
 		except:
-			print "Error: --wholeimage specified, but could not find ","micrographs/{}.hdf".format(base_name(stackfile))
+			print("Error: --wholeimage specified, but could not find ","micrographs/{}.hdf".format(base_name(stackfile)))
 			sys.exit(1)
 
 		bs=av1["ny"]
@@ -1145,7 +1145,7 @@ def powspec_with_bg(stackfile,source_image=None,radius=0,edgenorm=True,oversamp=
 				av3+=imf
 				nrg+=1
 
-		print nrg
+		print(nrg)
 		av3/=(float(nrg)*av1.get_ysize()*av1.get_ysize()*ratio1)
 		av3.set_value_at(0,0,0.0)
 		av3.set_complex(1)
@@ -1171,7 +1171,7 @@ def powspec_with_bg(stackfile,source_image=None,radius=0,edgenorm=True,oversamp=
 			avc+=1
 
 	if avc==0 :
-		print "Failed to readjust background in {}. Returning what I can..."
+		print("Failed to readjust background in {}. Returning what I can...")
 		return (av1_1d,av2_1d,av1,av2,low_bg_curve(av2_1d,ds),av3_1d)
 
 	avsnr/=avc
@@ -1224,7 +1224,7 @@ Rather than returning a single tuple, returns a list of nclasses tuples.
 			try:
 				if im1["ptcl_source_image"]!=source_image : continue
 			except:
-				print "Image %d doesn't have the ptcl_source_image parameter. Skipping."%i
+				print("Image %d doesn't have the ptcl_source_image parameter. Skipping."%i)
 				continue
 
 		im1.read_image(stackfile,i)
@@ -1450,7 +1450,7 @@ def smooth_by_ctf(curve,ds,ctf):
 		lcf-=lcf.mean()				# so we can do a dot product
 		lcf/=(lcf**2).sum()			# unit length
 		ret.append(lc.mean()+lcf[4]*lcf.dot(lc))
-		print i*ds,lcf.dot(lc)
+		print(i*ds,lcf.dot(lc))
 
 	ret+=curve[-4:]
 	Util.save_data(0,ds,curve,"a.txt")
@@ -1488,7 +1488,7 @@ def ctf_fit_bfactor(curve,ds,ctf):
 		if sim[i]<0.1 : break
 
 	maxres=1.0/(i*ds)
-	print "maxres ",maxres," B -> ",maxres*maxres*6.0
+	print("maxres ",maxres," B -> ",maxres*maxres*6.0)
 
 	return maxres*maxres*6.0
 
@@ -1619,7 +1619,7 @@ returns (fg1d,bg1d)"""
 		bg[:lwz]+=lwd
 		bg[:lwz]=numpy.minimum(bg[:lwz],fg[:lwz])	# this makes sure the bg subtracted curve isn't negative before the first zero
 	except:
-		print "ERROR in flattening background. This should only occur if the defocus is either too close or too far from focus with the current box-size and sampling."
+		print("ERROR in flattening background. This should only occur if the defocus is either too close or too far from focus with the current box-size and sampling.")
 		return (list(fg),list(bg))
 
 
@@ -1653,7 +1653,7 @@ def ctf_fit_stig(im_2d,bg_2d,ctf,verbose=1):
 		v=ctf_stig_cmp((ctf.defocus+ctf.dfdiff/2.0,ctf.defocus-ctf.dfdiff/2.0,ang),(bgsub,bgcp,ctf))
 		besta=min(besta,(v,ang))
 	ctf.dfang=besta[1]
-	print "best angle:", besta
+	print("best angle:", besta)
 
 	# Use a simplex minimizer to find the final fit
 	# we minimize using defocusU and defocusV rather than defocus & dfdfiff
@@ -1661,14 +1661,14 @@ def ctf_fit_stig(im_2d,bg_2d,ctf,verbose=1):
 	sim=Simplex(ctf_stig_cmp,[ctf.defocus+ctf.dfdiff/2.0,ctf.defocus-ctf.dfdiff/2.0,ctf.dfang],[0.01,0.01,5.0],data=(bgsub,bgcp,ctf))
 	oparm=sim.minimize(epsilon=.00000001,monitor=0)
 	dfmaj,dfmin,ctf.dfang=oparm[0]		# final fit result
-	print "Coarse refine: defocus={:1.4f} dfdiff={:1.5f} dfang={:3.2f} defocusU={:1.4f} defocusV={:1.4f}".format((dfmaj+dfmin)/2.0,(dfmaj-dfmin),ctf.dfang,dfmaj,dfmin)
+	print("Coarse refine: defocus={:1.4f} dfdiff={:1.5f} dfang={:3.2f} defocusU={:1.4f} defocusV={:1.4f}".format((dfmaj+dfmin)/2.0,(dfmaj-dfmin),ctf.dfang,dfmaj,dfmin))
 
 	# Use a simplex minimizer to refine the local neighborhood
 	ctf.bfactor=80
 	sim=Simplex(ctf_stig_cmp,oparm[0],[0.005,2.0,.005],data=(bgsub,bgcp,ctf))
 	oparm=sim.minimize(epsilon=.00000001,monitor=0)
 	dfmaj,dfmin,ctf.dfang=oparm[0]		# final fit result
-	print "  Fine refine: defocus={:1.4f} dfdiff={:1.5f} dfang={:3.2f} defocusU={:1.4f} defocusV={:1.4f}".format((dfmaj+dfmin)/2.0,(dfmaj-dfmin),ctf.dfang,dfmaj,dfmin)
+	print("  Fine refine: defocus={:1.4f} dfdiff={:1.5f} dfang={:3.2f} defocusU={:1.4f} defocusV={:1.4f}".format((dfmaj+dfmin)/2.0,(dfmaj-dfmin),ctf.dfang,dfmaj,dfmin))
 
 	ctf.bfactor=oldb
 	ctf.defocus=(dfmaj+dfmin)/2.0
@@ -1760,7 +1760,7 @@ def ctf_fit(im_1d,bg_1d,bg_1d_low,im_2d,bg_2d,voltage,cs,ac,apix,bgadj=0,autohp=
 	ys=im_2d.get_ysize()
 	ds=1.0/(apix*ys)
 	if ac<0 or ac>100 :
-		print "Invalid %%AC, defaulting to 10"
+		print("Invalid %%AC, defaulting to 10")
 		ac=10.0
 
 	curve=[im_1d[i]-bg_1d[i] for i in xrange(len(im_1d))]
@@ -1800,7 +1800,7 @@ def ctf_fit(im_1d,bg_1d,bg_1d_low,im_2d,bg_2d,voltage,cs,ac,apix,bgadj=0,autohp=
 #			print df,sum(sim),qual
 
 		ctf.defocus=best[1]
-		print "Best defocus: {:1.03f}".format(best[1])
+		print("Best defocus: {:1.03f}".format(best[1]))
 
 		# determine a good B-factor now that the defocus is pretty good
 		ctf.bfactor=ctf_fit_bfactor(curve,ds,ctf)
@@ -2239,17 +2239,17 @@ try:
 	from emshape import *
 	from valslider import ValSlider,CheckBox
 except:
-	print "Warning: PyQt4 must be installed to use the --gui option"
+	print("Warning: PyQt4 must be installed to use the --gui option")
 	class dummy:
 		pass
 	class QWidget:
 		"A dummy class for use when Qt not installed"
 		def __init__(self,parent):
-			print "Qt4 has not been loaded"
+			print("Qt4 has not been loaded")
 	class QListWidget:
 		"A dummy class"
 		def __init__(self,parent):
-			print "Qt4 has not been loaded"
+			print("Qt4 has not been loaded")
 	QtGui=dummy()
 	QtGui.QWidget=QWidget
 	QtGui.QListWidget=QListWidget
@@ -2279,12 +2279,12 @@ class GUIctf(QtGui.QWidget):
 		try:
 			from emimage2d import EMImage2DWidget
 		except:
-			print "Cannot import EMAN image GUI objects (EMImage2DWidget)"
+			print("Cannot import EMAN image GUI objects (EMImage2DWidget)")
 			sys.exit(1)
 		try:
 			from emplot2d import EMPlot2DWidget
 		except:
-			print "Cannot import EMAN plot GUI objects (is matplotlib installed?)"
+			print("Cannot import EMAN plot GUI objects (is matplotlib installed?)")
 			sys.exit(1)
 
 		self.app = weakref.ref(application)
@@ -2449,7 +2449,7 @@ class GUIctf(QtGui.QWidget):
 		elif event.key() == Qt.Key_B:
 			self.sbfactor.setValue(100.0)
 		elif event.key()==Qt.Key_S :
-			print "Save Parms ",str(self.setlist.item(self.curset).text())
+			print("Save Parms ",str(self.setlist.item(self.curset).text()))
 			self.on_save_params()
 		elif event.key()==Qt.Key_R :
 			self.on_recall_params()
@@ -2464,7 +2464,7 @@ class GUIctf(QtGui.QWidget):
 
 		try: js_parms = js_open_dict(info_name(str(self.setlist.item(val).text())))
 		except:
-			print "Error writing CTF parameters for {}".format(name)
+			print("Error writing CTF parameters for {}".format(name))
 			return
 
 #		if not db_check_dict(name):
@@ -2485,7 +2485,7 @@ class GUIctf(QtGui.QWidget):
 
 		try: js_parms = js_open_dict(info_name(str(self.setlist.item(val).text())))
 		except:
-			print "Error reading CTF parameters for {}".format(name)
+			print("Error reading CTF parameters for {}".format(name))
 			return
 
 		self.data[val][1]=js_parms["ctf"][0]
@@ -2516,7 +2516,7 @@ class GUIctf(QtGui.QWidget):
 
 		try: js_parms = js_open_dict(info_name(str(self.setlist.item(val).text())))
 		except:
-			print "Error writing CTF parameters for {}".format(name)
+			print("Error writing CTF parameters for {}".format(name))
 			return
 
 #		if not db_check_dict(name):
@@ -2590,7 +2590,7 @@ class GUIctf(QtGui.QWidget):
 		s=[ds*i for i in range(r)]
 
 		if r==0 or len(s)<2 :
-			print "Trying to plot bad data (set %s): %s"%(str(val),str(ctf))
+			print("Trying to plot bad data (set %s): %s"%(str(val),str(ctf)))
 			return
 
 		# With astigmatism support, the curves may need an update
@@ -2663,7 +2663,7 @@ class GUIctf(QtGui.QWidget):
 			# This means we have a whole micrograph curve
 			try:									# El Capitan seems to have an issue with this block. very mysterious, should come back to it sometime later
 				if len(self.data[val])>8:
-					print self.data[val][8]
+					print(self.data[val][8])
 					bgsub2=[self.data[val][8][i]-self.data[val][3][i] for i in range(len(self.data[val][2]))]
 					self.guiplot.set_data((s,bgsub2),"micro-bg",False,True,color=2,linetype=2)
 			except:
@@ -2820,7 +2820,7 @@ class GUIctf(QtGui.QWidget):
 			sim=Util.windowdot(bgsub,fit,wdw,1)
 			self.guiplot.set_data((s,sim),"Local Sim",color=2)
 
-			print sum(sim),sum(sim[int(.04/ds):int(.12/ds)])
+			print(sum(sim),sum(sim[int(.04/ds):int(.12/ds)]))
 
 #			print ctf_cmp((self.sdefocus.value,self.sbfactor.value,rto),(ctf,bgsub,int(.04/ds)+1,min(int(0.15/ds),len(s)-1),ds,self.sdefocus.value))
 
@@ -2931,7 +2931,7 @@ class GUIctf(QtGui.QWidget):
 
 		try: js_parms = js_open_dict(info_name(str(self.setlist.item(val).text())))
 		except:
-			print "Error writing CTF parameters for {}".format(name)
+			print("Error writing CTF parameters for {}".format(name))
 			return
 
 		js_parms["quality"]=self.data[val][6]
@@ -2942,7 +2942,7 @@ class GUIctf(QtGui.QWidget):
 		if event.key()==Qt.Key_I:			# if user presses I in this window we invert the stack on disk
 			fsp=self.data[self.curset][0]
 			n=EMUtil.get_image_count(fsp)
-			print "Inverting images in %s"%fsp
+			print("Inverting images in %s"%fsp)
 			for i in xrange(n):
 				img=EMData(fsp,i)
 				img.mult(-1.0)

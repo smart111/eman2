@@ -94,7 +94,7 @@ def main():
 		if options.ctfest :
 			d=EMData(output,0)
 			if d["nx"]<1000 or d["ny"]<1000 : 
-				print "CTF estimation will only work with images at least 1000x1000 in size"
+				print("CTF estimation will only work with images at least 1000x1000 in size")
 				sys.exit(1)
 			if d["nx"]<2000 : box=256
 			elif d["nx"]<4000 : box=512
@@ -139,7 +139,7 @@ def main():
 			db=js_open_dict(info_name(arg,nodir=not options.usefoldername))
 			db["ctf_frame"]=[box,ctf,(box/2,box/2),set(),5,1]
 			db["quality"]=5
-			print info_name(arg,nodir=not options.usefoldername),ctf
+			print(info_name(arg,nodir=not options.usefoldername),ctf)
 
 		E2progress(logid,(float(i)/float(len(args))))
 

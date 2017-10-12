@@ -107,7 +107,7 @@ def main():
 
 		outf = "{}_proc.hdf".format( os.path.splitext(arg)[0] )
 		if os.path.isfile(outf):
-			print("Results are already stored in {}. Please erase or move and try again.".format(outf))
+			print(("Results are already stored in {}. Please erase or move and try again.".format(outf)))
 			sys.exit(1)
 
 		nfs = EMUtil.get_image_count(arg)
@@ -150,7 +150,7 @@ def main():
 			if tasks:
 				tids = etc.send_tasks(tasks)
 				if options.verbose:
-					print "\n(erase_gold) %d tasks queued" % (len(tids))
+					print("\n(erase_gold) %d tasks queued" % (len(tids)))
 
 				results = get_results( etc, tids, options )
 
@@ -207,7 +207,7 @@ def main():
 			for tf in filelist:
 			    os.remove(tf)
 		except:
-			print "WARNING: cleanup failed."
+			print("WARNING: cleanup failed.")
 
 
 		dt = time.time() - t0
@@ -317,7 +317,7 @@ def local_noise(options,img):
 				n *= r["sigma_nonzero"]/n["sigma_nonzero"]
 			except:
 				if options.verbose > 8:
-					print("WARNING: division by zero, from n['sigma_nonzero']={}".format(n["sigma_nonzero"]))
+					print(("WARNING: division by zero, from n['sigma_nonzero']={}".format(n["sigma_nonzero"])))
 			n += r["mean_nonzero"]
 			localnoise.insert_clip(n,(x-bs/2,y-bs/2))
 
@@ -334,7 +334,7 @@ def local_noise(options,img):
 
 
 def runcmd(options,cmd):
-	if options.verbose > 8: print("(erase_gold)(runcmd) running command: {}".format(cmd))
+	if options.verbose > 8: print(("(erase_gold)(runcmd) running command: {}".format(cmd)))
 	p=subprocess.Popen( cmd, shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	text=p.communicate()
 	p.stdout.close()
