@@ -149,7 +149,7 @@ def runinmpi(scratchdir,verbose):
 
 def runlocaltask(taskin,taskout):
 	"""Exectues a task on the local machine. Reads the pickled task from 'taskfile'. Returns results to taskout. """
-	from cPickle import load,dump
+	from pickle import load,dump
 
 #	print "Executing %s (%s)"%(taskin,taskout)
 	from e2classaverage import ClassAvTask

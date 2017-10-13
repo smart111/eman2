@@ -49,7 +49,7 @@ import os
 import time
 import itertools
 import threading
-import Queue
+import queue
 
 def main():
 	progname = os.path.basename(sys.argv[0])
@@ -200,7 +200,7 @@ def main():
 			count += 1
 
 			start = time.time()
-			resq=Queue.Queue(0)
+			resq=queue.Queue(0)
 
 			res=[0]*len(rngs)
 			thds = []

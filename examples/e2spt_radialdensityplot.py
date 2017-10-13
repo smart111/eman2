@@ -29,7 +29,7 @@ from __future__ import print_function
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 
-import os, sys, commands
+import os, sys, subprocess
 from EMAN2 import *
 import math
 import numpy as np

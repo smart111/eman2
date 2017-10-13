@@ -6,7 +6,7 @@ from EMAN2 import *
 import time
 import os
 import threading
-import Queue
+import queue
 from sys import argv,exit
 
 def rotfn(avg,fsp,i,a,maxtilt,verbose):

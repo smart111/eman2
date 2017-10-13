@@ -33,7 +33,7 @@ from EMAN2 import *
 import numpy as np
 #from multiprocessing import Pool
 import threading
-from Queue import Queue
+from queue import Queue
 #from EMAN2jsondb import JSTask
 import time
 import json

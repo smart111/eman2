@@ -32,7 +32,7 @@ from __future__ import print_function
 #
 
 import sys
-import os, commands
+import os, subprocess
 from EMAN2 import *
 import subprocess
 

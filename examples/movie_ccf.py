@@ -5,7 +5,7 @@ from EMAN2 import *
 from sys import argv
 import sys
 import threading
-import Queue
+import queue
 from Simplex import Simplex
 from numpy import array
 from time import sleep,time
@@ -40,7 +40,7 @@ ny=data[0]["ny"]
 print("{} frames read {} x {}".format(n,nx,ny))
 
 
-ccfs=Queue.Queue(0)
+ccfs=queue.Queue(0)
 
 # CCF calculation
 def calc_ccf(N,box,step,dataa,datab,out):

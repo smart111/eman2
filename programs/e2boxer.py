@@ -36,7 +36,7 @@ from EMAN2 import *
 from EMAN2jsondb import *
 import numpy as np
 import threading
-import Queue
+import queue
 import os,sys
 
 class nothing:
@@ -389,7 +389,7 @@ class boxerByRef(QtCore.QObject):
 		maxav=Averagers.get("minmax",{"max":1,"owner":owner})
 		
 		# Iterate over in-plane rotation for each ref
-		jsd=Queue.Queue(0)
+		jsd=queue.Queue(0)
 		thrds=[threading.Thread(target=boxerByRef.ccftask,args=(jsd,ref,downsample,gs,microf,ri)) for ri,ref in enumerate(goodrefs)]
 
 		n=-1
@@ -540,7 +540,7 @@ class boxerLocal(QtCore.QObject):
 		r=goodrefs[0].process("math.fft.resample",{"n":downsample})
 		r.align("rotate_translate",r)
 		
-		jsd=Queue.Queue(0)
+		jsd=queue.Queue(0)
 		thrds=[threading.Thread(target=boxerLocal.ccftask,args=(jsd,ref,downsample,microdown,ri)) for ri,ref in enumerate(goodrefs)]
 
 		n=-1
@@ -1235,7 +1235,7 @@ class boxerConvNet(QtCore.QObject):
 			return
 		
 		#### now start autoboxing...
-		jsd=Queue.Queue(0)
+		jsd=queue.Queue(0)
 		NTHREADS=max(nthreads+1,2)
 		thrds=[threading.Thread(target=autobox_worker,args=(jsd,job)) for job in jobs]
 		thrtolaunch=0

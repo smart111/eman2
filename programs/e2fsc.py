@@ -41,7 +41,7 @@ import os
 import sys
 import time
 from numpy import *
-import Queue
+import queue
 
 def procthread(jsd,vals,lnx,thresh1,thresh2,apix,v1,v2,cenmask,avgmask,options,ttl):
 	for ox,x,oy,y,oz,z in vals:
@@ -253,7 +253,7 @@ and this program should be regarded as experimental.
 	fys=[]
 	funny=[]		# list of funny curves
 	t=time.time()
-	jsd=Queue.Queue(0)
+	jsd=queue.Queue(0)
 	thrds=[]
 	for oz,z in enumerate(zr):
 		for oy,y in enumerate(yr):

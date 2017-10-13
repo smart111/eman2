@@ -4916,7 +4916,7 @@ class iterImagesStack:
 		return (self.position >= 0)
 
 
-from cPickle import dumps,loads
+from pickle import dumps,loads
 from zlib import compress,decompress
 from struct import pack,unpack
 

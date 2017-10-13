@@ -424,7 +424,7 @@ e2bdb.py <database> --dump    Gives a mechanism to dump all of the metadata in a
 				dct.close()
 			print(fmt%("TOTAL",total[0],"",human_size(total[1])))
 		elif options.check :
-			from cPickle import loads
+			from pickle import loads
 			for db in dbs:
 				dct=db_open_dict(path+db,ro=True)
 				dct.realopen()

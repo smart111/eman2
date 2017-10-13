@@ -44,7 +44,7 @@ from emapplication import get_application, EMApp
 from emimage2d import EMImage2DWidget
 from emimagemx import EMImageMXWidget
 from valslider import *
-import Queue
+import queue
 import embrowser
 
 def main():
@@ -786,7 +786,7 @@ class EMMotion(QtGui.QMainWindow):
 		
 		nthr=int(self.wvbcores.getValue())		# number of threads to use for faster alignments
 		
-		jsd=Queue.Queue(0)
+		jsd=queue.Queue(0)
 		self.particles_ali=[]
 		thrs=[]
 		# launch nthr threads to do the alignments
@@ -815,7 +815,7 @@ class EMMotion(QtGui.QMainWindow):
 		
 		nthr=int(self.wvbcores.getValue())		# number of threads to use for faster alignments
 
-		jsd=Queue.Queue(0)
+		jsd=queue.Queue(0)
 		n2use=self.wvsnum.getValue()
 		thrs=[]
 		# launch nthr threads to do the alignments

@@ -38,7 +38,7 @@ import random
 import sys
 import optparse
 import os
-import commands
+import subprocess
 import sys
 import operator
 import copy
