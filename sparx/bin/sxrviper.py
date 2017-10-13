@@ -241,8 +241,8 @@ def find_index_of_discontinuity_in_derivative(error_curve_func, list_of_projecti
 		second_line_z = np.poly1d( np.polyfit(second_line_x, second_line_y, degree_of_the_fitting_polynomial) )
 ###		plt.plot(second_line_x,second_line_z(second_line_x))
 
-		import StringIO
-		which_projections = StringIO.StringIO()
+		import io
+		which_projections = io.StringIO()
 		which_projections.write("_" + "%.03f__%.6f"%(split_point, goodness_of_fit_for_both_lines))
 		for p_i in list_of_projection_indices: which_projections.write("_" + "%03d"%p_i)
 		for p_i in list_of_projection_indices: which_projections.write("___" + "%03d"%get_already_processed_viper_runs.r_permutation[p_i])
@@ -266,8 +266,8 @@ def find_index_of_discontinuity_in_derivative(error_curve_func, list_of_projecti
 	second_line_z = np.poly1d( np.polyfit(second_line_x, second_line_y, degree_of_the_fitting_polynomial) )
 ###	plt.plot(second_line_x,second_line_z(second_line_x))
 
-	import StringIO
-	which_projections = StringIO.StringIO()
+	import io
+	which_projections = io.StringIO()
 	which_projections.write("_" + "%.03f"%split_point)
 	for p_i in list_of_projection_indices: which_projections.write("_" + "%03d"%p_i)
 	for p_i in list_of_projection_indices: which_projections.write("___" + "%03d"%get_already_processed_viper_runs.r_permutation[p_i])

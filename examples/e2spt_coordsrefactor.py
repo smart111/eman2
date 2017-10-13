@@ -30,7 +30,7 @@
 
 import os
 import sys 
-import commands
+import subprocess
 from EMAN2 import *
 from sys import argv
 

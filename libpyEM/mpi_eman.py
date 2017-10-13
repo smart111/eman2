@@ -29,7 +29,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307 USA
 
 import sys
-from cPickle import dumps,loads
+from pickle import dumps,loads
 from zlib import compress,decompress
 from struct import pack,unpack
 

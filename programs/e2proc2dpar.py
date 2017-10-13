@@ -43,7 +43,7 @@ import datetime
 import time
 import traceback
 from collections import Counter
-import Queue
+import queue
 import threading
 
 # usage: e2proc2d.py [options] input ... input output
@@ -111,7 +111,7 @@ def main():
 	N=EMUtil.get_image_count(args[0])
 	npt=max(min(100,N/(options.threads-2)),1)
 	
-	jsd=Queue.Queue(0)
+	jsd=queue.Queue(0)
 	# these start as arguments, but get replaced with actual threads
 	thrds=[(jsd,args,options,i,i*npt,min(i*npt+npt,N)) for i in xrange(N/npt+1)]
 	

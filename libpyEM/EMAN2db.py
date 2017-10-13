@@ -32,7 +32,7 @@
 
 import atexit
 import weakref
-from cPickle import loads,dumps
+from pickle import loads,dumps
 from zlib import compress,decompress
 import os
 import os.path

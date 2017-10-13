@@ -10,7 +10,7 @@ from EMAN2 import *
 import theano
 import theano.tensor as T
 from theano.tensor.shared_randomstreams import RandomStreams
-import cPickle
+import pickle
 
 def main():
 
@@ -72,7 +72,7 @@ def main():
 	if options.fromlast:
 		print("loading {}...".format(options.pretrainnet))
 		f = file(options.pretrainnet, 'rb')
-		sda = cPickle.load(f)
+		sda = pickle.load(f)
 		f.close()		
 		x=sda.x
 	
@@ -118,7 +118,7 @@ def main():
 			print(np.mean(c),", learning rate",learning_rate)
 	if ( training_epochs>0):
 		f = file(options.pretrainnet, 'wb')
-		cPickle.dump(sda, f, protocol=cPickle.HIGHEST_PROTOCOL)
+		pickle.dump(sda, f, protocol=pickle.HIGHEST_PROTOCOL)
 		f.close()
 			
 	

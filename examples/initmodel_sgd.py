@@ -5,7 +5,7 @@ from EMAN2 import *
 from EMAN2_utils import cmponetomany
 import time
 import threading
-import Queue
+import queue
 
 
 def make3d(aptcls, sym="c1"):
@@ -258,7 +258,7 @@ def main():
 		
 	
 	
-	jsd=Queue.Queue(0)	
+	jsd=queue.Queue(0)	
 	NTHREADS=max(options.threads+1,2)
 	thrds=[threading.Thread(target=make_model,args=(jsd, i, options)) for i in range(options.ntry)]	
 	thrtolaunch=0

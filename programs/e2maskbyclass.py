@@ -32,7 +32,7 @@ from EMAN2 import *
 import time
 import os
 import threading
-import Queue
+import queue
 from sys import argv,exit
 
 def maskfile(jsd,n,fsp,classes,masks,clsmap,options):
@@ -125,7 +125,7 @@ once complete, bispectra can be recomputed based on the masked particles, or the
 # 	import pprint
 # 	pprint.pprint(ptcls)
 
-	jsd=Queue.Queue(0)
+	jsd=queue.Queue(0)
 
 	n=-1
 	thrds=[(jsd,i,k,classes,masks,ptcls[k],options) for i,k in enumerate(ptcls)]

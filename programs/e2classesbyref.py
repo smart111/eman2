@@ -36,7 +36,7 @@ import os
 import sys
 from EMAN2db import db_check_dict
 from EMAN2 import *
-import Queue
+import queue
 from numpy import array
 
 def main():
@@ -134,7 +134,7 @@ def main():
 	N=nptcl
 	npt=max(min(100,N/(options.threads-2)),1)
 	
-	jsd=Queue.Queue(0)
+	jsd=queue.Queue(0)
 	# these start as arguments, but get replaced with actual threads
 	thrds=[(jsd,refs,refsbs,args[1],bsfs,options,i,i*npt,min(i*npt+npt,N)) for i in xrange(N/npt+1)]
 	
