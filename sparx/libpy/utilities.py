@@ -1544,8 +1544,8 @@ def print_slice(input, iz=0):
 			if ((ix + 1) % 5 == 0):
 				line.append("\n   ")
 				line.append("      ")
-	    	line.append("\n")
-	    	if(nx%5 != 0): line.append("\n")
+			line.append("\n")
+			if(nx%5 != 0): line.append("\n")
 	print("".join(line))
 
 def print_image(input):
@@ -1619,8 +1619,8 @@ def print_image_slice(input, iz=0):
 			if ((ix + 1) % 5 == 0):
 				line.append("\n   ")
 				line.append("      ")
-	    	line.append("\n")
-	    	if(nx%5 != 0): line.append("\n")
+			line.append("\n")
+			if(nx%5 != 0): line.append("\n")
 	print("".join(line))
 
 def print_image_slice_3d(input, num=0,direction="z"):
@@ -1648,8 +1648,8 @@ def print_image_slice_3d(input, num=0,direction="z"):
 				if ((iy + 1) % 5 == 0):
 					line.append("\n   ")
 					line.append("      ")
-	    		line.append("\n")
-	    		if(ny%5 != 0): line.append("\n")
+				line.append("\n")
+				if(ny%5 != 0): line.append("\n")
 		print("".join(line))
 	elif(direction=="y"):
 		#print "yyy"
@@ -1664,8 +1664,8 @@ def print_image_slice_3d(input, num=0,direction="z"):
 				if ((ix + 1) % 5 == 0):
 					line.append("\n   ")
 					line.append("      ")
-	    		line.append("\n")
-	    		if(nx%5 != 0): line.append("\n")
+				line.append("\n")
+				if(nx%5 != 0): line.append("\n")
 		print("".join(line))
 	else:
 		#print "zzzz"
@@ -1680,8 +1680,8 @@ def print_image_slice_3d(input, num=0,direction="z"):
 				if ((ix + 1) % 5 == 0):
 					line.append("\n   ")
 					line.append("      ")
-	    		line.append("\n")
-	    		if(nx%5 != 0): line.append("\n")
+				line.append("\n")
+				if(nx%5 != 0): line.append("\n")
 		print("".join(line))
 
 
