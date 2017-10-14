@@ -65,6 +65,10 @@ void read_image(const string & filename, int img_index = 0,
 				bool header_only = false,
 				const Region * region = 0, bool is_3d = false);
 
+void read_image1(ImageIO * imageio, int img_index = 0,
+						bool header_only = false,
+						const Region * region = 0, bool is_3d = false);
+
 /** read in a binned image, bin while reading. For use in huge files(tomograms)
  * @param filename The image file name.
  * @param img_index The nth image you want to read.

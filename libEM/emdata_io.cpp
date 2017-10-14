@@ -54,6 +54,18 @@ void EMData::read_image(const string & filename, int img_index, bool nodata,
 	ENTERFUNC;
 
 	ImageIO *imageio = EMUtil::get_imageio(filename, ImageIO::READ_ONLY);
+	
+	read_image1(imageio, img_index, nodata, region, is_3d);
+    
+	EMUtil::close_imageio(filename, imageio);
+	imageio = 0;
+	EXITFUNC;
+}
+
+void EMData::read_image1(ImageIO * imageio, int img_index, bool nodata,
+						const Region * region, bool is_3d) {
+
+	ENTERFUNC;
 
 	if (!imageio) {
 		throw ImageFormatException("cannot create an image io");
@@ -61,11 +73,11 @@ void EMData::read_image(const string & filename, int img_index, bool nodata,
 	else {
 		int err = imageio->read_header(attr_dict, img_index, region, is_3d);
 		if (err) {
-			throw ImageReadException(filename, "imageio read header failed");
+//			throw ImageReadException(filename, "imageio read header failed");
 		}
 		else {
 			LstIO * myLstIO = dynamic_cast<LstIO *>(imageio);
-			if(!myLstIO)	attr_dict["source_path"] = filename;	//"source_path" is set to full path of reference image for LstIO, so skip this statement
+//			if(!myLstIO)	attr_dict["source_path"] = filename;	//"source_path" is set to full path of reference image for LstIO, so skip this statement
 			attr_dict["source_n"] = img_index;
 			if (imageio->is_complex_mode()) {
 				set_complex(true);
@@ -107,7 +119,7 @@ void EMData::read_image(const string & filename, int img_index, bool nodata,
 				// should be safe.
 				int err = imageio->read_data(get_data(), img_index, region, is_3d);
 				if (err) {
-					throw ImageReadException(filename, "imageio read data failed");
+//					throw ImageReadException(filename, "imageio read data failed");
 				}
 				else {
 					update();
@@ -120,9 +132,7 @@ void EMData::read_image(const string & filename, int img_index, bool nodata,
 
 		}
 	}
-    
-	EMUtil::close_imageio(filename, imageio);
-	imageio = 0;
+
 	EXITFUNC;
 }
 
@@ -409,6 +419,7 @@ vector < shared_ptr<EMData> > EMData::read_images(const string & filename, vecto
 									   bool header_only)
 {
 	ENTERFUNC;
+	ImageIO *imageio = EMUtil::get_imageio(filename, ImageIO::READ_ONLY);
 
 	int total_img = EMUtil::get_image_count(filename);
 	size_t num_img = img_indices.size();
@@ -426,7 +437,7 @@ vector < shared_ptr<EMData> > EMData::read_images(const string & filename, vecto
 		shared_ptr<EMData> d(new EMData());
 		size_t k = (num_img == 0 ? j : img_indices[j]);
 		try {
-			d->read_image(filename, (int)k, header_only);
+			d->read_image1(imageio, (int)k, header_only);
 		}
 		catch(E2Exception &e) {
 			throw(e);
@@ -438,6 +449,9 @@ vector < shared_ptr<EMData> > EMData::read_images(const string & filename, vecto
 		else
 			throw ImageReadException(filename, "imageio read data failed");
 	}
+
+	EMUtil::close_imageio(filename, imageio);
+	imageio = 0;
 
 	EXITFUNC;
 	return v;
