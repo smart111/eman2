@@ -58,7 +58,7 @@ too look for issues with preferred orientation, etc.
 
 	logid=E2init(sys.argv,options.ppid)
 
-	out=file(options.output,"w")
+	out=open(options.output,"w")
 
 	alts=[ [] for i in xrange(18)]
 	for k in db.keys():

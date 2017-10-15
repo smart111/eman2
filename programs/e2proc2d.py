@@ -1158,7 +1158,7 @@ def main():
 
         if options.extractboxes:
             for k in boxes.keys():
-                out=file(k+".box","w")
+                out=open(k+".box","w")
                 for c in boxes[k]:
                     out.write("{:1d}\t{:1d}\t{:1d}\t{:1d}\n".format(int(c[0]-boxsize/2),int(c[1]-boxsize/2),int(boxsize),int(boxsize)))
 

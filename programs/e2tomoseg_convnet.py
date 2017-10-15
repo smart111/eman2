@@ -284,7 +284,7 @@ def save_model(convnet, fname, options=None):
 def load_model(fname):
 	print("loading model from {}...".format(fname))
 	try:
-		f = file(fname, 'rb')
+		f = open(fname, 'rb')
 		convnet = pickle.load(f)
 		f.close()
 		return convnet

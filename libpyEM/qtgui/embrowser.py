@@ -513,7 +513,7 @@ class EMTextFileType(EMFileType) :
 
 		if size > 5000000 : dim = "big"
 		else :
-			f = file(path, "r").read()
+			f = open(path, "r").read()
 			lns = max(f.count("\n"), f.count("\r"))
 			dim = "%d ln"%lns
 
@@ -552,7 +552,7 @@ class EMHTMLFileType(EMFileType) :
 
 		if size > 5000000 : dim = "big"
 		else :
-			f = file(path, "r").read()
+			f = open(path, "r").read()
 			lns = max(f.count("\n"), f.count("\r"))
 			dim = "%d ln"%lns
 
@@ -619,7 +619,7 @@ class EMPlotFileType(EMFileType) :
 
 		# Make sure all of the lines have the same number of columns
 
-		fin = file(path, "r")
+		fin = open(path, "r")
 		numr = 0
 
 		for l in fin :
@@ -643,7 +643,7 @@ class EMPlotFileType(EMFileType) :
 
 		# Make sure all of the lines have the same number of columns
 
-		fin = file(path, "r")
+		fin = open(path, "r")
 		numr = 0
 		numc = 0
 
@@ -745,7 +745,7 @@ class EMPlotFileType(EMFileType) :
 		brws.busy()
 
 		data1 = []
-		fin = file(self.path, "r")
+		fin = open(self.path, "r")
 		numr = 0
 
 		for l in fin :
@@ -773,7 +773,7 @@ class EMPlotFileType(EMFileType) :
 		brws.busy()
 
 		data1 = []
-		fin = file(self.path, "r")
+		fin = open(self.path, "r")
 		numr = 0
 
 		for l in fin :
@@ -1219,7 +1219,7 @@ class EMPDBFileType(EMFileType):
 		
 		if size > 5000000: dim = "big"
 		else :
-			f = file(path, "r").read()
+			f = open(path, "r").read()
 			lns = max(f.count("\n"), f.count("\r"))
 			dim = "%d ln"%lns
 		
@@ -1682,7 +1682,7 @@ class EMDirEntry(object) :
 
 		else :
 			try :
-				head = file(self.path(), "rb").read(4096)		# Most FileTypes should be able to identify themselves using the first 4K block of a file
+				head = open(self.path(), "rb").read(4096)		# Most FileTypes should be able to identify themselves using the first 4K block of a file
 
 				try : guesses = EMFileType.extbyft[os.path.splitext(self.path())[1]]		# This will get us a list of possible FileTypes for this extension
 				except : guesses = EMFileType.alltocheck
@@ -2010,7 +2010,7 @@ class EMTextInfoPane(EMInfoPane) :
 
 		self.target = data
 
-		self.text.setPlainText(file(self.target.path(), "r").read())
+		self.text.setPlainText(open(self.target.path(), "r").read())
 
 		self.text.setReadOnly(True)
 		self.wbutedit.setEnabled(True)
@@ -2035,7 +2035,7 @@ class EMTextInfoPane(EMInfoPane) :
 		self.display(self.target)
 
 	def buttonOk(self, tog) :
-		try : file(self.target.path(), "w").write(str(self.text.toPlainText()))
+		try : open(self.target.path(), "w").write(str(self.text.toPlainText()))
 		except : QtGui.QMessageBox.warning(self, "Error !", "File write failed")
 
 #---------------------------------------------------------------------------
@@ -2084,7 +2084,7 @@ class EMHTMLInfoPane(EMInfoPane) :
 		"""display information for the target EMDirEntry"""
 
 		self.target = data
-		self.text.setHtml(file(self.target.path(), "r").read())
+		self.text.setHtml(open(self.target.path(), "r").read())
 		self.text.setReadOnly(True)
 		self.wbutedit.setEnabled(True)
 		self.wbutcancel.setEnabled(False)
@@ -2108,7 +2108,7 @@ class EMHTMLInfoPane(EMInfoPane) :
 		self.display(self.target)
 
 	def buttonOk(self, tog) :
-		try : file(self.target.path(), "w").write(str(self.text.toHtml()))
+		try : open(self.target.path(), "w").write(str(self.text.toHtml()))
 		except : QtGui.QMessageBox.warning(self, "Error !", "File write failed")
 
 #---------------------------------------------------------------------------
@@ -2144,7 +2144,7 @@ class EMPDBInfoPane(EMInfoPane) :
 	def display(self, data) :
 		"""display information for the target EMDirEntry"""
 		self.target = data
-		self.text.setPlainText(file(self.target.path(), "r").read())
+		self.text.setPlainText(open(self.target.path(), "r").read())
 		self.text.setReadOnly(True)
 		self.wbutedit.setEnabled(True)
 		self.wbutcancel.setEnabled(False)
@@ -2167,7 +2167,7 @@ class EMPDBInfoPane(EMInfoPane) :
 		self.display(self.target)
 
 	def buttonOk(self, tog) :
-		try : file(self.target.path(), "w").write(str(self.text.toPlainText()))
+		try : open(self.target.path(), "w").write(str(self.text.toPlainText()))
 		except : QtGui.QMessageBox.warning(self, "Error !", "File write failed")
 
 #---------------------------------------------------------------------------
@@ -2194,7 +2194,7 @@ class EMPlotInfoPane(EMInfoPane) :
 		numc = 0
 		data = []
 
-		for l in file(target.path(), "r") :
+		for l in open(target.path(), "r") :
 			if l[0] == "#" : continue
 
 			vals = [float(i) for i in renumfind.findall(l)]

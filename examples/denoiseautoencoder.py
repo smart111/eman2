@@ -71,7 +71,7 @@ def main():
 	
 	if options.fromlast:
 		print("loading {}...".format(options.pretrainnet))
-		f = file(options.pretrainnet, 'rb')
+		f = open(options.pretrainnet, 'rb')
 		sda = pickle.load(f)
 		f.close()		
 		x=sda.x
@@ -117,7 +117,7 @@ def main():
 			print('Pre-training layer %i, epoch %d, cost ' % (i, epoch), end=' ')
 			print(np.mean(c),", learning rate",learning_rate)
 	if ( training_epochs>0):
-		f = file(options.pretrainnet, 'wb')
+		f = open(options.pretrainnet, 'wb')
 		pickle.dump(sda, f, protocol=pickle.HIGHEST_PROTOCOL)
 		f.close()
 			

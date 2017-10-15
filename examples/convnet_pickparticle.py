@@ -91,12 +91,12 @@ def main():
 	
 	print("loading particles...")
 	if args[0].endswith(".pkl"):
-		f = file(args[0], 'rb')
+		f = open(args[0], 'rb')
 		particles=pickle.load(f)
 		f.close()
 	else:
 		particles=load_particles(args[0],options)
-		f = file("data_training.pkl", 'wb')
+		f = open("data_training.pkl", 'wb')
 		pickle.dump(particles, f, protocol=pickle.HIGHEST_PROTOCOL)
 		f.close()
 
@@ -151,7 +151,7 @@ def main():
 			print(np.mean(c),", learning rate",learning_rate)
 
 		print("Saving the trained net to file...")
-		f = file(options.pretrainnet, 'wb')
+		f = open(options.pretrainnet, 'wb')
 		pickle.dump(convnet, f, protocol=pickle.HIGHEST_PROTOCOL)
 		f.close()
 		
@@ -224,7 +224,7 @@ def main():
 
 def load_model(fname):
 	print("loading model from {}...".format(fname))
-	f = file(fname, 'rb')
+	f = open(fname, 'rb')
 	convnet = pickle.load(f)
 	f.close()
 	return convnet
