@@ -5,7 +5,8 @@ from time import time
 strt = time()
 
 # stack = "bdb:data"
-stack = "stack_10000.hdf"
+# stack = "stack_100000.hdf"
+stack = sys.argv[1]
 
 total_nima = EMUtil.get_image_count(stack)
 data = EMData.read_images(stack, range(total_nima))
