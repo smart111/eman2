@@ -145,7 +145,7 @@ gold-standard refinement."""
 	nref=int(classmx["maximum"])+1
 	nptcl=classmx["ny"]
 
-	for iref in xrange(nref):
+	for iref in range(nref):
 		if options.verbose==1 : print("Class ",iref)
 		outname="{}/class_{:04d}.hdf".format(options.path,iref)
 		ref=EMData("{path}/projections.hdf".format(path=options.path),iref)
@@ -153,7 +153,7 @@ gold-standard refinement."""
 		ref.write_image(outname,0)
 
 		allptcl=[]		
-		for iptcl in xrange(nptcl):
+		for iptcl in range(nptcl):
 			if classmx[0,iptcl]!=iref : continue		# only proceed if the particle is in this class
 
 			ptcl=EMData(options.input,iptcl)

@@ -491,7 +491,7 @@ def make_tomogram(imgs, allparams, options, outname=None, premask=True, padr=1.2
 	
 	if len(errtlt)==0:
 		errtlt=np.zeros(num)
-		nrange=range(num)
+		nrange=list(range(num))
 	else:
 		nrange=np.argsort(errtlt)[:int(num*options.tltkeep)]
 		
@@ -681,7 +681,7 @@ def make_samples(imgs, allparams, options, refinepos=False, outname=None, errtlt
 	npk=options.npk
 	ttparams, pks, miscglobal=get_params(allparams, options)
 	if len(errtlt)==0:
-		nrange=range(num)
+		nrange=list(range(num))
 	else:
 		nrange=np.argsort(errtlt)[:int(num*options.tltkeep)]
 	bx=options.bxsz/2
@@ -779,7 +779,7 @@ def refine_global(imgs, allparams, options, pkrg=[]):
 	print("Refining tilt axis translation..")
 	
 	if len(pkrg)==0:
-		pkrg=range(options.npk)
+		pkrg=list(range(options.npk))
 		
 	ttparams, pks,  miscglobal=get_params(allparams, options)    
 	res = minimize(calc_loss, miscglobal, (imgs, allparams, options, 'global', pkrg, [], 1), method='Powell',options={'ftol': 1e-4, 'disp': False, "maxiter":30})

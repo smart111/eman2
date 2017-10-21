@@ -98,7 +98,7 @@ def main():
 
 		imgnum=0
 		lastdf=-1.0
-		for i in xrange(n):
+		for i in range(n):
 			img=EMData(args[0],i)
 			ctf=img["ctf"]
 			img.del_attr("ctf")

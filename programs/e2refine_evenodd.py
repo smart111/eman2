@@ -190,7 +190,7 @@ def main():
 	launch_childprocess("e2refine.py "+" ".join(argv))
 	
 	# compute convergence results for even odd test
-	for i in xrange(options.startiter,options.iter):
+	for i in range(options.startiter,options.iter):
 		# do a refine alignment of each odd map to the corresponding even map before resolution calc
 		try:
 			print("aligning iteration %d"%i)

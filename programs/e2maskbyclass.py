@@ -41,7 +41,7 @@ def maskfile(jsd,n,fsp,classes,masks,clsmap,options):
 	fspout=fsp.rsplit(".",1)[0].split("__")[0]+"__ctf_flip_masked.hdf"
 	fspbout=fsp.rsplit(".",1)[0].split("__")[0]+"__ctf_flip_bispec.hdf"
 
-	for i in xrange(len(clsmap)):
+	for i in range(len(clsmap)):
 		ptcl=EMData(fsp,i)
 		# if the particle isn't in any classes we put the unmasked image in the output file
 		if clsmap[i]!=-1 :

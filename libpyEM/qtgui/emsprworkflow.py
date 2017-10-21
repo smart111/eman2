@@ -1212,7 +1212,7 @@ project database, and gives an opportunity to apply a number of common filters t
 		cancelled = False # if the user cancels the import then we must act
 		cancelled_writes = []
 		get_application().setOverrideCursor(Qt.BusyCursor)
-		for j in xrange(0,len(filenames)):
+		for j in range(0,len(filenames)):
 			name = filenames[j]
 			outname = output_names[j]
 			
@@ -4854,7 +4854,7 @@ class E2Make3DTools:
 						values = vals[p[0]]
 						s = "The parameters for the %s processor are:"  %p[0]
 						
-						for i in xrange(1,len(values),3):
+						for i in range(1,len(values),3):
 							s += " " + values[i] +","
 						s = s[:-1] # get rid of the last column
 						error_message.append(s)
@@ -4879,7 +4879,7 @@ class E2Make3DTools:
 						values = vals[p[0]]
 						s = "The parameters for the %s processor are:"  %p[0]
 						
-						for i in xrange(1,len(values),3):
+						for i in range(1,len(values),3):
 							s += " " + values[i] +","
 						s = s[:-1] # get rid of the last column
 						error_message.append(s)
@@ -4963,7 +4963,7 @@ class E2RefineParticlesTaskBase(EMClassificationTools, E2Make3DTools):
 				raise RuntimeError("The usefilt and raw particle lists must be the same length")
 			
 			self.filt_map = {}
-			for i in xrange(0,len(ptcls)):
+			for i in range(0,len(ptcls)):
 				self.filt_map[ptcls[i]] = usefilt_ptcls[i]
 				
 		def get_usefilt_name(self,name):
@@ -5669,7 +5669,7 @@ post-process - This is an optional filter to apply to the model as a final step,
 		params.append([pamnshells,pamngaussshells])
 	
 		syms = ["icos","oct","tet","d","c","h"]
-		for s in xrange(n1):
+		for s in range(n1):
 			psym =  ParamDef(name="symname"+str(s),vartype="string",desc_short="Model"+str(s+1)+" Symmetry",desc_long="Symmetry to be imposed during refinement",property=None,defaultunits=db.get("symname"+str(s),dfl="c"),choices=syms)
 			psymnum = ParamDef(name="symnumber"+str(s),vartype="string",desc_short="Symmetry number",desc_long="In C,D and H symmetry, this is the symmetry number",property=None,defaultunits=db.get("symnumber"+str(s),dfl="1"),choices=None)
 			params.append([psym,psymnum])

@@ -63,7 +63,7 @@ def main():
 	
 	# We use a hash data structure to count same Eulers(could also use an array an sort it)
 	eulerhash = {}
-	for i in xrange(data[0].get_ysize()):
+	for i in range(data[0].get_ysize()):
 		# Get Eulers
 		projnum = int(data[0][i])
 		euler = projections[projnum].get_attr('xform.projection')

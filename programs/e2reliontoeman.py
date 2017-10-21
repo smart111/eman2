@@ -105,7 +105,7 @@ will be extracted from the STAR file and will be automatically processed through
 	olddf=-1.0
 	micronum=0		# number of micrograph
 	fnum=0			# image number in new file
-	for i in xrange(len(star["rlnImageName"])):
+	for i in range(len(star["rlnImageName"])):
 		name=star["rlnImageName"][i].split("@")[1]
 		imgnum=int(star["rlnImageName"][i].split("@")[0])-1
 	

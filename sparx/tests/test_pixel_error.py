@@ -62,7 +62,7 @@ class TestMultiAlignStability(unittest.TestCase):
         # ideal H matrices and pixel errors
         H = []
         pixel_error = []
-        for i in xrange(N):
+        for i in range(N):
             T1 = Transform({"type":"2D","alpha":a1[4*i+0],"tx":a1[4*i+1],"ty":a1[4*i+2],"mirror":a1[4*i+3],"scale":1.0})
             T2 = Transform({"type":"2D","alpha":a2[4*i+0],"tx":a2[4*i+1],"ty":a2[4*i+2],"mirror":a2[4*i+3],"scale":1.0})
             GT1 = G1 * T1

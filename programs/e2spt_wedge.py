@@ -161,7 +161,7 @@ class MissingWedgeViewer(QtGui.QWidget):
 		self.setLayout(grid)
 		
 		# Fill combox box
-		for i in xrange(len(self.volumes)):
+		for i in range(len(self.volumes)):
 			self.volcombobox.addItem(str(i))
 			
 		#Add actions

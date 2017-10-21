@@ -110,7 +110,7 @@ class daemon:
 			except: continue
 			
 		# This is a magic string for basic security
-		self.magic="".join([random.choice(string.letters) for i in xrange(20)])
+		self.magic="".join([random.choice(string.letters) for i in range(20)])
 		
 		# This file should be readable by the user only, and contains
 		# "magic" string for security, port number, and PID
@@ -382,7 +382,7 @@ class scp_proxy:
 		self.stdin.write("listrecurse\n%s\n%s\n"%(path,basepath))
 		r=int(self.stdout.readline().strip())
 		ret=[]
-		for i in xrange(r):
+		for i in range(r):
 			ret.append(self.stdout.readline().strip())
 			
 		return ret

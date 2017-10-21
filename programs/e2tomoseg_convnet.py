@@ -135,14 +135,14 @@ def main():
 		n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size
 		v0=np.inf
 		nbad=0
-		for epoch in xrange(options.niter):
+		for epoch in range(options.niter):
 		# go through the training set
 			
 			c = []   #### train set loss
 			v = []   #### valid set loss
 			if epoch==0:
 				print(classify(0,lr=learning_rate,wd=options.weightdecay))
-			for batch_index in xrange(n_train_batches):
+			for batch_index in range(n_train_batches):
 				if batch_index*batch_size < ntrain:
 					err=classify(batch_index,
 						lr=learning_rate,
@@ -721,9 +721,9 @@ def load_particles(ptcls,labelshrink,ncopy=5, rng=None):
 	
 	if ntrain<0: ntrain=len(data)
 	## randomize
-	rndid=range(ntrain)
+	rndid=list(range(ntrain))
 	rng.shuffle(rndid)	
-	rndid=rndid+range(ntrain, len(data))
+	rndid=rndid+list(range(ntrain, len(data)))
 	data=[data[i] for i in rndid]
 	label=[label[i] for i in rndid]
 	

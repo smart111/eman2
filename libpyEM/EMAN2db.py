@@ -459,12 +459,12 @@ def db_read_images(fsp,*parms):
 				return [db.get(keys[i]) for i in parms[0]]
 			return [db.get(i,nodata=nodata) for i in keys]
 		else :
-			if len(parms)==0 : keys=range(0,len(db))
+			if len(parms)==0 : keys=list(range(0,len(db)))
 			else : keys=parms[0]
-			if not keys or len(keys)==0 : keys=range(len(db))
+			if not keys or len(keys)==0 : keys=list(range(len(db)))
 		return [db.get(i,nodata=nodata) for i in keys]
 	if len(parms)>0 and (parms[0]==None or len(parms[0])==0) :
-		parms=(range(EMUtil.get_image_count(fsp)),)+parms[1:]
+		parms=(list(range(EMUtil.get_image_count(fsp))),)+parms[1:]
 	return EMData.read_images_c(fsp,*parms)
 
 EMData.read_images_c=staticmethod(EMData.read_images)
@@ -589,7 +589,7 @@ def db_get_all_attributes(fsp,*parms):
 				except: pass
 			return [db.get_attr(i, attr_name) for i in keys]
 		else :
-			if len(parms)==1 : keys=range(0,len(db))
+			if len(parms)==1 : keys=list(range(0,len(db)))
 			else : keys=parms[0]
 		return [db.get_attr(i, attr_name) for i in keys]
 	return EMUtil.get_all_attributes_c(fsp,*parms)

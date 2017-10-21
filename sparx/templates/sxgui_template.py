@@ -74,7 +74,7 @@ def translate_to_bdb_path(std_path):
 	# If necessary, compose directory path as a relative path at first
 	dir = ""
 	if len(path_tokens) > 2:
-		for idx in xrange(0, len(path_tokens) - 2):
+		for idx in range(0, len(path_tokens) - 2):
 			if idx != 0:
 				dir += "/"
 			dir += path_tokens[idx] # accrue the directory
@@ -847,7 +847,7 @@ class SXCmdWidget(QWidget):
 					if cmd_token.type == "function":
 						# This type has two line edit boxes as a list of widget
 						n_widgets = 2
-						for widget_index in xrange(n_widgets):
+						for widget_index in range(n_widgets):
 							val_str = str(cmd_token.widget[widget_index].text())
 							file_out.write("<%s> %s (default %s) == %s \n" % (cmd_token.key_base, cmd_token.label[widget_index], cmd_token.default[widget_index], val_str))
 					# Then, handle the other cases

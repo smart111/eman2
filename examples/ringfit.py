@@ -90,7 +90,7 @@ def process_image(imgname,imgprefix):
 		drn-=1
 		sys.exit(1)
 
-	eig=[(1.0/eigvv[0][i],eigvv[1][:,i]) for i in xrange(3)]  # extract for sorting
+	eig=[(1.0/eigvv[0][i],eigvv[1][:,i]) for i in range(3)]  # extract for sorting
 	eig=sorted(eig)		# now eig is sorted in order from major to minor axes
 	#T=array([eig[0][1],eig[1][1],eig[2][1]])            # reassemble sorted matrix
 
@@ -146,7 +146,7 @@ def process_image(imgname,imgprefix):
 		#zsft=random.uniform(-startrange,startrange)
 		
 		# Initializing points on one plane, and then transform to the plane of the circle
-		for i in xrange(nowbp):
+		for i in range(nowbp):
 			ang=2.0*pi*i/nowbp+startphase
 		#	pa.set_vector_at(i,Vec3f(0,sin(ang)*100,cos(ang)*100),1.0)
 			vx=0 + random.uniform(-startrange,startrange)
@@ -163,7 +163,7 @@ def process_image(imgname,imgprefix):
 		bestpintrail=100000	# Best potential score in this trail
 		
 		
-		for i in xrange(200000):
+		for i in range(200000):
 			if skipping==0:	# run one simulation step
 				pa.sim_minstep_seq(.1)
 				if random.uniform(0,1.0)>.9996 and nowbp>10:
@@ -285,7 +285,7 @@ def process_image(imgname,imgprefix):
 
 	# Compute the eigenvalues/vectors
 	eigvv=LA.eig(mx)		# a 3-vector with eigenvalues and a 3x3 with the vectors
-	eig=[(1.0/eigvv[0][i],eigvv[1][:,i]) for i in xrange(3)]  # extract for sorting
+	eig=[(1.0/eigvv[0][i],eigvv[1][:,i]) for i in range(3)]  # extract for sorting
 	eig=sorted(eig)		# now eig is sorted in order from major to minor axes
 	#T=array([eig[0][1],eig[1][1],eig[2][1]])            # reassemble sorted matrix
 

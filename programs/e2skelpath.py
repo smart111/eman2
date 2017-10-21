@@ -128,7 +128,7 @@ def getPoints(dejavufile, apix,originX,originY,originZ):
 def getNearest(coord, searchrange, skeleton):
 	maxdistance=10000
 	bestcoord=coord
-	searchrange=range(-searchrange,searchrange+1,1)
+	searchrange=list(range(-searchrange,searchrange+1,1))
 	for dx in searchrange:
 		for dy in searchrange:
 			for dz in searchrange:

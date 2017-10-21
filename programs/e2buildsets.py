@@ -200,7 +200,7 @@ def main():
 		totbad+=len(bad)
 
 		for t in groups:
-			for i in xrange(nimg):
+			for i in range(nimg):
 				if i not in bad : lsx[t].write(-1,i,"particles/{}{}.hdf".format(f,t))
 
 	print("Done - {} particles included".format(totptcl), end=' ')

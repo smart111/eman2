@@ -53,7 +53,7 @@ def main():
 	(options, args) = parser.parse_args()	
 	
 	n = EMUtil.get_image_count(options.input)
-	indexes = list(xrange(n))
+	indexes = list(range(n))
 	
 	if not options.output:
 		options.output = options.input.replace('.hdf','_scrambled.hdf')

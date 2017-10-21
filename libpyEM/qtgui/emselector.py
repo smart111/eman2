@@ -1333,9 +1333,9 @@ class EMFileSystemDelegate(EMBrowseDelegate):
 				
 			
 				if e.get_zsize() > 1:
-					return_items = [EM3DMetaImageItem(self,str(i),url,i) for i in xrange(0,EMUtil.get_image_count(url))]
+					return_items = [EM3DMetaImageItem(self,str(i),url,i) for i in range(0,EMUtil.get_image_count(url))]
 				else:
-					return_items = [EM2DMetaImageItem(self,str(i),url,i) for i in xrange(0,EMUtil.get_image_count(url))]
+					return_items = [EM2DMetaImageItem(self,str(i),url,i) for i in range(0,EMUtil.get_image_count(url))]
 			else:
 				d = e.get_attr_dict()
 				keys = d.keys()
@@ -1909,8 +1909,8 @@ class EMBDBDelegate(EMBrowseDelegate):
 				d = db.get_header(i)
 				if d!=None and "nz" in d : break
 			if  n > 1:
-				if d["nz"] > 1: return_items = [EM3DMetaImageItem(self,str(i),url,i) for i in xrange(0,n)]
-				else: return_items = [EM2DMetaImageItem(self,str(i),url,i) for i in xrange(0,n)]
+				if d["nz"] > 1: return_items = [EM3DMetaImageItem(self,str(i),url,i) for i in range(0,n)]
+				else: return_items = [EM2DMetaImageItem(self,str(i),url,i) for i in range(0,n)]
 			else: 
 				keys = d.keys()
 				keys.sort() #alphabetical order

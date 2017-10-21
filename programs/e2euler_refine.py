@@ -113,7 +113,7 @@ def main():
 	#########################################################
 	# The actual orientation refinement
 
-	threads=[threading.Thread(target=reorient,args=(data[i::options.threads],refvol,options.verbose-1)) for i in xrange(options.threads)]
+	threads=[threading.Thread(target=reorient,args=(data[i::options.threads],refvol,options.verbose-1)) for i in range(options.threads)]
 
 	for i,t in enumerate(threads):
 		if options.verbose>1: print("started thread ",i)
@@ -144,7 +144,7 @@ def initialize_data(inputfile,inputmodel,no_weights):
 	data=[]
 
 	tmp=EMData()
-	for i in xrange(n_input):
+	for i in range(n_input):
 		tmp.read_image(inputfile,i,True)
 		#else : tmp=get_processed_image(inputfile,i,-1,preprocess,pad)
 

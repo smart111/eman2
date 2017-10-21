@@ -601,9 +601,9 @@ def main():
 			
 			for i in range( ncls):
 
-				ptclist = [j for j in xrange(groupsize*i, groupsize*(i+1))]	
+				ptclist = [j for j in range(groupsize*i, groupsize*(i+1))]	
 				if i == ncls - 1:
-					ptclist = [j for j in xrange(groupsize*i, nptcls) ]
+					ptclist = [j for j in range(groupsize*i, nptcls) ]
 					#ptclnumsdict.update( { i: ptclist } )
 			
 				ptclnumsdict.update( { i: ptclist  } )
@@ -808,9 +808,9 @@ def main():
 			groupsize = nptcls / ncls
 		
 			for ii in range(ncls):
-				ptclist = [jj for jj in xrange(groupsize*ii, groupsize*(ii+1))]	
+				ptclist = [jj for jj in range(groupsize*ii, groupsize*(ii+1))]	
 				if ii == ncls - 1:
-					ptclist = [j for j in xrange(groupsize*ii, nptcls) ]
+					ptclist = [j for j in range(groupsize*ii, nptcls) ]
 			
 			
 				#ptclnumsdict.update( { i: ptclist } )

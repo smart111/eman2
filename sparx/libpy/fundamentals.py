@@ -110,9 +110,9 @@ def acfnpl(e, center=True):
 def __buildweights(m, kb):
 	weights = EMData()
 	weights.set_size(m,m,1)
-	for iy in xrange(m):
+	for iy in range(m):
 		wy = kb.sinhwin(iy-m//2)
-		for ix in xrange(m):
+		for ix in range(m):
 			wx = kb.sinhwin(ix-m//2)
 			weights.set_value_at(ix,iy,wx*wy)
 	return weights
@@ -809,7 +809,7 @@ def rot_avg_table(e):
 	qt = e.rotavg()
 	tab = []
 	n = qt.get_xsize()
-	for i in xrange(n):
+	for i in range(n):
 		tab.append(qt.get_value_at(i))
 	return tab
 
@@ -831,7 +831,7 @@ def ro_textfile(e, filename, helpful_string=""):
 	out.write("#Rotational average: %s\n" % (helpful_string));
 	f = e.rotavg()
 	nr = f.get_xsize()
-	for ir in xrange(nr):
+	for ir in range(nr):
 		out.write("%d\t%12.5g\n" % (ir, f.get_value_at(ir)))
 	out.close()
 
@@ -856,12 +856,12 @@ def rops_textfile(e, filename, helpful_string="", lng = False):
 	f = ps.rotavg()
 	nr = f.get_xsize()
 	table = [0.0]*nr
-	for ir in xrange(nr): table[ir] = f.get_value_at(ir)
+	for ir in range(nr): table[ir] = f.get_value_at(ir)
 	if lng:
 		from math import log
-		for ir in xrange(1,nr): table[ir] = log(table[ir])
+		for ir in range(1,nr): table[ir] = log(table[ir])
 		table[0] = table[1]
-	for ir in xrange(nr): out.write("%d\t%12.5g\n" % (ir, table[ir]))
+	for ir in range(nr): out.write("%d\t%12.5g\n" % (ir, table[ir]))
 	out.close()
 	
 def rops_table(img, lng = False):
@@ -875,10 +875,10 @@ def rops_table(img, lng = False):
 	ro = e.rotavg()
 	nr = ro.get_xsize()
 	table = [0.0]*nr
-	for ir in xrange(nr): table[ir] = ro.get_value_at(ir)
+	for ir in range(nr): table[ir] = ro.get_value_at(ir)
 	if lng:
 		from math import log10
-		for ir in xrange(1,nr): table[ir] = log10(table[ir])
+		for ir in range(1,nr): table[ir] = log10(table[ir])
 		table[0] = table[1]
 	return table
 
@@ -896,7 +896,7 @@ def rops_dir(indir, output_dir = "1dpw2_dir"):
 		(filename, filextension) = os.path.splitext(v)
 		nima = EMUtil.get_image_count(os.path.join(indir,v))
 		print(nima)
-		for im in xrange(nima):
+		for im in range(nima):
 			e = EMData()
 			file_name = os.path.join(indir,v)
 			e.read_image(file_name, im)
@@ -908,7 +908,7 @@ def rops_dir(indir, output_dir = "1dpw2_dir"):
 			else :  sum_ima += tmp
 		table = []
 		nr = sum_ima.get_xsize()
-		for ir in xrange(nr):  table.append([sum_ima.get_value_at(ir)])
+		for ir in range(nr):  table.append([sum_ima.get_value_at(ir)])
 		drop_spider_doc(os.path.join(output_dir, "1dpw2_"+filename+".txt"), table)
 
 
@@ -1125,10 +1125,10 @@ def rtshgkb(image, angle, sx, sy, kb, scale = 1.0):
 	
 def smallprime(arbit_num, numprime=3):
 	primelist = [2,3,5,7,11,13,17,19,23]
-	for i in xrange(1, arbit_num+1):
+	for i in range(1, arbit_num+1):
 		x62 = arbit_num-i+1
-		for k in xrange(1,arbit_num+1): # fake loop try to divide the arbit_num
-			for j in xrange(0,numprime):
+		for k in range(1,arbit_num+1): # fake loop try to divide the arbit_num
+			for j in range(0,numprime):
 				x71 = primelist[j]*int(x62/primelist[j])
 				if(x71 == x62):
 					x62 = x62/primelist[j]
@@ -1160,9 +1160,9 @@ def welch_pw2(img, win_size=512, overlp_x=50, overlp_y=50, edge_x=0, edge_y=0):
 	x29 = int(x39*((ny-2*edge_y)/win_size-1)+1)  # number of pieces vertical dim.(Y)
 	iz = 0	
 	pw2 = EMData()
-	for iy in xrange(1, x29+1):	
+	for iy in range(1, x29+1):	
 		x21 = (win_size/x39)*(iy-1) + edge_y  #  y-direction it should start from 0 if edge_y=0	      
-		for ix in  xrange(1, x26+1):			 
+		for ix in  range(1, x26+1):			 
 			x22 = (win_size/x38)*(ix-1) + edge_x  # x-direction it should start from 0 if edge_x =0
 			wi  = window2d(e_fil, win_size, win_size, "l", x22, x21)
 			iz  = iz+1
@@ -1204,10 +1204,10 @@ def welch_pw2_tilt_band(img,theta,num_bnd=-1,overlp_y=50,edge_x=0,edge_y=0,win_s
 	x29 = int(x39*((ny)/win_y-1)+1)  # number of pieces vertical dim.(Y)
 	pw2 = EMData()
 	pw2_band = []
-	for ix in  xrange(1, num_bnd+1):
+	for ix in  range(1, num_bnd+1):
 		x22 = (win_x)*(ix-1)# x-direction it should start from 0 if edge_x =0
 		iz=0
-		for iy in xrange(1, x29+1):	
+		for iy in range(1, x29+1):	
 			x21 = (win_y/x39)*(iy-1) #  y-direction it should start from 0 if edge_y=0	      			 
 			wi = window2d(e_fil,win_x, win_y,"l",x22, x21)
 			iz = iz+1
@@ -1237,9 +1237,9 @@ def tilemic(img, win_size=512, overlp_x=50, overlp_y=50, edge_x=0, edge_y=0):
 	x26 = int(x38*((nx-2*edge_x)/win_size-1)+1)  # number of pieces horizontal dim.(X)
 	x29 = int(x39*((ny-2*edge_y)/win_size-1)+1)  # number of pieces vertical dim.(Y)
 	pw2 = []
-	for iy in xrange(1, x29+1):	
+	for iy in range(1, x29+1):	
 		x21 = (win_size/x39)*(iy-1) + edge_y  #  y-direction it should start from 0 if edge_y=0	      
-		for ix in  xrange(1, x26+1):			 
+		for ix in  range(1, x26+1):			 
 			x22 = (win_size/x38)*(ix-1) + edge_x  # x-direction it should start from 0 if edge_x =0
 			wi  = ramp( window2d(e_fil, win_size, win_size, "l", x22, x21) )
 			st = Util.infomask(wi, None, True)
@@ -1320,7 +1320,7 @@ def rotate_params(params, transf):
 	matinv = rotmatrix( -transf[2], -transf[1], -transf[0] )
 	n = len(params)
 	cpar = [None]*n
-	for i in xrange(n):
+	for i in range(n):
 		d = rotmatrix( params[i][0], params[i][1], params[i][2] )
 		phi, theta, psi = recmat(mulmat(d,matinv))
 		cpar[i] = [phi, theta, psi]
@@ -1570,16 +1570,16 @@ class symclass():
 			self.nsym = int(sym[1:])
 			self.brackets = [[360./self.nsym,90.0,360./self.nsym,90.0],[360./self.nsym,180.0,360./self.nsym,180.0]]
 			self.symangles = []
-			for i in xrange(self.nsym):
+			for i in range(self.nsym):
 				self.symangles.append([0.0, 0.0, i*360./self.nsym])
 
 		elif(sym[0] == "d"):
 			self.nsym = 2*int(sym[1:])
 			self.brackets = [[360./self.nsym,90.0,360./self.nsym,90.0],[360./self.nsym*2,90.0,360./self.nsym*2,90.0]]
 			self.symangles = []
-			for i in xrange(self.nsym/2):
+			for i in range(self.nsym/2):
 				self.symangles.append([0.0, 0.0, i*360./self.nsym*2])
-			for i in xrange(self.nsym/2):
+			for i in range(self.nsym/2):
 				self.symangles.append([0.0, 180.0, i*360./self.nsym*2])
 
 		elif(sym[:3] == "oct"):
@@ -1589,11 +1589,11 @@ class symclass():
 			alpha = degrees(acos(1.0/(sqrt(3.0)*tan(2*pi/ncap/2.0)))) # also platonic_params["alt_max"]
 			theta = degrees(0.5*acos( cos(radians(cap_sig))/(1.0-cos(radians(cap_sig))) ))  #  also platonic_params["theta_c_on_two"]
 			self.brackets = [[180./ncap,theta,cap_sig,alpha],[360./ncap,theta,cap_sig,alpha]]
-			self.symangles = [[0.0,0.0,float(i)] for i in xrange(0,271,90)]
-			for i in xrange(0,271,90):
-				for j in xrange(0,271,90):
+			self.symangles = [[0.0,0.0,float(i)] for i in range(0,271,90)]
+			for i in range(0,271,90):
+				for j in range(0,271,90):
 					self.symangles.append([float(j),90.0,float(i)])
-			for i in xrange(0,271,90):  self.symangles.append([0.0,180.0,float(i)])
+			for i in range(0,271,90):  self.symangles.append([0.0,180.0,float(i)])
 
 		elif(sym[:3] == "tet"):
 			self.nsym = 12
@@ -1604,8 +1604,8 @@ class symclass():
 			self.brackets = [[360.0/ncap,theta,cap_sig,alpha],[360.0/ncap,theta,cap_sig,alpha]]
 			lvl1 = degrees(acos(-1.0/3.0)) # There  are 3 faces at this angle
 			self.symangles = [ [0.,0.,0.], [0., 0., 120.], [0., 0., 240.]]
-			for l1 in xrange(30,271,120):
-				for l2 in xrange(30,271,120):
+			for l1 in range(30,271,120):
+				for l2 in range(30,271,120):
 					self.symangles.append([float(l1),lvl1,float(l2)])
 
 		elif(sym[:4] == "icos"):
@@ -1617,14 +1617,14 @@ class symclass():
 			self.brackets = [[36.,theta,cap_sig,alpha],[72.,theta,cap_sig,alpha]]
 			lvl1= degrees(atan(2.0))  #there are 5 pentagons with centers at this height (angle)
 			lvl2 = 180.0 - lvl1      #there are 5 pentagons with centers at this height (angle)
-			self.symangles = [[0.0,0.0,float(i)] for i in xrange(0,288+1,72)]
-			for l1 in xrange(0,288+1,72):
-				for l2 in xrange(36,324+1,72):
+			self.symangles = [[0.0,0.0,float(i)] for i in range(0,288+1,72)]
+			for l1 in range(0,288+1,72):
+				for l2 in range(36,324+1,72):
 					self.symangles.append([float(l1),lvl1,float(l2)])
-			for l1 in xrange(36,324+1,72):
-				for l2 in xrange(0,288+1,72):
+			for l1 in range(36,324+1,72):
+				for l2 in range(0,288+1,72):
 					self.symangles.append([float(l1),lvl2,float(l2)])
-			for i in xrange(0,288+1,72):  self.symangles.append([0.0,180.0,float(i)])			
+			for i in range(0,288+1,72):  self.symangles.append([0.0,180.0,float(i)])			
 
 		#
 		self.transform = []
@@ -1678,19 +1678,19 @@ class symclass():
 		redang = [angles[:]]
 		if(self.sym[0] == "c"):
 			qt = 360.0/self.nsym
-			for l in xrange(1,self.nsym):
+			for l in range(1,self.nsym):
 				redang.append([(angles[0]+l*qt)%360.0, angles[1], angles[2]])
 		elif(self.sym[0] == "d"):
 			nsm = self.nsym/2
 			qt = 360.0/nsm
-			for l in xrange(1,nsm):
+			for l in range(1,nsm):
 				redang.append([(angles[0]+l*qt)%360.0, angles[1], angles[2]])
-			for l in xrange(nsm,self.nsym):
+			for l in range(nsm,self.nsym):
 				redang.append([(360.0-redang[l-nsm][0])%360.0, 180.0-angles[1], (180.0+angles[2])%360.0])
 		else:
 			from fundamentals import rotmatrix, recmat, mulmat
 			mat = rotmatrix(angles[0],angles[1],angles[2])
-			for l in xrange(1,self.nsym):
+			for l in range(1,self.nsym):
 				p1,p2,p3 = recmat( mulmat( mat , self.symatrix[l]) )
 				redang.append([p1,p2,p3])
 
@@ -1704,14 +1704,14 @@ class symclass():
 		if( self.sym[0] == "c" or self.sym[0] == "d" ):
 			temp = Util.symmetry_neighbors(angles, self.sym)
 			nt = len(temp)/3
-			return [[temp[l*3],temp[l*3+1],0.0] for l in xrange(nt) ]
+			return [[temp[l*3],temp[l*3+1],0.0] for l in range(nt) ]
 		#  Note symmetry neighbors below refer to the particular order 
 		#   in which this class generates symmetry matrices
 		neighbors = {}
 		neighbors["oct"]  = [1,2,3,8,9,12,13]
 		neighbors["tet"]  = [1,2,3,4,7]
 		neighbors["icos"] = [1,2,3,4,6,7,11,12]
-		sang = [[] for l in xrange(len(angles)*(len(neighbors[self.sym])+1))]
+		sang = [[] for l in range(len(angles)*(len(neighbors[self.sym])+1))]
 		for i,q in enumerate(angles):  sang[i*(len(neighbors[self.sym])+1)] = angles[i][:]
 		from fundamentals import rotmatrix, recmat, mulmat
 		for i,q in enumerate(angles):
@@ -1741,7 +1741,7 @@ class symclass():
 			if is_platonic_sym:
 				if(not self.is_in_subunit(phi, theta, inc_mirror)):
 					mat = rotmatrix(phi,theta,psi)
-					for l in xrange(1,self.nsym):
+					for l in range(1,self.nsym):
 						p1,p2,p3 = recmat( mulmat( mat , self.symatrix[l]) )
 						if(self.is_in_subunit(p1, p2, inc_mirror)):
 							phi=p1; theta=p2; psi=p3
@@ -1768,7 +1768,7 @@ class symclass():
 		else:
 			if(not self.is_in_subunit(phi, theta, inc_mirror)):
 				mat = rotmatrix(phi,theta,psi)
-				for l in xrange(1,self.nsym):
+				for l in range(1,self.nsym):
 					p1,p2,p3 = recmat( mulmat( mat , self.symatrix[l]) )
 					if(self.is_in_subunit(p1, p2, inc_mirror)):
 						phi=p1;theta=p2;psi=p3
@@ -1835,7 +1835,7 @@ class symclass():
 				phistep = phi2-phi1
 				z1 = cos(radians(theta1))
 				phi = phi1
-				for k in xrange(1, NumPoints-1):
+				for k in range(1, NumPoints-1):
 					z = z1 + Deltaz*k/(NumPoints-1)
 					r = sqrt(1.0-z*z)
 					phi = phi1+(phi + delta/r - phi1)%phistep
@@ -1845,7 +1845,7 @@ class symclass():
 					angles.append([phi, theta, 0.0])
 				#angles.append([p2,t2,0])  # This is incorrect, as the last angle is really the border, not the element we need. PAP 01/15/07
 			if (phiEqpsi == 'Minus'):
-				for k in xrange(len(angles)): angles[k][2] = (720.0 - angles[k][0])%360.0
+				for k in range(len(angles)): angles[k][2] = (720.0 - angles[k][0])%360.0
 			if( (self.sym[0] == "c" or self.sym[0] == "d") and ((theta2 == 180.) or (theta2 >= 180. and delta == 180.0))):  angles.append( [0.0, 180.0, 0.0] )
 
 		"""

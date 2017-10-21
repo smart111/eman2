@@ -85,7 +85,7 @@ def main():
 			if nimg==1 : print(infile)
 			else : print(infile,nimg)
 
-		for i in xrange(nimg):
+		for i in range(nimg):
 			if outfile!=None:
 				outfile.write(n,i,infile)
 			else:

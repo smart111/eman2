@@ -131,11 +131,11 @@ def main():
 
 	if options.seqali or options.seqalicen:
 		if b2!=None:
-			for i in xrange(1,len(b2)):
+			for i in range(1,len(b2)):
 				b2[i]=b2[i].align("rotate_translate_tree",b2[i-1])
 				if options.seqalicen: b2[i].process_inplace("xform.centerofmass")
 		else:
-			for i in xrange(1,len(b)):
+			for i in range(1,len(b)):
 				b[i]=b[i].align("rotate_translate_tree",b[i-1])
 				if options.seqalicen: b2[i].process_inplace("xform.centerofmass")
 

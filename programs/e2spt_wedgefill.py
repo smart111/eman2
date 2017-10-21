@@ -120,7 +120,7 @@ def main():
 			n = options.subset
 
 		fillp = fill.copy()
-		for i in xrange(n):
+		for i in range(n):
 			im=EMData(options.input,i)
 			
 			if options.fillwithnoise:

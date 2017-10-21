@@ -138,9 +138,9 @@ def main():
 		fftip(vi)  # this is the volume to be filtered
 
 		#  Round all resolution numbers to two digits
-		for x in xrange(nn):
-			for y in xrange(nn):
-				for z in xrange(nn):
+		for x in range(nn):
+			for y in range(nn):
+				for z in range(nn):
 					ui.set_value_at_fast( x,y,z, round(ui.get_value_at(x,y,z), 2) )
 		st = Util.infomask(ui, m, True)
 		
@@ -152,9 +152,9 @@ def main():
 			pt = Util.infomask( threshold_outside(ui, cutoff - 0.00501, cutoff + 0.005), m, True)
 			if(pt[0] != 0.0):
 				vovo = fft(filt_tanl(vi, cutoff, falloff) )
-				for x in xrange(nn):
-					for y in xrange(nn):
-						for z in xrange(nn):
+				for x in range(nn):
+					for y in range(nn):
+						for z in range(nn):
 							if(m.get_value_at(x,y,z) > 0.5):
 								if(round(ui.get_value_at(x,y,z),2) == cutoff):
 									filteredvol.set_value_at_fast(x,y,z,vovo.get_value_at(x,y,z))

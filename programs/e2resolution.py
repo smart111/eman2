@@ -114,7 +114,7 @@ def main():
 	print("compute power 2")
 	noisepow=noisef.calc_radial_dist(noisef.get_ysize()/2-1,1,1,1)
 
-	x=range(1,len(datapow)+1)
+	x=list(range(1,len(datapow)+1))
 	if options.apix>0:
 		x=[i/(len(datapow)*options.apix*2.0) for i in x]
 	else:

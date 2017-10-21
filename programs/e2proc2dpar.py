@@ -110,14 +110,11 @@ def main():
 		sys.exit(1)
 	
 	N=EMUtil.get_image_count(args[0])
-	npt=max(min(100,N/(options.threads-2)+1),1)
+	npt=max(min(100,N/(options.threads-2)),1)
 	
 	jsd=queue.Queue(0)
 	# these start as arguments, but get replaced with actual threads
-	thrds=[(jsd,args,options,i,i*npt,min(i*npt+npt,N)) for i in xrange(N/npt+1)]
-
-	#import pprint
-	#pprint.pprint(thrds)
+	thrds=[(jsd,args,options,i,i*npt,min(i*npt+npt,N)) for i in range(N/npt+1)]
 	
 	thrtolaunch=0
 	while thrtolaunch<len(thrds) or threading.active_count()>1:
@@ -151,7 +148,7 @@ def procfn(jsd,args,options,thrn,n0,n1):
 	optionlist = pyemtbx.options.get_optionlist(sys.argv[1:])
 
 	ret=[thrn,{}]
-	for n in xrange(n0, n1):
+	for n in range(n0, n1):
 		d=EMData(args[0],n)
 
 		index_d = Counter()

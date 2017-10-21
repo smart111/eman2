@@ -86,7 +86,7 @@ def main():
 	N=EMUtil.get_image_count(args[0])
 	olddf=0
 	micronum=0		# number of micrograph
-	for i in xrange(N):
+	for i in range(N):
 		img=EMData(args[0],i)
 		ctf=img["ctf"]
 		if ctf.defocus!=olddf :

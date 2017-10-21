@@ -160,7 +160,7 @@ def main():
 def fixlines(inlines):
 	n=len(inlines)
 	newlines=[]
-	for i in xrange(0,n):
+	for i in range(0,n):
 		inlines[i] = inlines[i].replace(", ",' ')	
 		inlines[i] = inlines[i].replace(",",' ')
 		inlines[i] = inlines[i].replace("x",'')

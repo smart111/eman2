@@ -108,7 +108,7 @@ for ta in arange(da-5,da+5,0.01):
 	out1[2].append(sim)
 
 outf=open("nrg.txt","w")
-for i in xrange(len(out1[0])):
+for i in range(len(out1[0])):
 	outf.write("%d\t%f\t%f\t%f\n"%(i-len(out1[0])/2,out1[0][i],out1[1][i],out1[2][i]))
 outf.close()
 

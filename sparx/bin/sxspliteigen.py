@@ -62,7 +62,7 @@ def main():
 	from math import sqrt
 	nimage = EMUtil.get_image_count( args[0] )
 
-	for i in xrange(nimage) :
+	for i in range(nimage) :
 	        data = EMData()
 	        data.read_image( args[0], i )
 

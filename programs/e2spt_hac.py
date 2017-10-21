@@ -447,7 +447,7 @@ def main():
 			
 			
 			mm = 0
-			for jj in xrange(bottom_range,top_range):
+			for jj in range(bottom_range,top_range):
 				if mm == 0:
 					print("I am rewritting the spt_ptcl_indxs header parameter for every particle in the stack")
 				a = EMData(entirestack,jj)
@@ -513,7 +513,7 @@ def exclusive_classes(options):
 		if int(averages[i]['multiplicity']) >= int(options.exclusive_class_min):	
 			print("I've found a candidate with the min number of members in the average!", averages[i]['multiplicity'])
 			candidates+=1
-			for j in xrange(i+1,len(averages)):	
+			for j in range(i+1,len(averages)):	
 				if averages[i] not in repeated:
 					#print "I'm comparing these candidates", averages[i], averages[j]			
 					for k in averages[i]['indxs']:
@@ -702,7 +702,7 @@ def allvsall(options):
 		NOTE: In the first round all the particles are "new"
 		'''
 		
-		newptclsmap = list(enumerate([range(i,nnew) for i in range(1,nnew)]))
+		newptclsmap = list(enumerate([list(range(i,nnew)) for i in range(1,nnew)]))
 		
 		jj=0									#Counter to track the number of comparisons (also the number of tasks to parallelize)
 		roundtag = 'round' + str(k).zfill(fillfactor) + '_'			#The round tag needs to change as the iterations/rounds progress

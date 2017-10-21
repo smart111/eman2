@@ -341,7 +341,7 @@ class EMClassPtclTool(QtGui.QWidget):
 			QtGui.QMessageBox.warning(self,"Error !","Invalid range specified. Use: min-max")
 			return
 
-		self.vclasses.subset_set(range(x0,x1))
+		self.vclasses.subset_set(list(range(x0,x1)))
 
 	def selInvertClasses(self,x):
 		"Inverts the current selection set"

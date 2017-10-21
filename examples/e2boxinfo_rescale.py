@@ -21,7 +21,7 @@ for i in il:
 	if "boxes" in db :
 		tdb+=1
 		boxes=db["boxes"]
-		for j in xrange(len(boxes)):
+		for j in range(len(boxes)):
 			boxes[j][0]*=sfac
 			boxes[j][1]*=sfac
 		db["boxes"]=boxes

@@ -172,7 +172,7 @@ def main():
 	files = options.input
 	files = files.split(',')
 	
-	for i in xrange(0,len(files)):
+	for i in range(0,len(files)):
 		for j in range(i+1,len(files)):
 			if files[i] == files[j]:
 				print("ERROR: You have supplied a file twice, see", files[i],files[j])
@@ -257,7 +257,7 @@ def main():
 				values = ele[key][f][1]
 				id = ele[key][f][0]
 				
-				x = range(len(values))				
+				x = list(range(len(values)))				
 					
 				for j in range(len(x)):
 					x[j] = int(round(x[j] * apix))				
@@ -515,7 +515,7 @@ def cylinder(a,options):
 	mask = EMData(a['nx'],a['ny'],a['nz'])
 	mask.to_one()
 	
-	for i in xrange(1,a['nx']/2):
+	for i in range(1,a['nx']/2):
 		heightout = i
 		heightin = heightout-1
 		radius = i
@@ -580,7 +580,7 @@ def direction(a,options):
 	#print "and it should be equal to y see", 'y' == options.mode
 	#print "And the range for values calculation is", rng
 	
-	for i in xrange(0,rng):
+	for i in range(0,rng):
 		#print "\nFor slice", i
 		maskslice = mask
 		#print "I will mask the image, whose dimensionality is", dimensionality

@@ -28,7 +28,7 @@ total_high_proj = 0
 proj_out = "bdb:/home/ryan/HOSPITALIS320"
 
 
-for ii in xrange(1) :
+for ii in range(1) :
 
 	proj_in = prj_home + "ssspdbox320dcs2.dat"
 
@@ -40,7 +40,7 @@ for ii in xrange(1) :
 
 	prev_defocus = 0.
 
-	for iq in xrange(nimage):
+	for iq in range(nimage):
 		defocus = atof( split( i_ctfs.readline() )[2] )
 		if defocus != prev_defocus:
 			print("Defocus is ", defocus)

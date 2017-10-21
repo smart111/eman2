@@ -21,7 +21,7 @@ nangle = 40
 dangle = 180.0/nangle
 
 lines = []
-for j in xrange(nangle):
+for j in range(nangle):
 	line = prgs1d( prjft, kb, [dangle*j, 0.0] )
 	line.set_attr( "alpha", dangle*j )
 	line.set_attr( "s1x", 0.0 )

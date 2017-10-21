@@ -118,7 +118,7 @@ as not all elements are computed.
 	if options.refs:
 		ALTs=[]
 		AZs=[]
-		for i in xrange(nx):	
+		for i in range(nx):	
 			# this reads the header, gets the orientation, and reads it out EMAN style
 			ort=EMData(options.refs,i,True)["xform.projection"].get_rotation("eman")
 			ALTs.append(ort["alt"])
@@ -138,7 +138,7 @@ as not all elements are computed.
 
 	# We read one line of the simmx at a time. The line represents all values
 	# for a single particle
-	for y in xrange(ny):
+	for y in range(ny):
 		if time.time()-t0>0.3 :
 			print(" %d/%d\r"%(y+1,ny), end=' ')
 			sys.stdout.flush()
@@ -297,7 +297,7 @@ as not all elements are computed.
 	
 	imgpath=options.output.rsplit(".",1)[0]+".hdf"
 	print("Image stack output in ",imgpath)
-	for i in xrange(ary.shape[0]):							# we write the output to a stack of images
+	for i in range(ary.shape[0]):							# we write the output to a stack of images
 		im=EMNumPy.numpy2em(ary[i])
 		im.write_image(imgpath,i)
 	

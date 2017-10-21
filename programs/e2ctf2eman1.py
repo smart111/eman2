@@ -636,7 +636,7 @@ def smooth( seq, kernel ) :
 	if ( len( kernel ) - 1 ) % 2 :
 		kernel.insert( 0, 0. )
 	maxj = int( ( len( kernel ) - 1 ) / 2 )
-	krange = range( -1 * maxj, maxj + 1 )
+	krange = list(range( -1 * maxj, maxj + 1))
 	
 	# Smooth the sequence
 	sm = [ ]

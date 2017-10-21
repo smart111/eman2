@@ -11,7 +11,7 @@ sy = -3.7
 
 #sx=0
 #sy=0
-for i in xrange(36):
+for i in range(36):
 	img   = e.copy()
 	alpha = i*10
 	out1  = rot_shift2D(img,alpha,sx,sy,"linear",scale)

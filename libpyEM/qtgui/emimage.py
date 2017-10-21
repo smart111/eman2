@@ -227,7 +227,7 @@ class EMWidgetFromFile(object):
 				if isinstance(old,EMScene3D): widget = old
 				else: widget = EMScene3D()
 #				print n,data
-				for ii in xrange(n):
+				for ii in range(n):
 					data=EMData(filename,ii)
 					datai = EMDataItem3D(data, transform=Transform())
 					widget.insertNewNode(os.path.basename(filename), datai, parentnode=widget)

@@ -2265,7 +2265,7 @@ class EMImageInspector2D(QtGui.QWidget):
 		fft=data.do_fft()
 		pspec=fft.calc_radial_dist(fft["ny"]/2,0.0,1.0,1)
 		ds=1.0/(fft["ny"]*data["apix_x"])
-		s=[ds*i for i in xrange(fft["ny"]/2)]
+		s=[ds*i for i in range(fft["ny"]/2)]
 
 		from emplot2d import EMDataFnPlotter
 
@@ -2287,7 +2287,7 @@ class EMImageInspector2D(QtGui.QWidget):
 		fftsum.mult(1.0/len(self.target().list_data))
 		pspec=fftsum.calc_radial_dist(fft["ny"]/2,0.0,1.0,1)	# note that this method knows about is_inten() image flag
 		ds=1.0/(fft["ny"]*self.target().get_data()["apix_x"])
-		s=[ds*i for i in xrange(fft["ny"]/2)]
+		s=[ds*i for i in range(fft["ny"]/2)]
 
 		from emplot2d import EMDataFnPlotter
 

@@ -348,7 +348,7 @@ def main():
 		print("ERROR : at least 2 particles required in input stack")
 		sys.exit(1)
 	
-	ptclnums=range(nptcl)
+	ptclnums=list(range(nptcl))
 	nptclForRef = len(ptclnums)
 	
 	nseed=2**int(floor(log(len(ptclnums),2)))	# we stick with powers of 2 for this to make the tree easier to collapse

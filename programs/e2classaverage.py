@@ -156,7 +156,7 @@ def main():
 	# prepare tasks
 	tasks=[]
 	if ncls>1:
-		if options.oneclass==None : clslst=range(ncls)
+		if options.oneclass==None : clslst=list(range(ncls))
 		else : clslst=[options.oneclass]
 
 		for cl in clslst:
@@ -169,11 +169,11 @@ def main():
 			  options.automask,options.saveali,options.setsfref,options.verbose,cl,options.center))
 
 	else:
-		ptcls=range(nptcl)
+		ptcls=list(range(nptcl))
 		if options.resample : ptcls=[random.choice(ptcls) for i in ptcls]
 		if options.odd : ptcls=[i for i in ptcls if i%2==1]
 		if options.even: ptcls=[i for i in ptcls if i%2==0]
-		tasks.append(ClassAvTask(options.input,range(nptcl),options.usefilt,options.ref,options.iter,options.normproc,options.prefilt,
+		tasks.append(ClassAvTask(options.input,list(range(nptcl)),options.usefilt,options.ref,options.iter,options.normproc,options.prefilt,
 			  options.align,options.aligncmp,options.ralign,options.raligncmp,options.averager,options.cmp,options.keep,options.keepsig,
 			  options.automask,options.saveali,options.setsfref,options.verbose,0,options.center))
 

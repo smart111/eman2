@@ -69,7 +69,7 @@ def main():
         disable_bdb_cache()
         from applications import varimax
         global_def.BATCH = True
-        varimax(input_stack, range(imgstart, imgend), output_stack, mask, options.rad, options.verbose)
+        varimax(input_stack, list(range(imgstart, imgend)), output_stack, mask, options.rad, options.verbose)
         global_def.BATCH = False
 
 if __name__ == "__main__":

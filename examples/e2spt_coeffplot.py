@@ -370,7 +370,7 @@ def main():
 		
 		newscores.sort()
 		newscores.reverse()
-		x=range(len(newscores))
+		x=list(range(len(newscores)))
 	
 		plottitle = os.path.basename(options.alistack).replace('.hdf', '_prunedSCORES')
 		plt.plot(x, newscores,color='k', linewidth=2)

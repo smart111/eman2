@@ -677,7 +677,7 @@ def maxima(xaxis,yaxis,smooththresh):
 	ymaxes=[]
 	
 	
-	for i in xrange(0,len(yaxis) -1):
+	for i in range(0,len(yaxis) -1):
 		val=yaxis[i]
 		#print 'currrent value is', val
 		#print 'and next is', yaxis[i+1]

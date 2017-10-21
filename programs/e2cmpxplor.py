@@ -114,7 +114,7 @@ class EMCmpExplorer(EM3DSymModel):
 		self.shrink=shrink
 		# Deal with particles
 		n=min(EMUtil.get_image_count(self.particle_file),800)
-		self.ptcl_data=[i for i in EMData.read_images(self.particle_file,range(n)) if i!=None]
+		self.ptcl_data=[i for i in EMData.read_images(self.particle_file,list(range(n))) if i!=None]
 		if self.shrink>1 :
 			for i in self.ptcl_data : i.process_inplace("math.meanshrink",{"n":self.shrink})
 		for i in self.ptcl_data : i.process_inplace("normalize.edgemean",{})

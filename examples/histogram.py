@@ -46,7 +46,7 @@ try: os.mkdir("hist")
 except: pass
 
 out=open("hist/"+argv[1],"w")
-for i in xrange(len(his[0])): out.write("%f\t%f\n"%(his[1][i],his[0][i]))
+for i in range(len(his[0])): out.write("%f\t%f\n"%(his[1][i],his[0][i]))
 
 fig = plt.figure()
 ax = plt.axes([.15,.15,.8,.8])

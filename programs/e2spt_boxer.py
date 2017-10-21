@@ -1815,7 +1815,7 @@ def commandline_tomoboxer(tomogram,options):
 
 	newcoordslines = []
 	failed = 0
-	for i in xrange( 0, ncoords ):
+	for i in range( 0, ncoords ):
 
 		coords = clines[i].split()
 

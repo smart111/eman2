@@ -413,7 +413,7 @@ class scp_proxy:
 		self.stdin.write("listrecurse\n%s\n%s\n"%(path,basepath))
 		r=int(self.stdout.readline().strip())
 		ret=[]
-		for i in xrange(r):
+		for i in range(r):
 			ret.append(self.stdout.readline().strip())
 			
 		return ret

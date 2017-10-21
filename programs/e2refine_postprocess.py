@@ -222,7 +222,7 @@ def main():
 		# this becomes the new maximum mask radius
 		act=0
 		mv=0,0
-		for i in xrange(rmax):
+		for i in range(rmax):
 			if md[i]>mv[0] : mv=md[i],i		# find the radius of the  max val in range
 			if not act and md[i]<0.9*vmax : continue
 			act=True

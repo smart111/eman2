@@ -65,10 +65,10 @@ def main():
 		ptcl = EMData(ptcls,b)
 		ptcl.process_inplace('normalize.edgemean')
 		# iteratively align particle frames to the avg of all of the particle's frames
-		for iter in xrange(options.maxiters):
+		for iter in range(options.maxiters):
 			if iter == 0: bavg=Averagers.get('mean')
 			aavg=Averagers.get('mean')
-			for i in xrange(nfs):
+			for i in range(nfs):
 				r = Region(box[0]-boxsize/2,box[1]-boxsize/2,boxsize,boxsize)
 				d = EMData(options.dddmovie,i,False,r)
 				d.process_inplace('normalize.edgemean')
