@@ -39,6 +39,13 @@ from EMAN2db import db_open_dict, db_close_dict, db_remove_dict, db_check_dict
 from EMAN2 import *
 import traceback
 
+try:
+    QString = unicode
+except NameError:
+    # Python 3
+    QString = str
+QStringList = list
+
 class EMProjectDB:
 	"""
 	It's implemented as a singleton
@@ -2246,13 +2253,13 @@ class Boxable:
 		
 		self.process = QtCore.QProcess()
 
-		program = QtCore.QString("e2refine2d.py")
-		args = QtCore.QStringList()
+		program = QString("e2refine2d.py")
+		args = QStringList()
 		args.append("--input="+tmpimage)
 		args.append("--ncls=25")
 		
-		QtCore.QObject.connect(self.process, QtCore.SIGNAL("finished(int)"), self.process_finished)
-		QtCore.QObject.connect(self.process, QtCore.SIGNAL("started()"), self.process_start)
+		self.process.finished[int].connect(self.process_finished)
+		self.process.started.connect(self.process_start)
 		print(self.process.start(program,args))
 
 	def process_start(self):
@@ -2285,7 +2292,7 @@ class Boxable:
 		self.imagemx2p = EMImage(e)
 		self.imagemx2 = self.imagemx2p.child
 		self.imagemx2.setmmode("App")
-		QtCore.QObject.connect(self.imagemx2,QtCore.SIGNAL("mousedown"),self.box_selected)
+		self.imagemx2.mousedown.connect(self.box_selected)
 		self.imagemx2p.show()
 		
 		ef = []

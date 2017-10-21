@@ -36,8 +36,8 @@ from EMAN2 import *
 from emimagemx import EMImageMXWidget
 
 import sys
-from PyQt4 import QtCore, QtGui, QtOpenGL
-from PyQt4.QtCore import Qt
+from PyQt5 import QtCore, QtGui, QtOpenGL, QtWidgets
+from PyQt5.QtCore import Qt
 #from OpenGL import GL,GLU,GLUT
 from emapplication import EMApp
 import os
@@ -101,13 +101,13 @@ def main():
 
 #	E2end(logid)
 
-class EMMarkPtclTool(QtGui.QMainWindow):
+class EMMarkPtclTool(QtWidgets.QMainWindow):
 	"""This is a tool for marking bad particles"""
 
 	def __init__(self,extrafiles=None,verbose=0):
-		QtGui.QMainWindow.__init__(self)
+		QtWidgets.QMainWindow.__init__(self)
 
-		app=QtGui.qApp
+		app=QtWidgets.QApplication.instance()
 		self.setWindowTitle("e2markbadparticles")
 
 		# Menu Bar
@@ -115,29 +115,29 @@ class EMMarkPtclTool(QtGui.QMainWindow):
 #		self.mfile_save_processed=self.mfile.addAction("Save processed data")
 		self.mfile_quit=self.mfile.addAction("Quit")
 
-		self.wtabs=QtGui.QTabWidget()
+		self.wtabs=QtWidgets.QTabWidget()
 		self.setCentralWidget(self.wtabs)
 
 		self.wclasstab=EMClassPtclTool(extrafiles)
 		self.wtabs.addTab(self.wclasstab,"Classes")
 
-		self.vbl2 = QtGui.QVBoxLayout()
+		self.vbl2 = QtWidgets.QVBoxLayout()
 		self.setlist=MyListWidget(self)
-		self.setlist.setSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Expanding)
+		self.setlist.setSizePolicy(QtWidgets.QSizePolicy.Preferred,QtWidgets.QSizePolicy.Expanding)
 		self.vbl2.addWidget(self.setlist)
 		
 
 		# file menu
-		QtCore.QObject.connect(self.mfile_quit,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_quit)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("currentRowChanged(int)"),self.newSet)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("keypress"),self.listkey)
+		self.mfile_quit.triggered[bool].connect(self.menu_file_quit)
+		self.setlist.currentRowChanged[int].connect(self.newSet)
+		self.setlist.keypress.connect(self.listkey)
 
 	def menu_file_quit(self):
 		self.close()
 
 	def closeEvent(self,event):
 		self.wclasstab.close()
-		QtGui.QWidget.closeEvent(self, event)
+		QtWidgets.QWidget.closeEvent(self, event)
 
 if __name__ == "__main__":
 	main()

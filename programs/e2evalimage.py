@@ -45,13 +45,13 @@ from numpy import array,arange
 import traceback
 
 try:
-	from PyQt4 import QtCore, QtGui, QtOpenGL
-	from PyQt4.QtCore import Qt
-	from PyQt4.QtCore import QTimer
+	from PyQt5 import QtCore, QtGui, QtOpenGL, QtWidgets
+	from PyQt5.QtCore import Qt
+	from PyQt5.QtCore import QTimer
 	from emshape import *
 	from valslider import *
 except:
-	print("Warning: PyQt4 must be installed")
+	print("Warning: PyQt5 must be installed")
 	sys.exit(1)
 
 from Simplex import Simplex
@@ -115,7 +115,7 @@ power spectrum in various ways."""
 
 
 
-class GUIEvalImage(QtGui.QWidget):
+class GUIEvalImage(QtWidgets.QWidget):
 	def __init__(self,images,voltage=None,apix=None,cs=None,ac=10.0,box=512,usefoldername=False,constbfactor=-1,fitastig=False,phaseplate=False):
 		"""Implements the CTF fitting dialog using various EMImage and EMPlot2D widgets
 		'data' is a list of (filename,ctf,im_1d,bg_1d,quality)
@@ -132,7 +132,7 @@ class GUIEvalImage(QtGui.QWidget):
 			print("Cannot import EMAN plot GUI objects (is matplotlib installed?)")
 			sys.exit(1)
 
-		QtGui.QWidget.__init__(self,None)
+		QtWidgets.QWidget.__init__(self,None)
 		self.setWindowIcon(QtGui.QIcon(get_image_directory() + "ctf.png"))
 
 		self.nodir=not usefoldername
@@ -212,52 +212,52 @@ class GUIEvalImage(QtGui.QWidget):
 		self.wplot.setWindowTitle("e2evalimage - Plot")
 
 
-		self.wimage.connect(self.wimage,QtCore.SIGNAL("mousedown"),self.imgmousedown)
-		self.wimage.connect(self.wimage,QtCore.SIGNAL("mousedrag"),self.imgmousedrag)
-		self.wimage.connect(self.wimage,QtCore.SIGNAL("mouseup")  ,self.imgmouseup)
-		self.wfft.connect(self.wfft,QtCore.SIGNAL("mousedown"),self.fftmousedown)
-		self.wfft.connect(self.wfft,QtCore.SIGNAL("mousedrag"),self.fftmousedrag)
-		self.wfft.connect(self.wfft,QtCore.SIGNAL("mouseup")  ,self.fftmouseup)
-		self.wplot.connect(self.wplot,QtCore.SIGNAL("mousedown"),self.plotmousedown)
+		self.wimage.mousedown.connect(self.imgmousedown)
+		self.wimage.mousedrag.connect(self.imgmousedrag)
+		self.wimage.mouseup.connect(self.imgmouseup)
+		self.wfft.mousedown.connect(self.fftmousedown)
+		self.wfft.mousedrag.connect(self.fftmousedrag)
+		self.wfft.mouseup.connect(self.fftmouseup)
+		self.wplot.mousedown.connect(self.plotmousedown)
 
 		self.wimage.mmode="app"
 		self.wfft.mmode="app"
 
 		# This object is itself a widget we need to set up
-		self.gbl = QtGui.QGridLayout(self)
-		self.gbl.setMargin(8)
+		self.gbl = QtWidgets.QGridLayout(self)
+		self.gbl.setContentsMargins(8, 8, 8, 8)
 		self.gbl.setSpacing(6)
 
 		# plot list and plot mode combobox
 		self.setlist=e2ctf.MyListWidget(self)
-		self.setlist.setSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Expanding)
+		self.setlist.setSizePolicy(QtWidgets.QSizePolicy.Preferred,QtWidgets.QSizePolicy.Expanding)
 		for i in images:
 			self.setlist.addItem(i)
 		self.gbl.addWidget(self.setlist,0,0,10,2)
 
-		self.lcalcmode=QtGui.QLabel("Region:",self)
+		self.lcalcmode=QtWidgets.QLabel("Region:",self)
 		self.gbl.addWidget(self.lcalcmode,10,0)
 
-		self.scalcmode=QtGui.QComboBox(self)
+		self.scalcmode=QtWidgets.QComboBox(self)
 		self.scalcmode.addItem("Single Region")
 		self.scalcmode.addItem("Tiled Boxes")
 		self.scalcmode.setCurrentIndex(1)
 		self.gbl.addWidget(self.scalcmode,10,1)
 
 
-		self.lcalcmode=QtGui.QLabel("2D FFT:",self)
+		self.lcalcmode=QtWidgets.QLabel("2D FFT:",self)
 		self.gbl.addWidget(self.lcalcmode,11,0)
 
-		self.s2dmode=QtGui.QComboBox(self)
+		self.s2dmode=QtWidgets.QComboBox(self)
 		self.s2dmode.addItem("Power Spectrum")
 		self.s2dmode.addItem("Bg Subtracted")
 		self.s2dmode.addItem("Background")
 		self.gbl.addWidget(self.s2dmode,11,1)
 
-		self.lcalcmode=QtGui.QLabel("Annotate:",self)
+		self.lcalcmode=QtWidgets.QLabel("Annotate:",self)
 		self.gbl.addWidget(self.lcalcmode,12,0)
 
-		self.s2danmode=QtGui.QComboBox(self)
+		self.s2danmode=QtWidgets.QComboBox(self)
 		self.s2danmode.addItem("Ctf Zeroes")
 		self.s2danmode.addItem("Resolution Ring")
 		self.s2danmode.addItem("2-D Xtal")
@@ -265,10 +265,10 @@ class GUIEvalImage(QtGui.QWidget):
 		self.gbl.addWidget(self.s2danmode,12,1)
 
 
-		self.lcalcmode=QtGui.QLabel("Plot:",self)
+		self.lcalcmode=QtWidgets.QLabel("Plot:",self)
 		self.gbl.addWidget(self.lcalcmode,13,0)
 
-		self.splotmode=QtGui.QComboBox(self)
+		self.splotmode=QtWidgets.QComboBox(self)
 		self.splotmode.addItem("Bgsub and Fit")
 		self.splotmode.addItem("Fg and Bg")
 		self.splotmode.addItem("Bgsub, 45 deg slices")
@@ -304,7 +304,7 @@ class GUIEvalImage(QtGui.QWidget):
 		self.squality.setIntonly(True)
 		self.gbl.addWidget(self.squality,6,2,1,3)
 
-		self.brefit=QtGui.QPushButton("Refit")
+		self.brefit=QtWidgets.QPushButton("Refit")
 		self.gbl.addWidget(self.brefit,7,2)
 
 		self.cbgadj=CheckBox(None,"CTF BG Adj",1)
@@ -343,13 +343,13 @@ class GUIEvalImage(QtGui.QWidget):
 		# this is just a spacer
 		self.gbl.setColumnStretch(3,2)
 
-		self.bbox=QtGui.QGroupBox("Project")
+		self.bbox=QtWidgets.QGroupBox("Project")
 		self.gbl.addWidget(self.bbox,10,4,4,1)
 
-		self.bvbl=QtGui.QVBoxLayout()
+		self.bvbl=QtWidgets.QVBoxLayout()
 		self.bbox.setLayout(self.bvbl)
 
-		self.bimport=QtGui.QPushButton("Import")
+		self.bimport=QtWidgets.QPushButton("Import")
 		self.bvbl.addWidget(self.bimport)
 
 		self.cinvert=CheckBox(None,"Invert")
@@ -358,27 +358,27 @@ class GUIEvalImage(QtGui.QWidget):
 		self.cxray=CheckBox(None,"X-ray Pixels")
 		self.bvbl.addWidget(self.cxray)
 
-		QtCore.QObject.connect(self.bimport, QtCore.SIGNAL("clicked(bool)"),self.doImport)
-		QtCore.QObject.connect(self.brefit, QtCore.SIGNAL("clicked(bool)"),self.doRefit)
-		QtCore.QObject.connect(self.cbgadj, QtCore.SIGNAL("valueChanged"),self.bgAdj)
-		QtCore.QObject.connect(self.sdefocus, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sbfactor, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sdfdiff, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sdfang, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sapix, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sampcont, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.svoltage, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.scs, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sboxsize, QtCore.SIGNAL("valueChanged"), self.newBox)
+		self.bimport.clicked[bool].connect(self.doImport)
+		self.brefit.clicked[bool].connect(self.doRefit)
+		self.cbgadj.valueChanged.connect(self.bgAdj)
+		self.sdefocus.valueChanged.connect(self.newCTF)
+		self.sbfactor.valueChanged.connect(self.newCTF)
+		self.sdfdiff.valueChanged.connect(self.newCTF)
+		self.sdfang.valueChanged.connect(self.newCTF)
+		self.sapix.valueChanged.connect(self.newCTF)
+		self.sampcont.valueChanged.connect(self.newCTF)
+		self.svoltage.valueChanged.connect(self.newCTF)
+		self.scs.valueChanged.connect(self.newCTF)
+		self.sboxsize.valueChanged.connect(self.newBox)
 #		QtCore.QObject.connect(self.soversamp, QtCore.SIGNAL("valueChanged"), self.newBox)
-		QtCore.QObject.connect(self.sang45, QtCore.SIGNAL("valueChanged"), self.recalc_real)
-		QtCore.QObject.connect(self.squality,QtCore.SIGNAL("valueChanged"),self.newQualityFactor)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("currentRowChanged(int)"),self.newSet)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("keypress"),self.listkey)
-		QtCore.QObject.connect(self.scalcmode,QtCore.SIGNAL("currentIndexChanged(int)"),self.newCalcMode)
-		QtCore.QObject.connect(self.s2dmode,QtCore.SIGNAL("currentIndexChanged(int)"),self.new2DMode)
-		QtCore.QObject.connect(self.s2danmode,QtCore.SIGNAL("currentIndexChanged(int)"),self.new2DAnMode)
-		QtCore.QObject.connect(self.splotmode,QtCore.SIGNAL("currentIndexChanged(int)"),self.newPlotMode)
+		self.sang45.valueChanged.connect(self.recalc_real)
+		self.squality.valueChanged.connect(self.newQualityFactor)
+		self.setlist.currentRowChanged[int].connect(self.newSet)
+		self.setlist.keypress.connect(self.listkey)
+		self.scalcmode.currentIndexChanged[int].connect(self.newCalcMode)
+		self.s2dmode.currentIndexChanged[int].connect(self.new2DMode)
+		self.s2danmode.currentIndexChanged[int].connect(self.new2DAnMode)
+		self.splotmode.currentIndexChanged[int].connect(self.newPlotMode)
 
 	   	#QtCore.QObject.connect(self.saveparms,QtCore.SIGNAL("clicked(bool)"),self.on_save_params)
 		#QtCore.QObject.connect(self.recallparms,QtCore.SIGNAL("clicked(bool)"),self.on_recall_params)
@@ -396,7 +396,7 @@ class GUIEvalImage(QtGui.QWidget):
 		self.errors=None		# used to communicate errors back from the reprocessing thread
 
 		self.timer=QTimer()
-		QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.timeOut)
+		self.timer.timeout.connect(self.timeOut)
 		self.timer.start(100)
 
 		self.setWindowTitle("e2evalimage - Control Panel")
@@ -436,7 +436,7 @@ class GUIEvalImage(QtGui.QWidget):
 
 		self.writeCurParm()
 		event.accept()
-		QtGui.qApp.exit(0)
+		QtWidgets.QApplication.exit(0)
 		#app=QtGui.qApp
 		#if self.wimage != None:
 			#app.close_specific(self.wimage)
@@ -623,7 +623,7 @@ class GUIEvalImage(QtGui.QWidget):
 			self.procthread.start()
 
 		if self.errors:
-			QtGui.QMessageBox.warning(None,"Error","The following processors encountered errors during processing of 1 or more images:"+"\n".join(self.errors))
+			QtWidgets.QMessageBox.warning(None,"Error","The following processors encountered errors during processing of 1 or more images:"+"\n".join(self.errors))
 			self.errors=None
 
 	def doRefit(self):
@@ -675,7 +675,7 @@ class GUIEvalImage(QtGui.QWidget):
 		if not os.access("micrographs",os.R_OK) :
 			try : os.mkdir("micrographs")
 			except:
-				QtGui.QMessageBox.warning(self,"Error !","Cannot create micrographs directory")
+				QtWidgets.QMessageBox.warning(self,"Error !","Cannot create micrographs directory")
 				return
 
 		#db=db_open_dict("bdb:micrographs#%s"%item)

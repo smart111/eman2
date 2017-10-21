@@ -918,8 +918,8 @@ def get_results(etc,tids,options):
 
 def sptboxergui(options,args):
 
-	from PyQt4 import QtCore, QtGui
-	from PyQt4.QtCore import Qt
+	from PyQt5 import QtCore, QtGui, QtWidgets
+	from PyQt5.QtCore import Qt
 	from emapplication import get_application, EMApp
 	from emimage2d import EMImage2DWidget
 	from emimagemx import EMImageMXWidget
@@ -929,11 +929,11 @@ def sptboxergui(options,args):
 	from emshape import EMShape
 	from valslider import ValSlider, ValBox
 
-	class EMAverageViewer(QtGui.QWidget):
+	class EMAverageViewer(QtWidgets.QWidget):
 		"""This is a multi-paned view showing a single boxed out particle from a larger tomogram"""
 
 		def __init__(self,parent):
-			QtGui.QWidget.__init__(self)
+			QtWidgets.QWidget.__init__(self)
 
 			self.setWindowTitle("Particle Average")
 
@@ -941,7 +941,7 @@ def sptboxergui(options,args):
 
 			self.resize(300,500)
 
-			self.gbl = QtGui.QGridLayout(self)
+			self.gbl = QtWidgets.QGridLayout(self)
 			#self.xyview = EMImage2DWidget()
 			#self.gbl.addWidget(self.xyview,0,1)
 
@@ -961,7 +961,7 @@ def sptboxergui(options,args):
 			self.d3view = EMImage2DWidget()
 			self.gbl.addWidget(self.d3view,0,0)
 
-			self.gbl2 = QtGui.QGridLayout()
+			self.gbl2 = QtWidgets.QGridLayout()
 			self.gbl.addLayout(self.gbl2,1,0)
 
 			self.wfilt = ValSlider(rng=(0,50),label="Filter:",value=0.0)
@@ -970,17 +970,17 @@ def sptboxergui(options,args):
 			self.wmask = ValSlider(rng=(0,100),label="Mask:",value=0.0)
 			self.gbl2.addWidget(self.wmask,3,0,1,2)
 
-			self.wsymlbl=QtGui.QLabel("Symmetry:")
+			self.wsymlbl=QtWidgets.QLabel("Symmetry:")
 			self.gbl2.addWidget(self.wsymlbl,4,0)
 
-			self.wsym=QtGui.QLineEdit("C1")
+			self.wsym=QtWidgets.QLineEdit("C1")
 			self.gbl2.addWidget(self.wsym,4,1)
 
-			self.wprog=QtGui.QProgressBar()
+			self.wprog=QtWidgets.QProgressBar()
 			self.wprog.setRange(0,100)
 			self.gbl2.addWidget(self.wprog,5,0,1,2)
 
-			self.wrestart=QtGui.QPushButton("Restart")
+			self.wrestart=QtWidgets.QPushButton("Restart")
 			self.gbl2.addWidget(self.wrestart,6,1)
 
 			self.needupd=0					# Set by the second thread when a display update is ready, 1 means progress update, 2 means volume update
@@ -994,15 +994,15 @@ def sptboxergui(options,args):
 			self.filt=0.0
 			self.mask=0.0
 
-			QtCore.QObject.connect(self.wfilt,QtCore.SIGNAL("valueChanged")  ,self.event_filter  )
-			QtCore.QObject.connect(self.wmask,QtCore.SIGNAL("valueChanged")  ,self.event_mask  )
-			QtCore.QObject.connect(self.wsym,QtCore.SIGNAL("editingFinished()")  ,self.event_symchange  )
-			QtCore.QObject.connect(self.wrestart,QtCore.SIGNAL("clicked(bool)")  ,self.event_restart  )
+			self.wfilt.valueChanged.connect(self.event_filter)
+			self.wmask.valueChanged.connect(self.event_mask)
+			self.wsym.editingFinished.connect(self.event_symchange)
+			self.wrestart.clicked[bool].connect(self.event_restart)
 
 
 			# The timer event handles displaying the results processed by the other thread
 			self.timer=QtCore.QTimer(self)
-			QtCore.QObject.connect(self.timer,QtCore.SIGNAL("timeout")  ,self.event_timer  )
+			self.timer.timeout.connect(self.event_timer)
 			self.timer.start(500)
 
 			# The processing is all done in the background by the other thread
@@ -1066,16 +1066,16 @@ def sptboxergui(options,args):
 				time.sleep(5)
 
 
-	class EMBoxViewer(QtGui.QWidget):
+	class EMBoxViewer(QtWidgets.QWidget):
 		"""This is a multi-paned view showing a single boxed out particle from a larger tomogram"""
 
 		def __init__(self):
-			QtGui.QWidget.__init__(self)
+			QtWidgets.QWidget.__init__(self)
 			self.setWindowTitle("Single Particle View")
 
 			self.resize(300,300)
 
-			self.gbl = QtGui.QGridLayout(self)
+			self.gbl = QtWidgets.QGridLayout(self)
 			self.xyview = EMImage2DWidget()
 			self.gbl.addWidget(self.xyview,0,1)
 
@@ -1100,7 +1100,7 @@ def sptboxergui(options,args):
 			self.wfilt = ValSlider(rng=(0,50),label="Filter:",value=0.0)
 			self.gbl.addWidget(self.wfilt,2,0,1,2)
 
-			QtCore.QObject.connect(self.wfilt,QtCore.SIGNAL("valueChanged")  ,self.event_filter  )
+			self.wfilt.valueChanged.connect(self.event_filter)
 
 			self.gbl.setRowStretch(2,1)
 			self.gbl.setRowStretch(0,5)
@@ -1171,11 +1171,12 @@ def sptboxergui(options,args):
 			self.d3view.close()
 
 
-	class EMTomoBoxer(QtGui.QMainWindow):
+	class EMTomoBoxer(QtWidgets.QMainWindow):
 		"""This class represents the EMTomoBoxer application instance.  """
+		module_closed = QtCore.pyqtSignal()
 
 		def __init__(self,application,data=None,datafile=None,yshort=False,apix=0.0,boxsize=32,shrink=1,contrast=None,center=None,mod=False,normalize=False):
-			QtGui.QWidget.__init__(self)
+			QtWidgets.QWidget.__init__(self)
 
 			self.app=weakref.ref(application)
 			self.yshort=yshort
@@ -1205,8 +1206,8 @@ def sptboxergui(options,args):
 			self.mwin_average=self.mwin.addAction("Averaging")
 
 
-			self.setCentralWidget(QtGui.QWidget())
-			self.gbl = QtGui.QGridLayout(self.centralWidget())
+			self.setCentralWidget(QtWidgets.QWidget())
+			self.gbl = QtWidgets.QGridLayout(self.centralWidget())
 
 			# relative stretch factors
 			self.gbl.setColumnStretch(0,1)
@@ -1226,11 +1227,11 @@ def sptboxergui(options,args):
 			self.gbl.addWidget(self.zyview,0,0)
 
 			# Select Z for xy view
-			self.wdepth = QtGui.QSlider()
+			self.wdepth = QtWidgets.QSlider()
 			self.gbl.addWidget(self.wdepth,1,2)
 
 			### Control panel area in upper left corner
-			self.gbl2 = QtGui.QGridLayout()
+			self.gbl2 = QtWidgets.QGridLayout()
 			self.gbl.addLayout(self.gbl2,1,0)
 
 			# box size
@@ -1239,19 +1240,19 @@ def sptboxergui(options,args):
 			self.oldboxsize=boxsize
 
 			# max or mean
-			self.wmaxmean=QtGui.QPushButton("MaxProj")
+			self.wmaxmean=QtWidgets.QPushButton("MaxProj")
 			self.wmaxmean.setCheckable(True)
 			self.gbl2.addWidget(self.wmaxmean,2,0)
 
 			# number slices
-			self.wnlayers=QtGui.QSpinBox()
+			self.wnlayers=QtWidgets.QSpinBox()
 			self.wnlayers.setMinimum(1)
 			self.wnlayers.setMaximum(256)
 			self.wnlayers.setValue(1)
 			self.gbl2.addWidget(self.wnlayers,2,1)
 
 			# Local boxes in side view
-			self.wlocalbox=QtGui.QCheckBox("Limit Side Boxes")
+			self.wlocalbox=QtWidgets.QCheckBox("Limit Side Boxes")
 			self.gbl2.addWidget(self.wlocalbox,3,0)
 
 			# scale factor
@@ -1270,49 +1271,49 @@ def sptboxergui(options,args):
 			self.firsthbclick = None
 
 			# coordinate display
-			self.wcoords=QtGui.QLabel("X: " + str(self.get_x()) + "\t\t" + "Y: " + str(self.get_y()) + "\t\t" + "Z: " + str(self.get_z()))
+			self.wcoords=QtWidgets.QLabel("X: " + str(self.get_x()) + "\t\t" + "Y: " + str(self.get_y()) + "\t\t" + "Z: " + str(self.get_z()))
 			self.gbl2.addWidget(self.wcoords, 0, 0, 1, 2)
 
 			# file menu
-			QtCore.QObject.connect(self.mfile_open,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_open  )
-			QtCore.QObject.connect(self.mfile_read_boxloc,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_read_boxloc  )
-			QtCore.QObject.connect(self.mfile_save_boxloc,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_save_boxloc  )
-			QtCore.QObject.connect(self.mfile_save_boxes,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_save_boxes  )
-			QtCore.QObject.connect(self.mfile_save_boxes_stack,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_save_boxes_stack)
-			QtCore.QObject.connect(self.mfile_quit,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_quit)
+			self.mfile_open.triggered[bool].connect(self.menu_file_open)
+			self.mfile_read_boxloc.triggered[bool].connect(self.menu_file_read_boxloc)
+			self.mfile_save_boxloc.triggered[bool].connect(self.menu_file_save_boxloc)
+			self.mfile_save_boxes.triggered[bool].connect(self.menu_file_save_boxes)
+			self.mfile_save_boxes_stack.triggered[bool].connect(self.menu_file_save_boxes_stack)
+			self.mfile_quit.triggered[bool].connect(self.menu_file_quit)
 
 			# window menu
-			QtCore.QObject.connect(self.mwin_boxes,QtCore.SIGNAL("triggered(bool)")  ,self.menu_win_boxes  )
-			QtCore.QObject.connect(self.mwin_single,QtCore.SIGNAL("triggered(bool)")  ,self.menu_win_single  )
+			self.mwin_boxes.triggered[bool].connect(self.menu_win_boxes)
+			self.mwin_single.triggered[bool].connect(self.menu_win_single)
 	#		QtCore.QObject.connect(self.mwin_average,QtCore.SIGNAL("triggered(bool)")  ,self.menu_win_average  )
 
 			# all other widgets
-			QtCore.QObject.connect(self.wdepth,QtCore.SIGNAL("valueChanged(int)"),self.event_depth)
-			QtCore.QObject.connect(self.wnlayers,QtCore.SIGNAL("valueChanged(int)"),self.event_nlayers)
-			QtCore.QObject.connect(self.wboxsize,QtCore.SIGNAL("valueChanged"),self.event_boxsize)
-			QtCore.QObject.connect(self.wmaxmean,QtCore.SIGNAL("clicked(bool)"),self.event_projmode)
-			QtCore.QObject.connect(self.wscale,QtCore.SIGNAL("valueChanged")  ,self.event_scale  )
-			QtCore.QObject.connect(self.wfilt,QtCore.SIGNAL("valueChanged")  ,self.event_filter  )
-			QtCore.QObject.connect(self.wlocalbox,QtCore.SIGNAL("stateChanged(int)")  ,self.event_localbox  )
+			self.wdepth.valueChanged[int].connect(self.event_depth)
+			self.wnlayers.valueChanged[int].connect(self.event_nlayers)
+			self.wboxsize.valueChanged.connect(self.event_boxsize)
+			self.wmaxmean.clicked[bool].connect(self.event_projmode)
+			self.wscale.valueChanged.connect(self.event_scale)
+			self.wfilt.valueChanged.connect(self.event_filter)
+			self.wlocalbox.stateChanged[int].connect(self.event_localbox)
 
-			QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mousedown"),self.xy_down)
-			QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mousedrag"),self.xy_drag)
-			QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mouseup"),self.xy_up  )
-			QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mousewheel"),self.xy_wheel  )
-			QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("set_scale"),self.xy_scale)
-			QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("origin_update"),self.xy_origin)
+			self.xyview.mousedown.connect(self.xy_down)
+			self.xyview.mousedrag.connect(self.xy_drag)
+			self.xyview.mouseup.connect(self.xy_up)
+			self.xyview.mousewheel.connect(self.xy_wheel)
+			self.xyview.set_scale.connect(self.xy_scale)
+			self.xyview.origin_update.connect(self.xy_origin)
 
-			QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("mousedown"),self.xz_down)
-			QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("mousedrag"),self.xz_drag)
-			QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("mouseup")  ,self.xz_up  )
-			QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("set_scale"),self.xz_scale)
-			QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("origin_update"),self.xz_origin)
+			self.xzview.mousedown.connect(self.xz_down)
+			self.xzview.mousedrag.connect(self.xz_drag)
+			self.xzview.mouseup.connect(self.xz_up)
+			self.xzview.set_scale.connect(self.xz_scale)
+			self.xzview.origin_update.connect(self.xz_origin)
 
-			QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("mousedown"),self.zy_down)
-			QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("mousedrag"),self.zy_drag)
-			QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("mouseup")  ,self.zy_up  )
-			QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("set_scale"),self.zy_scale)
-			QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("origin_update"),self.zy_origin)
+			self.zyview.mousedown.connect(self.zy_down)
+			self.zyview.mousedrag.connect(self.zy_drag)
+			self.zyview.mouseup.connect(self.zy_up)
+			self.zyview.set_scale.connect(self.zy_scale)
+			self.zyview.origin_update.connect(self.zy_origin)
 
 			if datafile!=None:
 				print("\nIn ETomoBoxer, datafile is", datafile)
@@ -1336,7 +1337,7 @@ def sptboxergui(options,args):
 	#		self.averageviewer=EMAverageViewer(self)
 			#self.averageviewer.show()
 
-			QtCore.QObject.connect(self.boxesviewer,QtCore.SIGNAL("mx_image_selected"),self.img_selected)
+			self.boxesviewer.mx_image_selected.connect(self.img_selected)
 			self.e = None
 
 		def menu_win_boxes(self) : self.boxesviewer.show()
@@ -1557,7 +1558,7 @@ def sptboxergui(options,args):
 
 
 		def menu_file_open(self,tog):
-			QtGui.QMessageBox.warning(None,"Error","Sorry, in the current version, you must provide a file to open on the command-line.")
+			QtWidgets.QMessageBox.warning(None,"Error","Sorry, in the current version, you must provide a file to open on the command-line.")
 
 		def load_box_yshort(self, boxcoords):
 			if options.yshort:
@@ -1566,7 +1567,7 @@ def sptboxergui(options,args):
 				return boxcoords
 
 		def menu_file_read_boxloc(self):
-			fsp=str(QtGui.QFileDialog.getOpenFileName(self, "Select output text file"))
+			fsp=str(QtWidgets.QFileDialog.getOpenFileName(self, "Select output text file"))[0]
 
 			f=open(fsp,"r")
 			if options.helixboxer:
@@ -1588,7 +1589,7 @@ def sptboxergui(options,args):
 		def menu_file_save_boxloc(self):
 			shrinkf=self.shrink 								#jesus
 
-			fsp=str(QtGui.QFileDialog.getSaveFileName(self, "Select output text file"))
+			fsp=str(QtWidgets.QFileDialog.getSaveFileName(self, "Select output text file"))[0]
 
 			out=open(fsp,"w")
 			if options.helixboxer:
@@ -1600,14 +1601,14 @@ def sptboxergui(options,args):
 			out.close()
 
 		def menu_file_save_boxes(self):
-			fsp=os.path.basename(str(QtGui.QFileDialog.getSaveFileName(self, "Select output file (numbers added)")))
+			fsp=os.path.basename(str(QtWidgets.QFileDialog.getSaveFileName(self, "Select output file (numbers added)")))[0]
 			if ".hdf" not in fsp[-4:]:
 				fsp += '.hdf'
 			
 			fspprjs=fsp.replace('.hdf','_prjs.hdf')
 			prj=EMData() #Dummy
 
-			progress = QtGui.QProgressDialog("Saving", "Abort", 0, len(self.boxes),None)
+			progress = QtWidgets.QProgressDialog("Saving", "Abort", 0, len(self.boxes),None)
 			if options.helixboxer:
 				for i,b in enumerate(self.helixboxes):
 					img = self.extract_subtomo_box(self.get_extended_a_vector(b), cshrink=self.shrink)
@@ -1670,7 +1671,7 @@ def sptboxergui(options,args):
 
 		def menu_file_save_boxes_stack(self):
 
-			fsp=os.path.join(options.path,os.path.basename(str(QtGui.QFileDialog.getSaveFileName(self, "Select output file (.hdf supported only)"))))
+			fsp=os.path.join(options.path,os.path.basename(str(QtWidgets.QFileDialog.getSaveFileName(self, "Select output file (.hdf supported only)"))))[0]
 			#if fsp[:4].lower()!="bdb:" and fsp[-4:].lower()!=".hdf" :
 
 
@@ -1682,7 +1683,7 @@ def sptboxergui(options,args):
 			fspprjs=fsp.replace('.hdf','_prjs.hdf')
 			prj=EMData() #Dummy
 
-			progress = QtGui.QProgressDialog("Saving", "Abort", 0, len(self.boxes),None)
+			progress = QtWidgets.QProgressDialog("Saving", "Abort", 0, len(self.boxes),None)
 			if options.helixboxer:
 				for i,b in enumerate(self.helixboxes):
 					img = self.extract_subtomo_box(self.get_extended_a_vector(b), cshrink=self.shrink)
@@ -2477,7 +2478,7 @@ def sptboxergui(options,args):
 	#		self.averageviewer.close()
 			event.accept()
 			#self.app().close_specific(self)
-			self.emit(QtCore.SIGNAL("module_closed")) # this signal is important when e2ctf is being used by a program running its own event loop
+			self.module_closed.emit()
 
 		#def closeEvent(self,event):
 			#self.target().done()

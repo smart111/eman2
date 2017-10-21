@@ -32,8 +32,8 @@ from __future__ import print_function
 #
 #
 
-from PyQt4 import QtGui, QtCore, QtOpenGL
-from PyQt4.QtCore import Qt
+from PyQt5 import QtCore, QtGui, QtOpenGL, QtWebKitWidgets, QtWidgets
+from PyQt5.QtCore import Qt
 import sys
 from emimageutil import EMParentWin
 from EMAN2 import remove_directories_from_name, get_image_directory,get_3d_font_renderer, E2end,get_platform
@@ -41,7 +41,7 @@ import EMAN2db
 import weakref
 from libpyGLUtils2 import *
 
-try: from PyQt4 import QtWebKit
+try: from PyQt5 import QtWebKit
 except: pass
 
 class ModuleEventsManager: 
@@ -58,11 +58,11 @@ class ModuleEventsManager:
 		except AttributeError:
 			emitter = self.module() #Ross's hack to get this to work with QWidget's as well
 			
-		QtCore.QObject.connect(emitter, QtCore.SIGNAL("module_closed"), self.module_closed)
-		QtCore.QObject.connect(emitter, QtCore.SIGNAL("module_idle"), self.module_idle)
+		emitter.module_closed.connect(self.module_closed)
+		emitter.module_idle.connect(self.module_idle)
 	
-		QtCore.QObject.connect(emitter, QtCore.SIGNAL("ok"), self.module_ok) # yes, redundant, but time is short
-		QtCore.QObject.connect(emitter, QtCore.SIGNAL("cancel"), self.module_cancel)# yes, redundant, but time is short
+		emitter.ok.connect(self.module_ok)
+		emitter.cancel.connect(self.module_cancel)
 		
 	
 	def module_closed(self):
@@ -88,11 +88,11 @@ class ModuleEventsManager:
 		except AttributeError:
 			emitter = self.module() #Ross's hack to get this to work with QWidget's as well
 			
-		QtCore.QObject.disconnect(emitter, QtCore.SIGNAL("module_closed"), self.module_closed)
-		QtCore.QObject.disconnect(emitter, QtCore.SIGNAL("module_idle"), self.module_idle)
+		emitter.module_closed.disconnect(self.module_closed)
+		emitter.module_idle.disconnect(self.module_idle)
 	
-		QtCore.QObject.disconnect(emitter, QtCore.SIGNAL("ok"), self.module_ok) # yes, redundant, but time is short
-		QtCore.QObject.disconnect(emitter, QtCore.SIGNAL("cancel"), self.module_cancel)# yes, redundant, but time is short
+		emitter.ok.disconnect(self.module_ok)
+		emitter.cancel.disconnect(self.module_cancel)
 
 class EMGLWidget(QtOpenGL.QGLWidget):
 	"""
@@ -101,6 +101,9 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 	a self.busy attribute to prevent updateGL() from redrawing before all changes to display parameters are in place. 
 	"""
 	
+	module_closed = QtCore.pyqtSignal()
+	inspector_shown = QtCore.pyqtSignal()
+
 	def hide(self):
 		if self.qt_parent:
 			self.qt_parent.hide()
@@ -159,7 +162,7 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 			self.inspector.close()
 		QtOpenGL.QGLWidget.closeEvent(self, event)
 		if self.myparent : self.qt_parent.close()
-		self.emit(QtCore.SIGNAL("module_closed")) # this could be a useful signal, especially for something like the selector module, which can potentially show a lot of images but might want to close them all when it is closed
+		self.module_closed.emit()
 		event.accept()
 		
 	def display_web_help(self,url="http://blake.bcm.edu/emanwiki/e2display"):
@@ -171,7 +174,7 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 				try:
 					test = self.browser
 				except: 
-					self.browser = QtWebKit.QWebView()
+					self.browser = QtWebKitWidgets.QWebView()
 					self.browser.load(QtCore.QUrl())
 					self.browser.resize(800,800)
 				
@@ -187,7 +190,7 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 		if self.disable_inspector: 
 			return
 		
-		self.emit(QtCore.SIGNAL("inspector_shown")) # debug only
+		self.inspector_shown.emit()
 		app = get_application()
 		if app == None:
 			print("can't show an inspector with having an associated application")
@@ -231,7 +234,7 @@ get_application = em_app_instance.get_instance
 #def get_application() : return QtGui.qApp
 
 
-class EMApp(QtGui.QApplication):
+class EMApp(QtWidgets.QApplication):
 	def __init__(self):
 		self.children = []
 		
@@ -239,16 +242,16 @@ class EMApp(QtGui.QApplication):
 		self.timer_function = None
 		self.tmr = None
 		
-		QtGui.QApplication.__init__(self, sys.argv)
+		QtWidgets.QApplication.__init__(self, sys.argv)
 		
-		style=QtGui.QStyleFactory.create("Plastique")
+		style=QtWidgets.QStyleFactory.create("Plastique")
 		
 		if style==None:
 			print("Note: standard Plastique style not available, controls may be distorted. Using ", end=' ')
 			
 			# the first one should work, but we have the loop, just in case
-			for s in list(QtGui.QStyleFactory.keys()):
-				style=QtGui.QStyleFactory.create(s)
+			for s in list(QtWidgets.QStyleFactory.keys()):
+				style=QtWidgets.QStyleFactory.create(s)
 				if style!=None: 
 					print(s)
 					break
@@ -345,7 +348,7 @@ class EMApp(QtGui.QApplication):
 	
 		self.tmr=QtCore.QTimer()
 		self.tmr.setInterval(interval)
-		QtCore.QObject.connect(self.tmr,QtCore.SIGNAL("timeout()"), function)
+		self.tmr.timeout.connect(function)
 		self.tmr.start()
 		
 		self.timer_function = function
@@ -354,7 +357,7 @@ class EMApp(QtGui.QApplication):
 	def stop_timer(self):
 		print("STOP APP TIMER")
 		if self.tmr != None:
-			QtCore.QObject.disconnect(self.tmr, QtCore.SIGNAL("timeout()"), self.timer_function)
+			self.tmr.timeout.disconnect(self.timer_function)
 			self.tmr = None
 			self.timer_function = None
 		else:
@@ -362,9 +365,9 @@ class EMApp(QtGui.QApplication):
 
 		
 	
-class EMProgressDialog(QtGui.QProgressDialog):
+class EMProgressDialog(QtWidgets.QProgressDialog):
 	def __init__(self,label_text,cancel_button_text, minimum, maximum, parent = None):
-		QtGui.QProgressDialog.__init__(self,label_text,cancel_button_text, minimum, maximum, parent)
+		QtWidgets.QProgressDialog.__init__(self,label_text,cancel_button_text, minimum, maximum, parent)
 		self.setWindowIcon(QtGui.QIcon(get_image_directory() + "/eman.png"))
 
 
@@ -380,7 +383,7 @@ class EMErrorMessageDisplay:
 		'''
 		error_message is a list of error messages
 		'''
-		msg = QtGui.QMessageBox()
+		msg = QtWidgets.QMessageBox()
 		msg.setWindowTitle(title)
 		msg.setWindowIcon(QtGui.QIcon(get_image_directory() + "/eman.png"))
 		mes = ""

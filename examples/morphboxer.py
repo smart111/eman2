@@ -172,7 +172,7 @@ class MorphBoxingTool(EMBoxingTool):
 		return self.panel_object.get_widget()
 
 	def icon(self):
-		from PyQt4 import QtGui
+		from PyQt5 import QtGui, QtWidgets
 		return QtGui.QIcon(get_image_directory() + "white_box.png")
 
 	def set_panel_object(self,panel): self.panel_object = panel
@@ -189,7 +189,7 @@ class MorphBoxingTool(EMBoxingTool):
 	def mouse_down(self,event) :
 		m = self.get_2d_window().scr_to_img((event.x(),event.y()))
 		box_num = self.target().detect_box_collision(m)
-		from PyQt4.QtCore import Qt
+		from PyQt5.QtCore import Qt
 		if box_num == -1:
 			if event.modifiers()&Qt.ShiftModifier : return # the user tried to delete nothing
 			box_num = self.target().add_box(m[0],m[1],MorphBoxingTool.BOX_TYPE)
@@ -208,7 +208,7 @@ class MorphBoxingTool(EMBoxingTool):
 
 	def mouse_drag(self,event) :
 		m=self.get_2d_window().scr_to_img((event.x(),event.y()))
-		from PyQt4.QtCore import Qt
+		from PyQt5.QtCore import Qt
 		if event.modifiers()&Qt.ShiftModifier:
 			box_num = self.target().detect_box_collision(m)
 			if ( box_num != -1):
@@ -306,17 +306,17 @@ class MorphBoxingPanel:
 	
 	def get_widget(self):
 		if self.widget == None:
-			from PyQt4 import QtCore, QtGui, Qt
-			self.widget = QtGui.QWidget()
-			vbl = QtGui.QVBoxLayout(self.widget)
-			vbl.setMargin(0)
+			from PyQt5 import Qt, QtCore, QtGui, QtWidgets
+			self.widget = QtWidgets.QWidget()
+			vbl = QtWidgets.QVBoxLayout(self.widget)
+			vbl.setContentsMargins(0, 0, 0, 0)
 			vbl.setSpacing(6)
 			vbl.setObjectName("vbl")
-			self.auto_center_checkbox = QtGui.QCheckBox("Auto-center")
-			self.clear=QtGui.QPushButton("Clear")
+			self.auto_center_checkbox = QtWidgets.QCheckBox("Auto-center")
+			self.clear=QtWidgets.QPushButton("Clear")
 			vbl.addWidget(self.auto_center_checkbox)
 			vbl.addWidget(self.clear)
-			QtCore.QObject.connect(self.clear, QtCore.SIGNAL("clicked(bool)"), self.clear_clicked)
+			self.clear.clicked[bool].connect(self.clear_clicked)
 		return self.widget
 	
 	def clear_clicked(self,val):
@@ -341,28 +341,28 @@ class ErasingPanel: # copied for ideas for the morph panel
 
 	def get_widget(self):
 		if self.widget == None:
-			from PyQt4 import QtCore, QtGui, Qt
-			self.widget = QtGui.QWidget()
-			vbl = QtGui.QVBoxLayout(self.widget)
-			vbl.setMargin(0)
+			from PyQt5 import Qt, QtCore, QtGui, QtWidgets
+			self.widget = QtWidgets.QWidget()
+			vbl = QtWidgets.QVBoxLayout(self.widget)
+			vbl.setContentsMargins(0, 0, 0, 0)
 			vbl.setSpacing(6)
 			vbl.setObjectName("vbl")
 
-			hbl = QtGui.QHBoxLayout()
-			hbl.addWidget(QtGui.QLabel("Erase Radius:"))
+			hbl = QtWidgets.QHBoxLayout()
+			hbl.addWidget(QtWidgets.QLabel("Erase Radius:"))
 			from valslider import ValSlider
 			self.erase_rad_edit = ValSlider(None,(0.0,1000.0),"")
 			self.erase_rad_edit.setValue(int(self.erase_radius))
 			self.erase_rad_edit.setEnabled(True)
 			hbl.addWidget(self.erase_rad_edit)
 
-			self.unerase = QtGui.QCheckBox("Unerase")
+			self.unerase = QtWidgets.QCheckBox("Unerase")
 			self.unerase.setChecked(False)
 
 			vbl.addLayout(hbl)
 			vbl.addWidget(self.unerase)
-			QtCore.QObject.connect(self.erase_rad_edit,QtCore.SIGNAL("sliderReleased"),self.new_erase_radius)
-			QtCore.QObject.connect(self.unerase,QtCore.SIGNAL("clicked(bool)"),self.unerase_checked)
+			self.erase_rad_edit.sliderReleased.connect(self.new_erase_radius)
+			self.unerase.clicked[bool].connect(self.unerase_checked)
 
 		return self.widget
 

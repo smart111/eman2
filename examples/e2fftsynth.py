@@ -35,8 +35,8 @@ from EMAN2 import *
 from optparse import OptionParser
 
 try:
-	from PyQt4 import QtCore, QtGui, QtOpenGL
-	from PyQt4.QtCore import Qt
+	from PyQt5 import QtCore, QtGui, QtOpenGL, QtWidgets
+	from PyQt5.QtCore import Qt
 	from emshape import *
 	from valslider import ValSlider,ValBox
 	from emimage import EMImageWidget
@@ -72,22 +72,22 @@ This program allows the user to play around with Fourier synthesis graphically
 	except: pass
 	app.exec_()
 	
-class GUIFourierSynth(QtGui.QWidget):
+class GUIFourierSynth(QtWidgets.QWidget):
 	"""This class represents an application for interactive Fourier synthesis"""
 	
 	def __init__(self,app):
 		self.app=app
-		QtGui.QWidget.__init__(self,None)
+		QtWidgets.QWidget.__init__(self,None)
 
 		self.synthplot=EMPlot2DWidget(self.app)
 		self.synthplot.show()
 		
 		# overall layout
-		self.vbl1=QtGui.QVBoxLayout()
+		self.vbl1=QtWidgets.QVBoxLayout()
 		self.setLayout(self.vbl1)
 		
 		# First row contains general purpose controls
-		self.hbl1=QtGui.QHBoxLayout()
+		self.hbl1=QtWidgets.QHBoxLayout()
 		self.vbl1.addLayout(self.hbl1)
 		
 		self.vcell=ValBox(self,(0,128.0),"Cell:",64)
@@ -105,13 +105,13 @@ class GUIFourierSynth(QtGui.QWidget):
 		self.vnsin.intonly=1
 		self.hbl1.addWidget(self.vnsin)
 		
-		self.cbshowall=QtGui.QCheckBox("Show All")
+		self.cbshowall=QtWidgets.QCheckBox("Show All")
 		self.hbl1.addWidget(self.cbshowall)
 
-		self.cbshifted=QtGui.QCheckBox("Shifted")
+		self.cbshifted=QtWidgets.QCheckBox("Shifted")
 		self.hbl1.addWidget(self.cbshifted)
 
-		self.cbtargfn=QtGui.QComboBox(self)
+		self.cbtargfn=QtWidgets.QComboBox(self)
 		self.cbtargfn.addItem("None")
 		self.cbtargfn.addItem("triangle")
 		self.cbtargfn.addItem("square")
@@ -132,27 +132,27 @@ class GUIFourierSynth(QtGui.QWidget):
 		self.hbl1.addWidget(self.cbtargfn)
 		
 		# Widget containing valsliders
-		self.wapsliders=QtGui.QWidget(self)
+		self.wapsliders=QtWidgets.QWidget(self)
 #		self.wapsliders.setMinimumSize(800,640)
-		self.gblap=QtGui.QGridLayout()
-		self.gblap.setSizeConstraint(QtGui.QLayout.SetMinAndMaxSize)
+		self.gblap=QtWidgets.QGridLayout()
+		self.gblap.setSizeConstraint(QtWidgets.QLayout.SetMinAndMaxSize)
 		self.gblap.setColumnMinimumWidth(0,250)
 		self.gblap.setColumnMinimumWidth(1,250)
 		self.wapsliders.setLayout(self.gblap)
 		
 		# ScrollArea providing view on slider container widget
-		self.wapsarea=QtGui.QScrollArea(self)
+		self.wapsarea=QtWidgets.QScrollArea(self)
 		self.wapsarea.setWidgetResizable(True)
 		self.wapsarea.setWidget(self.wapsliders)
 		self.vbl1.addWidget(self.wapsarea)
 
-		QtCore.QObject.connect(self.vcell, QtCore.SIGNAL("valueChanged"), self.recompute)
-		QtCore.QObject.connect(self.vncells, QtCore.SIGNAL("valueChanged"), self.recompute)
-		QtCore.QObject.connect(self.voversamp, QtCore.SIGNAL("valueChanged"), self.recompute)
-		QtCore.QObject.connect(self.vnsin, QtCore.SIGNAL("valueChanged"), self.nsinchange)
-		QtCore.QObject.connect(self.cbshowall, QtCore.SIGNAL("stateChanged(int)"), self.recompute)
-		QtCore.QObject.connect(self.cbshifted, QtCore.SIGNAL("stateChanged(int)"), self.recompute)
-		QtCore.QObject.connect(self.cbtargfn,QtCore.SIGNAL("activated(int)"),self.newtargfn)
+		self.vcell.valueChanged.connect(self.recompute)
+		self.vncells.valueChanged.connect(self.recompute)
+		self.voversamp.valueChanged.connect(self.recompute)
+		self.vnsin.valueChanged.connect(self.nsinchange)
+		self.cbshowall.stateChanged[int].connect(self.recompute)
+		self.cbshifted.stateChanged[int].connect(self.recompute)
+		self.cbtargfn.activated[int].connect(self.newtargfn)
 
 
 		self.wamp=[]
@@ -162,11 +162,11 @@ class GUIFourierSynth(QtGui.QWidget):
 		for i in range(65):
 			self.wamp.append(ValSlider(self,(0.0,1.0),"%2d:"%i,0.0))
 			self.gblap.addWidget(self.wamp[-1],i,0)
-			QtCore.QObject.connect(self.wamp[-1], QtCore.SIGNAL("valueChanged"), self.recompute)
+			self.wamp[-1].valueChanged.connect(self.recompute)
 			
 			self.wpha.append(ValSlider(self,(-180.0,180.0),"%2d:"%i,0.0))
 			self.gblap.addWidget(self.wpha[-1],i,1)
-			QtCore.QObject.connect(self.wpha[-1], QtCore.SIGNAL("valueChanged"), self.recompute)
+			self.wpha[-1].valueChanged.connect(self.recompute)
 		
 			self.curves.append(EMData(64,1))
 		

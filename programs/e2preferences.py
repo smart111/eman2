@@ -32,7 +32,7 @@ from __future__ import print_function
 #
 #
 import EMAN2db
-from emdatastorage import ParamDef 
+from emdatastorage import ParamDef
 
 from emsprworkflow import WorkFlowTask
 from emapplication import get_application
@@ -41,6 +41,8 @@ global HOMEDB
 HOMEDB=EMAN2db.EMAN2DB.open_db()
 
 class EMPreferencesTask(WorkFlowTask):
+	task_idle = QtCore.pyqtSignal()
+
 	def __init__(self,application=None):
 		WorkFlowTask.__init__(self)
 		self.preferred_size = [240,240]
@@ -83,8 +85,8 @@ class EMPreferencesTask(WorkFlowTask):
 		self.write_db_entries(params)
 		self.form.close()
 		self.form = None
-		from PyQt4 import QtCore
-		self.emit(QtCore.SIGNAL("task_idle"))
+		from PyQt5 import QtCore
+		self.task_idle.emit()
 	
 	def run_form(self):
 		from emform import EMTableFormWidget
@@ -93,10 +95,10 @@ class EMPreferencesTask(WorkFlowTask):
 		self.form.setWindowTitle(self.window_title)
 		get_application().show_specific(self.form)
 		
-		from PyQt4 import QtCore
-		QtCore.QObject.connect(self.form,QtCore.SIGNAL("emform_ok"),self.on_form_ok)
-		QtCore.QObject.connect(self.form,QtCore.SIGNAL("emform_cancel"),self.on_form_cancel)
-		QtCore.QObject.connect(self.form,QtCore.SIGNAL("emform_close"),self.on_form_close)
+		from PyQt5 import QtCore
+		self.form.emform_ok.connect(self.on_form_ok)
+		self.form.emform_cancel.connect(self.on_form_cancel)
+		self.form.emform_close.connect(self.on_form_close)
 		
 	def write_db_entries(self,params):
 		HOMEDB.open_dict("display_preferences")

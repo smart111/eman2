@@ -7,10 +7,10 @@ from emapplication import EMApp
 from emimage2d import EMImage2DWidget
 from emshape import EMShape
 
-import PyQt4
-from PyQt4 import QtCore, QtGui, QtOpenGL
-from PyQt4.QtCore import Qt
-from PyQt4.QtCore import QTimer
+import PyQt5
+from PyQt5 import QtCore, QtOpenGL
+from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QTimer
 
 def main():
 	

@@ -40,14 +40,14 @@ import sys
 import traceback
 
 try:
-	from PyQt4 import QtCore, QtGui, QtOpenGL
-	from PyQt4.QtCore import Qt
-	from PyQt4.QtCore import QTimer
+	from PyQt5 import QtCore, QtGui, QtOpenGL, QtWidgets
+	from PyQt5.QtCore import Qt
+	from PyQt5.QtCore import QTimer
 	from emshape import *
 	from valslider import *
 	from emplot2d import EMPlot2DWidget
 except:
-	print("Warning: PyQt4 must be installed")
+	print("Warning: PyQt5 must be installed")
 	sys.exit(1)
 
 from sparx import *
@@ -109,18 +109,21 @@ def main():
 	# Unfortunately, EMApp.execute() will print logid (e.g. "None") upon the exit...
 	app.execute()
 
-class SXListWidget(QtGui.QListWidget):
+class SXListWidget(QtWidgets.QListWidget):
 	"""Exactly like a normal list widget but intercepts a few keyboard events"""
+	keypress = QtCore.pyqtSignal()
 
 	def keyPressEvent(self,event):
 		if event.key() in (Qt.Key_Up,Qt.Key_Down) :
-			QtGui.QListWidget.keyPressEvent(self,event)
+			QtWidgets.QListWidget.keyPressEvent(self,event)
 			return
 		
-		self.emit(QtCore.SIGNAL("keypress"),event)
+		self.keypress.emit(event)
 
 class SXPlot2DWidget(EMPlot2DWidget):
 	
+	mouseup = QtCore.pyqtSignal()
+
 	def full_refresh(self):
 		'''
 		This function is called from resizeGL and from the inspector when somebody toggles the display of a line
@@ -136,9 +139,9 @@ class SXPlot2DWidget(EMPlot2DWidget):
 	def mouseReleaseEvent(self, event):
 		EMPlot2DWidget.mouseReleaseEvent(self,event)
 		if event.button()==Qt.LeftButton:
-			self.emit(QtCore.SIGNAL("mouseup"),event)
+			self.mouseup.emit(event)
 
-class SXGuiCter(QtGui.QWidget):
+class SXGuiCter(QtWidgets.QWidget):
 # 	def __init__(self, cter_ctf_file = None):
 	def __init__(self):
 		"""Implements the CTF fitting dialog using various EMImage and EMPlot2D widgets
@@ -500,12 +503,12 @@ class SXGuiCter(QtGui.QWidget):
 #		self.wimgmicthumb.connect(self.wimgmicthumb,QtCore.SIGNAL("mouseup")  ,self.imgmicthumbmouseup)
 #		self.wplotrotavgcoarse.connect(self.wplotrotavgcoarse,QtCore.SIGNAL("mousedown"),self.plotmousedown)
 #		self.wplotrotavgfine.connect(self.wplotrotavgfine,QtCore.SIGNAL("mousedown"),self.plotmousedown)
-		self.whistparam.connect(self.whistparam,QtCore.SIGNAL("mouseup"),self.histparammouseup)
-		self.wplotparam.connect(self.wplotparam,QtCore.SIGNAL("mouseup"),self.plotparammouseup)
+		self.whistparam.mouseup.connect(self.histparammouseup)
+		self.wplotparam.mouseup.connect(self.plotparammouseup)
 		
 		# This object is itself a widget we need to set up
-		self.gbl = QtGui.QGridLayout(self)
-		self.gbl.setMargin(8)
+		self.gbl = QtWidgets.QGridLayout(self)
+		self.gbl.setContentsMargins(8, 8, 8, 8)
 		self.gbl.setSpacing(6)
 		
 		# --------------------------------------------------------------------------------
@@ -523,19 +526,19 @@ class SXGuiCter(QtGui.QWidget):
 		labelwidth=70
 		sublabelwidth=140
 		
-		self.pbopencter=QtGui.QPushButton("Open CTER CTF file")
+		self.pbopencter=QtWidgets.QPushButton("Open CTER CTF file")
 		self.gbl.addWidget(self.pbopencter,grid_row,grid_col,1,col_span)
 		grid_row += 1
 		
 		# Make space
 		grid_row+=1
 		
-		temp_label=QtGui.QLabel("<b>Selection Summary:</b>",self)
+		temp_label=QtWidgets.QLabel("<b>Selection Summary:</b>",self)
 		temp_label.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
 		self.gbl.addWidget(temp_label,grid_row,grid_col,1,col_span)
 		grid_row += 1
 		
-		temp_label=QtGui.QLabel("Num. of entries",self)
+		temp_label=QtWidgets.QLabel("Num. of entries",self)
 		temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		temp_label.setMinimumSize(QtCore.QSize(labelwidth,20))
 		self.gbl.addWidget(temp_label,grid_row,grid_col,1,col_span_label)
@@ -545,7 +548,7 @@ class SXGuiCter(QtGui.QWidget):
 		self.gbl.addWidget(self.vbnentry,grid_row,grid_col+col_span_label,1,col_span_edit)
 		grid_row+=1
 		
-		temp_label=QtGui.QLabel("Unchecked",self)
+		temp_label=QtWidgets.QLabel("Unchecked",self)
 		temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		temp_label.setMinimumSize(QtCore.QSize(labelwidth,20))
 		self.gbl.addWidget(temp_label,grid_row,grid_col,1,col_span_label)
@@ -555,7 +558,7 @@ class SXGuiCter(QtGui.QWidget):
 		self.gbl.addWidget(self.vbuncheckcounts,grid_row,grid_col+col_span_label,1,col_span_edit)
 		grid_row+=1
 		
-		temp_label=QtGui.QLabel("Ratio",self)
+		temp_label=QtWidgets.QLabel("Ratio",self)
 		temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		temp_label.setMinimumSize(QtCore.QSize(labelwidth,20))
 		self.gbl.addWidget(temp_label,grid_row,grid_col,1,col_span_label)
@@ -567,7 +570,7 @@ class SXGuiCter(QtGui.QWidget):
 		# Make space
 		grid_row+=1
 		
-		temp_label=QtGui.QLabel("<b>Electron Microscopy:</b>",self)
+		temp_label=QtWidgets.QLabel("<b>Electron Microscopy:</b>",self)
 		temp_label.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
 		self.gbl.addWidget(temp_label,grid_row,grid_col,1,col_span)
 		grid_row += 1
@@ -587,12 +590,12 @@ class SXGuiCter(QtGui.QWidget):
 		# Make space
 		grid_row+=1
 		
-		temp_label=QtGui.QLabel("<b>Display Micrograph:</b>",self)
+		temp_label=QtWidgets.QLabel("<b>Display Micrograph:</b>",self)
 		temp_label.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
 		self.gbl.addWidget(temp_label,grid_row,grid_col,1,col_span)
 		grid_row += 1
 		
-		temp_label=QtGui.QLabel("Open Window",self)
+		temp_label=QtWidgets.QLabel("Open Window",self)
 		temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		temp_label.setMinimumSize(QtCore.QSize(sublabelwidth,20))
 		self.gbl.addWidget(temp_label,grid_row,grid_col, 1, col_span_sublabel)
@@ -604,13 +607,13 @@ class SXGuiCter(QtGui.QWidget):
 		# Make space
 		grid_row+=1
 		
-		temp_label=QtGui.QLabel("<b>Display Curves:</b>",self)
+		temp_label=QtWidgets.QLabel("<b>Display Curves:</b>",self)
 		temp_label.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
 		self.gbl.addWidget(temp_label,grid_row,grid_col,1,col_span)
 		grid_row += 1
 		
 		for idx_graph in range(self.n_idx_graph):
-			temp_label=QtGui.QLabel(self.graph_map_list[idx_graph][self.idx_graph_item_label],self)
+			temp_label=QtWidgets.QLabel(self.graph_map_list[idx_graph][self.idx_graph_item_label],self)
 			temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 			temp_label.setMinimumSize(QtCore.QSize(sublabelwidth,20))
 			self.gbl.addWidget(temp_label,grid_row,grid_col,1,col_span_sublabel)
@@ -618,7 +621,7 @@ class SXGuiCter(QtGui.QWidget):
 			self.gbl.addWidget(self.graph_map_list[idx_graph][self.idx_graph_item_widget],grid_row,grid_col+col_span_sublabel,1,col_span_subedit)
 			grid_row += 1
 		
-		temp_label=QtGui.QLabel("Plot Fix Scale",self)
+		temp_label=QtWidgets.QLabel("Plot Fix Scale",self)
 		temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		temp_label.setMinimumSize(QtCore.QSize(sublabelwidth,20))
 		self.gbl.addWidget(temp_label,grid_row,grid_col, 1, col_span_sublabel)
@@ -626,7 +629,7 @@ class SXGuiCter(QtGui.QWidget):
 		self.gbl.addWidget(self.vbplotfixscale,grid_row,grid_col+col_span_sublabel,1,col_span_subedit)
 		grid_row+=1
 		
-		self.pbrefreshgraphs=QtGui.QPushButton("Refresh Graphs")
+		self.pbrefreshgraphs=QtWidgets.QPushButton("Refresh Graphs")
 		self.pbrefreshgraphs.setEnabled(False)
 		self.gbl.addWidget(self.pbrefreshgraphs,grid_row,grid_col,1,col_span)
 		grid_row += 1
@@ -641,7 +644,7 @@ class SXGuiCter(QtGui.QWidget):
 		# plot list and plot mode combobox
 		row_span_entry_list = 24
 		self.lbentry=SXListWidget(self) # self.lbentry=e2ctf.MyListWidget(self)
-		self.lbentry.setSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Expanding)
+		self.lbentry.setSizePolicy(QtWidgets.QSizePolicy.Preferred,QtWidgets.QSizePolicy.Expanding)
 		self.lbentry.setMinimumWidth(220)
 		self.gbl.addWidget(self.lbentry,grid_row,grid_col,row_span_entry_list,col_span)
 		grid_row += row_span_entry_list
@@ -679,18 +682,18 @@ class SXGuiCter(QtGui.QWidget):
 		editwidth=100
 		sublabelwidth=editwidth
 		
-		temp_label=QtGui.QLabel("<b>Current Entry Info:</b>",self)
+		temp_label=QtWidgets.QLabel("<b>Current Entry Info:</b>",self)
 		temp_label.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
 		self.gbl.addWidget(temp_label,grid_row,grid_col_1st_sub,1,col_span_1st_sub)
-		temp_label=QtGui.QLabel("<b>Unapplied Thresholds:</b>",self)
+		temp_label=QtWidgets.QLabel("<b>Unapplied Thresholds:</b>",self)
 		temp_label.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
 		self.gbl.addWidget(temp_label,grid_row,grid_col_2nd,1,col_span_2nd)
-		temp_label=QtGui.QLabel("<b>Applied Thresholds:</b>",self)
+		temp_label=QtWidgets.QLabel("<b>Applied Thresholds:</b>",self)
 		temp_label.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
 		self.gbl.addWidget(temp_label,grid_row,grid_col_3rd,1,col_span_3rd)
 		grid_row += 1
 		
-		temp_label=QtGui.QLabel("Sorted ID",self)
+		temp_label=QtWidgets.QLabel("Sorted ID",self)
 		temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		temp_label.setMinimumSize(QtCore.QSize(labelwidth,20))
 		self.gbl.addWidget(temp_label,grid_row,grid_col_1st,1,col_span_1st_label)
@@ -718,52 +721,52 @@ class SXGuiCter(QtGui.QWidget):
 		# make space
 		grid_row += 1
 		
-		temp_label=QtGui.QLabel("<b>Sort CTER Entries:</b>",self)
+		temp_label=QtWidgets.QLabel("<b>Sort CTER Entries:</b>",self)
 		temp_label.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
 		self.gbl.addWidget(temp_label,grid_row,grid_col_1st_sub,1,col_span_1st_sub)
 		
-		temp_label=QtGui.QLabel("<b>Histogram & Plot Settings:</b>",self)
+		temp_label=QtWidgets.QLabel("<b>Histogram & Plot Settings:</b>",self)
 		temp_label.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
 		self.gbl.addWidget(temp_label,grid_row,grid_col_2nd,1,col_span_2nd)
 		
-		temp_label=QtGui.QLabel("<b>Save/Load Thresholds:</b>",self)
+		temp_label=QtWidgets.QLabel("<b>Save/Load Thresholds:</b>",self)
 		temp_label.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
 		self.gbl.addWidget(temp_label,grid_row,grid_col_3rd,1,col_span_3rd)
 		grid_row += 1
 		
-		self.ssort=QtGui.QComboBox(self)
+		self.ssort=QtWidgets.QComboBox(self)
 		for map_entry in self.sort_map_list:
 			idx_cter = map_entry[self.idx_sort_item_idx_cter]
 			self.ssort.addItem(self.value_map_list[idx_cter][self.idx_cter_item_label])
 		self.ssort.setCurrentIndex(self.cursort)
 		self.gbl.addWidget(self.ssort,grid_row,grid_col_1st_sub,1,col_span_1st_sub)
 		
-		self.shist=QtGui.QComboBox(self)
+		self.shist=QtWidgets.QComboBox(self)
 		for map_entry in self.hist_map_list:
 			idx_cter = map_entry[self.idx_hist_item_idx_cter]
 			self.shist.addItem(self.value_map_list[idx_cter][self.idx_cter_item_label])
 		self.shist.setCurrentIndex(self.curhist)
 		self.gbl.addWidget(self.shist,grid_row,grid_col_2nd,1,col_span_2nd)
 		
-		self.sthresholdset=QtGui.QComboBox(self)
+		self.sthresholdset=QtWidgets.QComboBox(self)
 		for map_entry in self.thresholdset_map_list:
 			self.sthresholdset.addItem(map_entry[self.idx_thresholdset_item_label])
 		self.sthresholdset.setCurrentIndex(self.curthresholdset)
 		self.gbl.addWidget(self.sthresholdset,grid_row,grid_col_3rd,1,col_span_3rd)
 		grid_row += 1
 		
-		temp_label=QtGui.QLabel("Decending",self)
+		temp_label=QtWidgets.QLabel("Decending",self)
 		temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		temp_label.setMinimumSize(QtCore.QSize(sublabelwidth,20))
 		self.gbl.addWidget(temp_label,grid_row,grid_col_1st_sub,1,col_span_1st_sublabel)
 		self.cbsortoder=CheckBox(None,None,self.cursortoder)
 		self.gbl.addWidget(self.cbsortoder,grid_row,grid_col_1st_sub+col_span_1st_sublabel,1,col_span_1st_subedit)
 		
-		temp_label=QtGui.QLabel("Move Threshold",self)
+		temp_label=QtWidgets.QLabel("Move Threshold",self)
 		temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		temp_label.setMinimumSize(QtCore.QSize(sublabelwidth,20))
 		self.gbl.addWidget(temp_label,grid_row,grid_col_2nd,1,col_span_2nd_sublabel)
-		self.sthresholdcontrol=QtGui.QComboBox(self)
+		self.sthresholdcontrol=QtWidgets.QComboBox(self)
 		# self.sthresholdcontrol.setStyleSheet("color: rgb(255,0,0);") # NOTE: Toshio Moriya 2016/01/22 Unfortunately, this will over write the individual item color...
 		for idx_threshold_control in range(self.n_idx_threshold_control):
 			map_entry = self.threshold_control_map_list[idx_threshold_control]
@@ -772,34 +775,34 @@ class SXGuiCter(QtGui.QWidget):
 		self.sthresholdcontrol.setCurrentIndex(self.curthresholdcontrol)
 		self.gbl.addWidget(self.sthresholdcontrol,grid_row,grid_col_2nd+col_span_2nd_sublabel,1,col_span_2nd_subedit)
 		
-		self.pbsavethresholdset=QtGui.QPushButton("Save")
+		self.pbsavethresholdset=QtWidgets.QPushButton("Save")
 		self.pbsavethresholdset.setEnabled(False)
 		self.gbl.addWidget(self.pbsavethresholdset,grid_row,grid_col_3rd,1,col_span_3rd_sublabel)
-		self.pbloadthresholdset=QtGui.QPushButton("Load")
+		self.pbloadthresholdset=QtWidgets.QPushButton("Load")
 		self.pbloadthresholdset.setEnabled(False)
 		self.gbl.addWidget(self.pbloadthresholdset,grid_row,grid_col_3rd+col_span_3rd_sublabel,1,col_span_3rd_subedit)
 		grid_row += 1
 		
-		temp_label=QtGui.QLabel("Sort Select",self)
+		temp_label=QtWidgets.QLabel("Sort Select",self)
 		temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		temp_label.setMinimumSize(QtCore.QSize(sublabelwidth,20))
 		self.gbl.addWidget(temp_label,grid_row,grid_col_1st_sub,1,col_span_1st_sublabel)
 		self.cbsortselect=CheckBox(None,None,self.cursortselect)
 		self.gbl.addWidget(self.cbsortselect,grid_row,grid_col_1st_sub+col_span_1st_sublabel,1,col_span_1st_subedit)
 		
-		temp_label=QtGui.QLabel("Sync. Sort",self)
+		temp_label=QtWidgets.QLabel("Sync. Sort",self)
 		temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		temp_label.setMinimumSize(QtCore.QSize(sublabelwidth,20))
 		self.gbl.addWidget(temp_label,grid_row,grid_col_2nd,1,col_span_2nd_sublabel)
 		self.cbsyncsort=CheckBox(None,None,self.cursyncsort)
 		self.gbl.addWidget(self.cbsyncsort,grid_row,grid_col_2nd+col_span_2nd_sublabel,1,col_span_2nd_subedit)
 		
-		temp_label=QtGui.QLabel("<b>Save Selection:</b>",self)
+		temp_label=QtWidgets.QLabel("<b>Save Selection:</b>",self)
 		temp_label.setAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
 		self.gbl.addWidget(temp_label,grid_row,grid_col_3rd,1,col_span_3rd)
 		grid_row += 1
 		
-		temp_label=QtGui.QLabel("counts/bin",self)
+		temp_label=QtWidgets.QLabel("counts/bin",self)
 		temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		temp_label.setMinimumSize(QtCore.QSize(sublabelwidth,20))
 		self.gbl.addWidget(temp_label,grid_row,grid_col_2nd, 1, col_span_2nd_sublabel)
@@ -807,7 +810,7 @@ class SXGuiCter(QtGui.QWidget):
 		self.vsentryperbin.setIntonly(True)
 		self.gbl.addWidget(self.vsentryperbin,grid_row,grid_col_2nd+col_span_2nd_sublabel,1,col_span_2nd_subedit)
 		
-		temp_label=QtGui.QLabel("File Suffix",self)
+		temp_label=QtWidgets.QLabel("File Suffix",self)
 		temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		temp_label.setMinimumSize(QtCore.QSize(sublabelwidth,20))
 		self.gbl.addWidget(temp_label,grid_row,grid_col_3rd,1,col_span_3rd_sublabel)
@@ -815,15 +818,15 @@ class SXGuiCter(QtGui.QWidget):
 		self.gbl.addWidget(self.vfilesuffix,grid_row,grid_col_3rd+col_span_3rd_sublabel,1,col_span_3rd_subedit)
 		grid_row += 1
 		
-		self.pbreaplysort=QtGui.QPushButton("Reapply Sort")
+		self.pbreaplysort=QtWidgets.QPushButton("Reapply Sort")
 		self.pbreaplysort.setEnabled(False)
 		self.gbl.addWidget(self.pbreaplysort,grid_row,grid_col_1st_sub,1,col_span_1st_sub)
 		
-		self.pbapplyallthreshold=QtGui.QPushButton("Apply All Thresholds")
+		self.pbapplyallthreshold=QtWidgets.QPushButton("Apply All Thresholds")
 		self.pbapplyallthreshold.setEnabled(False)
 		self.gbl.addWidget(self.pbapplyallthreshold,grid_row,grid_col_2nd,1,col_span_2nd)
 		
-		self.pbsaveselection=QtGui.QPushButton("Save Selection")
+		self.pbsaveselection=QtWidgets.QPushButton("Save Selection")
 		self.pbsaveselection.setEnabled(False)
 		self.gbl.addWidget(self.pbsaveselection,grid_row,grid_col_3rd,1,col_span_3rd)
 		grid_row += 1
@@ -837,43 +840,43 @@ class SXGuiCter(QtGui.QWidget):
 		# --------------------------------------------------------------------------------
 		# Set signal handler
 		# --------------------------------------------------------------------------------
-		QtCore.QObject.connect(self.pbopencter, QtCore.SIGNAL("clicked(bool)"),self.openCter)
+		self.pbopencter.clicked[bool].connect(self.openCter)
 		
-		QtCore.QObject.connect(self.cbmicthumbdisplay, QtCore.SIGNAL("valueChanged"),self.newMicThumbDisplay)
+		self.cbmicthumbdisplay.valueChanged.connect(self.newMicThumbDisplay)
 		
 		for idx_graph in range(self.n_idx_graph):
-			QtCore.QObject.connect(self.graph_map_list[idx_graph][self.idx_graph_item_widget], QtCore.SIGNAL("valueChanged"),self.updatePlotVisibility)
-		QtCore.QObject.connect(self.vbplotfixscale, QtCore.SIGNAL("valueChanged"),self.newPlotFixScale)
-		QtCore.QObject.connect(self.pbrefreshgraphs, QtCore.SIGNAL("clicked(bool)"),self.refreshGraphs)
+			self.graph_map_list[idx_graph][self.idx_graph_item_widget].valueChanged.connect(self.updatePlotVisibility)
+		self.vbplotfixscale.valueChanged.connect(self.newPlotFixScale)
+		self.pbrefreshgraphs.clicked[bool].connect(self.refreshGraphs)
 		
-		QtCore.QObject.connect(self.lbentry,QtCore.SIGNAL("currentRowChanged(int)"),self.newEntry)
+		self.lbentry.currentRowChanged[int].connect(self.newEntry)
 #		QtCore.QObject.connect(self.lbentry,QtCore.SIGNAL("keypress"),self.entryKey)
-		QtCore.QObject.connect(self.lbentry,QtCore.SIGNAL("itemChanged(QListWidgetItem*)"),self.updateEntrySelect)
+		self.lbentry.itemChanged[QListWidgetItem].connect(self.updateEntrySelect)
 		
-		QtCore.QObject.connect(self.ssort,QtCore.SIGNAL("currentIndexChanged(int)"),self.newSort)
-		QtCore.QObject.connect(self.cbsortoder, QtCore.SIGNAL("valueChanged"),self.newSortOrder)
-		QtCore.QObject.connect(self.cbsortselect, QtCore.SIGNAL("valueChanged"),self.newSortSelect)
-		QtCore.QObject.connect(self.pbreaplysort, QtCore.SIGNAL("clicked(bool)"),self.reapplySort)
+		self.ssort.currentIndexChanged[int].connect(self.newSort)
+		self.cbsortoder.valueChanged.connect(self.newSortOrder)
+		self.cbsortselect.valueChanged.connect(self.newSortSelect)
+		self.pbreaplysort.clicked[bool].connect(self.reapplySort)
 		
 		for idx_hist in range(self.n_idx_hist):
-			QtCore.QObject.connect(self.hist_map_list[idx_hist][self.idx_hist_item_unapply_widget_lower],QtCore.SIGNAL("valueChanged"),self.newThresholdLower)
-			QtCore.QObject.connect(self.hist_map_list[idx_hist][self.idx_hist_item_unapply_widget_upper],QtCore.SIGNAL("valueChanged"),self.newThresholdUpper)
+			self.hist_map_list[idx_hist][self.idx_hist_item_unapply_widget_lower].valueChanged.connect(self.newThresholdLower)
+			self.hist_map_list[idx_hist][self.idx_hist_item_unapply_widget_upper].valueChanged.connect(self.newThresholdUpper)
 			# QtCore.QObject.connect(self.hist_map_list[idx_hist][self.idx_hist_item_unapply_widget_lower],QtCore.SIGNAL("valueChanged"),self.updateHist)
 			# QtCore.QObject.connect(self.hist_map_list[idx_hist][self.idx_hist_item_unapply_widget_lower],QtCore.SIGNAL("valueChanged"),self.updatePlotParam)
 			# QtCore.QObject.connect(self.hist_map_list[idx_hist][self.idx_hist_item_unapply_widget_upper],QtCore.SIGNAL("valueChanged"),self.updateHist)
 			# QtCore.QObject.connect(self.hist_map_list[idx_hist][self.idx_hist_item_unapply_widget_upper],QtCore.SIGNAL("valueChanged"),self.updatePlotParam)
 		
-		QtCore.QObject.connect(self.shist,QtCore.SIGNAL("currentIndexChanged(int)"),self.newHist)
-		QtCore.QObject.connect(self.sthresholdcontrol,QtCore.SIGNAL("currentIndexChanged(int)"),self.newThresholdControl)
-		QtCore.QObject.connect(self.cbsyncsort, QtCore.SIGNAL("valueChanged"),self.newSyncSort)
-		QtCore.QObject.connect(self.vsentryperbin, QtCore.SIGNAL("valueChanged"),self.newEntryPerBin)
-		QtCore.QObject.connect(self.pbapplyallthreshold, QtCore.SIGNAL("clicked(bool)"),self.applyAllThresholds)
+		self.shist.currentIndexChanged[int].connect(self.newHist)
+		self.sthresholdcontrol.currentIndexChanged[int].connect(self.newThresholdControl)
+		self.cbsyncsort.valueChanged.connect(self.newSyncSort)
+		self.vsentryperbin.valueChanged.connect(self.newEntryPerBin)
+		self.pbapplyallthreshold.clicked[bool].connect(self.applyAllThresholds)
 		
-		QtCore.QObject.connect(self.sthresholdset,QtCore.SIGNAL("currentIndexChanged(int)"),self.newThresholdSet)
-		QtCore.QObject.connect(self.pbsavethresholdset, QtCore.SIGNAL("clicked(bool)"),self.saveThresholdSet)
-		QtCore.QObject.connect(self.pbloadthresholdset, QtCore.SIGNAL("clicked(bool)"),self.loadThresholdSet)
+		self.sthresholdset.currentIndexChanged[int].connect(self.newThresholdSet)
+		self.pbsavethresholdset.clicked[bool].connect(self.saveThresholdSet)
+		self.pbloadthresholdset.clicked[bool].connect(self.loadThresholdSet)
 		
-		QtCore.QObject.connect(self.pbsaveselection, QtCore.SIGNAL("clicked(bool)"),self.saveSelection)
+		self.pbsaveselection.clicked[bool].connect(self.saveSelection)
 		
 		self.setWindowTitle("sxgui_cter - Control Panel")
 		
@@ -965,7 +968,7 @@ class SXGuiCter(QtGui.QWidget):
 #		self.errors=None # used to communicate errors back from the reprocessing thread
 		
 		self.timer=QTimer()
-		QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.timeOut)
+		self.timer.timeout.connect(self.timeOut)
 		self.timer.start(100)
 		
 #		# Finally, read CTER CTF file if necessary
@@ -974,7 +977,7 @@ class SXGuiCter(QtGui.QWidget):
 		
 	def add_value_widget(self, idx_cter, val_min, val_max, grid_row, grid_col, col_span_label, col_span_edit, intonly = False, labelwidth = 80, editwidth = 80):
 		param_label = self.value_map_list[idx_cter][self.idx_cter_item_label]
-		temp_label=QtGui.QLabel(param_label,self)
+		temp_label=QtWidgets.QLabel(param_label,self)
 		temp_label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignVCenter)
 		temp_label.setMinimumSize(QtCore.QSize(labelwidth,20))
 		self.gbl.addWidget(temp_label,grid_row,grid_col,1,col_span_label)
@@ -1018,15 +1021,15 @@ class SXGuiCter(QtGui.QWidget):
 		"""Read all entries from a CTER CTF file into the list box"""
 		
 		if not os.path.exists(file_path):
-			QtGui.QMessageBox.warning(None,"Warning","Can not find CTER CTF File (%s). Please check the file path." % (file_path))
+			QtWidgets.QMessageBox.warning(None,"Warning","Can not find CTER CTF File (%s). Please check the file path." % (file_path))
 			return
 		
 		if os.path.basename(file_path).find("partres") == -1:
-			QtGui.QMessageBox.warning(None,"Warning","Invalid file name for CTER CTF File (%s). The file name must contain \"partres\"." % (file_path))
+			QtWidgets.QMessageBox.warning(None,"Warning","Invalid file name for CTER CTF File (%s). The file name must contain \"partres\"." % (file_path))
 			return
 		
 		if file_path[-1*len(".txt"):] != ".txt":
-			QtGui.QMessageBox.warning(None,"Warning","Invalid file extension for CTER CTF File (%s). The file extension must be \".txt\"." % (file_path))
+			QtWidgets.QMessageBox.warning(None,"Warning","Invalid file extension for CTER CTF File (%s). The file extension must be \".txt\"." % (file_path))
 			return
 		
 #		if os.path.dirname(file_path)[-1*len("partres"):] != "partres":
@@ -1035,22 +1038,22 @@ class SXGuiCter(QtGui.QWidget):
 		
 		new_entry_list = read_text_row(file_path)
 		if len(new_entry_list) == 0:
-			QtGui.QMessageBox.warning(self, "Warning", "Specified CTER CTF file (%s) does not contain any entry. Please check the file." % (file_path))
+			QtWidgets.QMessageBox.warning(self, "Warning", "Specified CTER CTF file (%s) does not contain any entry. Please check the file." % (file_path))
 			return
 		assert(len(new_entry_list) > 0)
 		
 		# NOTE: 2017/03/20 Toshio Moriya
 		# The following code is to support the old format of CTER. It should be removed near future
 		if len(new_entry_list[0]) == self.n_idx_cter - self.n_idx_cter_extra - 1:
-			QtGui.QMessageBox.warning(None,"Warning","The format of CTER CTF File (%s) might be old. We will stop supporting this format near future. Please consider rerun CTER." % (file_path))
+			QtWidgets.QMessageBox.warning(None,"Warning","The format of CTER CTF File (%s) might be old. We will stop supporting this format near future. Please consider rerun CTER." % (file_path))
 			# Continue processing for now (2017/03/20 Toshio Moriya)
 		elif len(new_entry_list[0]) != self.n_idx_cter - self.n_idx_cter_extra:
-			QtGui.QMessageBox.warning(None,"Warning","The number of columns (%d) has to be %d in %s" % (len(new_entry_list[0]), self.n_idx_cter - self.n_idx_cter_extra, file_path))
+			QtWidgets.QMessageBox.warning(None,"Warning","The number of columns (%d) has to be %d in %s" % (len(new_entry_list[0]), self.n_idx_cter - self.n_idx_cter_extra, file_path))
 			return
 		
 		cter_pwrot_dir = os.path.join(os.path.dirname(file_path), "pwrot")
 		if not os.path.exists(cter_pwrot_dir):
-			QtGui.QMessageBox.warning(self, "Warning", "Can not find \"%s\" sub-directory associated with specified CTER CTF file (%s). Please check your project directory." % (cter_pwrot_dir, file_path))
+			QtWidgets.QMessageBox.warning(self, "Warning", "Can not find \"%s\" sub-directory associated with specified CTER CTF file (%s). Please check your project directory." % (cter_pwrot_dir, file_path))
 			return
 		
 		# print "MRK_DEBUG: Detected %s entries in %s" % (len(new_entry_list), file_path)
@@ -1232,10 +1235,10 @@ class SXGuiCter(QtGui.QWidget):
 		
 		if self.hist_map_list[self.curhist][self.idx_hist_item_val_min] == self.hist_map_list[self.curhist][self.idx_hist_item_val_max]:
 			param_label = self.value_map_list[idx_cter][self.idx_cter_item_label]
-			QtGui.QMessageBox.information(self, "Information","All entries have the same selected parameter values (%s). \n\nParameter Histogram & Plot will not be shown" % (param_label))
+			QtWidgets.QMessageBox.information(self, "Information","All entries have the same selected parameter values (%s). \n\nParameter Histogram & Plot will not be shown" % (param_label))
 		
 		if not os.path.exists(cter_micthumb_dir):
-			QtGui.QMessageBox.warning(None,"Warning","Can not find \"%s\" sub-directory associated with specified CTER CTF file (%s). Please check your project directory. \n\nMicrograph thumbnail display option is disabled for this session." % (cter_micthumb_dir, self.cter_partres_file_path))
+			QtWidgets.QMessageBox.warning(None,"Warning","Can not find \"%s\" sub-directory associated with specified CTER CTF file (%s). Please check your project directory. \n\nMicrograph thumbnail display option is disabled for this session." % (cter_micthumb_dir, self.cter_partres_file_path))
 		
 #		assert(self.isVisible()) 
 #		self.raise_()
@@ -1244,7 +1247,7 @@ class SXGuiCter(QtGui.QWidget):
 	def openCter(self,val=None):
 		"""Open CTER CTF file"""
 		
-		file_path = str(QtGui.QFileDialog.getOpenFileName(self, "Open CTER CTF File", options = QtGui.QFileDialog.DontUseNativeDialog))
+		file_path = str(QtWidgets.QFileDialog.getOpenFileName(self, "Open CTER CTF File", options = QtWidgets.QFileDialog.DontUseNativeDialog))[0]
 		if file_path == "": return
 		
 		self.readCterCtfFile(os.path.relpath(file_path))
@@ -1405,7 +1408,7 @@ class SXGuiCter(QtGui.QWidget):
 			if self.wplotrotavgfine.isVisible():
 				self.wplotrotavgfine.hide()
 			if error_display:
-				QtGui.QMessageBox.warning(None,"Warning","Can not find file cter_pwrot_file_path (%s). Please check the contents of pwrot directory. \n\nPlots will not be shown." % (self.cter_pwrot_file_path))
+				QtWidgets.QMessageBox.warning(None,"Warning","Can not find file cter_pwrot_file_path (%s). Please check the contents of pwrot directory. \n\nPlots will not be shown." % (self.cter_pwrot_file_path))
 			return
 			
 		self.rotinf_table = read_text_file(self.cter_pwrot_file_path, ncol=-1)
@@ -1505,7 +1508,7 @@ class SXGuiCter(QtGui.QWidget):
 		self.lbentry.clear()
 		newItemflags = Qt.ItemFlags(Qt.ItemIsSelectable)|Qt.ItemFlags(Qt.ItemIsEnabled)|Qt.ItemFlags(Qt.ItemIsUserCheckable)
 		for cter_entry in self.cter_entry_list:
-			newItem = QtGui.QListWidgetItem(os.path.basename(cter_entry[self.idx_cter_mic_name]))
+			newItem = QtWidgets.QListWidgetItem(os.path.basename(cter_entry[self.idx_cter_mic_name]))
 			newItem.setFlags(newItemflags)
 			if cter_entry[self.idx_cter_select] == 1:
 				newItem.setCheckState(Qt.Checked)
@@ -1529,7 +1532,7 @@ class SXGuiCter(QtGui.QWidget):
 			if self.wimgmicthumb.isVisible():
 				self.wimgmicthumb.hide()
 			if error_display:
-				QtGui.QMessageBox.warning(None,"Warning","Can not find micrograph thumbnail (%s). Please check your micrograph thumbnail directory. \n\nMicrograph thumbnail will not be shown." % (self.cter_micthumb_file_path))
+				QtWidgets.QMessageBox.warning(None,"Warning","Can not find micrograph thumbnail (%s). Please check your micrograph thumbnail directory. \n\nMicrograph thumbnail will not be shown." % (self.cter_micthumb_file_path))
 			return
 		
 		micthumb_img = EMData(self.cter_micthumb_file_path) # read the image from disk
@@ -1763,7 +1766,7 @@ class SXGuiCter(QtGui.QWidget):
 				self.whistparam.hide()
 			if self.wplotparam.isVisible():
 				self.wplotparam.hide()
-			QtGui.QMessageBox.information(self, "Information","All entries have the same selected parameter values (%s). \n\nParameter Histogram & Plot will not be shown" % (param_label))
+			QtWidgets.QMessageBox.information(self, "Information","All entries have the same selected parameter values (%s). \n\nParameter Histogram & Plot will not be shown" % (param_label))
 		else:
 			if self.curthresholdcontrol == self.idx_threshold_control_lower:
 				self.hist_map_list[self.curhist][self.idx_hist_item_unapply_widget_lower].setEnabled(True)
@@ -1870,8 +1873,8 @@ class SXGuiCter(QtGui.QWidget):
 		if self.cter_partres_file_path == None: return # no cter ctf file is selected
 		if self.cter_entry_list == None: return # no cter ctf file is selected
 		
-		reply = QtGui.QMessageBox.question(self, "Warning", "Applying all threshold setting will wipe the previous selection states including manual setting. Do you really want to continue?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
-		if reply == QtGui.QMessageBox.No:
+		reply = QtWidgets.QMessageBox.question(self, "Warning", "Applying all threshold setting will wipe the previous selection states including manual setting. Do you really want to continue?", QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No)
+		if reply == QtWidgets.QMessageBox.No:
 			return
 		
 		# Set set the select status of all cter entries based on the threshold values
@@ -1968,7 +1971,7 @@ class SXGuiCter(QtGui.QWidget):
 			if idx_thresholdset == self.idx_thresholdset_applied:
 				self.applyAllThresholds()
 		else:
-			QtGui.QMessageBox.warning(self, "Warning", "The specified file is not threshold file.")
+			QtWidgets.QMessageBox.warning(self, "Warning", "The specified file is not threshold file.")
 		
 		file_in.close()
 	
@@ -1977,7 +1980,7 @@ class SXGuiCter(QtGui.QWidget):
 		if self.cter_entry_list == None: return # no cter ctf file is selected
 		
 		title_string = "Save %s Thresholds" % self.thresholdset_map_list[self.curthresholdset][self.idx_thresholdset_item_label]
-		file_path_out = str(QtGui.QFileDialog.getSaveFileName(self, title_string, options = QtGui.QFileDialog.DontUseNativeDialog))
+		file_path_out = str(QtWidgets.QFileDialog.getSaveFileName(self, title_string, options = QtWidgets.QFileDialog.DontUseNativeDialog))[0]
 		if file_path_out == "": return
 		
 		self.writeThresholdSet(os.path.relpath(file_path_out), self.curthresholdset)
@@ -1986,12 +1989,12 @@ class SXGuiCter(QtGui.QWidget):
 		if self.cter_partres_file_path == None: return # no cter ctf file is selected
 		if self.cter_entry_list == None: return # no cter ctf file is selected
 		
-		reply = QtGui.QMessageBox.question(self, "Warning", "Loading thresholds will wipe the previous threshold setting. Do you really want to continue?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
-		if reply == QtGui.QMessageBox.No:
+		reply = QtWidgets.QMessageBox.question(self, "Warning", "Loading thresholds will wipe the previous threshold setting. Do you really want to continue?", QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No)
+		if reply == QtWidgets.QMessageBox.No:
 			return
 		
 		title_string = "Load %s Thresholds" % self.thresholdset_map_list[self.curthresholdset][self.idx_thresholdset_item_label]
-		file_path_in = str(QtGui.QFileDialog.getOpenFileName(self, title_string, options = QtGui.QFileDialog.DontUseNativeDialog))
+		file_path_in = str(QtWidgets.QFileDialog.getOpenFileName(self, title_string, options = QtWidgets.QFileDialog.DontUseNativeDialog))[0]
 		if file_path_in == "": return
 		
 		self.readThresholdSet(os.path.relpath(file_path_in), self.curthresholdset)
@@ -2025,8 +2028,8 @@ class SXGuiCter(QtGui.QWidget):
 		# else: # Do nothing
 		
 		if existing_file_path != None:
-			reply = QtGui.QMessageBox.question(self, "Warning", "The file (%s) already exists. Do you want to overwrite the file?" % (existing_file_path), QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
-			if reply == QtGui.QMessageBox.No:
+			reply = QtWidgets.QMessageBox.question(self, "Warning", "The file (%s) already exists. Do you want to overwrite the file?" % (existing_file_path), QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No, QtWidgets.QMessageBox.No)
+			if reply == QtWidgets.QMessageBox.No:
 				return
 		
 		# Save selection in CTER Format
@@ -2073,7 +2076,7 @@ class SXGuiCter(QtGui.QWidget):
 		# Save the associated applied threshold 
 		self.writeThresholdSet(file_path_out_thresholds, self.idx_thresholdset_applied) 
 		
-		QtGui.QMessageBox.information(self, "Information","The following files are saved in %s:\n\nCTER CTF List - Selected: %s\n\nCTER CTF List - Discarded: %s\n\nMicrograph - Selected: %s\n\nMicrograph - Discarded: %s\n\nApplied Threshold Set: %s" % (os.path.dirname(self.cter_partres_file_path), os.path.basename(file_path_out_select), os.path.basename(file_path_out_discard), os.path.basename(file_path_out_mic_select), os.path.basename(file_path_out_mic_discard), os.path.basename(file_path_out_thresholds)))
+		QtWidgets.QMessageBox.information(self, "Information","The following files are saved in %s:\n\nCTER CTF List - Selected: %s\n\nCTER CTF List - Discarded: %s\n\nMicrograph - Selected: %s\n\nMicrograph - Discarded: %s\n\nApplied Threshold Set: %s" % (os.path.dirname(self.cter_partres_file_path), os.path.basename(file_path_out_select), os.path.basename(file_path_out_discard), os.path.basename(file_path_out_mic_select), os.path.basename(file_path_out_mic_discard), os.path.basename(file_path_out_thresholds)))
 	
 	def timeOut(self):
 		if self.busy: return
@@ -2264,7 +2267,7 @@ class SXGuiCter(QtGui.QWidget):
 		if self.wplotparam: self.wplotparam.close()
 		
 		event.accept()
-		QtGui.qApp.exit(0)
+		QtWidgets.QApplication.exit(0)
 		
 	def updatePlotVisibility(self,val=None):
 		if self.wplotrotavgcoarse == None: return # it's closed/not visible

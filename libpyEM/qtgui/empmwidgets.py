@@ -38,28 +38,28 @@ from __future__ import print_function
 
 from EMAN2db import db_check_dict
 import sys, math, weakref
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import Qt
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 from emselector import EMSelectorDialog	# This will be replaced by something more sensible in the future
 import re, os, glob
 from embrowser import EMBrowserWidget
 from empmtabwidgets import *
 from functools import reduce
 
-class PMComboBox(QtGui.QComboBox):
+class PMComboBox(QtWidgets.QComboBox):
 	""" Reimplment the QComboBox to remove wheel widget activation """
 	def __init__(self):
-		QtGui.QComboBox.__init__(self)
+		QtWidgets.QComboBox.__init__(self)
 
 	def wheelEvent(self, event):
 		""" Ignore wheelevents is not poped up """
 		event.ignore()
 
 
-class PMBaseWidget(QtGui.QWidget):
+class PMBaseWidget(QtWidgets.QWidget):
 	""" A base widget upon which all the other PM widgets are derived """
 	def __init__(self, name, mode="",returnNone=False):
-		QtGui.QWidget.__init__(self)
+		QtWidgets.QWidget.__init__(self)
 
 		self.postional = False
 		self.name = name
@@ -119,6 +119,7 @@ class PMBaseWidget(QtGui.QWidget):
 
 class PMIntEntryWidget(PMBaseWidget):
 	""" A Widget for geting Int values. Type and range is checked """
+	pmmessage = QtCore.pyqtSignal('QString')
 
 	@staticmethod
 	def copyWidget(widget):
@@ -133,14 +134,14 @@ class PMIntEntryWidget(PMBaseWidget):
 		self.initdefault = initdefault
 		self.setPositional(postional)
 
-		gridbox = QtGui.QGridLayout()
-		label = QtGui.QLabel(name)
-		self.intbox = QtGui.QLineEdit()
+		gridbox = QtWidgets.QGridLayout()
+		label = QtWidgets.QLabel(name)
+		self.intbox = QtWidgets.QLineEdit()
 		gridbox.addWidget(label, 0, 0)
 		gridbox.addWidget(self.intbox, 0, 1)
 		self.setLayout(gridbox)
 
-		QtCore.QObject.connect(self.intbox,QtCore.SIGNAL("editingFinished()"),self._on_intchanged)
+		self.intbox.editingFinished.connect(self._on_intchanged)
 
 		self.setValue(value)
 
@@ -157,15 +158,15 @@ class PMIntEntryWidget(PMBaseWidget):
 		except ValueError:
 			self.intbox.setText("")
 			self.setErrorMessage("Invalid type, Int neeeded in %s"%self.getName())
-			if self.isVisible() and not quiet: self.emit(QtCore.SIGNAL("pmmessage(QString)"),"Invalid type, Int neeeded in %s"%self.getName())
+			if self.isVisible() and not quiet: self.pmmessage.emit("Invalid type, Int neeeded in %s"%self.getName())
 
 	def _confirm_bounds(self):
 		if self.lrange != None and (self.value < self.lrange):
 			self.intbox.setText(str(self.lrange))
-			if self.isVisible(): self.emit(QtCore.SIGNAL("pmmessage(QString)"),"Value too low for '%s', clipping to '%d'"%(self.name,self.lrange))
+			if self.isVisible(): self.pmmessage.emit("Value too low for '%s', clipping to '%d'"%(self.name,self.lrange))
 		if self.urange != None and (self.value > self.urange):
 			self.intbox.setText(str(self.urange))
-			if self.isVisible(): self.emit(QtCore.SIGNAL("pmmessage(QString)"),"Value too high for '%s', clipping to '%d'"%(self.name,self.urange))
+			if self.isVisible(): self.pmmessage.emit("Value too high for '%s', clipping to '%d'"%(self.name,self.urange))
 
 	def getValue(self):
 		return self.value
@@ -179,6 +180,7 @@ class PMIntEntryWidget(PMBaseWidget):
 
 class PMShrinkEntryWidget(PMIntEntryWidget):
 	""" A widget for shink options. If this entry is set to <= 1 then no argument is returned """
+	pmmessage = QtCore.pyqtSignal('QString')
 
 	@staticmethod
 	def copyWidget(widget):
@@ -202,7 +204,7 @@ class PMShrinkEntryWidget(PMIntEntryWidget):
 			self.value = self.lrange - 1
 			self.intbox.setText(str(self.lrange-1))
 			self.setErrorMessage("Invalid type, Int neeeded in %s"%self.getName())
-			if self.isVisible() and not quiet: self.emit(QtCore.SIGNAL("pmmessage(QString)"),"Invalid type, Int neeeded in %s"%self.getName())
+			if self.isVisible() and not quiet: self.pmmessage.emit("Invalid type, Int neeeded in %s"%self.getName())
 
 	def _confirm_bounds(self):
 		if self.lrange != None and (self.value < self.lrange):
@@ -214,6 +216,7 @@ class PMShrinkEntryWidget(PMIntEntryWidget):
 
 class PMFloatEntryWidget(PMBaseWidget):
 	""" A Widget for geting Float values. Type and range is checked """
+	pmmessage = QtCore.pyqtSignal('QString')
 
 	@staticmethod
 	def copyWidget(widget):
@@ -228,14 +231,14 @@ class PMFloatEntryWidget(PMBaseWidget):
 		self.initdefault = initdefault
 		self.setPositional(postional)
 
-		gridbox = QtGui.QGridLayout()
-		label = QtGui.QLabel(name)
-		self.floatbox = QtGui.QLineEdit()
+		gridbox = QtWidgets.QGridLayout()
+		label = QtWidgets.QLabel(name)
+		self.floatbox = QtWidgets.QLineEdit()
 		gridbox.addWidget(label, 0, 0)
 		gridbox.addWidget(self.floatbox, 0, 1)
 		self.setLayout(gridbox)
 
-		QtCore.QObject.connect(self.floatbox,QtCore.SIGNAL("editingFinished()"),self._on_floatchanged)
+		self.floatbox.editingFinished.connect(self._on_floatchanged)
 
 		self.setValue(value)
 
@@ -251,15 +254,15 @@ class PMFloatEntryWidget(PMBaseWidget):
 		except ValueError:
 			self.floatbox.setText("")
 			self.setErrorMessage("Invalid type, float needed in '%s'"%self.getName())
-			if self.isVisible() and not quiet: self.emit(QtCore.SIGNAL("pmmessage(QString)"),"Invalid type, float needed in '%s'"%self.getName())
+			if self.isVisible() and not quiet: self.pmmessage.emit("Invalid type, float needed in '%s'"%self.getName())
 
 	def _confirm_bounds(self):
 		if self.lrange and (self.value < self.lrange):
 			self.floatbox.setText(str(self.lrange))
-			if self.isVisible(): self.emit(QtCore.SIGNAL("pmmessage(QString)"),"Value too low for '%s', clipping to '%f'"%(self.name,self.lrange))
+			if self.isVisible(): self.pmmessage.emit("Value too low for '%s', clipping to '%f'"%(self.name,self.lrange))
 		if self.urange and (self.value > self.urange):
 			self.floatbox.setText(str(self.urange))
-			if self.isVisible(): self.emit(QtCore.SIGNAL("pmmessage(QString)"),"Value too high for '%s', clipping to '%f'"%(self.name,self.urange))
+			if self.isVisible(): self.pmmessage.emit("Value too high for '%s', clipping to '%f'"%(self.name,self.urange))
 
 	def getValue(self):
 		return self.value
@@ -284,14 +287,14 @@ class PMStringEntryWidget(PMBaseWidget):
 		self.initdefault = initdefault
 		self.setPositional(postional)
 
-		gridbox = QtGui.QGridLayout()
-		label = QtGui.QLabel(name)
-		self.stringbox = QtGui.QLineEdit()
+		gridbox = QtWidgets.QGridLayout()
+		label = QtWidgets.QLabel(name)
+		self.stringbox = QtWidgets.QLineEdit()
 		gridbox.addWidget(label, 0, 0)
 		gridbox.addWidget(self.stringbox, 0, 1)
 		self.setLayout(gridbox)
 
-		QtCore.QObject.connect(self.stringbox,QtCore.SIGNAL("editingFinished()"),self._on_stringchanged)
+		self.stringbox.editingFinished.connect(self._on_stringchanged)
 
 		self.setValue(string)
 
@@ -316,8 +319,8 @@ class PMHeaderWidget(PMBaseWidget):
 	def __init__(self, name, header):
 		PMBaseWidget.__init__(self, name)
 
-		gridbox = QtGui.QGridLayout()
-		self.header = QtGui.QLabel()
+		gridbox = QtWidgets.QGridLayout()
+		self.header = QtWidgets.QLabel()
 		font = QtGui.QFont()
 		font.setBold(True)
 		self.header.setFont(font)
@@ -350,12 +353,12 @@ class PMBoolWidget(PMBaseWidget):
 		self.boolvalue = boolvalue
 		self.initdefault = initdefault
 
-		gridbox = QtGui.QGridLayout()
-		self.boolbox = QtGui.QCheckBox(name)
+		gridbox = QtWidgets.QGridLayout()
+		self.boolbox = QtWidgets.QCheckBox(name)
 		gridbox.addWidget(self.boolbox, 0, 0)
 		self.setLayout(gridbox)
 
-		QtCore.QObject.connect(self.boolbox,QtCore.SIGNAL("stateChanged(int)"),self._on_boolchanged)
+		self.boolbox.stateChanged[int].connect(self._on_boolchanged)
 
 		self.setValue(self.boolvalue)
 
@@ -379,6 +382,8 @@ class PMBoolWidget(PMBaseWidget):
 
 class PMFileNameWidget(PMBaseWidget):
 	""" A Widget for geting filenames. Type is checked """
+	pmfilename = QtCore.pyqtSignal('QString')
+	pmmessage = QtCore.pyqtSignal('QString')
 	@staticmethod
 	def copyWidget(widget):
 		""" Basically a copy constructor to get around QT and python limitations """
@@ -390,20 +395,20 @@ class PMFileNameWidget(PMBaseWidget):
 		self.checkfileexist= checkfileexist
 		self.setPositional(postional)
 
-		gridbox = QtGui.QGridLayout()
-		label = QtGui.QLabel(name)
+		gridbox = QtWidgets.QGridLayout()
+		label = QtWidgets.QLabel(name)
 		self.browser = browser
-		self.filenamebox = QtGui.QLineEdit()
-		self.browsebutton = QtGui.QPushButton("Browse")
-		self.infolabel = QtGui.QLabel("Num Images: None")
+		self.filenamebox = QtWidgets.QLineEdit()
+		self.browsebutton = QtWidgets.QPushButton("Browse")
+		self.infolabel = QtWidgets.QLabel("Num Images: None")
 		gridbox.addWidget(label, 0, 0)
 		gridbox.addWidget(self.filenamebox, 0, 1)
 		gridbox.addWidget(self.browsebutton, 0, 2)
 		if infolabels: gridbox.addWidget(self.infolabel, 1, 1, 1, 2)
 		self.setLayout(gridbox)
 
-		QtCore.QObject.connect(self.filenamebox,QtCore.SIGNAL("editingFinished()"),self._on_filenamechanged)
-		QtCore.QObject.connect(self.browsebutton,QtCore.SIGNAL("clicked()"),self._on_clicked)
+		self.filenamebox.editingFinished.connect(self._on_filenamechanged)
+		self.browsebutton.clicked.connect(self._on_clicked)
 
 		self.setValue(filename)
 
@@ -423,8 +428,8 @@ class PMFileNameWidget(PMBaseWidget):
 
 	def _on_clicked(self):
 		self.window = eval(self.browser)
-		QtCore.QObject.connect(self.window, QtCore.SIGNAL("ok"),self._on_ok)
-		QtCore.QObject.connect(self.window, QtCore.SIGNAL("cancel"),self._on_cancel)
+		self.window.ok.connect(self._on_ok)
+		self.window.cancel.connect(self._on_cancel)
 		self.window.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 		self.window.show()
 
@@ -451,7 +456,7 @@ class PMFileNameWidget(PMBaseWidget):
 		self.filename = filename
 		self.filenamebox.setText(filename)
 		self.setErrorMessage(None)
-		self.emit(QtCore.SIGNAL("pmfilename(QString)"),self.getValue())
+		self.pmfilename.emit(self.getValue())
 
 	def _checkfiles(self, filename):
 		# Posional arguments must be space delimted for multiple files, whereas options must be comma delimted
@@ -495,7 +500,7 @@ class PMFileNameWidget(PMBaseWidget):
 	def _onBadFile(self, filename, quiet=False):
 		self.filename = None
 		self.setErrorMessage("File '%s' from field '%s' does not exist"%(filename,self.getName()))
-		if self.isVisible() and not quiet: self.emit(QtCore.SIGNAL("pmmessage(QString)"),"File '%s' from field '%s' does not exist"%(filename,self.getName()))
+		if self.isVisible() and not quiet: self.pmmessage.emit("File '%s' from field '%s' does not exist"%(filename,self.getName()))
 
 class PMDirectoryWidget(PMBaseWidget):
 	""" A Widget for display dircories of a certian type """
@@ -511,14 +516,14 @@ class PMDirectoryWidget(PMBaseWidget):
 		self.initdefault = initdefault
 		self.setPositional(postional)
 
-		gridbox = QtGui.QGridLayout()
-		label = QtGui.QLabel(name)
+		gridbox = QtWidgets.QGridLayout()
+		label = QtWidgets.QLabel(name)
 		self.combobox = PMComboBox()
 		gridbox.addWidget(label, 0, 0)
 		gridbox.addWidget(self.combobox, 0, 1)
 		self.setLayout(gridbox)
 
-		self.connect(self.combobox, QtCore.SIGNAL("activated(const QString &)"), self.setValue)
+		self.combobox.activated['QString'].connect(self.setValue)
 
 		self.setValue(default)
 
@@ -545,6 +550,7 @@ class PMDirectoryWidget(PMBaseWidget):
 
 class PMComboWidget(PMBaseWidget):
 	""" A Widget for combo boxes. Type is checked """
+	pmmessage = QtCore.pyqtSignal('QString')
 
 	@staticmethod
 	def copyWidget(widget):
@@ -557,8 +563,8 @@ class PMComboWidget(PMBaseWidget):
 		self.datatype=datatype	# Must be int, float or str
 		self.setPositional(postional)
 
-		gridbox = QtGui.QGridLayout()
-		label = QtGui.QLabel(name)
+		gridbox = QtWidgets.QGridLayout()
+		label = QtWidgets.QLabel(name)
 		self.combobox = PMComboBox()
 		gridbox.addWidget(label, 0, 0)
 		gridbox.addWidget(self.combobox, 0, 1)
@@ -568,7 +574,7 @@ class PMComboWidget(PMBaseWidget):
 		for choice in self.choices:
 			self.combobox.addItem(str(choice))
 
-		self.connect(self.combobox, QtCore.SIGNAL("activated(const QString &)"), self.setValue)
+		self.combobox.activated['QString'].connect(self.setValue)
 
 		self.setValue(default)
 
@@ -587,12 +593,13 @@ class PMComboWidget(PMBaseWidget):
 			return
 		else:
 			self.setErrorMessage("Value '%s' not found in combobox '%s'"%(value,self.getName()))
-			if not quiet: self.emit(QtCore.SIGNAL("pmmessage(QString)"),"Value '%s' not found in combobox '%s'"%(value,self.getName()))
+			if not quiet: self.pmmessage.emit("Value '%s' not found in combobox '%s'"%(value,self.getName()))
 			return
 
 
 class PMComboParamsWidget(PMBaseWidget):
 	""" A Widget for combo boxes. Type is checked. For the combobox with params the datatype is always str """
+	pmmessage = QtCore.pyqtSignal('QString')
 
 	@staticmethod
 	def copyWidget(widget):
@@ -604,11 +611,11 @@ class PMComboParamsWidget(PMBaseWidget):
 		self.initdefault = initdefault
 		self.setPositional(postional)
 
-		gridbox = QtGui.QGridLayout()
-		label = QtGui.QLabel(name)
+		gridbox = QtWidgets.QGridLayout()
+		label = QtWidgets.QLabel(name)
 		self.combobox = PMComboBox()
-		plabel = QtGui.QLabel("params:")
-		self.params = QtGui.QLineEdit()
+		plabel = QtWidgets.QLabel("params:")
+		self.params = QtWidgets.QLineEdit()
 		gridbox.addWidget(label, 0, 0)
 		gridbox.addWidget(self.combobox, 0, 1)
 		gridbox.addWidget(plabel, 0, 2)
@@ -620,7 +627,7 @@ class PMComboParamsWidget(PMBaseWidget):
 			self.combobox.addItem(str(choice))
 		self.combobox.addItem('None')
 
-		self.connect(self.combobox, QtCore.SIGNAL("activated(const QString &)"), self.setValue)
+		self.combobox.activated['QString'].connect(self.setValue)
 
 		self.setValue(default)
 
@@ -644,7 +651,7 @@ class PMComboParamsWidget(PMBaseWidget):
 			self.combobox.setCurrentIndex(idx)
 		else:
 			self.setErrorMessage("Value '%s' not found in combobox '%s'"%(values[0],self.getName()))
-			if not quiet: self.emit(QtCore.SIGNAL("pmmessage(QString)"),"Value '%s' not found in combobox '%s'"%(values[0],self.getName()))
+			if not quiet: self.pmmessage.emit("Value '%s' not found in combobox '%s'"%(values[0],self.getName()))
 			return
 		if len(values) == 2: self.params.setText(values[1])
 		self.setErrorMessage(None)
@@ -658,6 +665,7 @@ class PMComboParamsWidget(PMBaseWidget):
 
 class PMSymWidget(PMBaseWidget):
 	""" A widget for getting/setting symmetry input """
+	pmmessage = QtCore.pyqtSignal('QString')
 
 	@staticmethod
 	def copyWidget(widget):
@@ -668,8 +676,8 @@ class PMSymWidget(PMBaseWidget):
 		PMBaseWidget.__init__(self, name, mode)
 		self.initdefault = initdefault
 
-		gridbox = QtGui.QGridLayout()
-		label = QtGui.QLabel(name)
+		gridbox = QtWidgets.QGridLayout()
+		label = QtWidgets.QLabel(name)
 		label.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight)
 		self.combobox = PMComboBox()
 		self.symnumbox = PMIntEntryWidget("Symmetry Number", 0, mode, lrange=0)
@@ -680,12 +688,12 @@ class PMSymWidget(PMBaseWidget):
 
 		for i in ['icos','oct','tet','c','d','h']: self.combobox.addItem(i)
 
-		self.connect(self.symnumbox,QtCore.SIGNAL("pmmessage(QString)"),self._on_message)
+		self.symnumbox.pmmessage['QString'].connect(self._on_message)
 
 		self.setValue(default)
 
 	def _on_message(self, message):
-		self.emit(QtCore.SIGNAL("pmmessage(QString)"),message)
+		self.pmmessage.emit(message)
 
 	def getValue(self):
 		""" Return the symmetry value """
@@ -711,7 +719,7 @@ class PMSymWidget(PMBaseWidget):
 			self.combobox.setCurrentIndex(idx)
 		else:
 			self.setErrorMessage("'%s' not a valid symmetry!!!"%value)
-			if not quiet: self.emit(QtCore.SIGNAL("pmmessage(QString)"),"'%s' not a valid symmetry!!!"%value)
+			if not quiet: self.pmmessage.emit("'%s' not a valid symmetry!!!"%value)
 			return
 		self.symnumbox.setValue(defsymnum)
 		self.setErrorMessage(None)
@@ -722,6 +730,7 @@ class PMSymWidget(PMBaseWidget):
 
 class PMAutoMask3DWidget(PMBaseWidget):
 	""" A Widget for getting automask 3D input """
+	pmmessage = QtCore.pyqtSignal('QString')
 
 	@staticmethod
 	def copyWidget(widget):
@@ -732,8 +741,8 @@ class PMAutoMask3DWidget(PMBaseWidget):
 		PMBaseWidget.__init__(self, name, mode)
 		self.initdefault = initdefault
 
-		gridbox = QtGui.QGridLayout()
-		self.automask3dbool = QtGui.QCheckBox("Auto Mask 3D")
+		gridbox = QtWidgets.QGridLayout()
+		self.automask3dbool = QtWidgets.QCheckBox("Auto Mask 3D")
 		self.params = []
 		self.params.append(PMFloatEntryWidget("Threshold", 0.8, mode))
 		self.params.append(PMIntEntryWidget("Radius", 30, mode))
@@ -748,12 +757,12 @@ class PMAutoMask3DWidget(PMBaseWidget):
 		gridbox.addWidget(self.params[4], 2, 1)
 		self.setLayout(gridbox)
 
-		QtCore.QObject.connect(self.automask3dbool,QtCore.SIGNAL("stateChanged(int)"),self._on_boolchanged)
-		self.connect(self.params[0],QtCore.SIGNAL("pmmessage(QString)"),self._on_message)
-		self.connect(self.params[1],QtCore.SIGNAL("pmmessage(QString)"),self._on_message)
-		self.connect(self.params[2],QtCore.SIGNAL("pmmessage(QString)"),self._on_message)
-		self.connect(self.params[3],QtCore.SIGNAL("pmmessage(QString)"),self._on_message)
-		self.connect(self.params[4],QtCore.SIGNAL("pmmessage(QString)"),self._on_message)
+		self.automask3dbool.stateChanged[int].connect(self._on_boolchanged)
+		self.params[0].pmmessage['QString'].connect(self._on_message)
+		self.params[1].pmmessage['QString'].connect(self._on_message)
+		self.params[2].pmmessage['QString'].connect(self._on_message)
+		self.params[3].pmmessage['QString'].connect(self._on_message)
+		self.params[4].pmmessage['QString'].connect(self._on_message)
 
 		self.setValue(default)
 
@@ -762,7 +771,7 @@ class PMAutoMask3DWidget(PMBaseWidget):
 			widget.setEnabled(self.automask3dbool.isChecked())
 
 	def _on_message(self, message):
-		self.emit(QtCore.SIGNAL("pmmessage(QString)"),message)
+		self.pmmessage.emit(message)
 
 	def setValue(self, value, quiet=False):
 		# if value is "" of None, set bool to false
@@ -801,10 +810,10 @@ class PMTableBase(PMBaseWidget):
 		self.setPositional(postional)
 		self.initdefault = initdefault
 
-		gridbox = QtGui.QGridLayout()
-		self.tablewidget = QtGui.QTableWidget()
+		gridbox = QtWidgets.QGridLayout()
+		self.tablewidget = QtWidgets.QTableWidget()
 		gridbox.addWidget(self.tablewidget, 0, 0)
-		self.tablewidget.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)	# Readonly table
+		self.tablewidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)	# Readonly table
 		self.setLayout(gridbox)
 
 	def updateTable(self):
@@ -821,6 +830,7 @@ class PMTableBase(PMBaseWidget):
 
 class PMFSCTableWidget(PMTableBase):
 	""" A widget for generating FSC tables"""
+	pmmessage = QtCore.pyqtSignal('QString')
 
 	@staticmethod
 	def copyWidget(widget):
@@ -833,14 +843,14 @@ class PMFSCTableWidget(PMTableBase):
 		# table stuff
 		self.tablewidget.setColumnCount(4)
 		self.tablewidget.setHorizontalHeaderLabels(["Refine", "# Iter", "Masked .143", "Unmasked .143"])
-		self.tablewidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.ResizeToContents)
+		self.tablewidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
 		self.tablewidget.horizontalHeader().setHighlightSections(False)
-		self.tablewidget.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)	# select rows
-		self.tablewidget.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)	# single selection
+		self.tablewidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)	# select rows
+		self.tablewidget.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)	# single selection
 
 		self.tablewidget.setRowCount(0)
 		self.patterns = ["refine","frealign","multi"]
-		self.connect(self.tablewidget,QtCore.SIGNAL("cellDoubleClicked(int,int)"),self.loadFSC)
+		self.tablewidget.cellDoubleClicked[int, int].connect(self.loadFSC)
 
 		#now update table
 		self.setValue(default)
@@ -851,7 +861,7 @@ class PMFSCTableWidget(PMTableBase):
 		if value:
 			return value.text()
 		else:
-			self.emit(QtCore.SIGNAL("pmmessage(QString)"),"Warning NOTHING IS SELECTED IN THE TABLE!!!")
+			self.pmmessage.emit("Warning NOTHING IS SELECTED IN THE TABLE!!!")
 			return ""
 
 	def setValue(self, value, quiet=False):
@@ -867,7 +877,7 @@ class PMFSCTableWidget(PMTableBase):
 		if not self.tablewidget.item(row, 1):
 			msg = "Rubbish!!! No FSC curves to plot."
 			print(msg)
-			self.emit(QtCore.SIGNAL("pmmessage(QString)"),"Rubbish!!! No FSC curves to plot.")
+			self.pmmessage.emit("Rubbish!!! No FSC curves to plot.")
 			return
 		
 		fsccmd=["e2display.py --plot"]
@@ -879,7 +889,7 @@ class PMFSCTableWidget(PMTableBase):
 		# Now load the FSC curves
 		msg = "Loading FSC curves, please wait..."
 		print(msg)
-		self.emit(QtCore.SIGNAL("pmmessage(QString)"),msg)
+		self.pmmessage.emit(msg)
 		subprocess.Popen(fsccmd, shell=True)
 
 	def updateTable(self):
@@ -893,14 +903,14 @@ class PMFSCTableWidget(PMTableBase):
 
 		for i, directory in enumerate(sorted(dirs)):
 			# load each directory
-			qwi_dirname = QtGui.QTableWidgetItem(str(directory))
+			qwi_dirname = QtWidgets.QTableWidgetItem(str(directory))
 			self.tablewidget.setItem(i, 0, qwi_dirname)
 
 			fscs=sorted([ii for ii in os.listdir(directory) if ii[:11]=="fsc_masked_"])
 			niter=len(fscs)
 			if "fsc_masked_00.txt" in fscs : niter-=1
 			
-			self.tablewidget.setItem(i, 1, QtGui.QTableWidgetItem(str(niter)))
+			self.tablewidget.setItem(i, 1, QtWidgets.QTableWidgetItem(str(niter)))
 			
 			try:
 				# We use a running average of 5 points to compute the threshold
@@ -910,9 +920,9 @@ class PMFSCTableWidget(PMTableBase):
 					v=(xyd.get_y(ii-2)+xyd.get_y(ii-1)+xyd.get_y(ii)+xyd.get_y(ii+1)+xyd.get_y(ii+2))/5.0
 					if v<0.143 : break
 				
-				self.tablewidget.setItem(i,2,QtGui.QTableWidgetItem("{:1.1f}".format(1.0/xyd.get_x(ii-1))))
+				self.tablewidget.setItem(i,2,QtWidgets.QTableWidgetItem("{:1.1f}".format(1.0/xyd.get_x(ii-1))))
 			except:
-				self.tablewidget.setItem(i,2,QtGui.QTableWidgetItem("?"))
+				self.tablewidget.setItem(i,2,QtWidgets.QTableWidgetItem("?"))
 
 			try:
 				# We use a running average of 5 points to compute the threshold
@@ -922,9 +932,9 @@ class PMFSCTableWidget(PMTableBase):
 					v=(xyd.get_y(ii-2)+xyd.get_y(ii-1)+xyd.get_y(ii)+xyd.get_y(ii+1)+xyd.get_y(ii+2))/5.0
 					if v<0.143 : break
 				
-				self.tablewidget.setItem(i,3,QtGui.QTableWidgetItem("{:1.1f}".format(1.0/xyd.get_x(ii-1))))
+				self.tablewidget.setItem(i,3,QtWidgets.QTableWidgetItem("{:1.1f}".format(1.0/xyd.get_x(ii-1))))
 			except:
-				self.tablewidget.setItem(i,3,QtGui.QTableWidgetItem("?"))
+				self.tablewidget.setItem(i,3,QtWidgets.QTableWidgetItem("?"))
 
 			
 

@@ -36,7 +36,7 @@ from emapplication import EMApp, get_application
 from emimage3dsym import EM3DSymModel,EMSymInspector
 import os,sys
 from EMAN2 import *
-from PyQt4 import QtGui,QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
 from emimagemx import EMImageMXModule
 
 	
@@ -122,8 +122,8 @@ class EMCmpExplorer(EM3DSymModel):
 		if self.ptcl_display==None : 
 			self.ptcl_display = EMImageMXModule()
 			self.ptcl_display.set_mouse_mode("App")
-			QtCore.QObject.connect(self.ptcl_display,QtCore.SIGNAL("mx_image_selected"),self.ptcl_selected)		
-			QtCore.QObject.connect(self.ptcl_display,QtCore.SIGNAL("module_closed"),self.on_mx_display_closed)
+			self.ptcl_display.mx_image_selected.connect(self.ptcl_selected)
+			self.ptcl_display.module_closed.connect(self.on_mx_display_closed)
 		self.ptcl_display.set_data(self.ptcl_data)
 
 		# deal with projections
@@ -153,7 +153,7 @@ class EMCmpExplorer(EM3DSymModel):
 		resize_necessary = False
 		if self.mx_display == None:
 			self.mx_display = EMImageMXModule()
-			QtCore.QObject.connect(self.mx_display,QtCore.SIGNAL("module_closed"),self.on_mx_display_closed)
+			self.mx_display.module_closed.connect(self.on_mx_display_closed)
 			resize_necessary = True
 
 		#if self.frc_display == None:
@@ -243,7 +243,7 @@ class EMCmpExplorer(EM3DSymModel):
 		if self.current_particle<0 : return
 		ptcl=self.ptcl_data[self.current_particle]
 		
-		progress = QtGui.QProgressDialog("Computing alignments", "Abort", 0, len(self.proj_data),None)
+		progress = QtWidgets.QProgressDialog("Computing alignments", "Abort", 0, len(self.proj_data),None)
 		progress.show()
 		# redetermines particle alignments
 		# then we can quickly compute a series of different similarity values
@@ -259,7 +259,7 @@ class EMCmpExplorer(EM3DSymModel):
 					ali=p.align(ropt[0],ptcl,ropt[1],rcmp[0],rcmp[1])
 			except:
 				print(traceback.print_exc())
-				QtGui.QMessageBox.warning(None,"Error","Problem with alignment parameters")
+				QtWidgets.QMessageBox.warning(None,"Error","Problem with alignment parameters")
 				progress.close()
 				return
 			p["ptcl.align2d"]=ali["xform.align2d"]
@@ -278,7 +278,7 @@ class EMCmpExplorer(EM3DSymModel):
 	def update_cmp(self):
 		cmpopt=parsemodopt(self.simcmp)
 		
-		progress = QtGui.QProgressDialog("Computing similarities", "Abort", 0, len(self.proj_data),None)
+		progress = QtWidgets.QProgressDialog("Computing similarities", "Abort", 0, len(self.proj_data),None)
 		progress.show()
 		ptcl=self.ptcl_data[self.current_particle]
 		for i,p in enumerate(self.proj_data):
@@ -287,11 +287,11 @@ class EMCmpExplorer(EM3DSymModel):
 			try : p["cmp"]=-ptcl.cmp(cmpopt[0],ali,cmpopt[1])
 			except:
 				print(traceback.print_exc())
-				QtGui.QMessageBox.warning(None,"Error","Invalid similarity metric string, or other comparison error")
+				QtWidgets.QMessageBox.warning(None,"Error","Invalid similarity metric string, or other comparison error")
 				progress.close()
 				return
 			progress.setValue(i)
-			QtGui.qApp.processEvents()
+			QtWidgets.QApplication.processEvents()
 			
 		progress.close()
 		self.set_emdata_list_as_data(self.proj_data,"cmp")
@@ -307,33 +307,33 @@ class EMSimmxXplorInspector(EMSymInspector):
 #		print "simmx xplor died"
 		
 	def add_cmp_options(self):
-		self.cmp_tab= QtGui.QWidget()
-		gridl = QtGui.QGridLayout(self.cmp_tab)
+		self.cmp_tab= QtWidgets.QWidget()
+		gridl = QtWidgets.QGridLayout(self.cmp_tab)
 		
-		self.cmp_shrinkl=QtGui.QLabel("Shrink:")
+		self.cmp_shrinkl=QtWidgets.QLabel("Shrink:")
 		gridl.addWidget(self.cmp_shrinkl,0,1)
 		
-		self.cmp_shrink=QtGui.QSpinBox()
+		self.cmp_shrink=QtWidgets.QSpinBox()
 		self.cmp_shrink.setRange(1,5)
 		self.cmp_shrink.setValue(1)
 		gridl.addWidget(self.cmp_shrink,0,2)
 		
-		self.cmp_ali=QtGui.QLineEdit("rotate_translate_flip")
+		self.cmp_ali=QtWidgets.QLineEdit("rotate_translate_flip")
 		gridl.addWidget(self.cmp_ali,1,0,1,2)
 		
-		self.cmp_alicmp=QtGui.QLineEdit("dot")
+		self.cmp_alicmp=QtWidgets.QLineEdit("dot")
 		gridl.addWidget(self.cmp_alicmp,1,2,1,2)
 		
-		self.cmp_refine=QtGui.QLineEdit("refine")
+		self.cmp_refine=QtWidgets.QLineEdit("refine")
 		gridl.addWidget(self.cmp_refine,2,0,1,2)
 		
-		self.cmp_refinecmp=QtGui.QLineEdit("dot:normalize=1")
+		self.cmp_refinecmp=QtWidgets.QLineEdit("dot:normalize=1")
 		gridl.addWidget(self.cmp_refinecmp,2,2,1,2)
 		
-		self.cmp_realignb=QtGui.QPushButton("Set Alignment")
+		self.cmp_realignb=QtWidgets.QPushButton("Set Alignment")
 		gridl.addWidget(self.cmp_realignb,3,2)
 		
-		self.cmp_combo=QtGui.QComboBox()
+		self.cmp_combo=QtWidgets.QComboBox()
 		self.cmp_combo.setEditable(True)
 		self.cmp_combo.setInsertPolicy(self.cmp_combo.InsertAlphabetically)
 		self.cmp_combo.addItem("dot:normalize=1")
@@ -352,8 +352,8 @@ class EMSimmxXplorInspector(EMSymInspector):
 		self.tabwidget.insertTab(0,self.cmp_tab,"Cmp")
 		self.tabwidget.setCurrentIndex(0)
 		
-		self.connect(self.cmp_combo, QtCore.SIGNAL("currentIndexChanged(QString)"), self.cmp_changed)
-		self.connect(self.cmp_realignb, QtCore.SIGNAL("clicked(bool)"), self.cmp_realign)
+		self.cmp_combo.currentIndexChanged['QString'].connect(self.cmp_changed)
+		self.cmp_realignb.clicked[bool].connect(self.cmp_realign)
 #		self.connect(self.cmp_shrink, QtCore.SIGNAL("valueChanged(int)"), self.ali_changed)
 
 		

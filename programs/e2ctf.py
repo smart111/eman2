@@ -2237,13 +2237,13 @@ def ctf_env_points(im_1d,bg_1d,ctf) :
 #	return ret
 
 try:
-	from PyQt4 import QtCore, QtGui, QtOpenGL
-	from PyQt4.QtCore import Qt
+	from PyQt5 import QtCore, QtGui, QtOpenGL, QtWidgets
+	from PyQt5.QtCore import Qt
 	from OpenGL import GL,GLUT
 	from emshape import *
 	from valslider import ValSlider,CheckBox
 except:
-	print("Warning: PyQt4 must be installed to use the --gui option")
+	print("Warning: PyQt5 must be installed to use the --gui option")
 	class dummy:
 		pass
 	class QWidget:
@@ -2262,20 +2262,23 @@ def notzero(x):
 	if x==0 : return 1.0
 	return x
 
-class MyListWidget(QtGui.QListWidget):
+class MyListWidget(QtWidgets.QListWidget):
 	"""Exactly like a normal list widget but intercepts a few keyboard events"""
+	keypress = QtCore.pyqtSignal()
 
 	def keyPressEvent(self,event):
 
 		if event.key() in (Qt.Key_Up,Qt.Key_Down) :
-			QtGui.QListWidget.keyPressEvent(self,event)
+			QtWidgets.QListWidget.keyPressEvent(self,event)
 			return
 
-		self.emit(QtCore.SIGNAL("keypress"),event)
+		self.keypress.emit(event)
 #		event.key()==Qt.Key_I
 
 
-class GUIctf(QtGui.QWidget):
+class GUIctf(QtWidgets.QWidget):
+	module_closed = QtCore.pyqtSignal()
+
 	def __init__(self,application,data,autohp=True,nosmooth=False,highdensity=False):
 		"""Implements the CTF fitting dialog using various EMImage and EMPlot2D widgets
 		'data' is a list of (filename,EMAN2CTF,im_1d,bg_1d,im_2d,bg_2d,qual,bg_1d_low)
@@ -2296,7 +2299,7 @@ class GUIctf(QtGui.QWidget):
 		self.nosmooth=nosmooth
 		self.highdensity=highdensity
 
-		QtGui.QWidget.__init__(self,None)
+		QtWidgets.QWidget.__init__(self,None)
 		self.setWindowIcon(QtGui.QIcon(get_image_directory() + "ctf.png"))
 
 		self.data=data
@@ -2309,29 +2312,29 @@ class GUIctf(QtGui.QWidget):
 		self.guirealim=EMImage2DWidget(application=self.app())	# This will show the original particle images
 		self.flipim=None
 
-		self.guirealim.connect(self.guirealim,QtCore.SIGNAL("keypress"),self.realimgkey)
-		self.guiim.connect(self.guiim,QtCore.SIGNAL("mousedown"),self.imgmousedown)
-		self.guiim.connect(self.guiim,QtCore.SIGNAL("mousedrag"),self.imgmousedrag)
-		self.guiim.connect(self.guiim,QtCore.SIGNAL("mouseup")  ,self.imgmouseup)
-		self.guiplot.connect(self.guiplot,QtCore.SIGNAL("mousedown"),self.plotmousedown)
+		self.guirealim.keypress.connect(self.realimgkey)
+		self.guiim.mousedown.connect(self.imgmousedown)
+		self.guiim.mousedrag.connect(self.imgmousedrag)
+		self.guiim.mouseup.connect(self.imgmouseup)
+		self.guiplot.mousedown.connect(self.plotmousedown)
 
 
 
 		self.guiim.mmode="app"
 
 		# This object is itself a widget we need to set up
-		self.hbl = QtGui.QHBoxLayout(self)
-		self.hbl.setMargin(0)
+		self.hbl = QtWidgets.QHBoxLayout(self)
+		self.hbl.setContentsMargins(0, 0, 0, 0)
 		self.hbl.setSpacing(6)
 		self.hbl.setObjectName("hbl")
 
 		# plot list and plot mode combobox
-		self.vbl2 = QtGui.QVBoxLayout()
+		self.vbl2 = QtWidgets.QVBoxLayout()
 		self.setlist=MyListWidget(self)
-		self.setlist.setSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Expanding)
+		self.setlist.setSizePolicy(QtWidgets.QSizePolicy.Preferred,QtWidgets.QSizePolicy.Expanding)
 		self.vbl2.addWidget(self.setlist)
 
-		self.splotmode=QtGui.QComboBox(self)
+		self.splotmode=QtWidgets.QComboBox(self)
 		self.splotmode.addItem("Bgsub & fit")
 		self.splotmode.addItem("Ptcl & BG power")
 		self.splotmode.addItem("SNR")
@@ -2347,8 +2350,8 @@ class GUIctf(QtGui.QWidget):
 		self.hbl.addLayout(self.vbl2)
 
 		# ValSliders for CTF parameters
-		self.vbl = QtGui.QVBoxLayout()
-		self.vbl.setMargin(0)
+		self.vbl = QtWidgets.QVBoxLayout()
+		self.vbl.setContentsMargins(0, 0, 0, 0)
 		self.vbl.setSpacing(6)
 		self.vbl.setObjectName("vbl")
 		self.hbl.addLayout(self.vbl)
@@ -2356,7 +2359,7 @@ class GUIctf(QtGui.QWidget):
 		#self.samp = ValSlider(self,(0,5.0),"Amp:",0)
 		#self.vbl.addWidget(self.samp)
 
-		self.imginfo=QtGui.QLabel("Info",self)
+		self.imginfo=QtWidgets.QLabel("Info",self)
 		self.vbl.addWidget(self.imginfo)
 
 		self.sdefocus=ValSlider(self,(0,5),"Defocus:",0,90)
@@ -2391,42 +2394,42 @@ class GUIctf(QtGui.QWidget):
 		self.vbl.addWidget(self.squality)
 
 
-		self.hbl_buttons = QtGui.QHBoxLayout()
-		self.saveparms = QtGui.QPushButton("Save parms")
-		self.recallparms = QtGui.QPushButton("Recall")
-		self.refit = QtGui.QPushButton("Refit")
+		self.hbl_buttons = QtWidgets.QHBoxLayout()
+		self.saveparms = QtWidgets.QPushButton("Save parms")
+		self.recallparms = QtWidgets.QPushButton("Recall")
+		self.refit = QtWidgets.QPushButton("Refit")
 		self.show2dfit = CheckBox(label="Show 2D Sim:",value=False)
 		self.showzerorings = CheckBox(label="Show Zeroes:",value=False)
-		self.output = QtGui.QPushButton("Output")
+		self.output = QtWidgets.QPushButton("Output")
 		self.hbl_buttons.addWidget(self.refit)
 		self.hbl_buttons.addWidget(self.saveparms)
 		self.hbl_buttons.addWidget(self.recallparms)
-		self.hbl_buttons2 = QtGui.QHBoxLayout()
+		self.hbl_buttons2 = QtWidgets.QHBoxLayout()
 		self.hbl_buttons2.addWidget(self.show2dfit)
 		self.hbl_buttons2.addWidget(self.showzerorings)
 		self.hbl_buttons2.addWidget(self.output)
 		self.vbl.addLayout(self.hbl_buttons)
 		self.vbl.addLayout(self.hbl_buttons2)
 
-		QtCore.QObject.connect(self.sdefocus, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sbfactor, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sdfdiff, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sdfang, QtCore.SIGNAL("valueChanged"), self.newCTF)
+		self.sdefocus.valueChanged.connect(self.newCTF)
+		self.sbfactor.valueChanged.connect(self.newCTF)
+		self.sdfdiff.valueChanged.connect(self.newCTF)
+		self.sdfang.valueChanged.connect(self.newCTF)
 #		QtCore.QObject.connect(self.sapix, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sampcont, QtCore.SIGNAL("valueChanged"), self.newCTFac)
-		QtCore.QObject.connect(self.sphase, QtCore.SIGNAL("valueChanged"), self.newCTFpha)
-		QtCore.QObject.connect(self.svoltage, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.scs, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.squality, QtCore.SIGNAL("valueChanged"), self.newQual)
-		QtCore.QObject.connect(self.showzerorings, QtCore.SIGNAL("valueChanged"), self.update_plot)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("currentRowChanged(int)"),self.newSet)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("keypress"),self.listkey)
-		QtCore.QObject.connect(self.splotmode,QtCore.SIGNAL("currentIndexChanged(int)"),self.newPlotMode)
+		self.sampcont.valueChanged.connect(self.newCTFac)
+		self.sphase.valueChanged.connect(self.newCTFpha)
+		self.svoltage.valueChanged.connect(self.newCTF)
+		self.scs.valueChanged.connect(self.newCTF)
+		self.squality.valueChanged.connect(self.newQual)
+		self.showzerorings.valueChanged.connect(self.update_plot)
+		self.setlist.currentRowChanged[int].connect(self.newSet)
+		self.setlist.keypress.connect(self.listkey)
+		self.splotmode.currentIndexChanged[int].connect(self.newPlotMode)
 
-		QtCore.QObject.connect(self.saveparms,QtCore.SIGNAL("clicked(bool)"),self.on_save_params)
-		QtCore.QObject.connect(self.recallparms,QtCore.SIGNAL("clicked(bool)"),self.on_recall_params)
-		QtCore.QObject.connect(self.refit,QtCore.SIGNAL("clicked(bool)"),self.on_refit)
-		QtCore.QObject.connect(self.output,QtCore.SIGNAL("clicked(bool)"),self.on_output)
+		self.saveparms.clicked[bool].connect(self.on_save_params)
+		self.recallparms.clicked[bool].connect(self.on_recall_params)
+		self.refit.clicked[bool].connect(self.on_refit)
+		self.output.clicked[bool].connect(self.on_output)
 
 		self.neednewps=False
 		self.update_data()
@@ -2572,7 +2575,7 @@ class GUIctf(QtGui.QWidget):
 
 		event.accept()
 		self.app().close_specific(self)
-		self.emit(QtCore.SIGNAL("module_closed")) # this signal is important when e2ctf is being used by a program running its own event loop
+		self.module_closed.emit()
 
 	def newData(self,data):
 		self.data=data

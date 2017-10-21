@@ -38,8 +38,8 @@ from EMAN2 import *
 import numpy as np
 
 import weakref
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import Qt
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 from emapplication import get_application, EMApp
 from emimage2d import EMImage2DWidget
 from emimagemx import EMImageMXWidget
@@ -144,11 +144,13 @@ def main():
 
 
 
-class EMTomoBoxer(QtGui.QMainWindow):
+class EMTomoBoxer(QtWidgets.QMainWindow):
 	"""This class represents the EMTomoBoxer application instance.  """
+	keypress = QtCore.pyqtSignal()
+	module_closed = QtCore.pyqtSignal()
 
 	def __init__(self,application,options,datafile=None):
-		QtGui.QWidget.__init__(self)
+		QtWidgets.QWidget.__init__(self)
 		self.initialized=False
 		self.app=weakref.ref(application)
 		self.options=options
@@ -179,8 +181,8 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		self.mwin_average=self.mwin.addAction("Averaging")
 
 
-		self.setCentralWidget(QtGui.QWidget())
-		self.gbl = QtGui.QGridLayout(self.centralWidget())
+		self.setCentralWidget(QtWidgets.QWidget())
+		self.gbl = QtWidgets.QGridLayout(self.centralWidget())
 
 		# relative stretch factors
 		self.gbl.setColumnStretch(0,1)
@@ -200,11 +202,11 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		self.gbl.addWidget(self.zyview,0,0)
 
 		# Select Z for xy view
-		self.wdepth = QtGui.QSlider()
+		self.wdepth = QtWidgets.QSlider()
 		self.gbl.addWidget(self.wdepth,1,2)
 
 		### Control panel area in upper left corner
-		self.gbl2 = QtGui.QGridLayout()
+		self.gbl2 = QtWidgets.QGridLayout()
 		self.gbl.addLayout(self.gbl2,1,0)
 
 		# box size
@@ -212,19 +214,19 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		self.gbl2.addWidget(self.wboxsize,1,0,1,2)
 
 		# max or mean
-		self.wmaxmean=QtGui.QPushButton("MaxProj")
+		self.wmaxmean=QtWidgets.QPushButton("MaxProj")
 		self.wmaxmean.setCheckable(True)
 		self.gbl2.addWidget(self.wmaxmean,2,0)
 
 		# number slices
-		self.wnlayers=QtGui.QSpinBox()
+		self.wnlayers=QtWidgets.QSpinBox()
 		self.wnlayers.setMinimum(1)
 		self.wnlayers.setMaximum(256)
 		self.wnlayers.setValue(1)
 		self.gbl2.addWidget(self.wnlayers,2,1)
 
 		# Local boxes in side view
-		self.wlocalbox=QtGui.QCheckBox("Limit Side Boxes")
+		self.wlocalbox=QtWidgets.QCheckBox("Limit Side Boxes")
 		self.gbl2.addWidget(self.wlocalbox,3,0)
 
 		# scale factor
@@ -244,51 +246,51 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		self.firsthbclick = None
 
 		# coordinate display
-		self.wcoords=QtGui.QLabel("X: " + str(self.get_x()) + "\t\t" + "Y: " + str(self.get_y()) + "\t\t" + "Z: " + str(self.get_z()))
+		self.wcoords=QtWidgets.QLabel("X: " + str(self.get_x()) + "\t\t" + "Y: " + str(self.get_y()) + "\t\t" + "Z: " + str(self.get_z()))
 		self.gbl2.addWidget(self.wcoords, 0, 0, 1, 2)
 
 		# file menu
-		QtCore.QObject.connect(self.mfile_open,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_open  )
-		QtCore.QObject.connect(self.mfile_read_boxloc,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_read_boxloc  )
-		QtCore.QObject.connect(self.mfile_save_boxloc,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_save_boxloc  )
-		QtCore.QObject.connect(self.mfile_save_boxes_stack,QtCore.SIGNAL("triggered(bool)")  ,self.save_boxes)
-		QtCore.QObject.connect(self.mfile_quit,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_quit)
+		self.mfile_open.triggered[bool].connect(self.menu_file_open)
+		self.mfile_read_boxloc.triggered[bool].connect(self.menu_file_read_boxloc)
+		self.mfile_save_boxloc.triggered[bool].connect(self.menu_file_save_boxloc)
+		self.mfile_save_boxes_stack.triggered[bool].connect(self.save_boxes)
+		self.mfile_quit.triggered[bool].connect(self.menu_file_quit)
 
 		# window menu
-		QtCore.QObject.connect(self.mwin_boxes,QtCore.SIGNAL("triggered(bool)")  ,self.menu_win_boxes  )
-		QtCore.QObject.connect(self.mwin_single,QtCore.SIGNAL("triggered(bool)")  ,self.menu_win_single  )
+		self.mwin_boxes.triggered[bool].connect(self.menu_win_boxes)
+		self.mwin_single.triggered[bool].connect(self.menu_win_single)
 #		QtCore.QObject.connect(self.mwin_average,QtCore.SIGNAL("triggered(bool)")  ,self.menu_win_average  )
 
 		# all other widgets
-		QtCore.QObject.connect(self.wdepth,QtCore.SIGNAL("valueChanged(int)"),self.event_depth)
-		QtCore.QObject.connect(self.wnlayers,QtCore.SIGNAL("valueChanged(int)"),self.event_nlayers)
-		QtCore.QObject.connect(self.wboxsize,QtCore.SIGNAL("valueChanged"),self.event_boxsize)
-		QtCore.QObject.connect(self.wmaxmean,QtCore.SIGNAL("clicked(bool)"),self.event_projmode)
-		QtCore.QObject.connect(self.wscale,QtCore.SIGNAL("valueChanged")  ,self.event_scale  )
-		QtCore.QObject.connect(self.wfilt,QtCore.SIGNAL("valueChanged")  ,self.event_filter  )
-		QtCore.QObject.connect(self.wlocalbox,QtCore.SIGNAL("stateChanged(int)")  ,self.event_localbox  )
+		self.wdepth.valueChanged[int].connect(self.event_depth)
+		self.wnlayers.valueChanged[int].connect(self.event_nlayers)
+		self.wboxsize.valueChanged.connect(self.event_boxsize)
+		self.wmaxmean.clicked[bool].connect(self.event_projmode)
+		self.wscale.valueChanged.connect(self.event_scale)
+		self.wfilt.valueChanged.connect(self.event_filter)
+		self.wlocalbox.stateChanged[int].connect(self.event_localbox)
 
-		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mousemove"),self.xy_move)
-		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mousedown"),self.xy_down)
-		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mousedrag"),self.xy_drag)
-		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mouseup"),self.xy_up  )
-		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("mousewheel"),self.xy_wheel  )
-		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("set_scale"),self.xy_scale)
-		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("origin_update"),self.xy_origin)
+		self.xyview.mousemove.connect(self.xy_move)
+		self.xyview.mousedown.connect(self.xy_down)
+		self.xyview.mousedrag.connect(self.xy_drag)
+		self.xyview.mouseup.connect(self.xy_up)
+		self.xyview.mousewheel.connect(self.xy_wheel)
+		self.xyview.set_scale.connect(self.xy_scale)
+		self.xyview.origin_update.connect(self.xy_origin)
 
-		QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("mousedown"),self.xz_down)
-		QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("mousedrag"),self.xz_drag)
-		QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("mouseup")  ,self.xz_up  )
-		QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("set_scale"),self.xz_scale)
-		QtCore.QObject.connect(self.xzview,QtCore.SIGNAL("origin_update"),self.xz_origin)
+		self.xzview.mousedown.connect(self.xz_down)
+		self.xzview.mousedrag.connect(self.xz_drag)
+		self.xzview.mouseup.connect(self.xz_up)
+		self.xzview.set_scale.connect(self.xz_scale)
+		self.xzview.origin_update.connect(self.xz_origin)
 
-		QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("mousedown"),self.zy_down)
-		QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("mousedrag"),self.zy_drag)
-		QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("mouseup")  ,self.zy_up  )
-		QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("set_scale"),self.zy_scale)
-		QtCore.QObject.connect(self.zyview,QtCore.SIGNAL("origin_update"),self.zy_origin)
+		self.zyview.mousedown.connect(self.zy_down)
+		self.zyview.mousedrag.connect(self.zy_drag)
+		self.zyview.mouseup.connect(self.zy_up)
+		self.zyview.set_scale.connect(self.zy_scale)
+		self.zyview.origin_update.connect(self.zy_origin)
 		
-		QtCore.QObject.connect(self.xyview,QtCore.SIGNAL("keypress"),self.key_press)
+		self.xyview.keypress.connect(self.key_press)
 		self.datafilename=datafile
 		self.basename=base_name(datafile)
 		p0=datafile.find('__')
@@ -331,7 +333,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 #		self.averageviewer=EMAverageViewer(self)
 		#self.averageviewer.show()
 
-		QtCore.QObject.connect(self.boxesviewer,QtCore.SIGNAL("mx_image_selected"),self.img_selected)
+		self.boxesviewer.mx_image_selected.connect(self.img_selected)
 		
 		self.jsonfile=info_name(datafile)
 		
@@ -630,7 +632,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 
 
 	def menu_file_open(self,tog):
-		QtGui.QMessageBox.warning(None,"Error","Sorry, in the current version, you must provide a file to open on the command-line.")
+		QtWidgets.QMessageBox.warning(None,"Error","Sorry, in the current version, you must provide a file to open on the command-line.")
 
 	def load_box_yshort(self, boxcoords):
 		if options.yshort:
@@ -639,7 +641,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 			return boxcoords
 
 	def menu_file_read_boxloc(self):
-		fsp=str(QtGui.QFileDialog.getOpenFileName(self, "Select output text file"))
+		fsp=str(QtWidgets.QFileDialog.getOpenFileName(self, "Select output text file"))[0]
 
 		f=open(fsp,"r")
 		for b in f:
@@ -654,7 +656,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 	def menu_file_save_boxloc(self):
 		shrinkf=self.shrink 								#jesus
 
-		fsp=str(QtGui.QFileDialog.getSaveFileName(self, "Select output text file"))
+		fsp=str(QtWidgets.QFileDialog.getSaveFileName(self, "Select output text file"))[0]
 
 		out=open(fsp,"w")
 		if self.helixboxer:
@@ -673,7 +675,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		else:
 			defaultname="_".join([self.sets[i] for i in clsid])+".hdf"
 		
-		name,ok=QtGui.QInputDialog.getText( self, "Save particles", "Filename suffix:", text=defaultname)
+		name,ok=QtWidgets.QInputDialog.getText( self, "Save particles", "Filename suffix:", text=defaultname)
 		if not ok:
 			return
 		name=self.filetag+str(name)
@@ -693,7 +695,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 				print("{} exist. Overwritting...".format(f))
 				os.remove(f)
 		
-		progress = QtGui.QProgressDialog("Saving", "Abort", 0, len(self.boxes),None)
+		progress = QtWidgets.QProgressDialog("Saving", "Abort", 0, len(self.boxes),None)
 		
 		
 		boxsz=-1
@@ -1442,7 +1444,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 		elif event.key() == 49:
 			self.wdepth.setValue(self.wdepth.value()-1)
 		else:
-			self.emit(QtCore.SIGNAL("keypress"), event)
+			self.keypress.emit(event)
 
 	
 	def closeEvent(self,event):
@@ -1468,7 +1470,7 @@ class EMTomoBoxer(QtGui.QMainWindow):
 #		self.averageviewer.close()
 		#event.accept()
 		#self.app().close_specific(self)
-		self.emit(QtCore.SIGNAL("module_closed")) # this signal is important when e2ctf is being used by a program running its own event loop
+		self.module_closed.emit()
 
 	#def closeEvent(self,event):
 		#self.target().done()
@@ -1487,16 +1489,16 @@ def parse_setname(name):
 			
 	
 
-class EMBoxViewer(QtGui.QWidget):
+class EMBoxViewer(QtWidgets.QWidget):
 	"""This is a multi-paned view showing a single boxed out particle from a larger tomogram"""
 
 	def __init__(self):
-		QtGui.QWidget.__init__(self)
+		QtWidgets.QWidget.__init__(self)
 		self.setWindowTitle("Single Particle View")
 
 		self.resize(300,300)
 
-		self.gbl = QtGui.QGridLayout(self)
+		self.gbl = QtWidgets.QGridLayout(self)
 		self.xyview = EMImage2DWidget()
 		self.gbl.addWidget(self.xyview,0,1)
 
@@ -1521,7 +1523,7 @@ class EMBoxViewer(QtGui.QWidget):
 		self.wfilt = ValSlider(rng=(0,50),label="Filter:",value=0.0)
 		self.gbl.addWidget(self.wfilt,2,0,1,2)
 
-		QtCore.QObject.connect(self.wfilt,QtCore.SIGNAL("valueChanged")  ,self.event_filter  )
+		self.wfilt.valueChanged.connect(self.event_filter)
 
 		self.gbl.setRowStretch(2,1)
 		self.gbl.setRowStretch(0,5)
@@ -1595,26 +1597,26 @@ class EMBoxViewer(QtGui.QWidget):
 		self.zyview.close()
 
 
-class EMTomoBoxerOptions(QtGui.QWidget):
+class EMTomoBoxerOptions(QtWidgets.QWidget):
 	def __init__(self,target) :
-		QtGui.QWidget.__init__(self)
+		QtWidgets.QWidget.__init__(self)
 		#print "aaaaaaaa"
 		self.setWindowTitle("Options")
 		self.target=weakref.ref(target)
 		
-		self.gbl = QtGui.QGridLayout(self)
+		self.gbl = QtWidgets.QGridLayout(self)
 		#self.gbl.setMargin(2)
 		#self.gbl.setSpacing(6)
 		self.gbl.setObjectName("gbl")
 		
 		
-		self.erasercheckbox=QtGui.QCheckBox("Eraser")
+		self.erasercheckbox=QtWidgets.QCheckBox("Eraser")
 		self.gbl.addWidget(self.erasercheckbox,0,0)
 		
 		self.eraser_radius=ValBox(label="Radius:",value=64)
 		self.gbl.addWidget(self.eraser_radius,0,1)
 
-		self.tabwidget = QtGui.QTabWidget()
+		self.tabwidget = QtWidgets.QTabWidget()
 		self.gbl.addWidget(self.tabwidget,1,0,1,2)
 		
 	def add_panel(self,widget,name):
@@ -1623,12 +1625,12 @@ class EMTomoBoxerOptions(QtGui.QWidget):
 		return 
 
 #### Copied from emimagemx.py since some modification are needed...
-class EMTomoSetsPanel(QtGui.QWidget):
+class EMTomoSetsPanel(QtWidgets.QWidget):
 	'''
 	This is the set display panel
 	'''
 	def __init__(self,target):
-		QtGui.QWidget.__init__(self)
+		QtWidgets.QWidget.__init__(self)
 
 		self.target = weakref.ref(target) # this should be the EMImageMXWidget
 		self.busy = False
@@ -1638,30 +1640,30 @@ class EMTomoSetsPanel(QtGui.QWidget):
 		self.itemflags=	Qt.ItemFlags(Qt.ItemIsEditable)|Qt.ItemFlags(Qt.ItemIsSelectable)|Qt.ItemFlags(Qt.ItemIsEnabled)|Qt.ItemFlags(Qt.ItemIsUserCheckable)
 
 		# now build the interface
-		hbl = QtGui.QHBoxLayout(self)
-		self.setlist=QtGui.QListWidget()
-		self.setlist.setSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Expanding)
+		hbl = QtWidgets.QHBoxLayout(self)
+		self.setlist=QtWidgets.QListWidget()
+		self.setlist.setSizePolicy(QtWidgets.QSizePolicy.Preferred,QtWidgets.QSizePolicy.Expanding)
 		hbl.addWidget(self.setlist)
 
-		vbl = QtGui.QVBoxLayout()
+		vbl = QtWidgets.QVBoxLayout()
 
-		self.new_set_button = QtGui.QPushButton("New")
+		self.new_set_button = QtWidgets.QPushButton("New")
 		vbl.addWidget(self.new_set_button)
-		self.rename_set_button = QtGui.QPushButton("Rename")
+		self.rename_set_button = QtWidgets.QPushButton("Rename")
 		vbl.addWidget(self.rename_set_button)
-		self.save_set_button = QtGui.QPushButton("Save")
+		self.save_set_button = QtWidgets.QPushButton("Save")
 		vbl.addWidget(self.save_set_button)
-		self.delete_set_button = QtGui.QPushButton("Delete")
+		self.delete_set_button = QtWidgets.QPushButton("Delete")
 		vbl.addWidget(self.delete_set_button)
 
 		hbl.addLayout(vbl)
 
-		QtCore.QObject.connect(self.save_set_button, QtCore.SIGNAL("clicked(bool)"), self.save_set)
-		QtCore.QObject.connect(self.new_set_button, QtCore.SIGNAL("clicked(bool)"), self.new_set)
-		QtCore.QObject.connect(self.rename_set_button, QtCore.SIGNAL("clicked(bool)"), self.rename_set)
-		QtCore.QObject.connect(self.delete_set_button, QtCore.SIGNAL("clicked(bool)"), self.delete_set)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("itemChanged(QListWidgetItem*)"),self.set_list_item_changed)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("currentRowChanged(int)"),self.set_list_row_changed)
+		self.save_set_button.clicked[bool].connect(self.save_set)
+		self.new_set_button.clicked[bool].connect(self.new_set)
+		self.rename_set_button.clicked[bool].connect(self.rename_set)
+		self.delete_set_button.clicked[bool].connect(self.delete_set)
+		self.setlist.itemChanged[QListWidgetItem].connect(self.set_list_item_changed)
+		self.setlist.currentRowChanged[int].connect(self.set_list_row_changed)
 
 
 	def sets_changed(self):
@@ -1691,14 +1693,14 @@ class EMTomoSetsPanel(QtGui.QWidget):
 	def delete_set(self,unused):
 		selections = self.setlist.selectedItems()
 		names=[str(i.text()) for i in selections]
-		cancel=QtGui.QMessageBox.warning(self, "Delete set", "Are you sure to delete {}? This will remove all particles in that class".format(names[0]), "Yes", "No")
+		cancel=QtWidgets.QMessageBox.warning(self, "Delete set", "Are you sure to delete {}? This will remove all particles in that class".format(names[0]), "Yes", "No")
 		if not cancel:
 			self.target().delete_set(names[0])
 		self.update_sets()
 
 
 	def new_set(self,unused=None):
-		name,ok=QtGui.QInputDialog.getText( self, "Set Name", "Enter a name for the new set:")
+		name,ok=QtWidgets.QInputDialog.getText( self, "Set Name", "Enter a name for the new set:")
 		if not ok : return
 		name=str(name)
 		if name in self.target().sets :
@@ -1713,7 +1715,7 @@ class EMTomoSetsPanel(QtGui.QWidget):
 		sels=[str(i.text()) for i in selections]
 		if len(sels)==0:
 			return
-		name,ok=QtGui.QInputDialog.getText( self, "Set Name", "Enter a name for the new set:")
+		name,ok=QtWidgets.QInputDialog.getText( self, "Set Name", "Enter a name for the new set:")
 		if not ok : return
 		name=str(name)
 		
@@ -1736,7 +1738,7 @@ class EMTomoSetsPanel(QtGui.QWidget):
 		for i,k in enumerate(keys):
 			
 			kname="{:02d} :: {}".format(int(k), self.target().sets[k])
-			item=QtGui.QListWidgetItem(kname)
+			item=QtWidgets.QListWidgetItem(kname)
 			item.setFlags(self.itemflags)
 			item.setTextColor(self.target().setcolors[i%len(self.target().setcolors)])
 			self.setlist.addItem(item)

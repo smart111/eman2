@@ -37,7 +37,7 @@ from __future__ import print_function
 
 from EMAN2 import *
 from math import *
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 from emapplication import EMApp
 from emimage2d import EMImage2DWidget
 from emshape import EMShape
@@ -57,9 +57,9 @@ class TestControl():
 		self.im2d = EMImage2DWidget(application=app)
 	
 		# get some signals from the window.
-		QtCore.QObject.connect(self.im2d,QtCore.SIGNAL("mousedown"),self.down)
+		self.im2d.mousedown.connect(self.down)
 		QtCore.QObject.connedisplaydemo.pyct(self.im2d,QtCore.SIGNAL("mousedrag"),self.drag)
-		QtCore.QObject.connect(self.im2d,QtCore.SIGNAL("mouseup"),self.up)
+		self.im2d.mouseup.connect(self.up)
 	
 		#self explanatory
 		a=test_image(size=(512,512))

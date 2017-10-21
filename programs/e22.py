@@ -35,8 +35,8 @@ from __future__ import print_function
 import EMAN2
 from EMAN2 import *
 from emimage import image_update
-from PyQt4 import QtCore, QtGui, QtOpenGL
-from PyQt4.QtCore import Qt
+from PyQt5 import QtCore, QtGui, QtOpenGL, QtWidgets
+from PyQt5.QtCore import Qt
 import threading
 from emapplication import EMApp
 
@@ -57,7 +57,7 @@ def on_timer():
 	global ttx
 	
 	if ttx :
-		QtGui.qApp.quit()
+		QtWidgets.QApplication.quit()
 
 ipythr=threading.Thread(target=IPY)
 ipythr.run()
@@ -67,7 +67,7 @@ app = EMApp()
 EMAN2.GUIMode=True
 EMAN2.app=app
 mytimer = QtCore.QTimer()
-QtCore.QObject.connect( mytimer, QtCore.SIGNAL( 'timeout()' ), on_timer )
+mytimer.timeout.connect(on_timer)
 mytimer.start(500)
 
 app.exec_()

@@ -33,8 +33,8 @@ from __future__ import print_function
 
 
 from emdatastorage import ParamDef
-from PyQt4 import QtGui,QtCore
-from PyQt4.QtCore import Qt
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 import os
 from emselector import EMSelectorDialog
 from emapplication import get_application
@@ -72,11 +72,11 @@ class EMButtonDialog:
 		Add the button to the given layout
 		@param layout a QtGui.QLayout object
 		'''
-		if self.icon != None: self.button = QtGui.QPushButton(self.icon,self.desc_short)
-		else: self.button = QtGui.QPushButton(self.desc_short)
+		if self.icon != None: self.button = QtWidgets.QPushButton(self.icon,self.desc_short)
+		else: self.button = QtWidgets.QPushButton(self.desc_short)
 		self.button.setToolTip(self.desc_long)
 		layout.addWidget(self.button)
-		QtCore.QObject.connect(self.button, QtCore.SIGNAL("clicked(bool)"), self.on_button)
+		self.button.clicked[bool].connect(self.on_button)
 	
 	def on_button(self,unused=None): 
 		'''
@@ -215,8 +215,8 @@ class EMParamTable(list):
 		selected_items = []
 		for i,param in enumerate(self):
 			for j,choice in enumerate(param.choices):
-				if i == 0 and icon != None: item = QtGui.QTableWidgetItem(icon,str(choice))
-				else: item = QtGui.QTableWidgetItem(str(choice))
+				if i == 0 and icon != None: item = QtWidgets.QTableWidgetItem(icon,str(choice))
+				else: item = QtWidgets.QTableWidgetItem(str(choice))
 				if i == 0:
 					if str(choice) not in exclusions:
 						item.setFlags(flag2|flag3)
@@ -235,7 +235,7 @@ class EMParamTable(list):
 				
 				table_widget.setItem(j, i, item)
 				
-			item = QtGui.QTableWidgetItem(param.desc_short)
+			item = QtWidgets.QTableWidgetItem(param.desc_short)
 			item.setTextAlignment(QtCore.Qt.AlignHCenter)
 			item.setToolTip(param.desc_long)
 			table_widget.setHorizontalHeaderItem(i,item)
@@ -243,14 +243,16 @@ class EMParamTable(list):
 		for item in selected_items: 
 			item.setSelected(True)
 
-class EMFileTable(QtGui.QTableWidget):
+class EMFileTable(QtWidgets.QTableWidget):
+	updateform = QtCore.pyqtSignal()
+
 	def __init__(self,listed_names=[],name="filenames",desc_short="File Names",desc_long="A list of file names",single_selection=False,enable_save=True):
 		'''
 		@param listed_names The names that will be listed in the first column of the table
 		@param column_data A list of EMFileTable.EMContextMenuData objects
 		'''
 		
-		QtGui.QTableWidget.__init__(self)
+		QtWidgets.QTableWidget.__init__(self)
 		self.name = name # the name of the parameter ultimately return form the form
 		self.listed_names = listed_names # listed names in first column
 		self.column_data = [] # list of EMColumnData objects
@@ -264,16 +266,16 @@ class EMFileTable(QtGui.QTableWidget):
 		self.vartype = "file_table" # This is used by the EMFormWidget to insert this object correctly into a widget
 		self.name_conversions = {} # This is used to convert the displayed name to the real name of the file on the operating system
 		self.context_menu_data = {} # see self.get_context_menu_dict help
-		QtCore.QObject.connect(self, QtCore.SIGNAL("itemDoubleClicked(QTableWidgetItem*)"),self.table_item_double_clicked)
+		self.itemDoubleClicked[QTableWidgetItem].connect(self.table_item_double_clicked)
 
 		if enable_save: self.context_menu_data["Save As"] = EMFileTable.save_as
 		self.context_menu_refs = [] # to keep a reference to context menus related objects - somebody has to
 
 		self.single_selection = single_selection
 		if self.single_selection:
-			self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+			self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
 		else:
-			self.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+			self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
 		
 		self.timer = None
 		self.timer_interval = 5000
@@ -287,7 +289,7 @@ class EMFileTable(QtGui.QTableWidget):
 	def register_animated_column(self,column_title):
 		if self.timer == None:
 			self.timer = QtCore.QTimer()
-			QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.time_out)
+			self.timer.timeout.connect(self.time_out)
 			self.timer.start(self.timer_interval)
 			
 		self.animated_columns[column_title] = -1 # -1 is a flag
@@ -448,8 +450,8 @@ class EMFileTable(QtGui.QTableWidget):
 
 		# first step is to insert the first column, which is the file names
 		for i,name in enumerate(self.listed_names):
-			if self.icon != None: item = QtGui.QTableWidgetItem(self.icon,self.display_name(name))
-			else: item = QtGui.QTableWidgetItem(self.display_name(name))
+			if self.icon != None: item = QtWidgets.QTableWidgetItem(self.icon,self.display_name(name))
+			else: item = QtWidgets.QTableWidgetItem(self.display_name(name))
 
 			if not file_exists(name):item.setTextColor(QtGui.QColor(0,128,0))
 				
@@ -470,7 +472,7 @@ class EMFileTable(QtGui.QTableWidget):
 				
 			self.setItem(i, 0, item)
 				
-		item = QtGui.QTableWidgetItem(self.desc_short)
+		item = QtWidgets.QTableWidgetItem(self.desc_short)
 		item.setTextAlignment(QtCore.Qt.AlignHCenter)
 		item.setToolTip(self.desc_long)
 		self.setHorizontalHeaderItem(0,item)
@@ -478,19 +480,19 @@ class EMFileTable(QtGui.QTableWidget):
 		# second step is to add the columns
 		col = 1
 		for cd in self.column_data:
-			item = QtGui.QTableWidgetItem(cd.name)
+			item = QtWidgets.QTableWidgetItem(cd.name)
 			item.setTextAlignment(QtCore.Qt.AlignHCenter)
 			item.setToolTip(cd.tooltip)
 			
 			self.setHorizontalHeaderItem(col,item)
 			for i in range(0,len(self.listed_names)):
-				try : item = QtGui.QTableWidgetItem(cd.function(self.listed_names[i]))
-				except : item = QtGui.QTableWidgetItem("-")
+				try : item = QtWidgets.QTableWidgetItem(cd.function(self.listed_names[i]))
+				except : item = QtWidgets.QTableWidgetItem("-")
 				item.setTextAlignment(QtCore.Qt.AlignHCenter)
 				item.setFlags(flag3)
 				if cd.lt_function: # This is how sort gets customized
-					import new 
-					item.__lt__ = new.instancemethod(cd.lt_function,item,QtGui.QTableWidgetItem)
+					import new
+					item.__lt__ = new.instancemethod(cd.lt_function,item,QtWidgets.QTableWidgetItem)
 				self.setItem(i, col, item)
 			col += 1
 
@@ -513,8 +515,8 @@ class EMFileTable(QtGui.QTableWidget):
 		flag4 = Qt.ItemFlags(Qt.ItemIsEditable)
 		new_items = []
 		for i in range(0,len(list_of_names)):
-			if self.icon != None: item = QtGui.QTableWidgetItem(self.icon,self.display_name(list_of_names[i]))
-			else: item = QtGui.QTableWidgetItem(self.display_name(list_of_names[i]))
+			if self.icon != None: item = QtWidgets.QTableWidgetItem(self.icon,self.display_name(list_of_names[i]))
+			else: item = QtWidgets.QTableWidgetItem(self.display_name(list_of_names[i]))
 			item.setFlags(flag2|flag3)
 			item.setTextAlignment(QtCore.Qt.AlignHCenter)
 			self.setItem(r+i, 0, item)
@@ -523,12 +525,12 @@ class EMFileTable(QtGui.QTableWidget):
 				item.setSelected(True)
 			
 			for j, cd in enumerate(self.column_data):
-				item = QtGui.QTableWidgetItem(cd.function(list_of_names[i]))
+				item = QtWidgets.QTableWidgetItem(cd.function(list_of_names[i]))
 				item.setTextAlignment(QtCore.Qt.AlignHCenter)
 				item.setFlags(flag3)
 				if cd.lt_function: # This is how sort gets customized
-					import new 
-					item.__lt__ = new.instancemethod(cd.lt_function,item,QtGui.QTableWidgetItem)
+					import new
+					item.__lt__ = new.instancemethod(cd.lt_function,item,QtWidgets.QTableWidgetItem)
 				self.setItem(r+i,j+1, item)
 			
 		self.setSortingEnabled(sorting)
@@ -546,11 +548,11 @@ class EMFileTable(QtGui.QTableWidget):
 		Creates a context menu using self.context_menu_data, which is a dictionary
 		@param event a QtGui.QContextMenuEvent - it is accepted
 		'''
-		menu = QtGui.QMenu()
+		menu = QtWidgets.QMenu()
 		cmenu = self.context_menu_data
 		for k in cmenu.keys():
 			menu.addAction(k)
-		QtCore.QObject.connect(menu,QtCore.SIGNAL("triggered(QAction*)"),self.menu_action_triggered)
+		menu.triggered[QAction].connect(self.menu_action_triggered)
 		menu.exec_(event.globalPos())
 		event.accept()
 	
@@ -593,12 +595,12 @@ class EMFileTable(QtGui.QTableWidget):
 		@param layout a Qt Layout (e.g. QVBoxLayout, QHBoxLayout - objects that support the 'addWidget' and 'addLayout' syntax
 		'''
 		for button_data in self.button_data:
-			button = QtGui.QPushButton(button_data.name,None)
+			button = QtWidgets.QPushButton(button_data.name,None)
 			layout.addWidget(button,0)
-			QtCore.QObject.connect(button,QtCore.SIGNAL("clicked(bool)"),button_data.function)
-			QtCore.QObject.connect(button,QtCore.SIGNAL("clicked(bool)"),self.sendupdate)
+			button.clicked[bool].connect(button_data.function)
+			button.clicked[bool].connect(self.sendupdate)
 	def sendupdate(self):
-		self.emit(QtCore.SIGNAL("updateform"))
+		self.updateform.emit()
 		
 	class EMColumnData:
 		'''
@@ -678,7 +680,7 @@ class EM2DFileTable(EMFileTable):
 		else:
 			from EMAN2 import EMData
 			import emscene3d
-			import emdataitem3d 
+			import emdataitem3d
 			
 			data=emdataitem3d.EMDataItem3D(filename)
 			self.display_module.insertNewNode(os.path.basename(filename), data, parentnode=self.display_module)
@@ -894,15 +896,15 @@ class EMBrowseEventHandler:
 		warnings.warn("EMBrowseEventHandler.__init__()", DeprecationWarning)
 		self.browser = None
 		self.browser_title = "Set this to be clear"
-		QtCore.QObject.connect(browse_button,QtCore.SIGNAL("clicked(bool)"),self.browse_pressed)
+		browse_button.clicked[bool].connect(self.browse_pressed)
 		
 	def browse_pressed(self,bool):
 		if self.browser == None:
 			self.browser = EMSelectorDialog(False, False)
 			self.browser.setWindowTitle(self.browser_title)
 			self.browser.exec_()
-			QtCore.QObject.connect(self.browser,QtCore.SIGNAL("ok"),self.on_browser_ok)
-			QtCore.QObject.connect(self.browser,QtCore.SIGNAL("cancel"),self.on_browser_cancel)
+			self.browser.ok.connect(self.on_browser_ok)
+			self.browser.cancel.connect(self.on_browser_cancel)
 		else:
 			self.browser.exec_()
 
@@ -930,13 +932,13 @@ def get_table_items_in_column(table_widget,column):
 		
 	return entries
 	
-class EMEmanStrategyWidget(QtGui.QWidget):
+class EMEmanStrategyWidget(QtWidgets.QWidget):
 	'''
 	Something that knows how to automatically display and build parameters strings for 
 	Eman strategy types, such as aligners, cmps, etc	
 	'''
 	def __init__(self,dumped_dict={},name="strategy",desc_short="Strategy",desc_long="Choose a strategy",defaultunits=None):
-		QtGui.QWidget.__init__(self)
+		QtWidgets.QWidget.__init__(self)
 		self.name = name
 		self.output_writers = [] # used to register output write objects, for the purpose of returning the results
 		self.name_widget_map = {} # used to map parameter names to qt widgets - used by booleans to automatically disable and enable widgets
@@ -963,12 +965,12 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		
 	def build_widgets(self):
 		
-		self.vbl = QtGui.QVBoxLayout(self)
-		self.dynamic_layout = QtGui.QVBoxLayout()
-		groupbox = QtGui.QGroupBox(self.desc_short)
+		self.vbl = QtWidgets.QVBoxLayout(self)
+		self.dynamic_layout = QtWidgets.QVBoxLayout()
+		groupbox = QtWidgets.QGroupBox(self.desc_short)
 		groupbox.setToolTip(self.desc_long)
 		
-		self.main_combo = QtGui.QComboBox()
+		self.main_combo = QtWidgets.QComboBox()
 		start_idx = None
 		dumped_dict_keys = self.dumped_dict.keys()
 		dumped_dict_keys.sort()
@@ -986,7 +988,7 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		
 		self.vbl.addWidget(groupbox)
 		
-		QtCore.QObject.connect(self.main_combo, QtCore.SIGNAL("currentIndexChanged(QString)"), self.selection_changed)
+		self.main_combo.currentIndexChanged['QString'].connect(self.selection_changed)
 		
 		if start_idx != None:
 			if start_idx != 0:
@@ -1018,8 +1020,8 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		data = self.dumped_dict[strategy]
 		if (len(data) -1) % 3 != 0: raise RuntimeError("The format of the data is unknown") # first entry is descriptive text, then they should be in groups of threes, see dump_aligners_list, for example
 		
-		widget = QtGui.QWidget()
-		vbl = QtGui.QVBoxLayout(widget)
+		widget = QtWidgets.QWidget()
+		vbl = QtWidgets.QVBoxLayout(widget)
 		widget.setToolTip(data[0])
 		params = []
 		tmp_params = []
@@ -1044,7 +1046,7 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		
 		for param in params:
 			if isinstance(param,list):
-				hbl=QtGui.QHBoxLayout()
+				hbl=QtWidgets.QHBoxLayout()
 				for iparam in param:
 					self.auto_incorporate[iparam.vartype](iparam,hbl,self)
 				vbl.addLayout(hbl)
@@ -1078,14 +1080,19 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		dict[self.name] = result
 
 
-class EMFormWidget(QtGui.QWidget):
+class EMFormWidget(QtWidgets.QWidget):
 	'''
 	See the example in __main__ below
 	If ok is clicked the "emform_ok" signal is emitted along with a dictionary containing all of the form entries
 	If cancel is clicked the "emform_cancel" signal is emmitted. No extra information is sent in this case
 	'''
+	emform_close = QtCore.pyqtSignal()
+	emform_ok = QtCore.pyqtSignal()
+	emform_cancel = QtCore.pyqtSignal()
+	display_file = QtCore.pyqtSignal()
+
 	def __init__(self,params=None,disable_ok_cancel=False):
-		QtGui.QWidget.__init__(self,None)
+		QtWidgets.QWidget.__init__(self,None)
 		self.params = params
 		self.event_handlers = [] # used to keep event handlers in memory
 		self.resize_event_handlers = [] # used to keep resize event handlers in memory
@@ -1111,7 +1118,7 @@ class EMFormWidget(QtGui.QWidget):
 		self.auto_incorporate["EMButtonDialog"]= IncorpButtonDialog()
 		self.auto_incorporate["strategy"]= IncorpStrategy()
 		
-		vbl = QtGui.QVBoxLayout()
+		vbl = QtWidgets.QVBoxLayout()
 		self.incorporate_params(self.params,vbl)
 		if not disable_ok_cancel: self.__add_ok_cancel_buttons(vbl)
 		self.setLayout(vbl)
@@ -1129,8 +1136,8 @@ class EMFormWidget(QtGui.QWidget):
 		self.plot_icon = QtGui.QIcon(get_image_directory() + "/plot.png")
 	
 	def closeEvent(self, event):
-		self.emit(QtCore.SIGNAL("emform_close"))
-		QtGui.QWidget.closeEvent(self, event)
+		self.emform_close.emit()
+		QtWidgets.QWidget.closeEvent(self, event)
 	
 	def incorporate_params(self,params,layout):
 		for param in params:
@@ -1145,7 +1152,7 @@ class EMFormWidget(QtGui.QWidget):
 					self.incorporate_ftable_list(param,layout)
 					act = False
 				elif not isinstance(param,EMParamTable):
-					hbl=QtGui.QHBoxLayout()
+					hbl=QtWidgets.QHBoxLayout()
 					for iparam in param:
 #						if iparam.vartype == "EMButtonDialog": print "it was a button"
 						self.auto_incorporate[iparam.vartype](iparam,hbl,self)
@@ -1158,22 +1165,22 @@ class EMFormWidget(QtGui.QWidget):
 		self.enable_boolean_dependents()
 		
 	def incorporate_list(self,param,layout,target,type_of):
-		hbl=QtGui.QHBoxLayout()
-		hbl.setMargin(0)
+		hbl=QtWidgets.QHBoxLayout()
+		hbl.setContentsMargins(0, 0, 0, 0)
 		hbl.setSpacing(2)
 		
-		list_widget = QtGui.QListWidget(None)
+		list_widget = QtWidgets.QListWidget(None)
 		
-		list_widget.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+		list_widget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
 		list_widget.setMouseTracking(True)	
 	
 		for choice in param.choices:
-			a = QtGui.QListWidgetItem(str(choice),list_widget)
+			a = QtWidgets.QListWidgetItem(str(choice),list_widget)
 			if choice in param.defaultunits:
 				list_widget.setItemSelected(a,True)
 			
 		hbl.addWidget(list_widget)
-		groupbox = QtGui.QGroupBox(param.desc_short)
+		groupbox = QtWidgets.QGroupBox(param.desc_short)
 		groupbox.setToolTip(param.desc_long)
 		groupbox.setLayout(hbl)
 		
@@ -1203,14 +1210,14 @@ class EMFormWidget(QtGui.QWidget):
 	
 	def incorporate_ftable_list(self,file_table_list,layout):
 		
-		table = QtGui.QTabWidget()
+		table = QtWidgets.QTabWidget()
 		
 		for paramtable in file_table_list:
 			
 		
-			vbl=QtGui.QVBoxLayout()
-			hbl=QtGui.QHBoxLayout()
-			hbl.setMargin(0)
+			vbl=QtWidgets.QVBoxLayout()
+			hbl=QtWidgets.QHBoxLayout()
+			hbl.setContentsMargins(0, 0, 0, 0)
 			hbl.setSpacing(2)
 			
 			paramtable.build_table()
@@ -1221,7 +1228,7 @@ class EMFormWidget(QtGui.QWidget):
 			
 #			groupbox = QtGui.QGroupBox(paramtable.desc_short)
 #			groupbox.setToolTip(paramtable.desc_long)
-			page = QtGui.QWidget()
+			page = QtWidgets.QWidget()
 			page.setLayout(vbl)
 			if hasattr(paramtable,"icon"):
 				table.addTab(page,paramtable.icon,paramtable.desc_short)
@@ -1235,16 +1242,16 @@ class EMFormWidget(QtGui.QWidget):
 	
 	
 	def incorporate_float_with_choices(self,param,layout,target):
-		hbl=QtGui.QHBoxLayout()
-		hbl.setMargin(0)
+		hbl=QtWidgets.QHBoxLayout()
+		hbl.setContentsMargins(0, 0, 0, 0)
 		hbl.setSpacing(2)
 		
-		hbl=QtGui.QHBoxLayout()
-		label = QtGui.QLabel(param.desc_short,target)
+		hbl=QtWidgets.QHBoxLayout()
+		label = QtWidgets.QLabel(param.desc_short,target)
 		label.setToolTip(param.desc_long)
 		hbl.addWidget(label)
 				
-		combo = QtGui.QComboBox(target)
+		combo = QtWidgets.QComboBox(target)
 		idx_default = 0
 		for i,float_p in enumerate(param.choices):
 			combo.addItem(str(float_p))
@@ -1260,16 +1267,16 @@ class EMFormWidget(QtGui.QWidget):
 		target.name_widget_map[param.name] = [combo,label]
 	
 	def incorporate_int_with_choices(self,param,layout,target):
-		hbl=QtGui.QHBoxLayout()
-		hbl.setMargin(0)
+		hbl=QtWidgets.QHBoxLayout()
+		hbl.setContentsMargins(0, 0, 0, 0)
 		hbl.setSpacing(2)
 		
-		hbl=QtGui.QHBoxLayout()
-		label = QtGui.QLabel(param.desc_short,target)
+		hbl=QtWidgets.QHBoxLayout()
+		label = QtWidgets.QLabel(param.desc_short,target)
 		label.setToolTip(param.desc_long)
 		hbl.addWidget(label)
 				
-		combo = QtGui.QComboBox(target)
+		combo = QtWidgets.QComboBox(target)
 		idx_default = 0
 		for i,integer in enumerate(param.choices):
 			combo.addItem(str(integer))
@@ -1284,16 +1291,16 @@ class EMFormWidget(QtGui.QWidget):
 		target.name_widget_map[param.name] = [combo,label]
 	
 	def incorporate_string_with_choices(self,param,layout,target):
-		hbl=QtGui.QHBoxLayout()
-		hbl.setMargin(0)
+		hbl=QtWidgets.QHBoxLayout()
+		hbl.setContentsMargins(0, 0, 0, 0)
 		hbl.setSpacing(2)
 		
-		hbl=QtGui.QHBoxLayout()
-		label = QtGui.QLabel(param.desc_short,target)
+		hbl=QtWidgets.QHBoxLayout()
+		label = QtWidgets.QLabel(param.desc_short,target)
 		label.setToolTip(param.desc_long)
 		hbl.addWidget(label,0)
 				
-		combo = QtGui.QComboBox(target)
+		combo = QtWidgets.QComboBox(target)
 		idx_default = 0
 		for i,string in enumerate(param.choices):
 			combo.addItem(string)
@@ -1308,26 +1315,26 @@ class EMFormWidget(QtGui.QWidget):
 		target.name_widget_map[param.name] = [combo,label]
 	
 	def __add_ok_cancel_buttons(self,layout):
-		hbl=QtGui.QHBoxLayout()
-		label = QtGui.QLabel("Form commands:")
+		hbl=QtWidgets.QHBoxLayout()
+		label = QtWidgets.QLabel("Form commands:")
 		hbl.addWidget(label)
 		
-		ok_button = QtGui.QPushButton("Ok")
+		ok_button = QtWidgets.QPushButton("Ok")
 		ok_button.setToolTip("When you click ok the values in the form are sent to the calling program")
 		hbl.addWidget(ok_button)
-		cancel_button = QtGui.QPushButton("Cancel")
+		cancel_button = QtWidgets.QPushButton("Cancel")
 		hbl.addWidget(cancel_button,0)
 		layout.addLayout(hbl)
-		QtCore.QObject.connect(ok_button,QtCore.SIGNAL("clicked(bool)"),self.ok_pressed)
-		QtCore.QObject.connect(cancel_button,QtCore.SIGNAL("clicked(bool)"),self.cancel_pressed)
+		ok_button.clicked[bool].connect(self.ok_pressed)
+		cancel_button.clicked[bool].connect(self.cancel_pressed)
 		
 	def ok_pressed(self,bool):
 		ret = {}
 		for output in self.output_writers: output.write_data(ret)
-		self.emit(QtCore.SIGNAL("emform_ok"),ret)
+		self.emform_ok.emit(ret)
 		
 	def cancel_pressed(self,bool):
-		self.emit(QtCore.SIGNAL("emform_cancel"))
+		self.emform_cancel.emit()
 
 
 	def update_texture(self):
@@ -1335,7 +1342,7 @@ class EMFormWidget(QtGui.QWidget):
 
 
 	def display_file(self,filename):
-		self.emit(QtCore.SIGNAL("display_file"),filename)
+		self.display_file.emit(filename)
 
 
 class IncorpStrategy:
@@ -1360,9 +1367,9 @@ class IncorpFileTable:
 		num_choices = None
 		# first check that there are no inconsistencies in the number of parameter choices
 		
-		vbl=QtGui.QVBoxLayout()
-		hbl=QtGui.QHBoxLayout()
-		hbl.setMargin(0)
+		vbl=QtWidgets.QVBoxLayout()
+		hbl=QtWidgets.QHBoxLayout()
+		hbl.setContentsMargins(0, 0, 0, 0)
 		hbl.setSpacing(2)
 		
 		paramtable.build_table()
@@ -1371,7 +1378,7 @@ class IncorpFileTable:
 		
 		paramtable.custom_addition(vbl)
 		
-		groupbox = QtGui.QGroupBox(paramtable.desc_short)
+		groupbox = QtWidgets.QGroupBox(paramtable.desc_short)
 		groupbox.setToolTip(paramtable.desc_long)
 		
 		#if hasattr(paramtable,"icon"):groupbox.setWindowIcon(paramtable.icon) #it would be nice if this worked
@@ -1395,18 +1402,18 @@ class IncorpParamTable:
 					print("error, the number of choices is not consistent in __incorporate_paramtable")
 					return
 		
-		vbl=QtGui.QVBoxLayout()
-		hbl=QtGui.QHBoxLayout()
-		hbl.setMargin(0)
+		vbl=QtWidgets.QVBoxLayout()
+		hbl=QtWidgets.QHBoxLayout()
+		hbl.setContentsMargins(0, 0, 0, 0)
 		hbl.setSpacing(2)
 		
 		vbl.addLayout(hbl)
 		
-		table_widget = QtGui.QTableWidget(num_choices, len(paramtable), None)
+		table_widget = QtWidgets.QTableWidget(num_choices, len(paramtable), None)
 		icon = target.get_ptable_icon(paramtable)
 		
 		if not paramtable.enable_multiple_selection:
-			table_widget.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
+			table_widget.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
 			
 		selected_items = [] # used to ensure default selection is correct
 		
@@ -1418,7 +1425,7 @@ class IncorpParamTable:
 		table_widget.setToolTip(paramtable.desc_long)
 		hbl.addWidget(table_widget,1)
 		
-		groupbox = QtGui.QGroupBox(paramtable.desc_short)
+		groupbox = QtWidgets.QGroupBox(paramtable.desc_short)
 		groupbox.setToolTip(paramtable.desc_long)
 		groupbox.setLayout(vbl)
 		layout.addWidget(groupbox,10)
@@ -1461,10 +1468,10 @@ class IncorpIntList:
 class IncorpBool:
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
-		hbl=QtGui.QHBoxLayout()
-		hbl.setMargin(0)
+		hbl=QtWidgets.QHBoxLayout()
+		hbl.setContentsMargins(0, 0, 0, 0)
 		hbl.setSpacing(2)
-		check_box = QtGui.QCheckBox(str(param.desc_short),target)
+		check_box = QtWidgets.QCheckBox(str(param.desc_short),target)
 		check_box.setChecked(bool(param.defaultunits))
 		check_box.setToolTip(param.desc_long)
 		hbl.addWidget(check_box,0)
@@ -1481,13 +1488,13 @@ class IncorpString:
 		if param.choices != None and len(param.choices) > 1:
 			target.incorporate_string_with_choices(param,layout,target)
 		else:
-			hbl=QtGui.QHBoxLayout()
-			hbl.setMargin(0)
+			hbl=QtWidgets.QHBoxLayout()
+			hbl.setContentsMargins(0, 0, 0, 0)
 			hbl.setSpacing(2)
-			label = QtGui.QLabel(param.desc_short+":",target)
+			label = QtWidgets.QLabel(param.desc_short+":",target)
 			label.setToolTip(param.desc_long)
 			hbl.addWidget(label)
-			line_edit = QtGui.QLineEdit(str(param.defaultunits),target)
+			line_edit = QtWidgets.QLineEdit(str(param.defaultunits),target)
 			hbl.addWidget(line_edit,0)
 			hbl.name = param.name
 			layout.addLayout(hbl)
@@ -1500,14 +1507,14 @@ class IncorpFloat:
 		if param.choices != None and len(param.choices) > 1:
 			target.incorporate_float_with_choices(param,layout,target)
 		else:
-			hbl=QtGui.QHBoxLayout()
-			hbl.setMargin(0)
+			hbl=QtWidgets.QHBoxLayout()
+			hbl.setContentsMargins(0, 0, 0, 0)
 			hbl.setSpacing(2)
-			label = QtGui.QLabel(param.desc_short+":",target)
+			label = QtWidgets.QLabel(param.desc_short+":",target)
 			label.setToolTip(param.desc_long)
 			hbl.addWidget(label)
 			double_validator = QtGui.QDoubleValidator(target)
-			line_edit = QtGui.QLineEdit(str(param.defaultunits),target)
+			line_edit = QtWidgets.QLineEdit(str(param.defaultunits),target)
 			line_edit.setValidator(double_validator)
 			hbl.addWidget(line_edit,0)
 			hbl.name = param.name
@@ -1521,14 +1528,14 @@ class IncorpInt:
 		if param.choices != None and len(param.choices) > 1:
 			target.incorporate_int_with_choices(param,layout,target)
 		else:
-			hbl=QtGui.QHBoxLayout()
-			hbl.setMargin(0)
+			hbl=QtWidgets.QHBoxLayout()
+			hbl.setContentsMargins(0, 0, 0, 0)
 			hbl.setSpacing(2)
-			label = QtGui.QLabel(param.desc_short+":",target)
+			label = QtWidgets.QLabel(param.desc_short+":",target)
 			label.setToolTip(param.desc_long)
 			hbl.addWidget(label)
 			pos_int_validator = QtGui.QIntValidator(target)
-			line_edit = QtGui.QLineEdit("",target)
+			line_edit = QtWidgets.QLineEdit("",target)
 			line_edit.setValidator(pos_int_validator)
 			line_edit.setText(str(param.defaultunits))
 			hbl.addWidget(line_edit,0)
@@ -1544,7 +1551,7 @@ class IncorpText:
 #			hbl.setMargin(0)
 #			hbl.setSpacing(2)
 				
-		text_edit = QtGui.QTextEdit("",target)
+		text_edit = QtWidgets.QTextEdit("",target)
 		text_edit.setReadOnly(True)
 		text_edit.setWordWrapMode(QtGui.QTextOption.WordWrap)
 		text_edit.setText(param.defaultunits)
@@ -1564,9 +1571,9 @@ class IncorpText:
 class IncorpUrl:
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
-		vbl=QtGui.QVBoxLayout()
-		hbl=QtGui.QHBoxLayout()
-		hbl.setMargin(0)
+		vbl=QtWidgets.QVBoxLayout()
+		hbl=QtWidgets.QHBoxLayout()
+		hbl.setContentsMargins(0, 0, 0, 0)
 		hbl.setSpacing(2)
 		defaults = ""
 		if param.defaultunits != None:
@@ -1575,23 +1582,23 @@ class IncorpUrl:
 				if i != (len(param.defaultunits)-1): 
 					defaults += '\n'
 				
-		text_edit = QtGui.QTextEdit("",target)
+		text_edit = QtWidgets.QTextEdit("",target)
 		text_edit.setWordWrapMode(QtGui.QTextOption.NoWrap)
 		text_edit.setText(defaults)
 		hbl.addWidget(text_edit,0)
 		vbl.addLayout(hbl)
 		
-		hbl2=QtGui.QHBoxLayout()
-		hbl2.setMargin(0)
+		hbl2=QtWidgets.QHBoxLayout()
+		hbl2.setContentsMargins(0, 0, 0, 0)
 		hbl2.setSpacing(2)
 		
-		browse_button = QtGui.QPushButton("Browse",target)
+		browse_button = QtWidgets.QPushButton("Browse",target)
 		hbl2.addWidget(browse_button)
-		clear_button = QtGui.QPushButton("Clear",target)
+		clear_button = QtWidgets.QPushButton("Clear",target)
 		hbl2.addWidget(clear_button,0)
 		vbl.addLayout(hbl2)
 		
-		groupbox = QtGui.QGroupBox(param.desc_short)
+		groupbox = QtWidgets.QGroupBox(param.desc_short)
 		groupbox.setToolTip(param.desc_long)
 		groupbox.setLayout(vbl)
 		
@@ -1609,8 +1616,8 @@ class IncorpDict:
 		changes the entries in the second combo to values in the dictionary corresponding to the keys
 		'''
 		# hbl - tht
-		hbl=QtGui.QHBoxLayout()
-		hbl.setMargin(0)
+		hbl=QtWidgets.QHBoxLayout()
+		hbl.setContentsMargins(0, 0, 0, 0)
 		hbl.setSpacing(2)
 		
 		keys = param.choices.keys()
@@ -1619,7 +1626,7 @@ class IncorpDict:
 #		label.setToolTip(param.desc_long)
 #		hbl.addWidget(label)
 		
-		combo = QtGui.QComboBox(target)
+		combo = QtWidgets.QComboBox(target)
 		idx_default = 0
 		for i,k in enumerate(keys):
 			combo.addItem(str(k))
@@ -1632,13 +1639,13 @@ class IncorpDict:
 		hbl.addWidget(combo)
 		
 		
-		combo2 = QtGui.QComboBox(target)
+		combo2 = QtWidgets.QComboBox(target)
 		for v in param.choices[combo_default]:
 			combo2.addItem(str(v))
 			
 		hbl.addWidget(combo2)
 		
-		groupbox = QtGui.QGroupBox(param.desc_short)
+		groupbox = QtWidgets.QGroupBox(param.desc_short)
 		groupbox.setToolTip(param.desc_long)
 		groupbox.setLayout(hbl)
 		
@@ -1653,15 +1660,15 @@ class IncorpChoice:
 	def __init__(self): pass
 	def __call__(self,param,layout,target):
 	
-		hbl = QtGui.QHBoxLayout()
+		hbl = QtWidgets.QHBoxLayout()
 		buttons = []
 		for choice in param.choices:
-			button = QtGui.QRadioButton(str(choice))
+			button = QtWidgets.QRadioButton(str(choice))
 			if choice == param.defaultunits: button.setChecked(True)
 			hbl.addWidget( button)
 			buttons.append(button)
 		
-		groupbox = QtGui.QGroupBox(param.desc_short)
+		groupbox = QtWidgets.QGroupBox(param.desc_short)
 		groupbox.setToolTip(param.desc_long)
 		groupbox.setLayout(hbl)
 		layout.addWidget(groupbox,0)
@@ -1855,7 +1862,7 @@ class EMParamTableEventHandler:
 		self.table_widget = table_widget
 		table_widget.contextMenuEvent = self.contextMenuEvent
 				
-		QtCore.QObject.connect(table_widget, QtCore.SIGNAL("itemDoubleClicked(QTableWidgetItem*)"),self.table_item_double_clicked)
+		table_widget.itemDoubleClicked[QTableWidgetItem].connect(self.table_item_double_clicked)
 		
 	def table_item_double_clicked(self,item):
 		if hasattr(self.table_widget,"convert_text"):
@@ -1864,10 +1871,10 @@ class EMParamTableEventHandler:
 	
 	def contextMenuEvent(self,event):
 		if hasattr(self.table_widget,"context_menu"):
-			menu = QtGui.QMenu()
+			menu = QtWidgets.QMenu()
 			for k in self.table_widget.context_menu.keys():
 				menu.addAction(k)
-			QtCore.QObject.connect(menu,QtCore.SIGNAL("triggered(QAction*)"),self.menu_action_triggered)
+			menu.triggered[QAction].connect(self.menu_action_triggered)
 			menu.exec_(event.globalPos())
 	
 	def menu_action_triggered(self,action):
@@ -1908,7 +1915,7 @@ class UrlEventHandler(EMBrowseEventHandler):
 		EMBrowseEventHandler.__init__(self,browse_button)
 		self.browser_title = title
 		
-		QtCore.QObject.connect(clear_button,QtCore.SIGNAL("clicked(bool)"),self.clear_pressed)
+		clear_button.clicked[bool].connect(self.clear_pressed)
 		
 	def on_browser_ok(self,stringlist):
 		new_string = str(self.text_edit.toPlainText())
@@ -1936,7 +1943,7 @@ class DictEventHandler:
 		self.combo1 = combo1
 		self.combo2 = combo2
 		
-		QtCore.QObject.connect(self.combo1, QtCore.SIGNAL("currentIndexChanged(int)"),self.combo1_index_changed)
+		self.combo1.currentIndexChanged[int].connect(self.combo1_index_changed)
 	
 	def combo1_index_changed(self,i):
 		
@@ -1962,7 +1969,7 @@ class BoolDependentsEventHandler:
 		self.checkbox = checkbox
 		self.dependents = dependents # a list of depent names (ParamDef.name)
 		self.invert_logic = invert_logic
-		QtCore.QObject.connect(self.checkbox, QtCore.SIGNAL("stateChanged(int)"),self.checkbox_state_changed)
+		self.checkbox.stateChanged[int].connect(self.checkbox_state_changed)
 		
 	def checkbox_state_changed(self,integer=0):
 		name_map = self.target().name_widget_map
@@ -1991,12 +1998,12 @@ class EMTableFormWidget(EMFormWidget):
 #	def __del__(self): print "del table form widget"
 		
 	def incorporate_params(self,params,layout):
-		tabwidget = QtGui.QTabWidget(self)
+		tabwidget = QtWidgets.QTabWidget(self)
 		
 		for title,paramlist in params:
 			
-			widget = QtGui.QWidget(None)
-			vbl =  QtGui.QVBoxLayout(widget)
+			widget = QtWidgets.QWidget(None)
+			vbl =  QtWidgets.QVBoxLayout(widget)
 			#print paramlist
 			EMFormWidget.incorporate_params(self,paramlist,vbl)
 #			for param in paramlist:
@@ -2120,13 +2127,13 @@ if __name__ == '__main__':
 	em_app = EMApp()
 	window = EMFormWidget(params=get_example_form_params())
 	window.setWindowTitle("A test form")
-	QtCore.QObject.connect(window,QtCore.SIGNAL("emform_ok"),on_ok)
-	QtCore.QObject.connect(window,QtCore.SIGNAL("emform_cancel"),on_cancel)
+	window.emform_ok.connect(on_ok)
+	window.emform_cancel.connect(on_cancel)
 	
 	window2= EMTableFormWidget(params=get_example_table_form_params())
 	window2.setWindowTitle("A test form")
-	QtCore.QObject.connect(window2,QtCore.SIGNAL("emform_ok"),on_ok)
-	QtCore.QObject.connect(window2,QtCore.SIGNAL("emform_cancel"),on_cancel)
+	window2.emform_ok.connect(on_ok)
+	window2.emform_cancel.connect(on_cancel)
 	
 	em_app.show()
 	em_app.execute()

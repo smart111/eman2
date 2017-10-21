@@ -32,11 +32,11 @@ from __future__ import print_function
 #
 
 from EMAN2 import *
-from PyQt4 import QtCore, QtGui, QtOpenGL
-from PyQt4.QtCore import Qt
+from PyQt5 import QtCore, QtGui, QtOpenGL, QtWidgets
+from PyQt5.QtCore import Qt
 from emapplication import EMApp
 import emscene3d
-import emdataitem3d 
+import emdataitem3d
 
 def main():
 	progname = os.path.basename(sys.argv[0])
@@ -107,10 +107,10 @@ def wedgestats(volume,angle, wedgei, wedgef):
 	return(mean,sigma)
 
 
-class MissingWedgeViewer(QtGui.QWidget):
+class MissingWedgeViewer(QtWidgets.QWidget):
 	""" Display a missing wedge"""
 	def __init__(self, filename, angle, wedgei=0.0, wedgef=1.0):
-		QtGui.QWidget.__init__(self)
+		QtWidgets.QWidget.__init__(self)
 		self.setWindowTitle('The Wedge Viewer')
 		self.setMinimumWidth(400)
 		self.setMinimumHeight(400)
@@ -123,27 +123,27 @@ class MissingWedgeViewer(QtGui.QWidget):
 		
 		self.dataitems= []
 		
-		grid=QtGui.QGridLayout()
+		grid=QtWidgets.QGridLayout()
 		# Make threed widget
 		self.widget3d=emscene3d.EMScene3D()
 		grid.addWidget(self.widget3d, 0, 0, 1, 4)
 		# make contols
-		combolabel = QtGui.QLabel("Volume Idx")
-		self.volcombobox = QtGui.QComboBox()
-		self.fitbutton = QtGui.QPushButton("Fit Wedge")
+		combolabel = QtWidgets.QLabel("Volume Idx")
+		self.volcombobox = QtWidgets.QComboBox()
+		self.fitbutton = QtWidgets.QPushButton("Fit Wedge")
 		self.fitbutton.setEnabled(False)
-		labeli = QtGui.QLabel("Wedge_i")
-		self.wedgei = QtGui.QLineEdit(str(wedgei))
-		labelf = QtGui.QLabel("Wedge_f")
-		self.wedgef = QtGui.QLineEdit(str(wedgef))
-		wmlabel = QtGui.QLabel("Wedge Mean")
-		wslabel = QtGui.QLabel("Wedge Sigma")
-		self.wedgemeanwidget = QtGui.QLineEdit("0.0")
+		labeli = QtWidgets.QLabel("Wedge_i")
+		self.wedgei = QtWidgets.QLineEdit(str(wedgei))
+		labelf = QtWidgets.QLabel("Wedge_f")
+		self.wedgef = QtWidgets.QLineEdit(str(wedgef))
+		wmlabel = QtWidgets.QLabel("Wedge Mean")
+		wslabel = QtWidgets.QLabel("Wedge Sigma")
+		self.wedgemeanwidget = QtWidgets.QLineEdit("0.0")
 		self.wedgemeanwidget.setReadOnly(True)
-		self.wedgesigmawidget = QtGui.QLineEdit("0.0")
+		self.wedgesigmawidget = QtWidgets.QLineEdit("0.0")
 		self.wedgesigmawidget.setReadOnly(True)
-		self.setwedgestats = QtGui.QPushButton("Set Wedege stats, This Vol")
-		self.setallwedgestats = QtGui.QPushButton("Set Wedege stats, All Vols")
+		self.setwedgestats = QtWidgets.QPushButton("Set Wedege stats, This Vol")
+		self.setallwedgestats = QtWidgets.QPushButton("Set Wedege stats, All Vols")
 		grid.addWidget(combolabel, 1, 0)
 		grid.addWidget(self.volcombobox, 1, 1)
 		grid.addWidget(self.fitbutton, 1 ,2, 1, 2)
@@ -165,11 +165,11 @@ class MissingWedgeViewer(QtGui.QWidget):
 			self.volcombobox.addItem(str(i))
 			
 		#Add actions
-		QtCore.QObject.connect(self.volcombobox, QtCore.SIGNAL("activated(int)"), self.onVolChange)
-		QtCore.QObject.connect(self.wedgei,QtCore.SIGNAL("editingFinished()"),self.onWedgeChange)
-		QtCore.QObject.connect(self.wedgef,QtCore.SIGNAL("editingFinished()"),self.onWedgeChange)
-		QtCore.QObject.connect(self.setwedgestats,QtCore.SIGNAL("clicked()"),self.onOneVolStats)
-		QtCore.QObject.connect(self.setallwedgestats,QtCore.SIGNAL("clicked()"),self.onManyVolStats)
+		self.volcombobox.activated[int].connect(self.onVolChange)
+		self.wedgei.editingFinished.connect(self.onWedgeChange)
+		self.wedgef.editingFinished.connect(self.onWedgeChange)
+		self.setwedgestats.clicked.connect(self.onOneVolStats)
+		self.setallwedgestats.clicked.connect(self.onManyVolStats)
 		
 		# Use first volume
 		self.onVolChange(0)

@@ -435,8 +435,8 @@ def run(command):
 
 # In some cases it is impossible to import PyQT4, particularly on clusters
 try:
-	from PyQt4 import QtCore, QtGui, QtOpenGL
-	from PyQt4.QtCore import Qt
+	from PyQt5 import QtCore, QtGui, QtOpenGL, QtWidgets
+	from PyQt5.QtCore import Qt
 	from emshape import *
 	from valslider import ValSlider
 	from emplot2d import EMPolarPlot2DWidget
@@ -517,33 +517,33 @@ def computeRGBcolor(value, minval, maxval):
 		R = 1.0 - B
 		return "#%02x%02x%02x"%(255*R,255*G,255*B)
 	
-class EMValidationPlot(QtGui.QWidget):
+class EMValidationPlot(QtWidgets.QWidget):
 	"""Make a plot to display validation info"""
 	def __init__(self):
-		QtGui.QWidget.__init__(self)
-		box = QtGui.QVBoxLayout()
+		QtWidgets.QWidget.__init__(self)
+		box = QtWidgets.QVBoxLayout()
 		self.polarplot = EMPolarPlot2DWidget()
 		self.polarplot.setMinimumHeight(50)
 		self.polarplot.setMinimumWidth(50)
 		self.resize(480,580)
 		
-		meanAngLabel = QtGui.QLabel("Mean Tilt Angle") 
-		self.meanAngle = QtGui.QLineEdit("")
-		meanAxisLabel = QtGui.QLabel("Mean Tilt Axis") 
-		self.meanAxis = QtGui.QLineEdit("")
-		rmsdAngLabel = QtGui.QLabel("RMSD Tilt Angle") 
-		self.rmsdAngle = QtGui.QLineEdit("")
-		rmsdAxisLabel = QtGui.QLabel("RMSD Tilt Axis") 
-		self.rmsdAxis = QtGui.QLineEdit("")
-		pointsLabel = QtGui.QLabel("Num points")
-		self.points = QtGui.QLineEdit("")
-		self.pointlabel = QtGui.QLabel("Right click to pick the nearest point")
+		meanAngLabel = QtWidgets.QLabel("Mean Tilt Angle") 
+		self.meanAngle = QtWidgets.QLineEdit("")
+		meanAxisLabel = QtWidgets.QLabel("Mean Tilt Axis") 
+		self.meanAxis = QtWidgets.QLineEdit("")
+		rmsdAngLabel = QtWidgets.QLabel("RMSD Tilt Angle") 
+		self.rmsdAngle = QtWidgets.QLineEdit("")
+		rmsdAxisLabel = QtWidgets.QLabel("RMSD Tilt Axis") 
+		self.rmsdAxis = QtWidgets.QLineEdit("")
+		pointsLabel = QtWidgets.QLabel("Num points")
+		self.points = QtWidgets.QLineEdit("")
+		self.pointlabel = QtWidgets.QLabel("Right click to pick the nearest point")
 		
 		
-		frame = QtGui.QFrame()
-		frame.setFrameShape(QtGui.QFrame.StyledPanel)
+		frame = QtWidgets.QFrame()
+		frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
 		frame.setMaximumHeight(100)
-		grid = QtGui.QGridLayout()
+		grid = QtWidgets.QGridLayout()
 		grid.addWidget(meanAngLabel, 0, 0)
 		grid.addWidget(self.meanAngle, 0, 1)
 		grid.addWidget(meanAxisLabel, 0, 2)
@@ -560,8 +560,8 @@ class EMValidationPlot(QtGui.QWidget):
 		box.addWidget(self.polarplot)
 		box.addWidget(frame)
 		self.setLayout(box)
-		self.connect(self.polarplot, QtCore.SIGNAL('clusterStats'), self._on_stats)
-		self.connect(self.polarplot, QtCore.SIGNAL('pointIdentity(int)'), self._on_point)
+		self.polarplot.clusterStats.connect(self._on_stats)
+		self.polarplot.pointIdentity[int].connect(self._on_point)
 		
 	def _on_stats(self, stats):
 		""" Set the selected stats """

@@ -76,28 +76,31 @@ A simple CTF simulation program.
 
 
 try:
-	from PyQt4 import QtCore, QtGui, QtOpenGL
-	from PyQt4.QtCore import Qt
+	from PyQt5 import QtCore, QtGui, QtOpenGL, QtWidgets
+	from PyQt5.QtCore import Qt
 	from emshape import *
 	from valslider import ValSlider
 except:
-	print("Error: PyQt4 must be installed")
+	print("Error: PyQt5 must be installed")
 	sys.exit(1)
 
-class MyListWidget(QtGui.QListWidget):
+class MyListWidget(QtWidgets.QListWidget):
 	"""Exactly like a normal list widget but intercepts a few keyboard events"""
+	keypress = QtCore.pyqtSignal()
 
 	def keyPressEvent(self,event):
 
 		if event.key() in (Qt.Key_Up,Qt.Key_Down) :
-			QtGui.QListWidget.keyPressEvent(self,event)
+			QtWidgets.QListWidget.keyPressEvent(self,event)
 			return
 
-		self.emit(QtCore.SIGNAL("keypress"),event)
+		self.keypress.emit(event)
 #		event.key()==Qt.Key_I
 
 
-class GUIctfsim(QtGui.QWidget):
+class GUIctfsim(QtWidgets.QWidget):
+	module_closed = QtCore.pyqtSignal()
+
 	def __init__(self,application,apix=1.0,voltage=300.0,cs=4.1,ac=10.0,samples=256,apply=None):
 		"""CTF simulation dialog
 		"""
@@ -130,7 +133,7 @@ class GUIctfsim(QtGui.QWidget):
 			print("A/pix reset to ",self.df_apix)
 			self.applyim=EMImage2DWidget(application=self.app())
 
-		QtGui.QWidget.__init__(self,None)
+		QtWidgets.QWidget.__init__(self,None)
 		self.setWindowIcon(QtGui.QIcon(get_image_directory() + "ctf.png"))
 
 		self.data=[]
@@ -143,26 +146,26 @@ class GUIctfsim(QtGui.QWidget):
 #		self.guirealim=EMImage2DWidget(application=self.app())	# This will show the original particle images
 
 #		self.guirealim.connect(self.guirealim,QtCore.SIGNAL("keypress"),self.realimgkey)
-		self.guiim.connect(self.guiim,QtCore.SIGNAL("mousedown"),self.imgmousedown)
-		self.guiim.connect(self.guiim,QtCore.SIGNAL("mousedrag"),self.imgmousedrag)
-		self.guiim.connect(self.guiim,QtCore.SIGNAL("mouseup")  ,self.imgmouseup)
-		self.guiplot.connect(self.guiplot,QtCore.SIGNAL("mousedown"),self.plotmousedown)
+		self.guiim.mousedown.connect(self.imgmousedown)
+		self.guiim.mousedrag.connect(self.imgmousedrag)
+		self.guiim.mouseup.connect(self.imgmouseup)
+		self.guiplot.mousedown.connect(self.plotmousedown)
 
 		self.guiim.mmode="app"
 
 		# This object is itself a widget we need to set up
-		self.hbl = QtGui.QHBoxLayout(self)
-		self.hbl.setMargin(0)
+		self.hbl = QtWidgets.QHBoxLayout(self)
+		self.hbl.setContentsMargins(0, 0, 0, 0)
 		self.hbl.setSpacing(6)
 		self.hbl.setObjectName("hbl")
 
 		# plot list and plot mode combobox
-		self.vbl2 = QtGui.QVBoxLayout()
+		self.vbl2 = QtWidgets.QVBoxLayout()
 		self.setlist=MyListWidget(self)
-		self.setlist.setSizePolicy(QtGui.QSizePolicy.Preferred,QtGui.QSizePolicy.Expanding)
+		self.setlist.setSizePolicy(QtWidgets.QSizePolicy.Preferred,QtWidgets.QSizePolicy.Expanding)
 		self.vbl2.addWidget(self.setlist)
 
-		self.splotmode=QtGui.QComboBox(self)
+		self.splotmode=QtWidgets.QComboBox(self)
 		self.splotmode.addItem("Amplitude")
 		self.splotmode.addItem("Intensity")
 		self.splotmode.addItem("Int w sum")
@@ -171,8 +174,8 @@ class GUIctfsim(QtGui.QWidget):
 		self.hbl.addLayout(self.vbl2)
 
 		# ValSliders for CTF parameters
-		self.vbl = QtGui.QVBoxLayout()
-		self.vbl.setMargin(0)
+		self.vbl = QtWidgets.QVBoxLayout()
+		self.vbl.setContentsMargins(0, 0, 0, 0)
 		self.vbl.setSpacing(6)
 		self.vbl.setObjectName("vbl")
 		self.hbl.addLayout(self.vbl)
@@ -180,7 +183,7 @@ class GUIctfsim(QtGui.QWidget):
 		#self.samp = ValSlider(self,(0,5.0),"Amp:",0)
 		#self.vbl.addWidget(self.samp)
 
-		self.imginfo=QtGui.QLabel("Info",self)
+		self.imginfo=QtWidgets.QLabel("Info",self)
 		self.vbl.addWidget(self.imginfo)
 
 		self.sdefocus=ValSlider(self,(0,5),"Defocus:",0,90)
@@ -215,28 +218,28 @@ class GUIctfsim(QtGui.QWidget):
 		self.vbl.addWidget(self.ssamples)
 
 
-		self.hbl_buttons = QtGui.QHBoxLayout()
-		self.newbut = QtGui.QPushButton("New")
+		self.hbl_buttons = QtWidgets.QHBoxLayout()
+		self.newbut = QtWidgets.QPushButton("New")
 		self.hbl_buttons.addWidget(self.newbut)
 		self.vbl.addLayout(self.hbl_buttons)
 
 		self.on_new_but()
 
-		QtCore.QObject.connect(self.sdefocus, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sbfactor, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sdfdiff, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sdfang, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sapix, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.sampcont, QtCore.SIGNAL("valueChanged"), self.newCTFac)
-		QtCore.QObject.connect(self.sphase, QtCore.SIGNAL("valueChanged"), self.newCTFpha)
-		QtCore.QObject.connect(self.svoltage, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.scs, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.ssamples, QtCore.SIGNAL("valueChanged"), self.newCTF)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("currentRowChanged(int)"),self.newSet)
-		QtCore.QObject.connect(self.setlist,QtCore.SIGNAL("keypress"),self.listkey)
-		QtCore.QObject.connect(self.splotmode,QtCore.SIGNAL("currentIndexChanged(int)"),self.newPlotMode)
+		self.sdefocus.valueChanged.connect(self.newCTF)
+		self.sbfactor.valueChanged.connect(self.newCTF)
+		self.sdfdiff.valueChanged.connect(self.newCTF)
+		self.sdfang.valueChanged.connect(self.newCTF)
+		self.sapix.valueChanged.connect(self.newCTF)
+		self.sampcont.valueChanged.connect(self.newCTFac)
+		self.sphase.valueChanged.connect(self.newCTFpha)
+		self.svoltage.valueChanged.connect(self.newCTF)
+		self.scs.valueChanged.connect(self.newCTF)
+		self.ssamples.valueChanged.connect(self.newCTF)
+		self.setlist.currentRowChanged[int].connect(self.newSet)
+		self.setlist.keypress.connect(self.listkey)
+		self.splotmode.currentIndexChanged[int].connect(self.newPlotMode)
 
-		QtCore.QObject.connect(self.newbut,QtCore.SIGNAL("clicked(bool)"),self.on_new_but)
+		self.newbut.clicked[bool].connect(self.on_new_but)
 
 
 		self.resize(720,380) # figured these values out by printing the width and height in resize event
@@ -308,7 +311,7 @@ class GUIctfsim(QtGui.QWidget):
 
 		event.accept()
 		self.app().close_specific(self)
-		self.emit(QtCore.SIGNAL("module_closed")) # this signal is important when e2ctf is being used by a program running its own event loop
+		self.module_closed.emit()
 
 	def update_data(self):
 		"""This will make sure the various widgets properly show the current data sets"""

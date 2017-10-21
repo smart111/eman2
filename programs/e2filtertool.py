@@ -31,9 +31,9 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307 USA
 #
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import Qt
-from PyQt4.QtCore import QTimer
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QTimer
 
 import sys
 import os
@@ -90,8 +90,13 @@ def main():
 def filtchange(name,value):
 	return {}
 
-class EMProcessorWidget(QtGui.QWidget):
+class EMProcessorWidget(QtWidgets.QWidget):
 	"""A single processor with parameters"""
+	upPress = QtCore.pyqtSignal()
+	downPress = QtCore.pyqtSignal()
+	plusPress = QtCore.pyqtSignal()
+	minusPress = QtCore.pyqtSignal()
+	processorChanged = QtCore.pyqtSignal()
 
 	plist=dump_processors_list()
 
@@ -113,34 +118,34 @@ class EMProcessorWidget(QtGui.QWidget):
 	}
 
 	def __init__(self,parent=None,tag=None):
-		app=QtGui.qApp
+		app=QtWidgets.QApplication.instance()
 
-		QtGui.QWidget.__init__(self,parent)
-		self.gbl = QtGui.QGridLayout(self)
+		QtWidgets.QWidget.__init__(self,parent)
+		self.gbl = QtWidgets.QGridLayout(self)
 		self.gbl.setColumnStretch(0,0)
 		self.gbl.setColumnStretch(1,0)
 		self.gbl.setColumnStretch(2,1)
 		self.gbl.setColumnStretch(3,3)
 
 		# Enable checkbox
-		self.wenable=QtGui.QCheckBox(self)
+		self.wenable=QtWidgets.QCheckBox(self)
 		self.wenable.setChecked(False)			# disable new processors by default to permit their values to be set
 		self.gbl.addWidget(self.wenable,0,1)
 
 		# List of processor categories
-		self.wcat=QtGui.QComboBox(self)
+		self.wcat=QtWidgets.QComboBox(self)
 		self.wcat.addItem("")
 		for i in self.cats: self.wcat.addItem(i)
 #		self.wcat.setCurrentindex(self.wcat.findText("processor"))
 		self.gbl.addWidget(self.wcat,0,2)
 
 		# List of processor subcategories
-		self.wsubcat=QtGui.QComboBox(self)
+		self.wsubcat=QtWidgets.QComboBox(self)
 		self.gbl.addWidget(self.wsubcat,0,3)
 #		self.update_subcat()
 
 		#button grid
-		self.gbl2=QtGui.QGridLayout()
+		self.gbl2=QtWidgets.QGridLayout()
 		self.gbl.addLayout(self.gbl2,0,0,1,1)
 		if get_platform().lower()=="darwin": self.gbl2.setSpacing(10)
 		else: self.gbl2.setSpacing(1)
@@ -149,31 +154,31 @@ class EMProcessorWidget(QtGui.QWidget):
 #		self.gbl2.setColumnStretch(1,1)
 
 #		self.wup = QtGui.QPushButton(app.style().standardIcon(QtGui.QStyle.SP_ArrowUp),"")
-		self.wup = QtGui.QPushButton(pix_up,"",self)
+		self.wup = QtWidgets.QPushButton(pix_up,"",self)
 		self.wup.setMaximumSize(QtCore.QSize(17, 17))
 #		self.wup.setSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
 		self.gbl2.addWidget(self.wup,0,0)
 
-		self.wdown = QtGui.QPushButton(pix_down,"",self)
+		self.wdown = QtWidgets.QPushButton(pix_down,"",self)
 		self.wdown.setMaximumSize(QtCore.QSize(17, 17))
 		self.gbl2.addWidget(self.wdown,1,0)
 
-		self.wplus = QtGui.QPushButton(pix_plus,"",self)
+		self.wplus = QtWidgets.QPushButton(pix_plus,"",self)
 		self.wplus.setMaximumSize(QtCore.QSize(17, 17))
 		self.gbl2.addWidget(self.wplus,1,1)
 
-		self.wminus= QtGui.QPushButton(pix_minus,"",self)
+		self.wminus= QtWidgets.QPushButton(pix_minus,"",self)
 		self.wminus.setMaximumSize(QtCore.QSize(17, 17))
 		self.gbl2.addWidget(self.wminus,0,1)
 
 
-		QtCore.QObject.connect(self.wcat,QtCore.SIGNAL("currentIndexChanged(int)"),self.eventCatSel)
-		QtCore.QObject.connect(self.wsubcat,QtCore.SIGNAL("currentIndexChanged(int)"),self.eventSubcatSel)
-		QtCore.QObject.connect(self.wup,QtCore.SIGNAL("clicked(bool)"),self.butUp)
-		QtCore.QObject.connect(self.wdown,QtCore.SIGNAL("clicked(bool)"),self.butDown)
-		QtCore.QObject.connect(self.wplus,QtCore.SIGNAL("clicked(bool)"),self.butPlus)
-		QtCore.QObject.connect(self.wminus,QtCore.SIGNAL("clicked(bool)"),self.butminus)
-		QtCore.QObject.connect(self.wenable,QtCore.SIGNAL("clicked(bool)"),self.updateFilt)
+		self.wcat.currentIndexChanged[int].connect(self.eventCatSel)
+		self.wsubcat.currentIndexChanged[int].connect(self.eventSubcatSel)
+		self.wup.clicked[bool].connect(self.butUp)
+		self.wdown.clicked[bool].connect(self.butDown)
+		self.wplus.clicked[bool].connect(self.butPlus)
+		self.wminus.clicked[bool].connect(self.butminus)
+		self.wenable.clicked[bool].connect(self.updateFilt)
 
 		self.parmw=[]
 
@@ -295,16 +300,16 @@ class EMProcessorWidget(QtGui.QWidget):
 		self.tag=tag
 
 	def butUp(self):
-		self.emit(QtCore.SIGNAL("upPress"),self.tag)
+		self.upPress.emit(self.tag)
 
 	def butDown(self):
-		self.emit(QtCore.SIGNAL("downPress"),self.tag)
+		self.downPress.emit(self.tag)
 
 	def butPlus(self):
-		self.emit(QtCore.SIGNAL("plusPress"),self.tag)
+		self.plusPress.emit(self.tag)
 
 	def butminus(self):
-		self.emit(QtCore.SIGNAL("minusPress"),self.tag)
+		self.minusPress.emit(self.tag)
 
 
 	def eventCatSel(self,idx):
@@ -376,15 +381,15 @@ class EMProcessorWidget(QtGui.QWidget):
 
 			self.parmw[-1].setToolTip(parms[i+2])
 			self.gbl.addWidget(self.parmw[-1],self.ninput,1,1,4)
-			QtCore.QObject.connect(self.parmw[-1], QtCore.SIGNAL("valueChanged"), self.updateFilt)
-			QtCore.QObject.connect(self.parmw[-1], QtCore.SIGNAL("enableChanged"), self.updateFilt)
+			self.parmw[-1].valueChanged.connect(self.updateFilt)
+			self.parmw[-1].enableChanged.connect(self.updateFilt)
 
 		self.updateFilt()
 
 	def updateFilt(self,val=None):
 		"Called whenever the processor changes"
 		#if self.wenable.isChecked() :
-		self.emit(QtCore.SIGNAL("processorChanged"),self.tag)
+		self.processorChanged.emit(self.tag)
 
 	def processorName(self):
 		"Returns the name of the currently selected processor"
@@ -407,13 +412,14 @@ class EMProcessorWidget(QtGui.QWidget):
 
 		return (proc,parms)
 
-class EMFilterTool(QtGui.QMainWindow):
+class EMFilterTool(QtWidgets.QMainWindow):
 	"""This class represents the EMFilterTool application instance.  """
+	module_closed = QtCore.pyqtSignal()
 
 	def __init__(self,datafile=None,apix=0.0,force2d=False,verbose=0):
-		QtGui.QMainWindow.__init__(self)
+		QtWidgets.QMainWindow.__init__(self)
 
-		app=QtGui.qApp
+		app=QtWidgets.QApplication.instance()
 		self.apix=apix
 		self.force2d=force2d
 		self.setWindowTitle("e2filtertool.py")
@@ -429,11 +435,11 @@ class EMFilterTool(QtGui.QMainWindow):
 		self.mview_new_2dwin=self.mview.addAction("Add 2D View")
 		self.mview_new_plotwin=self.mview.addAction("Add Plot View")
 
-		self.setCentralWidget(QtGui.QWidget())
-		self.vblm = QtGui.QVBoxLayout(self.centralWidget())		# The contents of the main window
+		self.setCentralWidget(QtWidgets.QWidget())
+		self.vblm = QtWidgets.QVBoxLayout(self.centralWidget())		# The contents of the main window
 
 		# List of processor sets
-		self.wsetname=QtGui.QComboBox()
+		self.wsetname=QtWidgets.QComboBox()
 		self.wsetname.setEditable(True)
 		psetnames=[i.split("_",1)[1][:-4].replace("_"," ") for i in os.listdir(".") if i[:11]=="filtertool_"]
 		try: psetnames.remove("default")  # remove default if it exists
@@ -443,27 +449,27 @@ class EMFilterTool(QtGui.QMainWindow):
 		self.vblm.addWidget(self.wsetname)
 
 		# scrollarea for processor widget
-		self.processorsa=QtGui.QScrollArea()
+		self.processorsa=QtWidgets.QScrollArea()
 		self.vblm.addWidget(self.processorsa)
 
 		# Actual widget contianing processors being scrolled
-		self.processorpanel=QtGui.QWidget()
+		self.processorpanel=QtWidgets.QWidget()
 		self.processorsa.setWidget(self.processorpanel)
 		self.processorsa.setWidgetResizable(True)
-		self.vbl = QtGui.QVBoxLayout(self.processorpanel)
+		self.vbl = QtWidgets.QVBoxLayout(self.processorpanel)
 
 		self.processorlist=[]
 		self.addProcessor()
 
 		# file menu
 #		QtCore.QObject.connect(self.mfile_save_processor,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_save_processor  )
-		QtCore.QObject.connect(self.mfile_save_stack,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_save_stack  )
-		QtCore.QObject.connect(self.mfile_save_map,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_save_map  )
-		QtCore.QObject.connect(self.mfile_quit,QtCore.SIGNAL("triggered(bool)")  ,self.menu_file_quit)
-		QtCore.QObject.connect(self.mview_new_2dwin,QtCore.SIGNAL("triggered(bool)")  ,self.menu_add_2dwin)
-		QtCore.QObject.connect(self.mview_new_plotwin,QtCore.SIGNAL("triggered(bool)")  ,self.menu_add_plotwin)
+		self.mfile_save_stack.triggered[bool].connect(self.menu_file_save_stack)
+		self.mfile_save_map.triggered[bool].connect(self.menu_file_save_map)
+		self.mfile_quit.triggered[bool].connect(self.menu_file_quit)
+		self.mview_new_2dwin.triggered[bool].connect(self.menu_add_2dwin)
+		self.mview_new_plotwin.triggered[bool].connect(self.menu_add_plotwin)
 
-		QtCore.QObject.connect(self.wsetname,QtCore.SIGNAL("currentIndexChanged(int)"),self.setChange)
+		self.wsetname.currentIndexChanged[int].connect(self.setChange)
 
 
 		self.viewer=None			# viewer window for data
@@ -487,7 +493,7 @@ class EMFilterTool(QtGui.QMainWindow):
 		self.restore_processorset("default")
 
 		self.timer=QTimer()
-		QtCore.QObject.connect(self.timer, QtCore.SIGNAL("timeout()"), self.timeOut)
+		self.timer.timeout.connect(self.timeOut)
 		self.timer.start(100)
 		E2loadappwin("e2filtertool","main",self)
 
@@ -522,11 +528,11 @@ class EMFilterTool(QtGui.QMainWindow):
 		epw=EMProcessorWidget(self.processorpanel,tag=after)
 		self.processorlist.insert(after,epw)
 		self.vbl.insertWidget(after,epw)
-		QtCore.QObject.connect(epw,QtCore.SIGNAL("upPress"),self.upPress)
-		QtCore.QObject.connect(epw,QtCore.SIGNAL("downPress"),self.downPress)
-		QtCore.QObject.connect(epw,QtCore.SIGNAL("plusPress"),self.plusPress)
-		QtCore.QObject.connect(epw,QtCore.SIGNAL("minusPress"),self.minusPress)
-		QtCore.QObject.connect(epw,QtCore.SIGNAL("processorChanged"),self.procChange)
+		epw.upPress.connect(self.upPress)
+		epw.downPress.connect(self.downPress)
+		epw.plusPress.connect(self.plusPress)
+		epw.minusPress.connect(self.minusPress)
+		epw.processorChanged.connect(self.procChange)
 
 		# Make sure all the tags are correct
 		for i in range(len(self.processorlist)): self.processorlist[i].setTag(i)
@@ -575,7 +581,7 @@ class EMFilterTool(QtGui.QMainWindow):
 			self.procthread.start()
 
 		if self.errors:
-			QtGui.QMessageBox.warning(None,"Error","The following processors encountered errors during processing of 1 or more images:"+"\n".join(self.errors))
+			QtWidgets.QMessageBox.warning(None,"Error","The following processors encountered errors during processing of 1 or more images:"+"\n".join(self.errors))
 			self.errors=None
 
 		# When reprocessing is done, we want to redisplay from the main thread
@@ -786,13 +792,13 @@ class EMFilterTool(QtGui.QMainWindow):
 	def menu_file_save_stack(self):
 		"Processes the entire current stack, and saves as a new name"
 
-		name=QtGui.QInputDialog.getText(None,"Enter Filename","Enter an output filename for the entire processed particle stack (not just the displayed images).")
+		name=QtWidgets.QInputDialog.getText(None,"Enter Filename","Enter an output filename for the entire processed particle stack (not just the displayed images).")
 		if not name[1] : return		# canceled
 
 		allfilt=" ".join([i.getAsProc() for i in self.processorlist])
 
 		n=EMUtil.get_image_count(self.datafile)
-		from PyQt4.QtGui import QProgressDialog
+		from PyQt5.QtWidgets import QProgressDialog
 		progressdialog=QProgressDialog("Processing Images","Abort",0,n,self)
 		progressdialog.setMinimumDuration(1000)
 
@@ -802,7 +808,7 @@ class EMFilterTool(QtGui.QMainWindow):
 
 		for i in range(n):
 			im=EMData(self.datafile,i)
-			QtGui.qApp.processEvents()
+			QtWidgets.QApplication.processEvents()
 			for p in pp: im.process_inplace(p[0],p[1])
 			im.write_image(str(name[0]),i)
 			progressdialog.setValue(i+1)
@@ -821,12 +827,12 @@ class EMFilterTool(QtGui.QMainWindow):
 			try: os.unlink("processed_map.hdf")
 			except : pass
 			self.procdata[0].write_image("processed_map.hdf",0)
-			QtGui.QMessageBox.warning(None,"Saved","The processed map has been saved as processed_map.hdf")
+			QtWidgets.QMessageBox.warning(None,"Saved","The processed map has been saved as processed_map.hdf")
 		else :
 			try: os.unlink("processed_images.hdf")
 			except: pass
 			for i in self.procdata: i.write_image("processed_images.hdf",-1)
-			QtGui.QMessageBox.warning(None,"Saved","The processed image(s) has been saved as processed_images.hdf. WARNING: this will include only be a subset of the images in a large image stack. To process the full stack, use e2proc2d.py with the options in filtertool_<filtername>.txt")
+			QtWidgets.QMessageBox.warning(None,"Saved","The processed image(s) has been saved as processed_images.hdf. WARNING: this will include only be a subset of the images in a large image stack. To process the full stack, use e2proc2d.py with the options in filtertool_<filtername>.txt")
 
 	def menu_file_quit(self):
 		self.close()
@@ -842,7 +848,7 @@ class EMFilterTool(QtGui.QMainWindow):
 				v.close()
 		event.accept()
 		#self.app().close_specific(self)
-		self.emit(QtCore.SIGNAL("module_closed")) # this signal is important when e2ctf is being used by a program running its own event loop
+		self.module_closed.emit()
 
 	#def closeEvent(self,event):
 		#self.target().done()

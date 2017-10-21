@@ -32,8 +32,8 @@ from __future__ import print_function
 #
 #
 
-import PyQt4
-from PyQt4 import QtCore, QtGui
+import PyQt5
+from PyQt5 import QtCore
 from emapplication import EMApp
 from emselector import EMBrowser
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
 	em_app = EMApp()
 	app = em_app
 	browser = EMBrowser()
-	QtCore.QObject.connect(browser,QtCore.SIGNAL("done"),on_done)
+	browser.done.connect(on_done)
 	em_app.show()
 	em_app.execute()
 

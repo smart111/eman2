@@ -41,8 +41,8 @@ from emimage3d import EMImage3DModule
 from valslider import ValSlider
 import weakref
 from emshape import EMShape
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import Qt
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 #import EMAN2db
 
 reconmodes=["gauss_2","gauss_3","gauss_5"]
@@ -85,7 +85,7 @@ feature from all slices. Generally best for uniform objects like vesicles."""
 	
 	E2end(logid)
 	
-class TrackerControl(QtGui.QWidget):
+class TrackerControl(QtWidgets.QWidget):
 	def __init__(self,app,maxshift,invert=False,seqali=False,tiltstep=2.0):
 		self.app=app
 		self.maxshift=maxshift
@@ -94,26 +94,26 @@ class TrackerControl(QtGui.QWidget):
 		self.tiltstep=tiltstep
 		
 		# the control panel
-		QtGui.QWidget.__init__(self,None)
+		QtWidgets.QWidget.__init__(self,None)
 
-		self.gbl = QtGui.QGridLayout(self)
-		self.gbl.setMargin(0)
+		self.gbl = QtWidgets.QGridLayout(self)
+		self.gbl.setContentsMargins(0, 0, 0, 0)
 		self.gbl.setSpacing(6)
 		self.gbl.setObjectName("hbl")
 		
 		# action buttons
-		self.bcenalign=QtGui.QPushButton("Center Align")
-		self.bprojalign=QtGui.QPushButton("Proj. Realign")
-		self.btiltaxis=QtGui.QPushButton("Tilt Axis")
-		self.btiltaxisval=QtGui.QLineEdit("90.0")
-		self.bsavedata=QtGui.QPushButton("Save Data")
-		self.breconst=QtGui.QPushButton("3D Normal")
-		self.sbmode=QtGui.QSpinBox(self)
+		self.bcenalign=QtWidgets.QPushButton("Center Align")
+		self.bprojalign=QtWidgets.QPushButton("Proj. Realign")
+		self.btiltaxis=QtWidgets.QPushButton("Tilt Axis")
+		self.btiltaxisval=QtWidgets.QLineEdit("90.0")
+		self.bsavedata=QtWidgets.QPushButton("Save Data")
+		self.breconst=QtWidgets.QPushButton("3D Normal")
+		self.sbmode=QtWidgets.QSpinBox(self)
 		self.sbmode.setRange(0,2)
 		self.sbmode.setValue(0)
-		self.bmagict=QtGui.QPushButton("3D Tomofill")
-		self.bmagics=QtGui.QPushButton("3D Sph")
-		self.bmagicc=QtGui.QPushButton("3D Cyl")
+		self.bmagict=QtWidgets.QPushButton("3D Tomofill")
+		self.bmagics=QtWidgets.QPushButton("3D Sph")
+		self.bmagicc=QtWidgets.QPushButton("3D Cyl")
 		self.vslpfilt=ValSlider(self,(0,.5),"Filter",0.5,50)
 		
 		self.gbl.addWidget(self.bcenalign,0,0)
@@ -128,15 +128,15 @@ class TrackerControl(QtGui.QWidget):
 		self.gbl.addWidget(self.bmagics,1,2)
 		self.gbl.addWidget(self.bmagicc,1,3)
 		
-		QtCore.QObject.connect(self.bcenalign,QtCore.SIGNAL("clicked(bool)"),self.do_cenalign)
-		QtCore.QObject.connect(self.bprojalign,QtCore.SIGNAL("clicked(bool)"),self.do_projalign)
-		QtCore.QObject.connect(self.btiltaxis,QtCore.SIGNAL("clicked(bool)"),self.do_tiltaxis)
-		QtCore.QObject.connect(self.bsavedata,QtCore.SIGNAL("clicked(bool)"),self.do_savedata)
-		QtCore.QObject.connect(self.breconst,QtCore.SIGNAL("clicked(bool)"),self.do_reconst)
-		QtCore.QObject.connect(self.bmagict,QtCore.SIGNAL("clicked(bool)"),self.do_magict)
-		QtCore.QObject.connect(self.bmagics,QtCore.SIGNAL("clicked(bool)"),self.do_magics)
-		QtCore.QObject.connect(self.bmagicc,QtCore.SIGNAL("clicked(bool)"),self.do_magicc)
-		QtCore.QObject.connect(self.vslpfilt,QtCore.SIGNAL("valueChanged"),self.do_filter)
+		self.bcenalign.clicked[bool].connect(self.do_cenalign)
+		self.bprojalign.clicked[bool].connect(self.do_projalign)
+		self.btiltaxis.clicked[bool].connect(self.do_tiltaxis)
+		self.bsavedata.clicked[bool].connect(self.do_savedata)
+		self.breconst.clicked[bool].connect(self.do_reconst)
+		self.bmagict.clicked[bool].connect(self.do_magict)
+		self.bmagics.clicked[bool].connect(self.do_magics)
+		self.bmagicc.clicked[bool].connect(self.do_magicc)
+		self.vslpfilt.valueChanged.connect(self.do_filter)
 
 		# the single image display widget
 		self.im2d =    EMImage2DWidget(application=app,winid="tomotrackbox.big")
@@ -146,10 +146,10 @@ class TrackerControl(QtGui.QWidget):
 		self.imvol =   EMImage3DModule(application=app,winid="tomotrackbox.3d")
 	
 		# get some signals from the window. 
-		QtCore.QObject.connect(self.im2d,QtCore.SIGNAL("mousedown"),self.down)
-		QtCore.QObject.connect(self.im2d,QtCore.SIGNAL("mousedrag"),self.drag)
-		QtCore.QObject.connect(self.im2d,QtCore.SIGNAL("mouseup"),self.up)
-		QtCore.QObject.connect(self.im2d,QtCore.SIGNAL("increment_list_data"),self.change_tilt)
+		self.im2d.mousedown.connect(self.down)
+		self.im2d.mousedrag.connect(self.drag)
+		self.im2d.mouseup.connect(self.up)
+		self.im2d.increment_list_data.connect(self.change_tilt)
 	
 		self.imagefile=None
 		self.imageparm=None

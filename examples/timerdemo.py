@@ -33,7 +33,7 @@ from __future__ import print_function
 #
 
 from EMAN2 import *
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 from emapplication import EMApp
 from emimage2d import EMImage2DWidget
 
@@ -58,7 +58,7 @@ class TestDisplay(EMImage2DWidget):
 		self.set_data(self.datatodisp[0])
 	
 		timer = QtCore.QTimer(self)
-		self.connect(timer,QtCore.SIGNAL("timeout()"),self.mytimeout)
+		timer.timeout.connect(self.mytimeout)
 		timer.start(1000)
 
 	def mytimeout(self):
