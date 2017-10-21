@@ -1850,7 +1850,7 @@ class EMCamera:
 		if height: self.height = height
 		self.aspectratio = float(self.height)/float(self.width)
 		if self.usingortho:
-			self.setViewPort(-self.pseudofovy, int(-self.pseudofovy*self.aspectratio), int(self.width+2*self.getPseudoFovyWidth()), int(self.height+2*self.getPseudoFovyHeight()))
+			self.setViewPort(int(-self.pseudofovy), int(-self.pseudofovy*self.aspectratio), int(self.width+2*self.getPseudoFovyWidth()), int(self.height+2*self.getPseudoFovyHeight()))
 			glMatrixMode(GL_PROJECTION)
 			glLoadIdentity()
 			self.setOrthoProjectionMatrix()
