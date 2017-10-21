@@ -1,0 +1,5 @@
+for f in ${@};do
+sed -i '' '1 a\
+from __future__ import print_function
+' $f
+done
