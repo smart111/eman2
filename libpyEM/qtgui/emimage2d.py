@@ -912,7 +912,7 @@ class EMImage2DWidget(EMGLWidget):
 			for p in self.disp_proc: p.process_inplace(tmp)
 			values=tmp
 
-		wid = (self.width() * value_size - 1) / 4 * 4 + 4
+		wid = (self.width() * value_size - 1) // 4 * 4 + 4
 		wdt =  self.width()
 		hgt =  self.height()
 
