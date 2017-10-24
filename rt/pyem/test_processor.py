@@ -33,6 +33,7 @@
 
 from EMAN2 import *
 import unittest,os,sys
+import platform
 import testlib
 from pyemtbx.exceptions import *
 import numpy
@@ -886,6 +887,9 @@ class TestProcessor(unittest.TestCase):
         
         e.process_inplace('eman1.filter.median')
         
+    if platform.system() == "Windows":
+        test_eman1_filter_median.broken = True
+    
     def test_math_localsigma(self):
         """test math.localsigma processor ..................."""
         e = EMData()
