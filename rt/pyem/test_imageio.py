@@ -35,6 +35,7 @@ from EMAN2 import *
 import unittest
 import os
 import sys
+import platform
 import testlib
 import os
 from pyemtbx.exceptions import *
@@ -1305,6 +1306,9 @@ class TestImageIO(unittest.TestCase):
 		self.region_read_write_test(IMAGE_MRC, mrc3d)
 		os.unlink(mrc2d)
 		os.unlink(mrc3d)
+
+	if platform.system() == "Windows":
+		test_mrcio_region.broken = True
 
 	#regional I/O should be work for Imagic4D, need to test this back later.
 	def no_test_imagicio_region(self):
