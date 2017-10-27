@@ -1764,9 +1764,9 @@ def read_spider_doc(fnam):
 			if(line[5:6] == " "): ibeg = 6
 			else:  ibeg = 7
 			for irec in xrange(atoi(line[ibeg:ibeg+2])):
-			 	start= ibeg+2+irec*12
-			 	end  = ibeg+2+(irec+1)*12
-			 	line_data.append(atof(line[start:end]))
+				start= ibeg+2+irec*12
+				end  = ibeg+2+(irec+1)*12
+				line_data.append(atof(line[start:end]))
 			data.append(line_data)
 			line = inf.readline()
 	return data
@@ -1960,7 +1960,7 @@ def reconstitute_mask(image_mask_applied_file, new_mask_file, save_file_on_disk 
 		image_mask_applied = image_mask_applied_file
 	if type(new_mask_file) == bytes:
 		new_mask = get_im( new_mask_file )
-        elif type(new_mask_file) == int or type( new_mask_file ) == types.floatType:
+	elif type(new_mask_file) == int or type( new_mask_file ) == types.floatType:
 		if nima > 1:
 			e = image_mask_applied[0]
 			nx = e.get_xsize()
