@@ -807,7 +807,7 @@ def AI(to_be_decided, log = None, list_stable = None, score_list = None, initial
 					msg = " ratios within %d RUN "%(Tracker["number_of_runs"])
 					print(msg)
 					log.add(msg)
-					for niter, ratio in Tracker["iter_hist"].iteritems():
+					for niter, ratio in Tracker["iter_hist"].items():
 						msg = "iter: %5d  ratio:  %f "%(niter, ratio)
 						print(msg)
 						log.add(msg)
@@ -2503,13 +2503,13 @@ def copy_oldparamstructure_from_meridien_MPI(selected_iteration, log):
 		print(msg)
 		log.add(msg)
 		full_dict_list = [ None for im in xrange(Tracker["constants"]["total_stack"])]
-		for key, value in local_dict.iteritems():full_dict_list[key] = value
+		for key, value in local_dict.items():full_dict_list[key] = value
 	mpi_barrier(MPI_COMM_WORLD)
 	for icpu in xrange(Blockdata["nproc"]):
 		if Blockdata["myid"] == icpu and Blockdata["myid"] != Blockdata["main_node"]: wrap_mpi_send(local_dict, Blockdata["main_node"], MPI_COMM_WORLD)
 		elif Blockdata["myid"] != icpu and Blockdata["myid"] == Blockdata["main_node"]:
 			local_dict = wrap_mpi_recv(icpu, MPI_COMM_WORLD)
-			for key, value in local_dict.iteritems():
+			for key, value in local_dict.items():
 				full_dict_list[key] = value
 		else: pass
 		mpi_barrier(MPI_COMM_WORLD)

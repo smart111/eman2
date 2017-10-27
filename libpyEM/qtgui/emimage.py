@@ -45,7 +45,7 @@ def image_update():
 	from emimage2d import EMImage2DWidget
 	from emimagemx import EMImageMXWidget
 	from emimage3d import EMImage3DWidget
-	for i in EMImage2DWidget.allim.keys():
+	for i in list(EMImage2DWidget.allim.keys()):
 		try:
 			if i.isVisible() and i.data["changecount"] !=i.image_change_count:
 				i.force_fft_redo()
@@ -53,14 +53,14 @@ def image_update():
 				i.updateGL()
 		except: pass
 	
-	for i in EMImageMXWidget.allim.keys():
+	for i in list(EMImageMXWidget.allim.keys()):
 		try:
 			if i.isVisible() and i.data[0]["changecount"]!=i.image_change_count:
 				i.force_display_update()
 				i.updateGL()
 		except: pass
 		
-	for i in EMImage3DWidget.allim.keys():
+	for i in list(EMImage3DWidget.allim.keys()):
 		try:
 			if i.isVisible() and i.data["changecount"]!=i.image_change_count:
 				i.updateGL()

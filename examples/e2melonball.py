@@ -321,7 +321,7 @@ def main():
 			
 			ptclglobalmsk.write_image( options.path + '/' + 'ptcls_globallymasked.hdf',i)
 			
-			for key in masks.keys():
+			for key in list(masks.keys()):
 			
 				scoopinplace = ptcl.copy()
 				scoop = ptcl.copy()

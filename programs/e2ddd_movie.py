@@ -409,7 +409,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 			# 		csum2[k].write_image("ccfs.hdf",i)
 
 			avgr=Averagers.get("minmax",{"max":0})
-			avgr.add_image_list(csum2.values())
+			avgr.add_image_list(list(csum2.values()))
 			csum=avgr.finish()
 
 			#####
@@ -429,7 +429,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 
 			if options.debug and options.verbose == 9: 
 				print("PEAK LOCATIONS:")
-				for l in peak_locs.keys():
+				for l in list(peak_locs.keys()):
 					print(peak_locs[l])
 
 			# if options.ccweight:

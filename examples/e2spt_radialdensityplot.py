@@ -241,7 +241,7 @@ def main():
 	
 		cc=0
 		for ele in finalvalues:
-			i = ele.keys()[0]
+			i = list(ele.keys())[0]
 			key = i
 			
 			n = EMUtil.get_image_count(i)
