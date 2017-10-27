@@ -10304,11 +10304,11 @@ def k_means_stab_bbenum(PART, T=10, nguesses=5, J=50, max_branching=40, stmult=0
 
 		stb  = []
 		for i in xrange(vd):
-		    if asg[i] != 0:
-			CT_t[kk] += 1
+			if asg[i] != 0:
+				CT_t[kk] += 1
 			if asg[i] == np:
-			    CT_s[kk] += 1
-			    stb.append(i + vmin)
+				CT_s[kk] += 1
+				stb.append(i + vmin)
 
 		STB_PART[kk] = deepcopy(stb)
 
@@ -10489,11 +10489,11 @@ def k_means_stab_getinfo(PART, match):
 
 		stb  = []
 		for i in xrange(vd):
-		    if asg[i] != 0:
-			CT_t[kk] += 1
+			if asg[i] != 0:
+				CT_t[kk] += 1
 			if asg[i] == np:
-			    CT_s[kk] += 1
-			    stb.append(i + vmin)
+				CT_s[kk] += 1
+				stb.append(i + vmin)
 
 		STB_PART[kk] = deepcopy(stb)
 
