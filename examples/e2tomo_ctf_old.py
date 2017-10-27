@@ -251,10 +251,10 @@ def main():
 	c:downsize to a subset if so specified
 	'''
 	if options.subset:
-		imagefilenamesdict = { key:value for key, value in imagefilenamesdict.items() if key < options.subset }
+		imagefilenamesdict = { key:value for key, value in list(imagefilenamesdict.items()) if key < options.subset }
 		imagefilenamesdict = collections.OrderedDict(sorted(imagefilenamesdict.items()))
 		
-		angles = { key:value for key, value in angles.items() if key < options.subset }
+		angles = { key:value for key, value in list(angles.items()) if key < options.subset }
 		angles = collections.OrderedDict(sorted(angles.items()))
 	
 		print("subset of imagefilenamesdict",imagefilenamesdict)
@@ -893,7 +893,7 @@ def ctfparamparser( pline ):
 	params = {'ampcont':ampcont,'apix':apix,'bfactor':bfactor,'cs':cs,'defocus':defocus,'voltage':voltage}
 	print("\nparameters are",params)
 	print("\n(e2spt_ctf.py)(ctfparamparser) The parsed parameters are:\n")
-	for key in params.keys():
+	for key in list(params.keys()):
 		print(key + '=' + params[key] +'\n')
 	
 	ctf = EMAN2Ctf()
@@ -1484,13 +1484,13 @@ def calcglobaldefocus(options, apix, imagefilenames, angles):
 		
 		lowesttiltangleindx = len(angles)/2.0 	#c:by default, the lowest tilt angle should be in the middle of the tiltseries
 		
-		lowesttiltangle = min([ math.fabs(ang) for ang in angles.values() ])	#c:find the actual smallest tiltangle, then its index
+		lowesttiltangle = min([ math.fabs(ang) for ang in list(angles.values()) ])	#c:find the actual smallest tiltangle, then its index
 		try:
-			lowesttiltangleindx = angles.keys()[angles.values().index(lowesttiltangle)]	#c:if the lowest tiltangle is actually positive
+			lowesttiltangleindx = list(angles.keys())[list(angles.values()).index(lowesttiltangle)]	#c:if the lowest tiltangle is actually positive
 		except:
 			lowesttiltangle=-1*lowesttiltangle
 			try:
-				lowesttiltangleindx = angles.keys()[angles.values().index(lowesttiltangle)]	#c:if the lowest tiltangle is negative
+				lowesttiltangleindx = list(angles.keys())[list(angles.values()).index(lowesttiltangle)]	#c:if the lowest tiltangle is negative
 			except:
 				print("(e2tomo_ctf)(calcglobaldefocus) ERROR: determined lowest tilt angle %f somehow is not in --angles or --anglesfile. Using the middle index by default" %(lowesttiltangle))
 				#sys.exit()
@@ -2061,7 +2061,7 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 					
 				print("\nWARNING: ERRRRRRRRRRROR; angerror %f > 15.0; using globaldefocus %f, defocuscalc %f" %(angerror, globaldefocus, defocuscalc))
 										
-			angleindx = angles.keys()[angles.values().index(angle)]
+			angleindx = list(angles.keys())[list(angles.values()).index(angle)]
 
 			sptctfplotter( options, nxMicrometers, xs, imgdefocuses, maxangle, angle, angleindx, len(angles), imgindx, slope, b, globaldefocus, globalmiddle, faileddefs, failedmids )		
 
@@ -2091,7 +2091,7 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 	angerrors = collections.OrderedDict(sorted(angerrors.items()))
 	if angerrors:
 	
-		avgangerror = sum( [  math.sqrt(angerrors[a]*angerrors[a]) for a in angerrors.keys() ] ) /len( angerrors )
+		avgangerror = sum( [  math.sqrt(angerrors[a]*angerrors[a]) for a in list(angerrors.keys()) ] ) /len( angerrors )
 		
 		a=open(options.path + '/angular_error_avg.txt','w')
 		a.writelines([str(avgangerror)+'\n'])

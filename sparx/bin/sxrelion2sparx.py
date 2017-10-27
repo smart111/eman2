@@ -247,7 +247,7 @@ def main():
 				relion_key = str_line.split(' ')[0]
 				assert(relion_key.find('_rln') != -1)
 				
-				if relion_key in relion_dict.keys():
+				if relion_key in list(relion_dict.keys()):
 					relion_dict[relion_key][idx_col] = int(i_relion_item_col)
 					print(relion_dict[relion_key][idx_title] % (relion_dict[relion_key][idx_col], relion_key))
 			
@@ -258,7 +258,7 @@ def main():
 				if i_relion_particle == 0:
 					print('# ')
 					print('# Checking RELION star file contents ...')
-					for category_key in relion_category_dict.keys():
+					for category_key in list(relion_category_dict.keys()):
 						for key in relion_category_dict[category_key][idx_key_list]:
 							if relion_dict[key][idx_col] < 0:
 								print('#     %s entry for %s is not found' % (key, relion_category_dict[category_key][idx_relion_process]))
@@ -270,7 +270,7 @@ def main():
 						is_success = False
 						break;
 						
-					for category_key in relion_category_dict.keys():
+					for category_key in list(relion_category_dict.keys()):
 						if relion_category_dict[category_key][idx_is_category_found] == False:
 							print('# ')
 							print('# WARNING!!! %s cannot be extracted!!!' % (relion_category_dict[category_key][idx_relion_process]))
@@ -287,7 +287,7 @@ def main():
 				micrograph_basename = os.path.basename(relion_micrograph_name)
 				
 				# No conversion is necessary from relion to sparx formats
-				if micrograph_basename in sparx_coordinates_dict.keys():
+				if micrograph_basename in list(sparx_coordinates_dict.keys()):
 					sparx_coordinates_dict[micrograph_basename].append([relion_coordinate_x, relion_coordinate_y])
 				else:
 					sparx_coordinates_dict[micrograph_basename] = [[relion_coordinate_x, relion_coordinate_y]]
@@ -457,7 +457,7 @@ def main():
 			coordinates_extension = '.txt'
 			assert(box_size <= 0)
 	
-		for micrograph_basename in sparx_coordinates_dict.keys():
+		for micrograph_basename in list(sparx_coordinates_dict.keys()):
 			micrograph_extension = os.path.splitext(micrograph_basename)[1]
 			file_path_coordinates = dir_path_work + '/' + dir_name_coordinates + '/' + micrograph_basename.replace(micrograph_extension, coordinates_extension)
 			file_coordinates = open(file_path_coordinates,'w')
