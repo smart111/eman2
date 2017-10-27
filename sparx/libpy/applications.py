@@ -529,7 +529,7 @@ def ali2d_MPI(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 
 	if CUDA:
 		GPUID = get_input_from_string(GPUID)
-		GPUID = map(int, GPUID)
+		GPUID = list(map(int, GPUID))
 	
 	if myid == main_node:
 		print_msg("Input stack                 : %s\n"%(stack))
@@ -760,7 +760,7 @@ def ali2d_MPI(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 			if Fourvar:  del vav
 			bcast_EMData_to_all(tavg, myid, main_node)
 			cs = mpi_bcast(cs, 2, MPI_FLOAT, main_node, MPI_COMM_WORLD)
-			cs = map(float, cs)
+			cs = list(map(float, cs))
 			if total_iter != max_iter*len(xrng):
 				if CUDA:
 					old_ali_params = all_ali_params[:]
@@ -816,7 +816,7 @@ def ali2d_MPI(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr=
 					print_msg("Mirror consistency rate = %8.4f%%\n"%(float(mirror_consistent)/nima*100))
 					if mirror_consistent!=0:
 						print_msg("Among the mirror-consistent images, average of pixel errors is %0.4f, and their distribution is:\n"%(float(pixel_error)/float(mirror_consistent)))
-						pixel_error_list = map(float, pixel_error_list)
+						pixel_error_list = list(map(float, pixel_error_list))
 						for i in xrange(nima-1, -1, -1):
 							if pixel_error_list[i] < 0:  del pixel_error_list[i]
 						region, hist = hist_list(pixel_error_list, 20)	
@@ -1132,7 +1132,7 @@ def ali2d_base(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr
 			if Fourvar:  del vav
 			bcast_EMData_to_all(tavg, myid, main_node)
 			cs = mpi_bcast(cs, 2, MPI_FLOAT, main_node, mpi_comm)
-			cs = map(float, cs)
+			cs = list(map(float, cs))
 			if total_iter != max_iter*len(xrng):
 				old_ali_params = []
 				for im in xrange(nima):  
@@ -1172,7 +1172,7 @@ def ali2d_base(stack, outdir, maskfile=None, ir=1, ou=-1, rs=1, xr="4 2 1 1", yr
 					log.add("Mirror consistency rate = %8.4f%%"%(float(mirror_consistent)/total_nima*100))
 					if mirror_consistent!=0:
 						log.add("Among the mirror-consistent images, average of pixel errors is %0.4f, and their distribution is:"%(float(pixel_error)/float(mirror_consistent)))
-						pixel_error_list = map(float, pixel_error_list)
+						pixel_error_list = list(map(float, pixel_error_list))
 						for i in xrange(total_nima-1, -1, -1):
 							if pixel_error_list[i] < 0:  del pixel_error_list[i]
 						region, hist = hist_list(pixel_error_list, 20)
@@ -4562,7 +4562,7 @@ def ali3d_MPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 1,
 			mpi_barrier(MPI_COMM_WORLD)
 			terminate = 0
 			if myid == main_node:
-				recvbuf = map(float, recvbuf)
+				recvbuf = list(map(float, recvbuf))
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
@@ -6002,7 +6002,7 @@ def slocal_ali3d_base(stack, templatevol, Tracker, mpi_comm = None, log= None, c
 		mpi_barrier(mpi_comm)
 		terminate = 0
 		if(myid == main_node):
-			pixer = map(float, pixer)
+			pixer = list(map(float, pixer))
 			from statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(pixer, lhist)
@@ -7389,7 +7389,7 @@ def ali3d_shcMPI(stack, ref_vol, outdir, maskfile = None, ir = 1, ou = -1, rs = 
 			mpi_barrier(MPI_COMM_WORLD)
 			terminate = 0
 			if myid == main_node:
-				recvbuf = map(float, recvbuf)
+				recvbuf = list(map(float, recvbuf))
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
@@ -8146,7 +8146,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 		for im in xrange(nima):
 			refassign[im] = abs(inner(refanorm,transv[im])).argmax()
 		assigntorefa = mpi_gatherv(refassign, nima, MPI_INT, recvcount, disps, MPI_INT, main_node, MPI_COMM_WORLD)
-		assigntorefa = map(int, assigntorefa)
+		assigntorefa = list(map(int, assigntorefa))
 
 		del refassign, refanorm, transv
 
@@ -8347,7 +8347,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 		'''
 
 		assignment = mpi_scatterv(assignment, recvcount, disps, MPI_INT, recvcount[myid], MPI_INT, main_node, MPI_COMM_WORLD)
-		assignment = map(int, assignment)
+		assignment = list(map(int, assignment))
 
 
 		#  compute number of particles that changed assignment and how many are in which group
@@ -8360,7 +8360,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 			data[im].set_attr('group', assignment[im])
 		nchng = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup = map(int, npergroup)
+		npergroup = list(map(int, npergroup))
 		terminate = 0
 		if( myid == 0 ):
 			nchng = int(nchng[0])
@@ -8394,7 +8394,7 @@ def mref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1,
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if(myid == main_node):
-				recvbuf = map(float, recvbuf)
+				recvbuf = list(map(float, recvbuf))
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
@@ -8775,7 +8775,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 				nchng += 1
 		nchng = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup = map(int, npergroup)
+		npergroup = list(map(int, npergroup))
 		terminate  = 0
 		empty_group =0
 		if myid == main_node:
@@ -8816,7 +8816,7 @@ def Kmref_ali3d_MPI(stack, ref_vol, outdir, maskfile=None, focus = None, maxit=1
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if myid == main_node:
-				recvbuf = map(float, recvbuf)
+				recvbuf = list(map(float, recvbuf))
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
@@ -9202,7 +9202,7 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 				nchng += 1
 		nchng = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup = map(int, npergroup)
+		npergroup = list(map(int, npergroup))
 		terminate = 0
 		if( myid == 0 ):
 			nchng = int(nchng[0])
@@ -9234,7 +9234,7 @@ def local_ali3dm_MPI_(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25,
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if(myid == main_node):
-				recvbuf = map(float, recvbuf)
+				recvbuf = list(map(float, recvbuf))
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
@@ -9597,7 +9597,7 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 				nchng += 1
 		nchng = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup = map(int, npergroup)
+		npergroup = list(map(int, npergroup))
 		terminate = 0
 		if( myid == 0 ):
 			nchng = int(nchng[0])
@@ -9629,7 +9629,7 @@ def local_ali3dm_MPI(stack, refvol, outdir, maskfile, ou=-1,  delta=2, ts=0.25, 
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if(myid == main_node):
-				recvbuf = map(float, recvbuf)
+				recvbuf = list(map(float, recvbuf))
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
@@ -10284,7 +10284,7 @@ def local_ali3d_MPI(stack, outdir, maskfile, ou = -1,  delta = 2, ts=0.25, cente
 		mpi_barrier(MPI_COMM_WORLD)
 		terminate = 0
 		if(myid == main_node):
-			recvbuf = map(float, recvbuf)
+			recvbuf = list(map(float, recvbuf))
 			from statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(recvbuf, lhist)
@@ -10662,7 +10662,7 @@ def local_ali3d_MPI_scipy_minimization(stack, outdir, maskfile, ou = -1,  delta 
 		mpi_barrier(MPI_COMM_WORLD)
 		terminate = 0
 		if(myid == main_node):
-			recvbuf = map(float, recvbuf)
+			recvbuf = list(map(float, recvbuf))
 			from statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(recvbuf, lhist)
@@ -11101,7 +11101,7 @@ def local_ali3d_base_MPI(stack, templatevol, ali3d_options, shrinkage = 1.0,
 		mpi_barrier(mpi_comm)
 		terminate = 0
 		if(myid == main_node):
-			pixer = map(float, pixer)
+			pixer = list(map(float, pixer))
 			from statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(pixer, lhist)
@@ -11978,7 +11978,7 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 			mpi_barrier(MPI_COMM_WORLD)
 			terminate = 0
 			if(myid == main_node):
-				recvbuf = map(float, recvbuf)
+				recvbuf = list(map(float, recvbuf))
 				from utilities import write_text_file
 				write_text_file([range(len(recvbuf)), recvbuf], os.path.join(outdir, "pixer_%04d_%04d.txt"%(N_step+1,Iter)) )
 				from statistics import hist_list
@@ -12004,7 +12004,7 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 			mpi_barrier(MPI_COMM_WORLD)
 			del modphi
 			if(myid == main_node):
-				recvbuf = map(float, recvbuf)
+				recvbuf = list(map(float, recvbuf))
 				phi_value_0 = []
 				phi_value_180 = []
 				for i in xrange ( len ( recvbuf ) ):
@@ -12132,7 +12132,7 @@ def ihrsr_MPI(stack, ref_vol, outdir, maskfile, ir, ou, rs, xr, ynumber,\
 				else:
 					list_dps = mpi_recv((para_end-para_start) * 2, MPI_FLOAT, main_node, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 
-				list_dps = map(float, list_dps)
+				list_dps = list(map(float, list_dps))
 
 				local_pos = [0.0, 0.0, -1.0e20]
 				for i in xrange(para_end-para_start):
@@ -14111,7 +14111,7 @@ def recons3d_n(prj_stack, pid_list, vol_stack, CTF=False, snr=1.0, sign=1, npad=
 	if(listfile):
 		from utilities import read_text_file
 		pid_list = read_text_file(listfile, 0)
-		pid_list = map(int, pid_list)
+		pid_list = list(map(int, pid_list))
 	elif(group > -1):
 		tmp_list = EMUtil.get_all_attributes(prj_stack, 'group')
 		pid_list = []
@@ -14158,7 +14158,7 @@ def recons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF=False, snr=1.0, sign=1, n
 		if myid != 0:
 			pid_list = [-1]*nima
 		pid_list = mpi_bcast(pid_list, nima, MPI_INT, 0, MPI_COMM_WORLD)
-		pid_list = map(int, pid_list)
+		pid_list = list(map(int, pid_list))
 	else:
 		if(not pid_list):  pid_list = range(nima)
 
@@ -14420,7 +14420,7 @@ def newsrecons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym
 		if(listfile):
 			from utilities import read_text_file
 			pid_list = read_text_file(listfile, 0)
-			pid_list = map(int, pid_list)
+			pid_list = list(map(int, pid_list))
 		elif(group > -1):
 			tmp_list = EMUtil.get_all_attributes(prj_stack, 'group')
 			pid_list = []
@@ -14436,7 +14436,7 @@ def newsrecons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym
 		if myid != 0:
 			pid_list = [-1]*nima
 		pid_list = mpi_bcast(pid_list, nima, MPI_INT, 0, MPI_COMM_WORLD)
-		pid_list = map(int, pid_list)
+		pid_list = list(map(int, pid_list))
 	else:
 		if(not pid_list):  pid_list = range(nima)
 
@@ -14470,7 +14470,7 @@ def newsrecons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym
 		pid = [-1]*nima
 	"""
 	pid_list = mpi_bcast(pid_list, nima, MPI_INT, 0, MPI_COMM_WORLD)
-	pid_list = map(int, pid_list)
+	pid_list = list(map(int, pid_list))
 	
 	image_start, image_end = MPI_start_end(nima, nproc, myid)
 	prjlist = EMData.read_images(prj_stack, pid_list[image_start:image_end])
@@ -14613,7 +14613,7 @@ def newrecons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym,
 	if(myid != 0):
 		pid = [-1]*nima
 	pid_list = mpi_bcast(pid_list, nima, MPI_INT, 0, MPI_COMM_WORLD)
-	pid_list = map(int, pid_list)
+	pid_list = list(map(int, pid_list))
 	
 	image_start, image_end = MPI_start_end(nima, nproc, myid)
 	prjlist = [EMData.read_images(prj_stack, pid_list[image_start:image_end])]
@@ -14628,7 +14628,7 @@ def newrecons3d_n_MPI(prj_stack, pid_list, vol_stack, CTF, snr, sign, npad, sym,
 	if(myid != 0):
 		pid = [-1]*nima
 	pid_list = mpi_bcast(pid_list, nima, MPI_INT, 0, MPI_COMM_WORLD)
-	pid_list = map(int, pid_list)
+	pid_list = list(map(int, pid_list))
 	
 	image_start, image_end = MPI_start_end(nima, nproc, myid)
 	prjlist += [EMData.read_images(prj_stack, pid_list[image_start:image_end])]
@@ -14678,7 +14678,7 @@ def recons3d_f(prj_stack, vol_stack, fsc_file, mask=None, CTF=True, snr=1.0, sym
 	if(listfile):
 		from utilities import read_text_file
 		pid_list = read_text_file(listfile, 0)
-		pid_list = map(int, pid_list)
+		pid_list = list(map(int, pid_list))
 	elif(group > -1):
 			tmp_list = EMUtil.get_all_attributes(prj_stack, 'group')
 			pid_list = []
@@ -14715,7 +14715,7 @@ def recons3d_f_MPI(prj_stack, vol_stack, fsc_file, mask, CTF=True, snr=1.0, sym=
 		if(listfile):
 			from utilities import read_text_file
 			pid_list = read_text_file(listfile, 0)
-			pid_list = map(int, pid_list)
+			pid_list = list(map(int, pid_list))
 			nima = len(pid_list)
 		elif(group > -1):
 			tmp_list = EMUtil.get_all_attributes(prj_stack, 'group')
@@ -14735,7 +14735,7 @@ def recons3d_f_MPI(prj_stack, vol_stack, fsc_file, mask, CTF=True, snr=1.0, sym=
 	if myid != 0:
 		pid_list = [-1]*nima
 	pid_list = mpi_bcast(pid_list, nima, MPI_INT, 0, MPI_COMM_WORLD)
-	pid_list = map(int, pid_list)
+	pid_list = list(map(int, pid_list))
 
 	image_start, image_end = MPI_start_end(nima, nproc, myid)
 
@@ -16666,7 +16666,7 @@ def var_mpi(files, outdir, fl, aa, radccc, frepa = "default", pca=False, pcamask
 		if( myid == 0 ):  refstat = Util.infomask(img, pcamask, True)
 		else:             refstat = [0.0,0.0,0.0,0.0]
 		refstat = mpi_bcast(refstat, 4, MPI_FLOAT, 0, MPI_COMM_WORLD)
-		refstat = map(float, refstat)
+		refstat = list(map(float, refstat))
 
 	avgfile  = os.path.join(outdir, "avg.hdf")
 	varfile  = os.path.join(outdir, "var.hdf")
@@ -21647,7 +21647,7 @@ def symsearch_MPI(ref_vol, outdir, maskfile, dp, ndp, dp_step, dphi, ndphi, dphi
 	else:
 		list_dps = mpi_recv((para_end-para_start) * 2, MPI_FLOAT, main_node, SPARX_MPI_TAG_UNIVERSAL, MPI_COMM_WORLD)
 
-	list_dps = map(float, list_dps)
+	list_dps = list(map(float, list_dps))
 
 	local_pos = [0.0, 0.0, -1.0e20]
 	for i in xrange(para_end-para_start):
@@ -22540,7 +22540,7 @@ def slocal_ali3d_base_old(stack, templatevol, Tracker, mpi_comm = None, log= Non
 		mpi_barrier(mpi_comm)
 		terminate = 0
 		if(myid == main_node):
-			pixer = map(float, pixer)
+			pixer = list(map(float, pixer))
 			from statistics import hist_list
 			lhist = 20
 			region, histo = hist_list(pixer, lhist)
@@ -23046,7 +23046,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 				nchng += 1
 		nchng            = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup        = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup        = map(int, npergroup)
+		npergroup        = list(map(int, npergroup))
 		terminate        = 0
 		empty_group      = 0
 		empty_group_list = []
@@ -23092,7 +23092,7 @@ def ali3d_mref_Kmeans_MPI(ref_list, outdir, this_data_list_file, Tracker):
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if myid == main_node:
-				recvbuf = map(float, recvbuf)
+				recvbuf = list(map(float, recvbuf))
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
@@ -23742,7 +23742,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 		for im in xrange(nima):
 			refassign[im] = abs(inner(refanorm,transv[im])).argmax()
 		assigntorefa = mpi_gatherv(refassign, nima, MPI_INT, recvcount, disps, MPI_INT, main_node, MPI_COMM_WORLD)
-		assigntorefa = map(int, assigntorefa)
+		assigntorefa = list(map(int, assigntorefa))
 		del refassign, refanorm, transv
 		"""
 		#  Trying to use ISAC code for EQ-Kmeans  PAP 03/21/2015
@@ -23934,7 +23934,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 			assignment = []
 		'''
 		assignment = mpi_scatterv(assignment, recvcount, disps, MPI_INT, recvcount[myid], MPI_INT, main_node, MPI_COMM_WORLD)
-		assignment = map(int, assignment)
+		assignment = list(map(int, assignment))
 		#  compute number of particles that changed assignment and how many are in which group
 		nchng = 0
 		npergroup = [0]*numref
@@ -23945,7 +23945,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 			data[im].set_attr('group', assignment[im])
 		nchng = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup = map(int, npergroup)
+		npergroup = list(map(int, npergroup))
 		terminate = 0
 		if( myid == 0 ):
 			ngroup=[]
@@ -23983,7 +23983,7 @@ def mref_ali3d_EQ_Kmeans(ref_list, outdir, particle_list_file, Tracker):
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if(myid == main_node):
-				recvbuf = map(float, recvbuf)
+				recvbuf = list(map(float, recvbuf))
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)
@@ -24621,7 +24621,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 		for im in xrange(nima):
 			refassign[im] = abs(inner(refanorm,transv[im])).argmax()
 		assigntorefa = mpi_gatherv(refassign, nima, MPI_INT, recvcount, disps, MPI_INT, main_node, MPI_COMM_WORLD)
-		assigntorefa = map(int, assigntorefa)
+		assigntorefa = list(map(int, assigntorefa))
 		del refassign, refanorm, transv
 		"""
 		#  Trying to use ISAC code for EQ-Kmeans  PAP 03/21/2015
@@ -24813,7 +24813,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 			assignment = []
 		'''
 		assignment = mpi_scatterv(assignment, recvcount, disps, MPI_INT, recvcount[myid], MPI_INT, main_node, MPI_COMM_WORLD)
-		assignment = map(int, assignment)
+		assignment = list(map(int, assignment))
 		#  compute number of particles that changed assignment and how many are in which group
 		nchng = 0
 		npergroup = [0]*numref
@@ -24824,7 +24824,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 			data[im].set_attr('group', assignment[im])
 		nchng = mpi_reduce(nchng, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
 		npergroup = mpi_reduce(npergroup, numref, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD)
-		npergroup = map(int, npergroup)
+		npergroup = list(map(int, npergroup))
 		terminate = 0
 		if( myid == 0 ):
 			ngroup=[]
@@ -24862,7 +24862,7 @@ def mref_ali3d_EQ_Kmeans_circular(ref_list, outdir, particle_list_file, Tracker)
 			recvbuf = mpi_gatherv(pixer, nima, MPI_FLOAT, recvcount, disps, MPI_FLOAT, main_node, MPI_COMM_WORLD)
 			mpi_barrier(MPI_COMM_WORLD)
 			if(myid == main_node):
-				recvbuf = map(float, recvbuf)
+				recvbuf = list(map(float, recvbuf))
 				from statistics import hist_list
 				lhist = 20
 				region, histo = hist_list(recvbuf, lhist)

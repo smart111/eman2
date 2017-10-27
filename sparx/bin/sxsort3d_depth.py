@@ -3941,8 +3941,8 @@ def do3d_sorting_groups(particle_ID_index, partstack):
 	mpi_barrier(MPI_COMM_WORLD)
 	res_05  = mpi_reduce(res_05,  Tracker["number_of_groups"], MPI_INT, MPI_SUM, Blockdata["main_node"], MPI_COMM_WORLD)
 	res_143 = mpi_reduce(res_143, Tracker["number_of_groups"], MPI_INT, MPI_SUM, Blockdata["main_node"], MPI_COMM_WORLD)
-	res_05  = map(int, res_05)
-	res_143 = map(int, res_143)
+	res_05  = list(map(int, res_05))
+	res_143 = list(map(int, res_143))
 	if (Blockdata["myid"] == Blockdata["main_node"]):
 		Tracker["fsc143"] = res_143
 		Tracker["fsc05"]  = res_05
@@ -4117,8 +4117,8 @@ def do3d_sorting_groups_trl_iter(data, iteration):
 	mpi_barrier(MPI_COMM_WORLD)
 	res_05         = mpi_reduce(res_05,  Tracker["number_of_groups"], MPI_INT, MPI_SUM, Blockdata["main_node"], MPI_COMM_WORLD)
 	res_143        = mpi_reduce(res_143, Tracker["number_of_groups"], MPI_INT, MPI_SUM, Blockdata["main_node"], MPI_COMM_WORLD)
-	res_05         = map(int, res_05)
-	res_143        = map(int, res_143)
+	res_05         = list(map(int, res_05))
+	res_143        = list(map(int, res_143))
 	if (Blockdata["myid"] == Blockdata["main_node"]):
 		Tracker["fsc143"] = res_143
 		Tracker["fsc05"]  = res_05
@@ -5264,8 +5264,8 @@ def do3d_sorting_groups_rec3d(iteration, masterdir, log_main):
 	mpi_barrier(MPI_COMM_WORLD)	
 	res_05   = mpi_reduce(res_05,  Tracker["number_of_groups"], MPI_INT, MPI_SUM, Blockdata["main_node"], MPI_COMM_WORLD)
 	res_143  = mpi_reduce(res_143, Tracker["number_of_groups"], MPI_INT, MPI_SUM, Blockdata["main_node"], MPI_COMM_WORLD)
-	res_05   = map(int, res_05)
-	res_143  = map(int, res_143)	
+	res_05   = list(map(int, res_05))
+	res_143  = list(map(int, res_143))	
 	if (Blockdata["myid"] == Blockdata["main_node"]):
 		Tracker["fsc143"] = res_143
 		Tracker["fsc05"]  = res_05
@@ -6098,8 +6098,8 @@ def do3d_sorting_groups_trl_smearing_iter(data, paramstructure, norm_per_particl
 	mpi_barrier(MPI_COMM_WORLD)	
 	res_05  = mpi_reduce(res_05, Tracker["number_of_groups"], MPI_INT, MPI_SUM, Blockdata["main_node"], MPI_COMM_WORLD)
 	res_143 = mpi_reduce(res_143,Tracker["number_of_groups"], MPI_INT, MPI_SUM, Blockdata["main_node"], MPI_COMM_WORLD)
-	res_05  = map(int, res_05)
-	res_143 = map(int, res_143)	
+	res_05  = list(map(int, res_05))
+	res_143 = list(map(int, res_143))	
 	if (Blockdata["myid"] == Blockdata["main_node"]):
 		Tracker["fsc143"] = res_143
 		Tracker["fsc05"]  = res_05
