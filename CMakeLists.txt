@@ -385,11 +385,15 @@ endif()
 
 find_package(Nosetests)
 foreach(t ${test_methods})
-	add_test(NAME ${t}
+	add_test(NAME rt-${t}
 			COMMAND ${NOSETESTS_EXECUTABLE} -v -m "^test_*" -a \!broken
 					${CMAKE_INSTALL_PREFIX}/test/rt/pyem/${t}
 			)
 endforeach()
+
+add_custom_target(test-verbose-rt
+		COMMAND ${CMAKE_CTEST_COMMAND} -V -R rt-*
+)
 
 add_custom_target(test-verbose-broken
 		COMMAND ${NOSETESTS_EXECUTABLE} -v -m "^test_*" -a broken ${CMAKE_INSTALL_PREFIX}/test/rt/pyem/*
