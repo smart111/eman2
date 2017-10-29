@@ -57,14 +57,14 @@ import weakref
 
 #---------------------------------------------------------------------------
 try:
-    QString = unicode
+    QString = str
 except NameError:
     # Python 3
     QString = str
 QStringList = list
 
 try:
-    QChar = unichr
+    QChar = chr
 except NameError:
     # Python 3
     QChar = chr
