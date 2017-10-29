@@ -393,6 +393,7 @@ endforeach()
 
 add_custom_target(test-verbose-rt
 		COMMAND ${CMAKE_CTEST_COMMAND} -V -R rt-*
+		DEPENDS PythonFiles
 )
 
 add_custom_target(test-verbose-broken
