@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 from __future__ import print_function
 # Muyuan Chen 2017-03
+from future import standard_library
+standard_library.install_aliases()
 from EMAN2 import *
 import numpy as np
 import threading
-import Queue
+import queue
 
 def make3d(ii, options, ptcls):
 	
@@ -77,7 +79,7 @@ def main():
 	#print jobs[0]
 	print("Start working on {} threads...".format(options.threads))
 	
-	jsd=Queue.Queue(0)
+	jsd=queue.Queue(0)
 	options.queue=jsd
 
 	thrds=[threading.Thread(target=make3d,args=(i, options, j)) for i,j in enumerate(jobs)]

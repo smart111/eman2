@@ -32,6 +32,8 @@ from __future__ import print_function
 #
 
 
+from future import standard_library
+standard_library.install_aliases()
 from EMAN2 import *
 import numpy as np
 import matplotlib.pyplot as plt
@@ -49,7 +51,7 @@ import os
 import time
 import itertools
 import threading
-import Queue
+import queue
 
 def main():
 	progname = os.path.basename(sys.argv[0])
@@ -200,7 +202,7 @@ def main():
 			count += 1
 
 			start = time.time()
-			resq=Queue.Queue(0)
+			resq=queue.Queue(0)
 
 			res=[0]*len(rngs)
 			thds = []

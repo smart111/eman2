@@ -33,6 +33,8 @@ from __future__ import print_function
 #
 
 
+from future import standard_library
+standard_library.install_aliases()
 from EMAN2 import *
 from math import *
 import os
@@ -320,7 +322,7 @@ def main():
 
 	if options.evalptclqual:
 #		from multiprocessing import Pool
-		import threading,Queue
+		import threading,queue
 		print("Particle quality evaluation mode")
 		
 		# This is not great programming process, but greatly simplifies threading, and reduces potential memory usage
@@ -390,7 +392,7 @@ def main():
 					except: classptcls[cls]=[(it,eo,j)]
 
 		# Create Thread objects
-		jsd=Queue.Queue(0)
+		jsd=queue.Queue(0)
 		thrds=[threading.Thread(target=pqual,args=(i,classptcls[i],jsd,options.includeprojs,options.verbose)) for i in list(classptcls.keys())]
 		result={}
 		thrtolaunch=0

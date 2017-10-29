@@ -32,6 +32,8 @@ from __future__ import print_function
 #
 #
 
+from future import standard_library
+standard_library.install_aliases()
 ploticon = [
     '15 14 2 1',
     'b c #000055',
@@ -65,11 +67,11 @@ from EMAN2 import *
 import sys
 from emshape import *
 import weakref
-from cPickle import dumps,loads
+from pickle import dumps,loads
 import struct, math
 from numpy import *
 from valslider import *
-from cStringIO import StringIO
+from io import StringIO
 import re
 #import emimage2d
 

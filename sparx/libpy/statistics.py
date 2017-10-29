@@ -29,6 +29,8 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #
 
+from future import standard_library
+standard_library.install_aliases()
 from global_def import *
 
 def avgvar(data, mode='a', interp='quadratic', i1=0, i2=0, use_odd=True, use_even=True):
@@ -7279,18 +7281,18 @@ def k_means_class_pixerror(class_name, dir, ou, xr, ts, maxit, fun, CTF=False, s
 
 # ISC procedure, update configuration file with ite
 def isc_update_ite_conf(conf_file, ite):
-	import ConfigParser
-	config = ConfigParser.ConfigParser()
+	import configparser
+	config = configparser.ConfigParser()
 	config.read(conf_file)
 	config.set('main', 'ite', ite)
 	config.write(open(conf_file, 'w'))
 
 # ISC procedure, read configuration file
 def isc_read_conf(conf_file):
-	import ConfigParser
+	import configparser
 
 	# read config file
-	config  = ConfigParser.ConfigParser()
+	config  = configparser.ConfigParser()
 	config.read(conf_file)
 	cfgmain = dict(config.items('main'))
 	cfgali  = dict(config.items('alignment'))
