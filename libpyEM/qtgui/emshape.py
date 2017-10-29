@@ -31,6 +31,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from OpenGL import GL,GLUT
 from math import *
 from EMAN2 import get_3d_font_renderer, Util

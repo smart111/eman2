@@ -34,6 +34,7 @@ from __future__ import print_function
 
 # e2classvsproj.py  Steven Ludtke
 
+from builtins import range
 from future import standard_library
 standard_library.install_aliases()
 from EMAN2 import *
@@ -130,7 +131,7 @@ def main():
 	
 	jsd=queue.Queue(0)
 	nptcl=EMUtil.get_image_count(args[0])
-	thrds=[threading.Thread(target=simfn,args=(jsd,projs,args[0],i,options,options.verbose)) for i in xrange(nptcl)]
+	thrds=[threading.Thread(target=simfn,args=(jsd,projs,args[0],i,options,options.verbose)) for i in range(nptcl)]
 
 	if options.savesim!=None : out=open(options.savesim,"w")
 	

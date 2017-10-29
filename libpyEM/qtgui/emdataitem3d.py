@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from EMAN2 import *
 from embrowser import EMBrowserWidget
 from emglobjects import EMViewportDepthTools, Camera2, get_default_gl_colors, get_RGB_tab, EM3DModel

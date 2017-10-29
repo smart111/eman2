@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from EMAN2 import *
 import copy
 from emapplication import EMGLWidget
@@ -2129,7 +2130,7 @@ class EMInspector3D(QtGui.QWidget):
 	def _recursiveupdatetreeselvis(self, item):
 		item.setSelectionStateBox()
 		item.getVisibleState()
-		for childidx in xrange(item.childCount()):
+		for childidx in range(item.childCount()):
 			self._recursiveupdatetreeselvis(item.child(childidx))
 			
 	def updateTreeSelVis(self, selecteditem=None):
@@ -2991,7 +2992,7 @@ class EMQTreeWidgetItem(QtGui.QTreeWidgetItem):
 		"""
 		Remove all children from the SG
 		"""
-		for i in xrange(self.childCount()):
+		for i in range(self.childCount()):
 			self.child(0).removeAllChildren(inspector)
 			inspector.removeTreeNode(self, 0) 
 

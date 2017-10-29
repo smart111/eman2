@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from future import standard_library
 standard_library.install_aliases()
 from EMAN2 import *
@@ -415,7 +416,7 @@ class scp_proxy:
 		self.stdin.write("listrecurse\n%s\n%s\n"%(path,basepath))
 		r=int(self.stdout.readline().strip())
 		ret=[]
-		for i in xrange(r):
+		for i in range(r):
 			ret.append(self.stdout.readline().strip())
 			
 		return ret

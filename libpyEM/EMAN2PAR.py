@@ -33,6 +33,7 @@ from __future__ import print_function
 
 # This file contains functions related to running jobs in parallel in EMAN2
 
+from builtins import range
 from future import standard_library
 standard_library.install_aliases()
 DBUG=False		# If set will dump a bunch of debugging output, normally should be False
@@ -706,7 +707,7 @@ class EMMpiClient():
 			self.mpifile.flush()
 			self.log("Said HELO back")
 
-			self.rankjobs=[-1 for i in xrange(self.nrank)]		# Each element is a rank, and indicates which job that rank is currently running (-1 if idle)
+			self.rankjobs=[-1 for i in range(self.nrank)]		# Each element is a rank, and indicates which job that rank is currently running (-1 if idle)
 			self.rankjobs[0]=-2					# this makes sure we don't try to send a job to ourself
 			self.maxjob=-1						# current highest job number waiting for execution
 			self.nextjob=1						# next job waiting to run
@@ -735,7 +736,7 @@ class EMMpiClient():
 						self.maxjob=data	# this is the highest number job currently assigned
 
 					elif com=="CHEK" :
-						for i in xrange(len(data)):
+						for i in range(len(data)):
 							if data[i] not in self.status : data[i]=-1
 							else: data[i]=self.status[data[i]]
 
@@ -896,7 +897,7 @@ def fileenum(lst):
 	"""This is a generator that takes a single (name,#), (name,(#,#,#)), or (name,min,max) specifier
 	and yields (name,#) until the numbers are exhausted"""
 	if len(lst)==3 :
-		for i in xrange(lst[1],lst[2]) : yield (lst[0],i)
+		for i in range(lst[1],lst[2]) : yield (lst[0],i)
 	elif isinstance(lst[1],int) :
 		yield lst
 	else :
@@ -905,7 +906,7 @@ def fileenum(lst):
 def imgnumenum(lst):
 	"""like fileenum, but skips the 'name' references on return"""
 	if len(lst)==3 :
-		for i in xrange(lst[1],lst[2]) : yield i
+		for i in range(lst[1],lst[2]) : yield i
 	elif isinstance(lst[1],int) :
 		yield lst[1]
 	else :
@@ -1089,13 +1090,13 @@ def broadcast(sock,obj):
 	global oseq
 	p=dumps(obj,-1)
 	hdr=pack("<4sIII","EMAN",os.getuid(),len(p),oseq)
-	for seq in xrange(1+(len(p)-1)/1024):
+	for seq in range(1+(len(p)-1)/1024):
 		r=sock.sendto(hdr+pack("<I",seq)+p[seq*1024:(seq+1)*1024],("<broadcast>",9989))
 		if r<0 :
 			print("transmit fail %d"%seq)
 			r=sock.sendto(hdr+pack("<I",seq)+p[seq*1024:(seq+1)*1024],("<broadcast>",9989))
 
-	for seq in xrange((len(p)-1)/1024,-1,-1):
+	for seq in range((len(p)-1)/1024,-1,-1):
 		sock.sendto(hdr+pack("<I",seq)+p[seq*1024:(seq+1)*1024],("<broadcast>",9989))
 #	for seq in xrange(1+(len(p)-1)/1024):
 #		sock.sendto(hdr+pack("<I",seq)+p[seq*1024:(seq+1)*1024],("<broadcast>",9989))
@@ -1458,7 +1459,7 @@ class EMDCTaskHandler(EMTaskHandler,socketserver.BaseRequestHandler):
 								name=self.queue.didtoname[i]			# get the filename back from the did
 								n=nimg = EMUtil.get_image_count(name)	# how many images to cache in this file
 								a=EMData()
-								for j in xrange(n):				# loop over images
+								for j in range(n):				# loop over images
 									a.read_image(name,j)
 									xmit=compress(dumps((i[0],i[1],j,a),-1),3)		# compressed pickled string for efficient transfer
 									sendstr(self.sockf,xmit)

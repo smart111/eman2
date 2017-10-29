@@ -36,6 +36,7 @@ from __future__ import print_function
 # This program will dump the local logfile of all EMAN2 programs run in the current
 # directory. The file is stored as a python 'shelve' file
 
+from builtins import range
 import shelve
 import sys,os,time
 from EMAN2 import base_name, EMArgumentParser

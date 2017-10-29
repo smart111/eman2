@@ -30,6 +30,7 @@ from __future__ import print_function
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307 USA
 
+from builtins import range
 from sys import argv
 import os
 from EMAN2 import *
@@ -53,7 +54,7 @@ def main():
 	(options, args) = parser.parse_args()	
 	
 	n = EMUtil.get_image_count(options.input)
-	indexes = list(xrange(n))
+	indexes = list(range(n))
 	
 	if not options.output:
 		options.output = options.input.replace('.hdf','_scrambled.hdf')

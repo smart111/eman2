@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from future import standard_library
 standard_library.install_aliases()
 from EMAN2 import *
@@ -78,7 +79,7 @@ def load_micrograph(filename):
 		img=EMData(filename,0)		# single image
 	else :
 		img=EMData(filename,0)		# movie stack (we assume)
-		for i in xrange(1,n):
+		for i in range(1,n):
 			im=EMData(filename,i)
 			img.add(im)
 		img.mult(1.0/n)
@@ -504,7 +505,7 @@ class boxerByRef(QtCore.QObject):
 		mref=ref.process("mask.soft",{"outer_radius":ref["nx"]/2-4,"width":3})
 		mref.process_inplace("normalize.unitlen")
 		
-		for ang in xrange(0,360,10):
+		for ang in range(0,360,10):
 			dsref=mref.process("xform",{"transform":Transform({"type":"2d","alpha":ang})})
 			# don't downsample until after rotation
 			dsref.process_inplace("math.fft.resample",{"n":downsample})
@@ -661,8 +662,8 @@ class boxerLocal(QtCore.QObject):
 		ptclmap["ortid"]=ri
 		
 		# loop over the image with enough oversampling that we should be able to find all of the particles
-		for x in xrange(0,microdown["nx"]-nxdown,nxdown//2):
-			for y in xrange(0,microdown["ny"]-nxdown,nxdown//2):
+		for x in range(0,microdown["nx"]-nxdown,nxdown//2):
+			for y in range(0,microdown["ny"]-nxdown,nxdown//2):
 				ptcl=microdown.get_clip(Region(x,y,nxdown,nxdown))
 				# initial alignment
 				ali=mref.align("rotate_translate",ptcl)
@@ -806,7 +807,7 @@ class boxerConvNet(QtCore.QObject):
 					lbs.append(label)
 		
 		
-		rndid=range(len(data))
+		rndid=list(range(len(data)))
 		np.random.shuffle(rndid)	
 		data=[data[i] for i in rndid]
 		lbs=[lbs[i] for i in rndid]
@@ -836,10 +837,10 @@ class boxerConvNet(QtCore.QObject):
 		learning_rate=0.001
 		weightdecay=1e-5
 		n_train_batches = len(data) / batch_size
-		for epoch in xrange(20):
+		for epoch in range(20):
 		# go through the training set
 			c = []
-			for batch_index in xrange(n_train_batches):
+			for batch_index in range(n_train_batches):
 				err=classify(batch_index,
 					lr=learning_rate,
 					wd=weightdecay)
@@ -914,7 +915,7 @@ class boxerConvNet(QtCore.QObject):
 					data.append(ar.flatten())
 					lbs.append(label)
 		#print shrinkfac
-		rndid=range(len(data))
+		rndid=list(range(len(data)))
 		np.random.shuffle(rndid)
 		data=[data[i] for i in rndid]
 		lbs=[lbs[i] for i in rndid]
@@ -936,10 +937,10 @@ class boxerConvNet(QtCore.QObject):
 		learning_rate=0.005
 		weightdecay=1e-5
 		n_train_batches = len(data) / batch_size
-		for epoch in xrange(20):
+		for epoch in range(20):
 		# go through the training set
 			c = []
-			for batch_index in xrange(n_train_batches):
+			for batch_index in range(n_train_batches):
 				err=classify(batch_index,
 					lr=learning_rate,
 					wd=weightdecay)

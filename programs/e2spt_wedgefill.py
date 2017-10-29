@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
+from builtins import range
 '''
 ====================
 Author: Steven Ludkte - 2016, Last update: May/2017 (Jesus)
@@ -120,7 +121,7 @@ def main():
 			n = options.subset
 
 		fillp = fill.copy()
-		for i in xrange(n):
+		for i in range(n):
 			im=EMData(options.input,i)
 			
 			if options.fillwithnoise:

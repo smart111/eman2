@@ -33,6 +33,7 @@ from __future__ import print_function
 #
 
 
+from builtins import range
 from future import standard_library
 standard_library.install_aliases()
 from EMAN2 import *
@@ -105,7 +106,7 @@ def pqual(n,ptclincls,jsd,includeproj,verbose):
 				third = len(fsc)/3
 				fsc=array(fsc[third:third*2])
 #					snr=fsc/(1.0-fsc)
-				result[(truenum,it)]=[sum(fsc[rings[k]:rings[k+1]])/(rings[k+1]-rings[k]) for k in xrange(4)]+[alt,az,n,defocus,ptcl["data_source"],ptcl["data_n"]]		# sum the fsc into 5 range values
+				result[(truenum,it)]=[sum(fsc[rings[k]:rings[k+1]])/(rings[k+1]-rings[k]) for k in range(4)]+[alt,az,n,defocus,ptcl["data_source"],ptcl["data_n"]]		# sum the fsc into 5 range values
 #					sums=[sum(snr[rings[k]:rings[k+1]])/(rings[k+1]-rings[k]) for k in xrange(4)]		# sum the fsc into 5 range values
 
 	jsd.put(result)
@@ -230,13 +231,13 @@ def main():
 			az=eulers[i].get_rotation("eman")["az"]
 			best=(0,0,1.01)
 
-			for angle in xrange(0,180,5):
+			for angle in range(0,180,5):
 				rt=Transform({"type":"2d","alpha":angle})
 				xf=rt*Transform([1.01,0,0,0,0,1/1.01,0,0,0,0,1,0])*rt.inverse()
 				esum=0
 
 				for eo in range(2):
-					for j in xrange(nptcl[eo]):
+					for j in range(nptcl[eo]):
 						if classmx[eo][0,j]!=i :
 	#						if options.debug: print "XXX {}\t{}\t{}\t{}".format(i,("even","odd")[eo],j,classmx[eo][0,j])
 							continue		# only proceed if the particle is in this class
@@ -277,14 +278,14 @@ def main():
 			angle=best[1]
 			print(best)
 
-			for aniso in xrange(0,30):
+			for aniso in range(0,30):
 				ai=aniso/1000.0+1.0
 				rt=Transform({"type":"2d","alpha":angle})
 				xf=rt*Transform([ai,0,0,0,0,1/ai,0,0,0,0,1,0])*rt.inverse()
 				esum=0
 
 				for eo in range(2):
-					for j in xrange(nptcl[eo]):
+					for j in range(nptcl[eo]):
 						if classmx[eo][0,j]!=i :
 	#						if options.debug: print "XXX {}\t{}\t{}\t{}".format(i,("even","odd")[eo],j,classmx[eo][0,j])
 							continue		# only proceed if the particle is in this class
@@ -330,7 +331,7 @@ def main():
 		try:
 			pathmx=["{}/classmx_{:02d}_even.hdf".format(args[0],options.iter-1),"{}/classmx_{:02d}_odd.hdf".format(args[0],options.iter-1),"{}/classmx_{:02d}_even.hdf".format(args[0],options.iter),"{}/classmx_{:02d}_odd.hdf".format(args[0],options.iter)]
 			classmx=[EMData(f,0) for f in pathmx]
-			nptcl=[classmx[i]["ny"] for i in xrange(len(pathmx))]
+			nptcl=[classmx[i]["ny"] for i in range(len(pathmx))]
 			cmxtx=[EMData(f,2) for f in pathmx]
 			cmxty=[EMData(f,3) for f in pathmx]
 			cmxalpha=[EMData(f,4) for f in pathmx]
@@ -384,9 +385,9 @@ def main():
 		tlast=time()
 		# Put particles in class lists
 		classptcls={}
-		for it in xrange(2):			# note that this is 0,1 not actual iteration
+		for it in range(2):			# note that this is 0,1 not actual iteration
 			for eo in range(2):
-				for j in xrange(nptcl[eo]):
+				for j in range(nptcl[eo]):
 					cls=int(classmx[eo+2*it][0,j])
 					try: classptcls[cls].append((it,eo,j))
 					except: classptcls[cls]=[(it,eo,j)]
@@ -422,7 +423,7 @@ def main():
 		fout.write("# 100-30 it1; 30-18 it1; 18-10 it1; 10-4 it1; 100-30 it2; 30-18 it2; 18-10 it2; 10-4 it2; it12rmsd; alt1; az1; cls1; alt2; az2; cls2; defocus\n")
 		# loop over all particles and print results
 		rmsds=[]
-		for j in xrange(nptcl[0]+nptcl[1]):
+		for j in range(nptcl[0]+nptcl[1]):
 			try:
 				r=result[(j,0)][:8]+result[(j,1)]		# we strip out the filename and number from the first result
 			except:
@@ -448,7 +449,7 @@ def main():
 		an=Analyzers.get("kmeans")
 		an.set_params({"ncls":4,"seedmode":1,"minchange":len(rmsds)//100,"verbose":0,"slowseed":0,"mininclass":5})
 		quals=[]
-		for j in xrange(nptcl[0]+nptcl[1]):
+		for j in range(nptcl[0]+nptcl[1]):
 			d=EMData(3,1,1)
 			# We use the first 3 resolution bands, taking the max value from the 2 iterations, and upweight the second by 2x, since higher res info
 			# is important, and very low res is impacted by defocus
@@ -613,8 +614,8 @@ def main():
 
 		classfsc="classfsc_{}_{}.txt".format(args[0][-2:],options.iter)
 		fout=open(classfsc,"w")
-		for eo in xrange(2):
-			for i in xrange(n):
+		for eo in range(2):
+			for i in range(n):
 				cl=EMData(classes[eo],i)
 				pr=EMData(projections[eo],i)
 				alt=pr["xform.projection"].get_rotation("eman")["alt"]
@@ -627,7 +628,7 @@ def main():
 
 				third = len(fsc)/3
 				fsc=array(fsc[third:third*2])
-				sums=[sum(fsc[rings[k]:rings[k+1]])/(rings[k+1]-rings[k]) for k in xrange(4)]		# sum the fsc into 5 range values
+				sums=[sum(fsc[rings[k]:rings[k+1]])/(rings[k+1]-rings[k]) for k in range(4)]		# sum the fsc into 5 range values
 				
 				fout.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t# {};{};{};{}\n".format(sums[0],sums[1],sums[2],sums[3],cl["ptcl_repr"],alt,az,phi,i,classes[eo],i,projections[eo]))
 
@@ -697,7 +698,7 @@ def main():
 			# find the resolution from the first curve (the highest numbered one)
 			if f==fscs[0]:
 				# find the 0.143 crossing
-				for si in xrange(2,len(d[0])-2):
+				for si in range(2,len(d[0])-2):
 					if d[1][si-1]>0.143 and d[1][si]<=0.143 :
 						frac=(0.143-d[1][si])/(d[1][si-1]-d[1][si])		# 1.0 if 0.143 at si-1, 0.0 if .143 at si
 						lastres=d[0][si]*(1.0-frac)+d[0][si-1]*frac

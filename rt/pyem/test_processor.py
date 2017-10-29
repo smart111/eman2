@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from EMAN2 import *
 import unittest,os,sys
 import testlib
@@ -1356,7 +1357,7 @@ class TestProcessor(unittest.TestCase):
             
             nx = a.get_xsize()
             offset = nx%2==0
-            for i in xrange(0,5):
+            for i in range(0,5):
                 a.to_zero()
                 lst = [Util.get_irand(offset,nx/2-offset) for i in range(3)] # go from 1 because even dimension flip 0s the 0 pixel
                 for j in lst:
@@ -1373,7 +1374,7 @@ class TestProcessor(unittest.TestCase):
         for a in ims:
             ny = a.get_ysize()
             offset = ny%2==0
-            for i in xrange(0,5):
+            for i in range(0,5):
                 a.to_zero()
                 lst = [Util.get_irand(offset,ny/2-offset) for i in range(3)] # go from 1 because even dimension flip 0s the 0 pixel
                 for j in lst:
@@ -1391,7 +1392,7 @@ class TestProcessor(unittest.TestCase):
         for a in ims:
             nz = a.get_zsize()
             offset = nz%2==0
-            for i in xrange(0,5):
+            for i in range(0,5):
                 a.to_zero()
                 lst = [Util.get_irand(offset,nz/2-offset) for i in range(3)] # go from 1 because even dimension flip 0s the 0 pixel
                 for j in lst:

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 # Muyuan Chen 2017-03
+from builtins import range
 from future import standard_library
 standard_library.install_aliases()
 from EMAN2 import *

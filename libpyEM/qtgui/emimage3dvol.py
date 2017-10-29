@@ -34,6 +34,7 @@ from __future__ import print_function
 
 
 
+from builtins import range
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from PyQt4.QtCore import Qt
 from OpenGL import GL,GLU,GLUT
