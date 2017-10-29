@@ -40,6 +40,7 @@ import copy
 import pickle
 import abc
 import numpy as np
+from future.utils import with_metaclass
 
 def main():
 
@@ -182,7 +183,7 @@ class SimpleAnnealer:
         T = 2*max(list(map(lambda E,E0=E0: abs(E-E0),Es)))
         return T
 
-class BaseAnnealer(object):
+class BaseAnnealer(with_metaclass(abc.ABCMeta, object)):
 
     # This software is maintained by perrygeo and is available at:
     #     https://github.com/perrygeo/simanneal/blob/master/simanneal/anneal.py
@@ -193,8 +194,6 @@ class BaseAnnealer(object):
     energy and make moves on a state.  The temperature schedule for
     annealing may be provided manually or estimated automatically.
     """
-
-    __metaclass__ = abc.ABCMeta
     Tmax = 25000.0
     Tmin = 2.5
     steps = 50000
