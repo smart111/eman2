@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import object
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from PyQt4.QtCore import Qt
 from OpenGL import GL,GLU,GLUT

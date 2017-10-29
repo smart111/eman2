@@ -31,6 +31,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import object
 from OpenGL import GL
 from PyQt4 import QtCore, QtGui
 from EMAN2 import Transform, Vec4f, Vec3f
