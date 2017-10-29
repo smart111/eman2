@@ -3,6 +3,7 @@ from __future__ import print_function
 
 # Author: James Michael Bell, jmbell@bcm.edu, 10/18/2015
 
+from builtins import object
 import matplotlib
 #matplotlib.use('Agg')
 #from Simplex import Simplex

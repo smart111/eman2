@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import object
 from PyQt4.QtCore import Qt
 from PyQt4 import QtGui,QtCore
 from EMAN2 import EMData, file_exists, gimme_image_dimensions3D,get_image_directory,EMUtil,base_name,gm_time_string

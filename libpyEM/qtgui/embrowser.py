@@ -31,6 +31,7 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307 USA
 #
 
+from builtins import object
 from EMAN2 import *
 from EMAN2jsondb import js_open_dict
 from PyQt4 import QtCore, QtGui

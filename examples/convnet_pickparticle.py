@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 # Muyuan July 2015
+from builtins import object
 from future import standard_library
 standard_library.install_aliases()
 import sys
