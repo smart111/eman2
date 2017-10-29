@@ -35,6 +35,7 @@ from __future__ import print_function
 
 # initial version of make3d
 
+from builtins import range
 from EMAN2 import *
 from EMAN2db import db_open_dict
 from copy import deepcopy
@@ -230,7 +231,7 @@ def main():
 	# The actual reconstruction
 
 	threads=[threading.Thread(target=reconstruct,args=(data[i::options.threads],recon,options.preprocess,options.pad,
-			options.fillangle,options.verbose-1)) for i in xrange(options.threads)]
+			options.fillangle,options.verbose-1)) for i in range(options.threads)]
 
 	if options.seedmap!=None :
 		seed=EMData(options.seedmap)
@@ -384,7 +385,7 @@ def initialize_data(inputfile,inputmodel,tltfile,pad,no_weights,preprocess):
 			exit(1)
 	else :
 		tmp=EMData()
-		for i in xrange(n_input):
+		for i in range(n_input):
 			tmp.read_image(inputfile,i,True)
 			#else : tmp=get_processed_image(inputfile,i,-1,preprocess,pad)
 

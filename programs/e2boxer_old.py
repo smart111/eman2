@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from EMAN2 import BoxingTools,gm_time_string,Transform, E2init, E2end, E2progress,db_open_dict,EMArgumentParser
 from EMAN2db import db_check_dict
 from EMAN2jsondb import *
@@ -1652,7 +1653,7 @@ class SwarmBoxer:
 				if len(self.profile) != len(box.profile): raise RuntimeError("This should never happen")
 
 				profile = box.profile
-				for j in xrange(0,len(self.profile)):
+				for j in range(0,len(self.profile)):
 					if profile[j] < self.profile[j]: self.profile[j] = profile[j]
 
 		if self.profile == None:
@@ -1916,7 +1917,7 @@ def histogram1d( data, nbin, presize=0 ) :
 	start = fmin - binsize*presize
 	region = [None]*nbin
 	hist = [None]*nbin
-	for i in xrange(nbin):
+	for i in range(nbin):
 		region[i] = start + (i+0.5)*binsize
 		hist[i] = 0
 
@@ -2757,7 +2758,7 @@ class GaussBoxer:
 		print("invert: ", self.invert)
 		print("gauss width: ", self.gauss_width)
 		print("variance: ", self.use_variance)
-		for i in xrange(npeak):
+		for i in range(npeak):
 			cx = peaks[3*i+1]
 			cy = peaks[3*i+2]
 
@@ -3008,7 +3009,7 @@ class GaussBoxer:
 		npeak = len(peaks)/3
 		print("npeak: ", npeak)
 		boxes = []
-		for i in xrange(npeak):
+		for i in range(npeak):
 			cx = peaks[3*i+1]
 			cy = peaks[3*i+2]
 
@@ -3277,9 +3278,9 @@ class CTFInspectorWidget(QtGui.QWidget):
 
 
 			if ((self.i_start is not None) and (self.i_stop is not None)):
-				sizeh = max([max(self.data[i][self.i_start:self.i_stop]) for i in xrange(len(self.data)-1)])
+				sizeh = max([max(self.data[i][self.i_start:self.i_stop]) for i in range(len(self.data)-1)])
 			else:
-				sizeh = max([max(self.data[i]) for i in xrange(len(self.data)-1)])
+				sizeh = max([max(self.data[i]) for i in range(len(self.data)-1)])
 
 
 			sizeh = float(sizeh)
@@ -3299,7 +3300,7 @@ class CTFInspectorWidget(QtGui.QWidget):
 
 			tickspacing = min(int(sizew/30)+1, 5)
 
-			for list_index in xrange(len(self.data)):
+			for list_index in range(len(self.data)):
 
 				p.setPen(color[list_index])
 				metrics = p.fontMetrics()
@@ -3308,7 +3309,7 @@ class CTFInspectorWidget(QtGui.QWidget):
 				p.drawText(w-wborder-fw/2, hborder+(list_index)*fh, str(labels[list_index]))
 
 
-				for index in xrange(self.i_start,self.i_stop):
+				for index in range(self.i_start,self.i_stop):
 
 
 					p.setPen(color[list_index])

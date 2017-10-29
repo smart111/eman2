@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from PyQt4.QtCore import Qt
 from OpenGL import GL,GLU,GLUT
@@ -1578,7 +1579,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 
 		progress = EMProgressDialog("Writing files", "abort", 0, len(self.data),None)
 		progress.show()
-		for i in xrange(0,len(self.data)):
+		for i in range(0,len(self.data)):
 			d = self.data[i]
 			if d == None: continue # the image has been excluded
 			progress.setValue(i)
@@ -2820,7 +2821,7 @@ class EMLightWeightParticleCache(EMMXDataCache):
 		'''
 
 		n = EMUtil.get_image_count(file_name)
-		data = [[file_name,i,[]] for i in xrange(n)]
+		data = [[file_name,i,[]] for i in range(n)]
 
 		return EMLightWeightParticleCache(data,len(data))
 

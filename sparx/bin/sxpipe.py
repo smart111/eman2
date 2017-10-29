@@ -33,6 +33,7 @@ from __future__ import print_function
 # ========================================================================================
 # Python Standard Libraries
 from __future__ import print_function
+from builtins import range
 import sys
 import os
 import argparse
@@ -95,7 +96,7 @@ def isac_substack(args):
 	# Retrieve original particle IDs of member particles listed in ISAC class average stack
 	n_img_processed = EMUtil.get_image_count(args.input_isac_class_avgs_path)
 	isac_substack_particle_id_list = []
-	for i_img in xrange(n_img_processed):
+	for i_img in range(n_img_processed):
 		isac_substack_particle_id_list += get_im(args.input_isac_class_avgs_path, i_img).get_attr('members')
 	isac_substack_particle_id_list.sort()
 	

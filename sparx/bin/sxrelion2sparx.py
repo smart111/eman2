@@ -41,6 +41,7 @@ from __future__ import print_function
 # 
 # ========================================================================================
 
+from builtins import range
 from past.builtins import cmp
 from EMAN2 import *
 from sparx import *
@@ -340,7 +341,7 @@ def main():
 					if micrograph_basename not in sparx_cter_dict:
 						sparx_cter_dict[micrograph_basename] = cter_entry
 						# file_sparx_cter.write('%12.6f %12.6f %12d %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %12.6f %s\n' % (cter_entry[0], cter_entry[1], cter_entry[2], cter_entry[3], cter_entry[4], cter_entry[5], cter_entry[6], cter_entry[7], cter_entry[8], cter_entry[9], cter_entry[10], cter_entry[11], cter_entry[12], cter_entry[13]))
-						for idx_cter in xrange(n_idx_cter - 1):
+						for idx_cter in range(n_idx_cter - 1):
 							file_sparx_cter.write("  %12.5g" % cter_entry[idx_cter])
 						file_sparx_cter.write("  %s\n" % cter_entry[-1])
 					else:

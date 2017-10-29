@@ -2,6 +2,7 @@
 from __future__ import print_function
 # average selected subset of particles
 
+from builtins import range
 from future import standard_library
 standard_library.install_aliases()
 from EMAN2 import *
@@ -45,7 +46,7 @@ def rotfnsym(avg,fsp,i,a,sym,masked,maxtilt,verbose):
 	xf = Transform()
 	xf.to_identity()
 	nsym=xf.get_nsym(sym)
-	for i in xrange(nsym):
+	for i in range(nsym):
 		c=b.process("xform",{"transform":xf.get_sym(sym,i)})
 		d=c.align("translational",masked)
 		avg.add_image(d)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
+from builtins import range
 from future import standard_library
 standard_library.install_aliases()
 import global_def
@@ -44,7 +45,7 @@ def calculate_list_of_independent_viper_run_indices_used_for_outlier_elimination
 																		  no_of_viper_runs_analyzed_together_from_user_options - 1)
 
 	criterion_measure = [0.0] * number_of_additional_combinations_for_this_viper_iteration
-	all_n_minus_1_combinations_taken_k_minus_1_at_a_time = list(itertools.combinations(range(no_of_viper_runs_analyzed_together - 1),
+	all_n_minus_1_combinations_taken_k_minus_1_at_a_time = list(itertools.combinations(list(range(no_of_viper_runs_analyzed_together - 1)),
 																  no_of_viper_runs_analyzed_together_from_user_options - 1))
 
 	no_of_processors = mpi_comm_size(MPI_COMM_WORLD)
@@ -345,7 +346,7 @@ def found_outliers(list_of_projection_indices, outlier_percentile, rviper_iter, 
 	subset, avg_diff_per_image, rotated_params = find_common_subset(projs, target_threshold = 0, symmetry_class = symc)
 
 	error_values_and_indices = []
-	for i in xrange(len(avg_diff_per_image)):
+	for i in range(len(avg_diff_per_image)):
 		error_values_and_indices.append([avg_diff_per_image[i], i])
 	del subset, avg_diff_per_image
 
@@ -358,7 +359,7 @@ def found_outliers(list_of_projection_indices, outlier_percentile, rviper_iter, 
 		outlier_index_threshold = outlier_percentile * (len(error_values_and_indices) - 1)/ 100.0
 	elif outlier_index_threshold_method == "angle_measure":
 		error_values = [i[0] for i in error_values_and_indices]
-		outlier_index_threshold = min(range(len(error_values)), key=lambda i: abs(error_values[i]-angle_threshold))
+		outlier_index_threshold = min(list(range(len(error_values))), key=lambda i: abs(error_values[i]-angle_threshold))
 	elif outlier_index_threshold_method == "use all images":
 		outlier_index_threshold = len(error_values_and_indices)
 
@@ -372,7 +373,7 @@ def found_outliers(list_of_projection_indices, outlier_percentile, rviper_iter, 
 	reversed_sorted_index_outliers = copy.deepcopy(index_outliers)
 	reversed_sorted_index_outliers.sort(reverse=True)
 
-	for k in xrange(len(projs)):
+	for k in range(len(projs)):
 		for l in reversed_sorted_index_outliers:
 			del rotated_params[k][l]
 
@@ -534,7 +535,7 @@ def get_already_processed_viper_runs(run_get_already_processed_viper_runs):
 			# dirs = filter(lambda x:'run' in x, dirs)
 			import re
 			dirs = [x for x in dirs if re.search('run\d\d\d$', x)]
-			get_already_processed_viper_runs.r_permutation = range(len(dirs))
+			get_already_processed_viper_runs.r_permutation = list(range(len(dirs)))
 			random.shuffle(get_already_processed_viper_runs.r_permutation)
 			print(str(get_already_processed_viper_runs.r_permutation))
 		get_already_processed_viper_runs.counter += 1
@@ -817,7 +818,7 @@ output_directory: directory name into which the output files will be written.  I
 			print("XXXXXXXXXXXXXXXXX")
 			print("Number of projections (in loop): " + str(len(all_projs)))
 			print("XXXXXXXXXXXXXXXXX")
-			subset = range(len(all_projs))
+			subset = list(range(len(all_projs)))
 		else:
 			all_projs = None
 			subset = None

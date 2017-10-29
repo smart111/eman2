@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from future import standard_library
 standard_library.install_aliases()
 ploticon = [
@@ -778,7 +779,7 @@ lc is the cursor selection point in plot coords"""
 
 		# We select one point if it's within 5 pixels, then up to 4 more points within 3 pixels
 		self.selected=[srt[0]]
-		for i in xrange(1,5) :
+		for i in range(1,5) :
 			if r[srt[i]]<3 : self.selected.append(srt[i])
 
 		y0=35
@@ -788,7 +789,7 @@ lc is the cursor selection point in plot coords"""
 			try:
 				cmts = comments[p].split(";")
 
-				for i in xrange(len(cmts)/2):
+				for i in range(len(cmts)/2):
 					imn = int(cmts[2*i])
 					imf = cmts[2*i+1]
 					ptclim=EMData(imf,imn)
@@ -1203,7 +1204,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 			statsArray = []
 			data = self.data["data"]
 			# Compute mean angle and radius
-			for i in xrange(len(data[0])):
+			for i in range(len(data[0])):
 				dist = data[1][i]**2 + self.clusterorigin_rad**2 - 2*data[1][i]*self.clusterorigin_rad*math.cos(data[0][i] - self.clusterorigin_theta)
 				if dist < self.clusterradius:
 					# We need to compute mean of angle
@@ -1403,7 +1404,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 				ax.set_rmax(self.pparm[i][7])
 
 			if self.datap:
-				for i in xrange(len(theta)):
+				for i in range(len(theta)):
 					ax.annotate(" "+str(self.datap[i]),(theta[i],r[i]),color=self.datalabelscolor,weight='bold',horizontalalignment='left')
 
 			canvas.draw()
@@ -1940,7 +1941,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 				QtGui.QMessageBox.warning(self,"Error", "No filenames stored in {}".format(name))
 				return
 
-			for r in xrange(len(comments)):
+			for r in range(len(comments)):
 				try: imn,imf=comments[r].split(";")[:2]
 				except:
 					QtGui.QMessageBox.warning(self,"Error", "Invalid filename {} in {}, line {}".format(comments[r],name,r))
@@ -1967,7 +1968,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		nrow=len(data[0])
 
 		if axes=="all":
-			axes=range(ncol)
+			axes=list(range(ncol))
 		else:
 			try:
 				axes=[int(i) for i in axes.split(",")]
@@ -2001,7 +2002,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		resultc=[[] for j in range(nseg)]							# nseg lists of comments
 		for r in range(nrow):
 			s=imdata[r]["class_id"]
-			for c in xrange(ncol):
+			for c in range(ncol):
 				results[s][c].append(data[c][r])
 			if comments!=None: resultc[s].append(comments[r])
 
@@ -2025,7 +2026,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		nrow=len(data[0])
 
 		if axes == "all":
-			axes=range(ncol)
+			axes=list(range(ncol))
 		else:
 			try:
 				axes=[int(i) for i in axes.split(",")]
@@ -2091,7 +2092,7 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		resultc=[[] for j in range(nseg)]							# nseg lists of comments
 		for r in range(nrow):
 			s=imdata[r]["class_id"]
-			for c in xrange(ncol):
+			for c in range(ncol):
 				results[s][c].append(data[c][r])
 			if comments!=None: resultc[s].append(comments[r])
 
@@ -2174,7 +2175,7 @@ class DragListWidget(QtGui.QListWidget):
 
 				if data==None:					# first good line
 					n=len(rex.findall(s))		# count numbers on the line
-					data=[ [] for i in xrange(n)]		# initialize empty data arrays
+					data=[ [] for i in range(n)]		# initialize empty data arrays
 
 				# parses out each number from each line and puts it in our list of lists
 				for i,f in enumerate(rex.findall(s)):
@@ -2224,9 +2225,9 @@ class DragListWidget(QtGui.QListWidget):
 
 		# create the string representation of the data set
 		sdata=StringIO()		# easier to write as if to a file
-		for y in xrange(len(data[0])):
+		for y in range(len(data[0])):
 			sdata.write("%1.8g"%data[axes[0]][y])
-			for x in xrange(1,len(axes)):
+			for x in range(1,len(axes)):
 				sdata.write("\t%1.8g"%data[axes[x]][y])
 			sdata.write("\n")
 
@@ -2620,7 +2621,7 @@ class EMPlot2DInspector(QtGui.QWidget):
 		rngn0=int(val)
 		rngn1=int(self.nbox.getValue())
 		rngstp=int(self.stepbox.getValue())
-		rng=range(rngn0,rngn0+rngstp*rngn1,rngstp)
+		rng=list(range(rngn0,rngn0+rngstp*rngn1,rngstp))
 		for i,k in enumerate(sorted(self.target().visibility.keys())) :
 			self.target().visibility[k]=i in rng
 		self.target().full_refresh()
@@ -2678,10 +2679,10 @@ class EMPlot2DInspector(QtGui.QWidget):
 
 		f = open(fname,"w")
 
-		for i in xrange(0,len(lines)):
+		for i in range(0,len(lines)):
 			lines[i] = lines[i].strip()
 
-		for i in xrange(len(lines)-1,-1,-1):
+		for i in range(len(lines)-1,-1,-1):
 			if lines[i] in names:
 				lines.pop(i)
 
@@ -2701,7 +2702,7 @@ class EMPlot2DInspector(QtGui.QWidget):
 			lines = []
 		f = open(fname,"w")
 
-		for i in xrange(0,len(lines)):
+		for i in range(0,len(lines)):
 			lines[i] = lines[i].strip()
 
 		for name in names:
@@ -2751,7 +2752,7 @@ class EMPlot2DInspector(QtGui.QWidget):
 		for name in names :
 			data=self.target().data[name]
 
-			for i in xrange(len(data[0])):
+			for i in range(len(data[0])):
 				out.write("%g\t%g\n"%(data[xcol][i],data[ycol][i]))
 
 		out=None
@@ -2778,7 +2779,7 @@ class EMPlot2DInspector(QtGui.QWidget):
 			out=open(name2,"w")
 			xcol=self.slidex.value()
 			ycol=self.slidey.value()
-			for i in xrange(len(data[0])):
+			for i in range(len(data[0])):
 				out.write("%g\t%g\n"%(data[xcol][i],data[ycol][i]))
 
 			print("Wrote ",name2)

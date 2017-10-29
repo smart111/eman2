@@ -31,6 +31,7 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307 USA
 #
 
+from builtins import range
 from EMAN2 import *
 from emapplication import EMApp
 from emdataitem3d import EMDataItem3D, EMIsosurface
@@ -1815,7 +1816,7 @@ class TomoSegInspector(QtGui.QWidget):
 	def _recursiveupdatetreeselvis(self, item):
 		item.setSelectionStateBox()
 		item.getVisibleState()
-		for childidx in xrange(item.childCount()):
+		for childidx in range(item.childCount()):
 			self._recursiveupdatetreeselvis(item.child(childidx))
 			
 	def updateTreeSelVis(self, selecteditem=None):

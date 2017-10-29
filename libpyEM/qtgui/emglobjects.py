@@ -31,6 +31,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from EMAN2 import *
 from OpenGL import GL, GLU, GLUT
 from OpenGL.GL import *

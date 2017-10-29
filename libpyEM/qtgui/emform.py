@@ -32,6 +32,7 @@ from __future__ import print_function
 #
 
 
+from builtins import range
 from emdatastorage import ParamDef
 from PyQt4 import QtGui,QtCore
 from PyQt4.QtCore import Qt
@@ -302,7 +303,7 @@ class EMFileTable(QtGui.QTableWidget):
 		self.busy = 1
 		for key,value in list(self.animated_columns.items()):
 			if value == -1:
-				for i in xrange(0,self.columnCount()):
+				for i in range(0,self.columnCount()):
 					if (str(self.horizontalHeaderItem(i).text())) == key:
 						self.animated_columns[key] = i
 						break
@@ -316,7 +317,7 @@ class EMFileTable(QtGui.QTableWidget):
 		
 		for key,value in list(self.animated_columns.items()):
 			cd = self.column_data[value-1]
-			for i in xrange(0,len(self.listed_names)):
+			for i in range(0,len(self.listed_names)):
 				
 				item = self.item(i,value)
 				item.setText(cd.function(self.convert_text(str(self.item(i,0).text()))))
@@ -483,7 +484,7 @@ class EMFileTable(QtGui.QTableWidget):
 			item.setToolTip(cd.tooltip)
 			
 			self.setHorizontalHeaderItem(col,item)
-			for i in xrange(0,len(self.listed_names)):
+			for i in range(0,len(self.listed_names)):
 				try : item = QtGui.QTableWidgetItem(cd.function(self.listed_names[i]))
 				except : item = QtGui.QTableWidgetItem("-")
 				item.setTextAlignment(QtCore.Qt.AlignHCenter)
@@ -512,7 +513,7 @@ class EMFileTable(QtGui.QTableWidget):
 		flag3 = Qt.ItemFlags(Qt.ItemIsEnabled)
 		flag4 = Qt.ItemFlags(Qt.ItemIsEditable)
 		new_items = []
-		for i in xrange(0,len(list_of_names)):
+		for i in range(0,len(list_of_names)):
 			if self.icon != None: item = QtGui.QTableWidgetItem(self.icon,self.display_name(list_of_names[i]))
 			else: item = QtGui.QTableWidgetItem(self.display_name(list_of_names[i]))
 			item.setFlags(flag2|flag3)
@@ -925,7 +926,7 @@ def get_table_items_in_column(table_widget,column):
 	'''
 	r = table_widget.rowCount()
 	entries = []
-	for i in xrange(0,r):
+	for i in range(0,r):
 		entries.append(table_widget.item(i,column))
 		
 	return entries
@@ -1023,7 +1024,7 @@ class EMEmanStrategyWidget(QtGui.QWidget):
 		widget.setToolTip(data[0])
 		params = []
 		tmp_params = []
-		for i in xrange(1,len(data),3):
+		for i in range(1,len(data),3):
 			vartype = data[i+1]
 			
 			if vartype in self.auto_incorporate:

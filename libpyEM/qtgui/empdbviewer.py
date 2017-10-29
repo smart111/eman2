@@ -31,6 +31,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from EMAN2 import PDBReader, get_image_directory
 from libpyGLUtils2 import *
 from OpenGL.GL import *

@@ -33,6 +33,7 @@ from __future__ import print_function
 #
 #
 
+from builtins import range
 from EMAN2 import *
 import os, math
 from EMAN2jsondb import JSTask,jsonclasses
