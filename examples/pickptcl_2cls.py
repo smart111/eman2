@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 from __future__ import print_function
 # Muyuan Chen 2017-03
+from future import standard_library
+standard_library.install_aliases()
 from EMAN2 import *
 import numpy as np
 import threading
-import Queue
+import queue
 def main():
 	
 	usage=""" Same as the ConvNet boxer in e2boxer.py, but identifies two classes of particles. Only command line options are available. Note the hyper-parameters may not be optimized...
@@ -392,7 +394,7 @@ class boxerConvNet():
 			return
 		
 		#### now start autoboxing...
-		jsd=Queue.Queue(0)
+		jsd=queue.Queue(0)
 		NTHREADS=max(nthreads+1,2)
 		thrds=[threading.Thread(target=autobox_worker,args=(jsd,job)) for job in jobs]
 		thrtolaunch=0

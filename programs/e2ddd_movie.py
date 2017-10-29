@@ -32,6 +32,8 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 #
 
+from future import standard_library
+standard_library.install_aliases()
 from EMAN2 import *
 #from Simplex import Simplex
 from numpy import *
@@ -40,7 +42,7 @@ import sys
 from sys import argv
 from time import sleep,time
 import threading
-import Queue
+import queue
 import numpy as np
 from sklearn import linear_model
 from scipy import optimize
@@ -335,7 +337,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 
 			print("{} frames read {} x {}".format(n,nx,ny))
 
-			ccfs=Queue.Queue(0)
+			ccfs=queue.Queue(0)
 			#outim=Queue.Queue(0)
 
 			# prepare image data (outim) by clipping and FFT'ing all tiles (this is threaded as well)
@@ -367,7 +369,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 
 			# create threads
 			thds=[]
-			peak_locs=Queue.Queue(0)
+			peak_locs=queue.Queue(0)
 			i=-1
 			for ima in range(n-1):
 				for imb in range(ima+1,n):

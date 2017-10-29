@@ -29,11 +29,13 @@ from __future__ import print_function
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  2111-1307 USA
 #
 #
+from future import standard_library
+standard_library.install_aliases()
 from EMAN2 import *
 import numpy as np
 #from multiprocessing import Pool
 import threading
-from Queue import Queue
+from queue import Queue
 #from EMAN2jsondb import JSTask
 import time
 import json
