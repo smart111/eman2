@@ -1544,8 +1544,8 @@ def print_slice(input, iz=0):
 			if ((ix + 1) % 5 == 0):
 				line.append("\n   ")
 				line.append("      ")
-	    	line.append("\n")
-	    	if(nx%5 != 0): line.append("\n")
+			line.append("\n")
+			if(nx%5 != 0): line.append("\n")
 	print("".join(line))
 
 def print_image(input):
@@ -1619,8 +1619,8 @@ def print_image_slice(input, iz=0):
 			if ((ix + 1) % 5 == 0):
 				line.append("\n   ")
 				line.append("      ")
-	    	line.append("\n")
-	    	if(nx%5 != 0): line.append("\n")
+			line.append("\n")
+			if(nx%5 != 0): line.append("\n")
 	print("".join(line))
 
 def print_image_slice_3d(input, num=0,direction="z"):
@@ -1648,8 +1648,8 @@ def print_image_slice_3d(input, num=0,direction="z"):
 				if ((iy + 1) % 5 == 0):
 					line.append("\n   ")
 					line.append("      ")
-	    		line.append("\n")
-	    		if(ny%5 != 0): line.append("\n")
+				line.append("\n")
+				if(ny%5 != 0): line.append("\n")
 		print("".join(line))
 	elif(direction=="y"):
 		#print "yyy"
@@ -1664,8 +1664,8 @@ def print_image_slice_3d(input, num=0,direction="z"):
 				if ((ix + 1) % 5 == 0):
 					line.append("\n   ")
 					line.append("      ")
-	    		line.append("\n")
-	    		if(nx%5 != 0): line.append("\n")
+				line.append("\n")
+				if(nx%5 != 0): line.append("\n")
 		print("".join(line))
 	else:
 		#print "zzzz"
@@ -1680,8 +1680,8 @@ def print_image_slice_3d(input, num=0,direction="z"):
 				if ((ix + 1) % 5 == 0):
 					line.append("\n   ")
 					line.append("      ")
-	    		line.append("\n")
-	    		if(nx%5 != 0): line.append("\n")
+				line.append("\n")
+				if(nx%5 != 0): line.append("\n")
 		print("".join(line))
 
 
@@ -1764,9 +1764,9 @@ def read_spider_doc(fnam):
 			if(line[5:6] == " "): ibeg = 6
 			else:  ibeg = 7
 			for irec in xrange(atoi(line[ibeg:ibeg+2])):
-			 	start= ibeg+2+irec*12
-			 	end  = ibeg+2+(irec+1)*12
-			 	line_data.append(atof(line[start:end]))
+				start= ibeg+2+irec*12
+				end  = ibeg+2+(irec+1)*12
+				line_data.append(atof(line[start:end]))
 			data.append(line_data)
 			line = inf.readline()
 	return data
@@ -1960,7 +1960,7 @@ def reconstitute_mask(image_mask_applied_file, new_mask_file, save_file_on_disk 
 		image_mask_applied = image_mask_applied_file
 	if type(new_mask_file) == bytes:
 		new_mask = get_im( new_mask_file )
-        elif type(new_mask_file) == int or type( new_mask_file ) == types.floatType:
+	elif type(new_mask_file) == int or type( new_mask_file ) == types.floatType:
 		if nima > 1:
 			e = image_mask_applied[0]
 			nx = e.get_xsize()
