@@ -355,20 +355,20 @@ def main():
 		with open( options.path + '/' + id + "_y_total.txt", 'w' ) as outytotalfile: outytotalfile.writelines( [ str(y) +'\n' for y in ytotals ] )	
 		with open( options.path + '/' + id + "_r_total.txt", 'w' ) as outrtotalfile: outrtotalfile.writelines( [ str(r) +'\n' for r in rtotals ] )
 
-	plotdata(options, figx_vals, tag='x', title='Motion in X', xlabel='Frame number', ylabel="Translation in X (" + u"\u212B" + ")")
-	plotdata(options, figy_vals, tag='y', title='Motion in Y', xlabel='Frame number', ylabel="Translation in Y (" + u"\u212B" + ")")
-	plotdata(options, figr_vals, tag='r', title='Motion |r|', xlabel='Frame number', ylabel="Translation |r| (" + u"\u212B" + ")")
-	plotdata(options, figy_vals, tag='x_vs_y', title='Motion in X vs Y', xlabel="Translation in X (" + u"\u212B" + ")", ylabel="Translation in Y (" + u"\u212B" + ")", altxaxisdata=figx_vals)
+	plotdata(options, figx_vals, tag='x', title='Motion in X', xlabel='Frame number', ylabel="Translation in X (" + "\u212B" + ")")
+	plotdata(options, figy_vals, tag='y', title='Motion in Y', xlabel='Frame number', ylabel="Translation in Y (" + "\u212B" + ")")
+	plotdata(options, figr_vals, tag='r', title='Motion |r|', xlabel='Frame number', ylabel="Translation |r| (" + "\u212B" + ")")
+	plotdata(options, figy_vals, tag='x_vs_y', title='Motion in X vs Y', xlabel="Translation in X (" + "\u212B" + ")", ylabel="Translation in Y (" + "\u212B" + ")", altxaxisdata=figx_vals)
 
 	fig,ax=resetplot()
 
-	plotavgdata(options, xavgs, angles, xerrors, tag='x_avgs', title='Average X motion per image', xlabel='Tilt angle (degrees)', ylabel="Average translation(" + u"\u212B" + ")", figsize=(10,6))
-	plotavgdata(options, yavgs, angles, yerrors, tag='y_avgs', title='Average Y motion per image', xlabel='Tilt angle (degrees)', ylabel="Average translation(" + u"\u212B" + ")", figsize=(10,6))
-	plotavgdata(options, ravgs, angles, rerrors, tag='r_avgs', title='Average |r| motion per image', xlabel='Tilt angle (degrees)', ylabel="Average translation(" + u"\u212B" + ")", figsize=(10,6))
+	plotavgdata(options, xavgs, angles, xerrors, tag='x_avgs', title='Average X motion per image', xlabel='Tilt angle (degrees)', ylabel="Average translation(" + "\u212B" + ")", figsize=(10,6))
+	plotavgdata(options, yavgs, angles, yerrors, tag='y_avgs', title='Average Y motion per image', xlabel='Tilt angle (degrees)', ylabel="Average translation(" + "\u212B" + ")", figsize=(10,6))
+	plotavgdata(options, ravgs, angles, rerrors, tag='r_avgs', title='Average |r| motion per image', xlabel='Tilt angle (degrees)', ylabel="Average translation(" + "\u212B" + ")", figsize=(10,6))
 	
-	plotavgdata(options, xtotals, angles, xerrors, tag='x_total', title='Total X motion per image', xlabel='Tilt angle (degrees)', ylabel="Average translation(" + u"\u212B" + ")", figsize=(10,6))
-	plotavgdata(options, ytotals, angles, yerrors, tag='y_total', title='Total Y motion per image', xlabel='Tilt angle (degrees)', ylabel="Average translation(" + u"\u212B" + ")", figsize=(10,6))
-	plotavgdata(options, rtotals, angles, rerrors, tag='r_total', title='Total |r| motion per image', xlabel='Tilt angle (degrees)', ylabel="Average translation(" + u"\u212B" + ")", figsize=(10,6))
+	plotavgdata(options, xtotals, angles, xerrors, tag='x_total', title='Total X motion per image', xlabel='Tilt angle (degrees)', ylabel="Average translation(" + "\u212B" + ")", figsize=(10,6))
+	plotavgdata(options, ytotals, angles, yerrors, tag='y_total', title='Total Y motion per image', xlabel='Tilt angle (degrees)', ylabel="Average translation(" + "\u212B" + ")", figsize=(10,6))
+	plotavgdata(options, rtotals, angles, rerrors, tag='r_total', title='Total |r| motion per image', xlabel='Tilt angle (degrees)', ylabel="Average translation(" + "\u212B" + ")", figsize=(10,6))
 
 	E2end(logger)
 	

@@ -88,7 +88,7 @@ class Test_Util_diff_between_matrix_of_3D_parameters_angles(unittest.TestCase):
 		control = self.internal_calculate_avg_diff(params, matrix_rot)
 		self.assertEqual(len(results), len(control))
 		for i in range(len(results)):
-			self.assertAlmostEquals( results[i], control[i], delta=1.0 )
+			self.assertAlmostEqual( results[i], control[i], delta=1.0 )
 
 	def test_four_configurations(self):
 		"""test_four_configurations........................"""
@@ -104,7 +104,7 @@ class Test_Util_diff_between_matrix_of_3D_parameters_angles(unittest.TestCase):
 		control = self.internal_calculate_avg_diff(params, matrix_rot)
 		self.assertEqual(len(results), len(control))
 		for i in range(len(results)):
-			self.assertAlmostEquals( results[i], control[i], delta=1.0 )
+			self.assertAlmostEqual( results[i], control[i], delta=1.0 )
 
 
 def test_main():

@@ -169,7 +169,7 @@ class EMRuler(EMShapeBase):
 		scaledapix = self.getRulerAPix()*self.getRulerScaling()
 		length = self.getLength()*scaledapix
 		smallbar = 2*scaledapix*self.barwidth
-		self.boundingboxsize = 'length='+str(round(length, 2))+u'\u212B'+';  smallbar='+str(round(smallbar, 2))+u'\u212B'+';  apix='+str(round(self.getRulerAPix(), 2))+u'\u212B'
+		self.boundingboxsize = 'length='+str(round(length, 2))+'\u212B'+';  smallbar='+str(round(smallbar, 2))+'\u212B'+';  apix='+str(round(self.getRulerAPix(), 2))+'\u212B'
 		if self.item_inspector: self.item_inspector.updateMetaData()
 		
 	def getRulerAPix(self):
@@ -283,7 +283,7 @@ class EMCube(EMShapeBase):
 		
 	def setSize(self, size):
 		self.size = size
-		self.boundingboxsize = str(round(size, 2))+u'\u00B3'
+		self.boundingboxsize = str(round(size, 2))+'\u00B3'
 		self.xi = -size/2
 		self.yi = -size/2
 		self.zi = -size/2
@@ -389,7 +389,7 @@ class EMSphere(EMShapeBase):
 	
 	def setRadius(self, radius):
 		self.radius = radius
-		self.boundingboxsize = str(round(radius, 2))+u'\u00B3'
+		self.boundingboxsize = str(round(radius, 2))+'\u00B3'
 		self.slices = int(radius)
 		self.stacks = int(radius)
 		if self.item_inspector: self.item_inspector.updateMetaData()

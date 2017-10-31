@@ -54,7 +54,7 @@ for i in range(ncls):
 	
 
 print("class particle counts range from {} - {} in {} classes".format(min(counts),max(counts),len(counts)))
-ntk=int(input("How many particles to keep per orientation (at most): "))
+ntk=int(eval(input("How many particles to keep per orientation (at most): ")))
 
 # even and odd .lst files referencing original particles
 lsx=[LSXFile(even[0]["class_ptcl_src"]),LSXFile( odd[0]["class_ptcl_src"])]

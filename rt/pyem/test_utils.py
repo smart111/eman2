@@ -151,8 +151,8 @@ class TestUtils(unittest.TestCase):
         n1 = 10
         n2 = 20
         f1 = Util.get_frand(n1, n2)
-        self.assert_(n1 <= f1)
-        self.assert_(f1 <= n2)
+        self.assertTrue(n1 <= f1)
+        self.assertTrue(f1 <= n2)
         
     def test_get_gauss_rand(self):
         """test get_gauss_rand() function ..................."""

@@ -1,2 +1,2 @@
 from __future__ import print_function
-from libpy.sparx import *
+from .libpy.sparx import *

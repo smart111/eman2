@@ -140,7 +140,7 @@ class TestVec(unittest.TestCase):
 
         v3 *= 3
         self.assertEqual(v6, v3)
-        self.assert_(v3 != v2)
+        self.assertTrue(v3 != v2)
 
         v3 *= 0
         v7 = v2 * 1

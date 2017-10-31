@@ -633,7 +633,7 @@ class E2TomoBoxerGuiTask(WorkFlowTask):
 		params.append(p)
 		pylong = ParamDef(name="yshort",vartype="boolean",desc_short="yshort",desc_long="Use Z axis as normal",property=None,defaultunits=db.get("yshort",dfl=True),choices=None)
 		pinmem = ParamDef(name="inmemory",vartype="boolean",desc_short="inmemory",desc_long="Load the tomo into memory",property=None,defaultunits=db.get("inmemory",dfl=True),choices=None)
-		papix = ParamDef(name="apix",vartype="float",desc_short=u"\u212B per pixel", desc_long="Angstroms per pixel",property=None,defaultunits=db.get("apix",dfl=1.0),choices=None )
+		papix = ParamDef(name="apix",vartype="float",desc_short="\u212B per pixel", desc_long="Angstroms per pixel",property=None,defaultunits=db.get("apix",dfl=1.0),choices=None )
 		params.append([pylong, pinmem, papix])
 #		db = db_open_dict(self.form_db_name)
 #		params.append(ParamDef(name="interface_boxsize",vartype="int",desc_short="Box size",desc_long="An integer value",property=None,defaultunits=db.get("interface_boxsize",dfl=128),choices=[]))

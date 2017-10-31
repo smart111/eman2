@@ -131,19 +131,19 @@ def main():
 
 	if options.unitsx:
 		if options.unitsx=='angstroms' or options.unitsx=='Angstroms' or options.unitsx=="A" or options.unitsx=="ANGSTROMS":
-			options.unitsx = u"\u212B"
+			options.unitsx = "\u212B"
 		if options.unitsx=='1/angstroms' or options.unitsx=='1/Angstroms' or options.unitsx=="1/A" or options.unitsx=="1/ANGSTROMS":
-			options.unitsx = '1/'+u"\u212B"
+			options.unitsx = '1/'+"\u212B"
 		if options.unitsx=='microns' or options.unitsx=='mu' or options.unitsx=="Microns" or options.unitsx=="mu" or options.unitsx=="MICRONS" or options.unitsx=="MU" :
-			options.unitsx = u"\u00B5"			
+			options.unitsx = "\u00B5"			
 
 	if options.unitsy:
 		if options.unitsy=='angstroms' or options.unitsy=='Angstroms' or options.unitsy=="A" or options.unitsy=="ANGSTROMS":
-			options.unitsy = u"\u212B"
+			options.unitsy = "\u212B"
 		if options.unitsy=='1/angstroms' or options.unitsy=='1/Angstroms' or options.unitsy=="1/A" or options.unitsy=="1/ANGSTROMS":
-			options.unitsy = '1/'+u"\u212B"
+			options.unitsy = '1/'+"\u212B"
 		if options.unitsy=='microns' or options.unitsy=='mu' or options.unitsy=="Microns" or options.unitsy=="mu" or options.unitsy=="MICRONS" or options.unitsy=="MU" :
-			options.unitsy = u"\u00B5"	
+			options.unitsy = "\u00B5"	
 
 	xaxes={}
 	yaxes={}

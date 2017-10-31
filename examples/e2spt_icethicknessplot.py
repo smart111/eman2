@@ -556,7 +556,7 @@ def plotter(options,xaxis,yaxis,xaxislabel,yaxislabel,title,pad=0,squareplot=Fal
 		deltazlabel = "ice thickness = " + str( deltaz )
 	
 	if 'angstroms' in xaxislabel:
-		deltazlabel +=  u"\u00c5"
+		deltazlabel +=  "\u00c5"
 	
 	#if 'angstroms' in xaxislabel:
 	#	deltazlabel +=  r"$\Angstrom$"

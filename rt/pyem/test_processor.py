@@ -1368,7 +1368,7 @@ class TestProcessor(unittest.TestCase):
                 for j in lst:
                     for y in range(a.get_ysize()):
                         for z in range(a.get_zsize()):
-                            self.failIf(a.get(nx-1-j+offset,y,z) != 1)
+                            self.assertFalse(a.get(nx-1-j+offset,y,z) != 1)
         # Y FLIPPING		
         ims = [EMData(32,32,1),EMData(32,32,32),EMData(33,33,1),EMData(33,33,33)]
         for a in ims:
@@ -1385,7 +1385,7 @@ class TestProcessor(unittest.TestCase):
                 for j in lst:
                     for x in range(a.get_xsize()):
                         for z in range(a.get_zsize()):
-                            self.failIf(a.get(x,ny-1-j+offset,z) != 1)
+                            self.assertFalse(a.get(x,ny-1-j+offset,z) != 1)
         
         # Z FLIPPING				
         ims = [EMData(32,32,32),EMData(33,33,33)]
@@ -1403,7 +1403,7 @@ class TestProcessor(unittest.TestCase):
                 for j in lst:
                     for x in range(a.get_xsize()):
                         for y in range(a.get_ysize()):
-                            self.failIf(a.get(x,y,nz-1-j+offset) != 1)				
+                            self.assertFalse(a.get(x,y,nz-1-j+offset) != 1)				
         
         # MIRROR TRANSFORMS IS THE SAME AS HORIZONTAL FLIP
         t = Transform()
@@ -1721,11 +1721,11 @@ class TestProcessor(unittest.TestCase):
                     elif val < 0:
                         mx = e.calc_min_location()
                     
-                    self.failIf(mx[0] != x/2)
-                    self.failIf(mx[1] != y/2)
+                    self.assertFalse(mx[0] != x/2)
+                    self.assertFalse(mx[1] != y/2)
                     
                     if z != 1:
-                        self.failIf(mx[2] != z/2)
+                        self.assertFalse(mx[2] != z/2)
 
     def test_xform_centeracf(self):
         """test xform.centeracf processor ..................."""

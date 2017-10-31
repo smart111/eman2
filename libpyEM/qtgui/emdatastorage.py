@@ -890,8 +890,8 @@ class Record(DictMixin):
 		"A string representation of the record"
 		ret=["%s (%s)\n"%(str(self.recid),self.rectype)]
 		for i,j in list(self.items()): 
-			ret.append(u"%12s:	%s\n"%(str(i),str(j)))
-		return u"".join(ret)
+			ret.append("%12s:	%s\n"%(str(i),str(j)))
+		return "".join(ret)
 	
 	def __str__(self):
 		return self.__unicode__().encode('utf-8')

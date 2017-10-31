@@ -779,7 +779,7 @@ class TestMrcIO(ImageIOTester):
 		os.unlink(outfile)
 		os.unlink(infile)
 		
-		self.assert_(nlabels > label_i)
+		self.assertTrue(nlabels > label_i)
 		self.assertEqual(d[labelname], label)
 		
 	def no_test_write_transform_mrc(self):

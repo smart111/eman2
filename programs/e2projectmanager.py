@@ -1849,7 +1849,7 @@ class PMGUIWidget(QtGui.QScrollArea):
 
 		posargs = []
 		# now do the widgets which are not listed in the above list
-		for name,widget in widgethash.items():
+		for name,widget in list(widgethash.items()):
 			if isinstance(widget, PMHeaderWidget):
 				continue
 			if isinstance(widget, PMBoolWidget):

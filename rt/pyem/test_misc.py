@@ -57,7 +57,7 @@ class TestPixel(unittest.TestCase):
 
         p3 = Pixel(1, 2, 3, 2.3)
         p4 = Pixel(11, 2, 3, 2.3)
-        self.assert_(p3 != p4)
+        self.assertTrue(p3 != p4)
 
         self.assertEqual(p1.x, x)
         self.assertEqual(p1.y, y)

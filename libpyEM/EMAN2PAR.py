@@ -423,8 +423,8 @@ if sys.version_info >= (3, 0):
 	from xmlrpc.server import SimpleXMLRPCServer
 	from xmlrpc.server import SimpleXMLRPCRequestHandler
 else:
-	from SimpleXMLRPCServer import SimpleXMLRPCServer
-	from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
+	from xmlrpc.server import SimpleXMLRPCServer
+	from xmlrpc.server import SimpleXMLRPCRequestHandler
 
 
 def runXMLRPCServer(port,verbose):
