@@ -1454,7 +1454,7 @@ class TestEMData(unittest.TestCase):
 
         for i in range(ny):
             for j in range(0, nx2, 2):
-                c1 = array[i][j/2]
+                c1 = array[i][j//2]
                 testlib.assertfloat(self, fft.get_value_at(j,i), c1.real)
                 testlib.assertfloat(self, fft.get_value_at(j+1,i), c1.imag)
 
@@ -1462,7 +1462,7 @@ class TestEMData(unittest.TestCase):
         e *= 2
         for i in range(ny):
             for j in range(0, nx2, 2):
-                c1 = array[i][j/2]
+                c1 = array[i][j//2]
                 testlib.assertfloat(self, fft.get_value_at(j,i), c1.real)
                 testlib.assertfloat(self, fft.get_value_at(j+1,i), c1.imag)
 
@@ -1470,7 +1470,7 @@ class TestEMData(unittest.TestCase):
         array *= 2
         for i in range(ny):
             for j in range(0, nx2, 2):
-                c1 = array[i][j/2]
+                c1 = array[i][j//2]
                 testlib.assertfloat(self, fft.get_value_at(j,i), c1.real)
                 testlib.assertfloat(self, fft.get_value_at(j+1,i), c1.imag)
 
@@ -1498,7 +1498,7 @@ class TestEMData(unittest.TestCase):
         for i in range(nz):
             for j in range(ny):
                 for k in range(0,nx2,2):
-                    c1 = array[i][j][k/2]
+                    c1 = array[i][j][k//2]
                     testlib.assertfloat(self, fft.get_value_at(k,j,i), c1.real)
                     testlib.assertfloat(self, fft.get_value_at(k+1,j,i), c1.imag)
 
@@ -1506,7 +1506,7 @@ class TestEMData(unittest.TestCase):
         for i in range(nz):
             for j in range(ny):
                 for k in range(0,nx2,2):
-                    c1 = array[i][j][k/2]
+                    c1 = array[i][j][k//2]
                     testlib.assertfloat(self, fft.get_value_at(k,j,i), c1.real)
                     testlib.assertfloat(self, fft.get_value_at(k+1,j,i), c1.imag)
 
@@ -1516,7 +1516,7 @@ class TestEMData(unittest.TestCase):
         for i in range(nz):
             for j in range(ny):
                 for k in range(0,nx2,2):
-                    c1 = array[i][j][k/2]
+                    c1 = array[i][j][k//2]
                     testlib.assertfloat(self, fft.get_value_at(k,j,i), c1.real)
                     testlib.assertfloat(self, fft.get_value_at(k+1,j,i), c1.imag)
 
