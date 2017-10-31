@@ -285,7 +285,7 @@ ADD_SUBDIRECTORY(recipes)
 
 add_custom_target(PythonFiles
 				  COMMAND ${CMAKE_COMMAND} -DCOMPONENT=PythonFiles -P cmake_install.cmake
-				  DEPENDS Programs EMPyLibs QtGuiFiles
+				  DEPENDS Programs EMPyLibs QtGuiFiles RTPYEMFiles
 				  )
 
 if(NOT WIN32)
@@ -295,6 +295,35 @@ if(NOT WIN32)
 				 )"
 			)
 endif()
+
+add_custom_target(py-compile
+				  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+				  DEPENDS PythonFiles
+				  )
+
+file(GENERATE OUTPUT "parse_errors.sh"
+	 CONTENT "
+	 awk '/Error compiling/{
+	print $0
+	res=$0
+	 sub(/.* Error compiling /,\"\", res)
+	 sub(/\\.\\.\\./,\"\", res)
+	next
+	 }
+	 /Sorry: TabError:/{
+	 print $0
+	 sub(/.*\\, line /,\"\")
+	 sub(/\\)/,\"\")
+	 printf(\"%s:%d\\n\", res, $0 )
+	 next
+	 }
+	 '
+"
+	 )
+add_custom_command(TARGET py-compile
+				   COMMAND ${PYTHON_EXECUTABLE} -m compileall -q ${CMAKE_SOURCE_DIR} | bash "${CMAKE_BINARY_DIR}/parse_errors.sh"
+				   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
 
 enable_testing()
 
@@ -356,11 +385,16 @@ endif()
 
 find_package(Nosetests)
 foreach(t ${test_methods})
-	add_test(NAME ${t}
+	add_test(NAME rt-${t}
 			COMMAND ${NOSETESTS_EXECUTABLE} -v -m "^test_*" -a \!broken
 					${CMAKE_INSTALL_PREFIX}/test/rt/pyem/${t}
 			)
 endforeach()
+
+add_custom_target(test-verbose-rt
+		COMMAND ${CMAKE_CTEST_COMMAND} -V -R rt-*
+		DEPENDS PythonFiles
+)
 
 add_custom_target(test-verbose-broken
 		COMMAND ${NOSETESTS_EXECUTABLE} -v -m "^test_*" -a broken ${CMAKE_INSTALL_PREFIX}/test/rt/pyem/*
