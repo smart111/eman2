@@ -1614,13 +1614,13 @@ class EMDirEntry(object) :
 		cache = None
 		cachename = self.name+"!main"
 
-		try :
-			cache = js_open_dict(self.root+"/.browsercache.json")
-			self.updtime, self.dim, self.filetype, self.nimg, self.size = cache[cachename]		# try to read the cache for the current file
-
-			if self.cache_old(False) == 0 : return 2 		# current cache, no further update necessary
-		except :
-			pass
+		# try :
+		# 	cache = js_open_dict(self.root+"/.browsercache.json")
+		# 	self.updtime, self.dim, self.filetype, self.nimg, self.size = cache[cachename]		# try to read the cache for the current file
+        # 
+		# 	if self.cache_old(False) == 0 : return 2 		# current cache, no further update necessary
+		# except :
+		# 	pass
 
 		# Check the cache for metadata
 
