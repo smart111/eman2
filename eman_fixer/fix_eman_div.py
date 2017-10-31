@@ -13,7 +13,7 @@ If "from __future__ import division" is already in effect, this fixer does
 nothing.
 """
 
-from lib2to3 import fixer_base
+from lib2to3 import fixer_base, pytree
 from lib2to3.fixer_util import syms, does_tree_import
 from libfuturize.fixer_util import (token, future_import, touch_import_top,
                                     wrap_in_fn_call)
@@ -44,7 +44,7 @@ class FixEmanDiv(fixer_base.BaseFix):
         Skip this fixer if "__future__.division" is already imported.
         """
         super(FixEmanDiv, self).start_tree(tree, name)
-        self.skip = "division" in tree.future_features
+        self.skip = False
 
     def match(self, node):
         u"""
@@ -54,8 +54,8 @@ class FixEmanDiv(fixer_base.BaseFix):
         if (node.type == self.syms.term and
                     len(node.children) == 3 and
                 match_division(node.children[1])):
-            expr1, expr2 = node.children[0], node.children[2]
-            return expr1, expr2
+            # expr1, expr2 = node.children[0], node.children[2]
+            return node
         else:
             return False
 
@@ -65,7 +65,16 @@ class FixEmanDiv(fixer_base.BaseFix):
         future_import(u"division", node)
 
         touch_import_top(u'past.utils', u'old_div', node)
-        expr1, expr2 = results[0].clone(), results[1].clone()
+        # expr1, expr2 = results[0].clone(), results[1].clone()
         # Strip any leading space for the first number:
-        expr1.prefix = u''
-        return wrap_in_fn_call("old_div", (expr1, expr2), prefix=node.prefix)
+        # expr1.prefix = u''
+        print node
+        print node.__str__
+        print type(node)
+        results.children[1] = pytree.Leaf(token.SLASH, u"//", prefix=node.prefix)
+        # for d in dir(node):
+        #     print d, getattr(node,d)
+        #     print
+        # print expr1, expr2
+        # return wrap_in_fn_call("old_div", (expr1, expr2), prefix=node.prefix)
+        return results
