@@ -29,7 +29,7 @@ def match_division(node):
            not node.prev_sibling.type == slash
 
 
-class FixDivisionSafe(fixer_base.BaseFix):
+class FixEmanDiv(fixer_base.BaseFix):
     # BM_compatible = True
     run_order = 4    # this seems to be ignored?
 
@@ -43,7 +43,7 @@ class FixDivisionSafe(fixer_base.BaseFix):
         """
         Skip this fixer if "__future__.division" is already imported.
         """
-        super(FixDivisionSafe, self).start_tree(tree, name)
+        super(FixEmanDiv, self).start_tree(tree, name)
         self.skip = "division" in tree.future_features
 
     def match(self, node):
