@@ -74,7 +74,7 @@ class FixEmanDiv(fixer_base.BaseFix):
         # print node.__str__
         # print type(node)
         # print 
-        results.children[1] = pytree.Leaf(token.SLASH, u"//", prefix=node.prefix)
+        results.children[1] = pytree.Leaf(token.SLASH, u"//")
         # for i in range(3):
         #     print results.children[i].type
         # for d in dir(node):
