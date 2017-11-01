@@ -1031,7 +1031,7 @@ class EMImage2DWidget(EMGLWidget):
 
 			if not self.glflags.npt_textures_unsupported():
 
-				self.hist=struct.unpack('256i',a[-1024:])
+				# self.hist=struct.unpack('256i',a[-1024:])
 
 				if self.tex_name != 0: glDeleteTextures(self.tex_name)
 				self.tex_name = glGenTextures(1)

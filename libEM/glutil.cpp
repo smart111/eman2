@@ -147,10 +147,14 @@ unsigned int GLUtil::render_amp8_gl_texture(EMData* emdata,
 		 float gamma, int flags)
 {
 	if (emdata==NULL) return 9999999;
-	string pixels = render_amp8(emdata, x0, y0, ixsize,iysize, bpl, scale,
+    vector<int> pixels1 = render_amp8(emdata, x0, y0, ixsize,iysize, bpl, scale,
 		 mingray, maxgray, render_min, render_max, gamma, flags);
 
-	unsigned int tex_name;
+	string pixels;
+    for(int i=0; i<pixels1.size(); ++i)
+        pixels.append(1, char(pixels1[i]));
+    
+    unsigned int tex_name;
 	glGenTextures(1, &tex_name);
 
 	glBindTexture(GL_TEXTURE_2D, tex_name);
@@ -266,9 +270,9 @@ void GLUtil::mx_bbox(const vector<float>& data,
 	}
 }
 
-std::string GLUtil::render_amp8(EMData* emdata, int x0, int y0, int ixsize,
-		 int iysize, int bpl, float scale, int min_gray, int max_gray,
-		 float render_min, float render_max, float gamma, int flags)
+vector<int> GLUtil::render_amp8(EMData *emdata, int x0, int y0, int ixsize,
+                                int iysize, int bpl, float scale, int min_gray, int max_gray,
+                                float render_min, float render_max, float gamma, int flags)
 {
 	ENTERFUNC;
 
@@ -276,7 +280,7 @@ std::string GLUtil::render_amp8(EMData* emdata, int x0, int y0, int ixsize,
 //	printf("%d %d %d %d %d %f %d %d %f %f %f %d\n",x0,y0,ixsize,iysize,bpl,
 // scale,min_gray,max_gray,render_min,render_max,gamma,flags);
 
-	if (emdata==NULL) return std::string();
+	if (emdata==NULL) return vector<int>();
 	bool invert = (min_gray > max_gray);
 	int mingray, maxgray;
 
@@ -342,7 +346,7 @@ std::string GLUtil::render_amp8(EMData* emdata, int x0, int y0, int ixsize,
 	else if (flags & 1) asrgb = 3;
 	else asrgb = 1;
 
-	std::string ret=std::string();
+    vector<int> ret;
 //	ret.resize(iysize*bpl);
 
 	ret.assign(iysize*bpl + hist*1024, char(invert ? maxgray : mingray));
