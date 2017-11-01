@@ -187,7 +187,7 @@ for db in dblist:
 		db_set=EMData("sets/" +db,0,True)
 		if db_set.get_attr_dict().__contains__('ctf') and (EMUtil.get_image_count("sets/"+db) == num_images):
 			ctf_value=True
-			amplitude_contrast = float(db_set['ctf'].to_dict()['ampcont']) / 10
+			amplitude_contrast = float(db_set['ctf'].to_dict()['ampcont'])// 10
 			break
 
 if options.verbosity == 0 :

@@ -136,7 +136,7 @@ def main():
 		classify=convnet.get_classify_func(train_set_x,labels,batch_size)
 			
 		learning_rate=options.learnrate
-		n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size
+		n_train_batches = train_set_x.get_value(borrow=True).shape[0]// batch_size
 		v0=np.inf
 		nbad=0
 		for epoch in range(options.niter):
@@ -217,24 +217,24 @@ def main():
 				img=ipt[t].reshape(shape[0],shape[1])
 			else:
 				img=ipt[t].reshape(shape[2],shape[0],shape[1])
-				img=img[shape[2]/2]
+				img=img[shape[2]//2]
 			e0 = from_numpy(img.astype("float32"))
 			e0.write_image(fname,-1)
 			
 			#### manual annotation
 			img=lb[t].reshape(convnet.outsize,convnet.outsize)
 			e1 = from_numpy(img.astype("float32"))
-			e1=e1.get_clip(Region((convnet.outsize-shape[0])/2,(convnet.outsize-shape[0])/2,shape[0],shape[0]))
-			e1.scale(float(shape[0])/float(convnet.outsize))
+			e1=e1.get_clip(Region((convnet.outsize-shape[0])//2,(convnet.outsize-shape[0])//2,shape[0],shape[0]))
+			e1.scale(float(shape[0])//float(convnet.outsize))
 			e1.process_inplace("threshold.binary", {"value":.67})
 			e1.write_image(fname,-1)
 			
 			#### neural net output
 			img=mid[t].reshape(convnet.outsize,convnet.outsize)
 			e2 = from_numpy(img.astype("float32"))
-			e2=e2.get_clip(Region((convnet.outsize-shape[0])/2,(convnet.outsize-shape[0])/2,shape[0],shape[0]))
+			e2=e2.get_clip(Region((convnet.outsize-shape[0])//2,(convnet.outsize-shape[0])//2,shape[0],shape[0]))
 			#print float(shape[0])/float(convnet.outsize)
-			e2.scale(float(shape[0])/float(convnet.outsize))
+			e2.scale(float(shape[0])//float(convnet.outsize))
 			e2.write_image(fname,-1)
 			
 			#### measure the amplitude of the neural network output by comparing it to the label
@@ -452,7 +452,7 @@ def apply_neuralnet(options):
 			
 			for mi in range(s[1]):
 				sw=allw[wi][mi]["nx"]
-				allw[wi][mi]=allw[wi][mi].get_clip(Region((sw-enx)/2,(sw-eny)/2,enx,eny))
+				allw[wi][mi]=allw[wi][mi].get_clip(Region((sw-enx)//2,(sw-eny)//2,enx,eny))
 				
 				allw[wi][mi].process_inplace("xform.phaseorigin.tocenter")
 				#allw[wi][mi].do_fft_inplace()
@@ -505,7 +505,7 @@ def apply_neuralnet(options):
 	
 		while not jsd.empty():
 			idx,cout=jsd.get()
-			cout=cout.get_clip(Region((cout["nx"]-enx)/2,(cout["ny"]-eny)/2 ,enx, eny))
+			cout=cout.get_clip(Region((cout["nx"]-enx)//2,(cout["ny"]-eny)//2 ,enx, eny))
 			cout.scale(labelshrink)
 			cout.div(amplitude)
 			output.insert_clip(cout, [0,0,idx])
@@ -692,7 +692,7 @@ def do_convolve(jsd, job):
 def load_particles(ptcls,labelshrink,ncopy=5, rng=None):
 	if rng==None:
 		rng=random
-	num=EMUtil.get_image_count(ptcls)/2
+	num=EMUtil.get_image_count(ptcls)//2
 	
 	data=[]
 	label=[]
@@ -771,7 +771,7 @@ class StackedConvNet(object):
 		for i in range(self.n_convlayers):
 			pz=poolsz[i]
 			if pz<0:
-				pz=1.0/abs(pz)
+				pz=1.0//abs(pz)
 			convlayer = LeNetConvPoolLayer(
 				rng,
 				image_shape=input_shape,
@@ -783,7 +783,7 @@ class StackedConvNet(object):
 			#self.weights.append(convlayer.W)
 			
 			self.labelshrink=int(self.labelshrink*pz)#poolsz[i]
-			input_shape=(input_shape[0],self.n_kernel[i],input_shape[2]/pz,input_shape[3]/pz)
+			input_shape=(input_shape[0],self.n_kernel[i],input_shape[2]//pz,input_shape[3]//pz)
 			convin=convlayer.hidden
 			
 			self.params.extend(convlayer.params)
@@ -855,10 +855,10 @@ class StackedConvNet(object):
 		for i in range(self.n_convlayers):
 			pz=poolsz[i]
 			if pz<0:
-				pz=1.0/abs(pz)
+				pz=1.0//abs(pz)
 			
 			self.convlayers[i].image_shape.set_value(input_shape, borrow=True)		
-			input_shape=(input_shape[0],self.n_kernel[i],input_shape[2]/pz,input_shape[3]/pz)
+			input_shape=(input_shape[0],self.n_kernel[i],input_shape[2]//pz,input_shape[3]//pz)
 			
 		self.outsize=int(input_shape[2])
 		
@@ -888,7 +888,7 @@ class LeNetConvPoolLayer(object):
 		fan_out = (filter_shape[0] * np.prod(filter_shape[2:]) /
 			np.prod(self.poolsize))
 		# initialize weights with random weights
-		W_bound = np.sqrt(6. / (fan_in + fan_out))
+		W_bound = np.sqrt(6.// (fan_in + fan_out))
 		self.W = theano.shared(
 			np.asarray(
 				rng.uniform(low=-W_bound, high=W_bound, size=filter_shape),
@@ -918,7 +918,7 @@ class LeNetConvPoolLayer(object):
 			#image_shape=self.image_shape.eval(),
 			border_mode='full'
 		)
-		bp=(filter_shape[2]-1)/2
+		bp=(filter_shape[2]-1)//2
 		
 		conv_out=conv_out[:,:,bp:-bp,bp:-bp]
 		
@@ -954,7 +954,7 @@ class LeNetConvPoolLayer(object):
 			      filters = self.W_prime,
 			      border_mode='full')
 		#repeated_conv=repeated_conv[:,:,1:-1,1:-1]
-		bp=(self.filter_shape[2]-1)/2
+		bp=(self.filter_shape[2]-1)//2
 		repeated_conv=repeated_conv[:,:,bp:-bp,bp:-bp]
 		
 		multiple_conv_out = [repeated_conv.flatten()] * np.prod(self.poolsize)

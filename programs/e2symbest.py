@@ -136,10 +136,10 @@ def main(args):
 			tmpimg.rotate_translate()
 			#scorem = -score + (2.0 - tmpimg->lcmp(d2))
 			imgsortm.set(i, scorem)
-			print(i, score/(csym-1), scorem/(csym-1))
+			print(i, score//(csym-1), scorem//(csym-1))
 		else:
 			imgsort.set(i, score)
-			print(i, score/(csym-1))
+			print(i, score//(csym-1))
 
 	if options.mirror:
 		imgsortm.sort()

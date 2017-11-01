@@ -292,47 +292,47 @@ resolution, but for high resolution work, fitting defocus/astig from frames is r
 	# Generate output
 
 	# For "small" data, we target ~6 A/pix
-	resample1=6.0/options.apix
-	newbox=good_size(boxsize/resample1)
-	resample1=boxsize/(newbox+0.1)	# 0.1 is to prevent roundoff issues
+	resample1=6.0//options.apix
+	newbox=good_size(boxsize//resample1)
+	resample1=boxsize//(newbox+0.1)	# 0.1 is to prevent roundoff issues
 	if resample1<1.0:
 		print("Warning: original particle A/pix is very large!")
 		resample1=1.0
-	maskwid1=20.0/options.apix
-	maskrad1=int(boxsize/2-maskwid1)
+	maskwid1=20.0//options.apix
+	maskrad1=int(boxsize//2-maskwid1)
 
 	# for "medium" data, we target ~2.6 A/pix
-	resample2=2.6/options.apix
-	newbox=good_size(boxsize/resample2)
-	resample2=boxsize/(newbox+0.1)
+	resample2=2.6//options.apix
+	newbox=good_size(boxsize//resample2)
+	resample2=boxsize//(newbox+0.1)
 	if resample2<1.0:
 		if not options.lores : print("Warning: original sampling is too large for ideal midres resolution results. Suggest <=2.6 A/pix")
 		resample2=1.0
-	maskwid2=12.0/options.apix
-	maskrad2=int(boxsize/2-maskwid2*1.2)
+	maskwid2=12.0//options.apix
+	maskrad2=int(boxsize//2-maskwid2*1.2)
 
 	# for "low" second data, we target ~4 A/pix
-	resample3=4.0/options.apix
-	newbox=good_size(boxsize/resample3)
-	resample3=boxsize/(newbox+0.1)
+	resample3=4.0//options.apix
+	newbox=good_size(boxsize//resample3)
+	resample3=boxsize//(newbox+0.1)
 	if resample3<1.0:
 		resample2=1.0
-	maskwid3=18.0/options.apix
-	maskrad3=int(boxsize/2-maskwid2*1.2)
+	maskwid3=18.0//options.apix
+	maskrad3=int(boxsize//2-maskwid2*1.2)
 
 	# for high resolution data, we still go ahead and do some masking
-	maskwid4=6.0/options.apix
-	maskrad4=int(boxsize/2-maskwid3*1.2)
+	maskwid4=6.0//options.apix
+	maskrad4=int(boxsize//2-maskwid3*1.2)
 
 	# for "5" data, we target ~1.8 A/pix
-	resample5=1.8/options.apix
-	newbox=good_size(boxsize/resample2)
-	resample5=boxsize/(newbox+0.1)
+	resample5=1.8//options.apix
+	newbox=good_size(boxsize//resample2)
+	resample5=boxsize//(newbox+0.1)
 	if resample5<1.0:
 		if not options.lores : print("Warning: original sampling is too large for ideal 5A resolution results. Suggest <=1.8 A/pix")
 		resample2=1.0
-	maskwid5=6.0/options.apix
-	maskrad5=int(boxsize/2-maskwid2*1.2)
+	maskwid5=6.0//options.apix
+	maskrad5=int(boxsize//2-maskwid2*1.2)
 
 	if options.phaseplate : hppixels=1
 	else: hppixels=3

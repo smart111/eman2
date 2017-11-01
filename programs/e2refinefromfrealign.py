@@ -153,7 +153,7 @@ for i in range(len(ptcl_dict_in)):
 
       y_sum = y_sum + abs(float(ptcl_dict_in[i][4])-float(ptcl_dict_out[i][4]))            
    f.write(s)    
-s=' Average{0:12.3f}{1:13.3f}{2:11.3f}{3:15.3f}{4:14.3f}\n'.format(phi_sum/len(ptcl_dict_in), theta_sum/len(ptcl_dict_in), psi_sum/len(ptcl_dict_in), x_sum/len(ptcl_dict_in), y_sum/len(ptcl_dict_in))
+s=' Average{0:12.3f}{1:13.3f}{2:11.3f}{3:15.3f}{4:14.3f}\n'.format(phi_sum//len(ptcl_dict_in), theta_sum//len(ptcl_dict_in), psi_sum//len(ptcl_dict_in), x_sum//len(ptcl_dict_in), y_sum//len(ptcl_dict_in))
 f.write(s)
 f.close()
 

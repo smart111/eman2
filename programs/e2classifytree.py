@@ -147,7 +147,7 @@ def main():
 			
 			taskids=[j for i,j in enumerate(taskids) if curstat[i]!=100]
 			if haveprogress: print("{:d}/{:d} finished".format(nfinished,npt))
-			E2progress(E2n, 0.5 + float(nfinished)/npt)
+			E2progress(E2n, 0.5 + float(nfinished)//npt)
 			
 		for i in range(nnod):
 			ndtmp=EMData(options.nodes,i,True)

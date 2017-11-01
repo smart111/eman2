@@ -220,7 +220,7 @@ def main():
 		dt = time.time() - t0
 		if options.verbose:
 			print("\n")
-			sys.stdout.write("Erased fiducials from {} ({} minutes)\n".format(arg,round(dt/60.,2)))
+			sys.stdout.write("Erased fiducials from {} ({} minutes)\n".format(arg,round(dt//60.,2)))
 	return
 
 
@@ -270,7 +270,7 @@ def generate_masks(options,img):
 		nx = img["nx"]
 		ny = img["ny"]
 		sharp_msk = np.zeros((nx,ny)).astype(bool)
-		r = options.goldsize/2.
+		r = options.goldsize//2.
 		coords = np.loadtxt(options.coords)
 		for c in coords:
 			xc = c[0] + 2*r
@@ -284,13 +284,13 @@ def generate_masks(options,img):
 	else:
 		img.process_inplace("normalize")
 
-		fourierpixels = img['nx']/2
-		cutoffpixels = fourierpixels - options.goldsize/2
+		fourierpixels = img['nx']//2
+		cutoffpixels = fourierpixels - options.goldsize//2
 		msk = img.process("filter.highpass.gauss",{"cutoff_pixels":cutoffpixels})
 
 		apix = img['apix_x']
 		goldsizeinangstroms = apix*options.goldsize
-		freq = 1.0/goldsizeinangstroms
+		freq = 1.0//goldsizeinangstroms
 
 		msk.process_inplace("filter.lowpass.tanh",{"cutoff_freq":freq})	#c:lowpass shouldn't be arbitrary; rather, use gold size to derive it.
 		msk.process_inplace("threshold.clampminmax",{"maxval":msk["maximum"],"minval":msk["mean"]+options.nsigmas*msk["sigma"],"tozero":True}) # must be tozero
@@ -319,12 +319,12 @@ def local_noise(options,img):
 		bs = int(np.ceil(options.goldsize*4))
 		coords = np.loadtxt(options.coords)
 		for c in coords.astype(int):
-			r = img.get_clip(Region(c[0]-bs/2,c[1]-bs/2,bs,bs))
+			r = img.get_clip(Region(c[0]-bs//2,c[1]-bs//2,bs,bs))
 			n = EMData(bs,bs)
 			n.to_zero()
 			n.process_inplace("math.addnoise",{"noise":r["sigma_nonzero"]})
-			fourierpixels = n["nx"]/2
-			cutoffpixels = fourierpixels - options.goldsize/2
+			fourierpixels = n["nx"]//2
+			cutoffpixels = fourierpixels - options.goldsize//2
 			n.process_inplace("filter.highpass.gauss",{"cutoff_pixels":cutoffpixels})
 
 			if options.lowpass != 1.0:
@@ -333,20 +333,20 @@ def local_noise(options,img):
 				localnoise['apix_y'] = apix
 				nyquistres=apix*2.0
 				filtres=nyquistres*options.lowpass
-				filtfreq=1.0/filtres
+				filtfreq=1.0//filtres
 				#if options.verbose: print("Apix {}\tResolution {}\tFrequency {}".format(apix,filtres,filtfreq))
 				n.process_inplace('filter.lowpass.tanh', {'cutoff_freq':filtfreq,'apix':apix})
 			
 			#n = n.process("math.simulatectf",{"voltage":300,"cs":0.0,"defocus":0.0,"bfactor":0.0,"ampcont":0.0,"noiseamp":0.5,"noiseampwhite":0.5})
 
 			try:
-				n *= r["sigma_nonzero"]/n["sigma_nonzero"]
+				n *= r["sigma_nonzero"]//n["sigma_nonzero"]
 			except:
 				if options.verbose > 8:
 					print(("WARNING: division by zero, from n['sigma_nonzero']={}".format(n["sigma_nonzero"])))
 			n+=r["mean_nonzero"]
 
-			localnoise.insert_clip(n,(c[0]-bs/2,c[1]-bs/2))
+			localnoise.insert_clip(n,(c[0]-bs//2,c[1]-bs//2))
 	else:
 		bs = options.boxsize
 		nbxs = len(np.arange(-bs,img['nx']+bs,bs))*options.oversample
@@ -355,21 +355,21 @@ def local_noise(options,img):
 		my = np.linspace(0,img["ny"],nbys).astype(int)
 		for x in mx:
 			for y in my:
-				r = img.get_clip(Region(x-bs/2,y-bs/2,bs,bs))
+				r = img.get_clip(Region(x-bs//2,y-bs//2,bs,bs))
 				n = EMData(bs,bs)
 				n.to_zero()
 				n.process_inplace("math.addnoise",{"noise":r["sigma_nonzero"]})
 				#n.process_inplace("filter.highpass.gauss",{"cutoff_abs":0.01})
-				fourierpixels = n['nx']/2
-				cutoffpixels = fourierpixels - options.goldsize/2
+				fourierpixels = n['nx']//2
+				cutoffpixels = fourierpixels - options.goldsize//2
 				n.process_inplace("filter.highpass.gauss",{"cutoff_pixels":cutoffpixels})
 				try:
-					n *= r["sigma_nonzero"]/n["sigma_nonzero"]
+					n *= r["sigma_nonzero"]//n["sigma_nonzero"]
 				except:
 					if options.verbose > 8:
 						print(("WARNING: division by zero, from n['sigma_nonzero']={}".format(n["sigma_nonzero"])))
 				n += r["mean_nonzero"]
-				localnoise.insert_clip(n,(x-bs/2,y-bs/2))
+				localnoise.insert_clip(n,(x-bs//2,y-bs//2))
 
 		#if options.lowpass != 1.0:
 		apix = img['apix_x']
@@ -377,7 +377,7 @@ def local_noise(options,img):
 		localnoise['apix_y'] = apix
 		nyquistres=apix*2.0
 		filtres=nyquistres*options.lowpass
-		filtfreq=1.0/filtres
+		filtfreq=1.0//filtres
 		#if options.verbose: print("Apix {}\tResolution {}\tFrequency {}".format(apix,filtres,filtfreq))
 		localnoise.process_inplace('filter.lowpass.tanh', {'cutoff_freq':filtfreq,'apix':apix})
 			

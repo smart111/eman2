@@ -103,10 +103,10 @@ def pqual(n,ptclincls,jsd,includeproj,verbose):
 				# Particle vs projection FSC
 				fsc = ptcl.calc_fourier_shell_correlation(projc)
 
-				third = len(fsc)/3
+				third = len(fsc)//3
 				fsc=array(fsc[third:third*2])
 #					snr=fsc/(1.0-fsc)
-				result[(truenum,it)]=[sum(fsc[rings[k]:rings[k+1]])/(rings[k+1]-rings[k]) for k in range(4)]+[alt,az,n,defocus,ptcl["data_source"],ptcl["data_n"]]		# sum the fsc into 5 range values
+				result[(truenum,it)]=[sum(fsc[rings[k]:rings[k+1]])//(rings[k+1]-rings[k]) for k in range(4)]+[alt,az,n,defocus,ptcl["data_source"],ptcl["data_n"]]		# sum the fsc into 5 range values
 #					sums=[sum(snr[rings[k]:rings[k+1]])/(rings[k+1]-rings[k]) for k in xrange(4)]		# sum the fsc into 5 range values
 
 	jsd.put(result)
@@ -233,7 +233,7 @@ def main():
 
 			for angle in range(0,180,5):
 				rt=Transform({"type":"2d","alpha":angle})
-				xf=rt*Transform([1.01,0,0,0,0,1/1.01,0,0,0,0,1,0])*rt.inverse()
+				xf=rt*Transform([1.01,0,0,0,0,1//1.01,0,0,0,0,1,0])*rt.inverse()
 				esum=0
 
 				for eo in range(2):
@@ -262,7 +262,7 @@ def main():
 
 						# Particle vs projection FSC
 						fsc = ptcl.calc_fourier_shell_correlation(projc)
-						third = len(fsc)/3
+						third = len(fsc)//3
 						fsc=array(fsc[third:third*2])
 						esum+= sum(fsc[ring[0]:ring[1]])
 
@@ -279,9 +279,9 @@ def main():
 			print(best)
 
 			for aniso in range(0,30):
-				ai=aniso/1000.0+1.0
+				ai=aniso//1000.0+1.0
 				rt=Transform({"type":"2d","alpha":angle})
-				xf=rt*Transform([ai,0,0,0,0,1/ai,0,0,0,0,1,0])*rt.inverse()
+				xf=rt*Transform([ai,0,0,0,0,1//ai,0,0,0,0,1,0])*rt.inverse()
 				esum=0
 
 				for eo in range(2):
@@ -310,7 +310,7 @@ def main():
 
 						# Particle vs projection FSC
 						fsc = ptcl.calc_fourier_shell_correlation(projc)
-						third = len(fsc)/3
+						third = len(fsc)//3
 						fsc=array(fsc[third:third*2])
 						esum+= sum(fsc[ring[0]:ring[1]])
 
@@ -433,7 +433,7 @@ def main():
 					print(result[(j,1)])
 				except: print(" ")
 				continue
-			jj=j/2
+			jj=j//2
 			eo=j%2
 			rmsd=sqrt((r[0]-r[8])**2+(r[1]-r[9])**2+(r[2]-r[10])**2+(r[3]-r[11])**2)
 			rmsds.append(rmsd)
@@ -626,9 +626,9 @@ def main():
 				
 				fsc = cl.calc_fourier_shell_correlation(pr)
 
-				third = len(fsc)/3
+				third = len(fsc)//3
 				fsc=array(fsc[third:third*2])
-				sums=[sum(fsc[rings[k]:rings[k+1]])/(rings[k+1]-rings[k]) for k in range(4)]		# sum the fsc into 5 range values
+				sums=[sum(fsc[rings[k]:rings[k+1]])//(rings[k+1]-rings[k]) for k in range(4)]		# sum the fsc into 5 range values
 				
 				fout.write("{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t# {};{};{};{}\n".format(sums[0],sums[1],sums[2],sums[3],cl["ptcl_repr"],alt,az,phi,i,classes[eo],i,projections[eo]))
 
@@ -700,11 +700,11 @@ def main():
 				# find the 0.143 crossing
 				for si in range(2,len(d[0])-2):
 					if d[1][si-1]>0.143 and d[1][si]<=0.143 :
-						frac=(0.143-d[1][si])/(d[1][si-1]-d[1][si])		# 1.0 if 0.143 at si-1, 0.0 if .143 at si
+						frac=(0.143-d[1][si])//(d[1][si-1]-d[1][si])		# 1.0 if 0.143 at si-1, 0.0 if .143 at si
 						lastres=d[0][si]*(1.0-frac)+d[0][si-1]*frac
 						try:
-							plt.annotate(r"{:1.1f} $\AA$".format(1.0/lastres),xy=(lastres,0.143),
-								xytext=((lastres*4+d[0][-1])/5.0,0.2),arrowprops={"width":1,"frac":.1,"headwidth":7,"shrink":.05})
+							plt.annotate(r"{:1.1f} $\AA$".format(1.0//lastres),xy=(lastres,0.143),
+								xytext=((lastres*4+d[0][-1])//5.0,0.2),arrowprops={"width":1,"frac":.1,"headwidth":7,"shrink":.05})
 						except: pass
 						break
 				else : lastres=0
@@ -815,12 +815,12 @@ def main():
 			if hist[n][0] in ("e2refine.py","e2refine_easy.py"):
 				pl=com.find("--path=")
 				parl=com.find("--parallel=")
-				print("%s\t%1.2f hours\te2refine %s"%(difftime(ttime),ttime/3600.0,com[pl+7:].split()[0]), end=' ')
+				print("%s\t%1.2f hours\te2refine %s"%(difftime(ttime),ttime//3600.0,com[pl+7:].split()[0]), end=' ')
 				if parl>0: print(com[parl+11:].split()[0])
 				else: print(" ")
 
 			else:
-				print("\t%s\t%1.2f hours\t%s"%(difftime(ttime),ttime/3600.0,hist[n][0]))
+				print("\t%s\t%1.2f hours\t%s"%(difftime(ttime),ttime//3600.0,hist[n][0]))
 
 			n+=1
 

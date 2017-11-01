@@ -108,7 +108,7 @@ def main():
 			inputhdr=EMData(options.input,0,True)
 			fill=EMData(inputhdr['nx'],inputhdr['ny'],inputhdr['nz'])
 			fill.to_one()
-			radius = min(inputhdr['nx'],inputhdr['ny'],inputhdr['nz'])/2 -4
+			radius = min(inputhdr['nx'],inputhdr['ny'],inputhdr['nz'])//2 -4
 			fill.process_inplace('mask.soft',{'outer_radius':radius})
 
 			options.matchto = True

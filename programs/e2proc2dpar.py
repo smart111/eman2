@@ -113,11 +113,11 @@ def main():
 		sys.exit(1)
 	
 	N=EMUtil.get_image_count(args[0])
-	npt=max(min(100,N/(options.threads-2)+1),1)
+	npt=max(min(100,N//(options.threads-2)+1),1)
 	
 	jsd=queue.Queue(0)
 	# these start as arguments, but get replaced with actual threads
-	thrds=[(jsd,args,options,i,i*npt,min(i*npt+npt,N)) for i in range(N/npt+1)]
+	thrds=[(jsd,args,options,i,i*npt,min(i*npt+npt,N)) for i in range(N//npt+1)]
 
 	#import pprint
 	#pprint.pprint(thrds)
@@ -233,7 +233,7 @@ def procfn(jsd,args,options,thrn,n0,n1):
 					sys.exit(1)
 					
 				rt=Transform({"type":"2d","alpha":angle})
-				xf=rt*Transform([amount,0,0,0,0,1/amount,0,0,0,0,1,0])*rt.inverse()
+				xf=rt*Transform([amount,0,0,0,0,1//amount,0,0,0,0,1,0])*rt.inverse()
 				d.transform(xf)
 
 				index_d[option1] += 1
@@ -265,8 +265,8 @@ def procfn(jsd,args,options,thrn,n0,n1):
 
 			elif option1 == "clip":
 				ci = index_d[option1]
-				clipcx = nx/2
-				clipcy = ny/2
+				clipcx = nx//2
+				clipcy = ny//2
 
 				try: clipx,clipy,clipcx,clipcy = options.clip[ci].split(",")
 				except: clipx, clipy = options.clip[ci].split(",")
@@ -274,7 +274,7 @@ def procfn(jsd,args,options,thrn,n0,n1):
 				clipx, clipy = int(clipx),int(clipy)
 				clipcx, clipcy = int(clipcx),int(clipcy)
 
-				e = d.get_clip(Region(clipcx-clipx/2, clipcy-clipy/2, clipx, clipy))
+				e = d.get_clip(Region(clipcx-clipx//2, clipcy-clipy//2, clipx, clipy))
 
 				try: e.set_attr("avgnimg", d.get_attr("avgnimg"))
 				except: pass
@@ -320,7 +320,7 @@ def procfn(jsd,args,options,thrn,n0,n1):
 				index_d[option1] += 1
 				
 			elif option1 == "selfcl":
-				scl = options.selfcl[0] / 2
+				scl = options.selfcl[0]// 2
 				sclmd = options.selfcl[1]
 				sc = EMData()
 

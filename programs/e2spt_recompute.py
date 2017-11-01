@@ -189,7 +189,7 @@ def main():
 				y = coords[1]
 				z = coords[2]					
 			
-				r = Region((2*x-box)/2,(2*y-box)/2, (2*z-box)/2, box, box, box)		#Define extraction region based on boxsize
+				r = Region((2*x-box)//2,(2*y-box)//2, (2*z-box)//2, box, box, box)		#Define extraction region based on boxsize
 			
 				a = EMData()
 				a.read_image(tomogram,0,False,r)									#Actually 'read'/extract particle data

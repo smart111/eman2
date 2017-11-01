@@ -136,11 +136,11 @@ def main():
 	
 	# Set up threads
 	N=nptcl
-	npt=max(min(100,N/(options.threads-2)),1)
+	npt=max(min(100,N//(options.threads-2)),1)
 	
 	jsd=queue.Queue(0)
 	# these start as arguments, but get replaced with actual threads
-	thrds=[(jsd,refs,refsbs,args[1],bsfs,options,i,i*npt,min(i*npt+npt,N)) for i in range(N/npt+1)]
+	thrds=[(jsd,refs,refsbs,args[1],bsfs,options,i,i*npt,min(i*npt+npt,N)) for i in range(N//npt+1)]
 	
 	# standard thread execution loop
 	thrtolaunch=0
@@ -207,7 +207,7 @@ def main():
 				avg=avgr.finish()
 #				avg.process_inplace("normalize.circlemean",{"radius":avg["ny"]/2-4})
 				avg.process_inplace("normalize.toimage",{"to":refs[i],"fourieramp":1,"ignore_lowsig":1.5})
-				avg.process_inplace("mask.soft",{"outer_radius":avg["ny"]/2-4,"width":3})
+				avg.process_inplace("mask.soft",{"outer_radius":avg["ny"]//2-4,"width":3})
 #				avg.process_inplace("normalize.toimage",{"to":refs[i],"ignore_lowsig":0.75})
 				avg["class_ptcl_idxs"]=[p[0] for p in clsinfo[i]]		# particle indices
 				quals=array([p[1] for p in clsinfo[i]])

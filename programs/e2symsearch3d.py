@@ -430,7 +430,7 @@ def refComp( options, outputstack, ref2compare, resultsdict, mirrortag ):
 		
 		ref2compare = makeSsaAverage( options, scores, resultsdict, it )
 		
-		meanscore = sum(scores)/len(scores)
+		meanscore = sum(scores)//len(scores)
 						
 		if it == options.avgiter -1:
 			print("Final mean score is", meanscore)
@@ -496,8 +496,8 @@ def makeSsaAverage( options, scores, resultsdict, it ):
 		val = sum(vals)
 		val2 = sum(vals2)
 
-		mean = val/len( scores )
-		sig = sqrt(val2/len( scores )-mean*mean )
+		mean = val//len( scores )
+		sig = sqrt(val2//len( scores )-mean*mean )
 		thresh = mean+sig* options.keep
 		if options.verbose: 
 			print("\nKeep threshold : %f (mean=%f  sigma=%f)"%(thresh,mean,sig))	

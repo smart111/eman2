@@ -354,21 +354,21 @@ def main():
 					refinement with two independent halves using the specified number of particles
 					for initial model generation --hacref=%d. Therefore, --hacref will be reset
 					to --subset/2.""" %( options.subset, options.hacref ))				
-					options.hacref = options.subset / 2			
+					options.hacref = options.subset// 2			
 			
 				elif options.ssaref and options.subset < options.ssaref * 2:		
 					print("""WARNING: --subset=%d wasn't large enough to accommodate gold standard
 					refinement with two independent halves using the specified number of particles
 					for initial model generation --ssaref=%d. Therefore, --ssaref will be reset
 					to --subset/2.""" %( options.subset, options.ssaref ))
-					options.ssaref = options.subset / 2	
+					options.ssaref = options.subset// 2	
 			
 				elif options.btref and options.subset < options.btref * 2:			
 					print("""WARNING: --subset=%d wasn't large enough to accommodate gold standard
 					refinement with two independent halves using the specified number of particles
 					for initial model generation --btref=%d. Therefore, --btref has been reset
 					to --subset/2.""" %( options.subset, options.btref ))
-					options.btref = options.subset / 2
+					options.btref = options.subset// 2
 					
 			subsetStack = options.path + '/subset' + str( options.subset ).zfill( len( str( options.subset))) + '.hdf' 
 			print("\nSubset to be written to", subsetStack)
@@ -1391,7 +1391,7 @@ def main():
 							sc = peak['score']
 					
 							if float( sc ) < 0.0:
-								z = ( sc - meanPeaksScoresCoarse ) / sigmaPeaksScoresCoarse
+								z = ( sc - meanPeaksScoresCoarse )// sigmaPeaksScoresCoarse
 					
 								print("pi, sc, meanPeaksScoresCoarse, sigmaPeaksScoresCoarse, z", pi, sc, meanPeaksScoresCoarse, sigmaPeaksScoresCoarse, z)
 					
@@ -1465,7 +1465,7 @@ def main():
 			classmxPhis.write_image(classmxFile,7)	
 			classmxScales.write_image(classmxFile,8)
 	
-			meanScore = sum( classScoresList ) / len( classScoresList )
+			meanScore = sum( classScoresList )// len( classScoresList )
 		
 			if it == 0:
 				meanScores[ic] = [ meanScore ]
@@ -2097,10 +2097,10 @@ def compareEvenOdd( options, avgeven, avgodd, it, etc, fscfile, tag, average=Tru
 	halfnyquist = 2.0 * nyquist
 	twothirdsnyquist = 3.0 * nyquist / 2.0
 	boxsize = finalA['nx']
-	halfbox = boxsize/2
-	halfnshells = halfbox - int(halfbox/2.0)
-	twothirdshells = halfbox - int((2.0/3.0)*halfbox)
-	fourfithsshells = halfbox - int((4.0/5.0)*halfbox)
+	halfbox = boxsize//2
+	halfnshells = halfbox - int(halfbox//2.0)
+	twothirdshells = halfbox - int((2.0//3.0)*halfbox)
+	fourfithsshells = halfbox - int((4.0//5.0)*halfbox)
 	
 	
 	
@@ -2166,10 +2166,10 @@ def calcFsc( options, img1, img2, fscfile ):
 	#	img2fsc.write_image(options.path +'/vol4fsc2.hdf',0)
 		
 	fsc = img1fsc.calc_fourier_shell_correlation( img2fsc )
-	third = len( fsc )/3
+	third = len( fsc )//3
 	xaxis = fsc[0:third]
 	fsc = fsc[third:2*third]
-	saxis = [x/apix for x in xaxis]
+	saxis = [x//apix for x in xaxis]
 	Util.save_data( saxis[1], saxis[1]-saxis[0], fsc[1:-1], fscfile )
 	
 	return
@@ -2235,7 +2235,7 @@ def sptRefGen( options, ptclnumsdict, cmdwp, refinemulti=0, method='',subset4ref
 				ref['apix_z'] = options.apix
 			
 			if int(options.refrandphase) > 0:
-				filterfreq =  1.0/float( options.refrandphase )
+				filterfreq =  1.0//float( options.refrandphase )
 				ref.process_inplace("filter.lowpass.randomphase",{"cutoff_freq":filterfreq,"apix":ref['apix_x']})
 						
 				refrandphfile = options.path + '/' + os.path.basename( options.ref ).replace('.hdf','_randPH' + klassidref +'.hdf')
@@ -3028,29 +3028,29 @@ def calcAliStep(options):
 	print("\n\n\n\nAAAAAAAAAAA\nApix is", apix)
 	print("\n\n\n\nAAAAAAAAAAA\n")
 	
-	radPixC = options.radius / capix
-	radPixF = options.radius / fapix
+	radPixC = options.radius// capix
+	radPixF = options.radius// fapix
 
-	coarseStep1pix =  360.0/(2.0*math.pi*radPixC)
+	coarseStep1pix =  360.0//(2.0*math.pi*radPixC)
 	#coarseStep1pixRounded = math.floor(coarseStep1pix*100.00)/100.00
 	
 	if options.precision > 1.0:
 		coarseStep1pix *= options.precision
 	
-	fineStep = 360.0/(2.0*math.pi*radPixF)
+	fineStep = 360.0//(2.0*math.pi*radPixF)
 	if options.precision > 1.0:
 		fineStep *= options.precision
 	
-	fineStepRounded = math.floor(fineStep*100.00)/100.00					#Round fine step DOWN to scan slightly more finally than theoretically needed
+	fineStepRounded = math.floor(fineStep*100.00)//100.00					#Round fine step DOWN to scan slightly more finally than theoretically needed
 	
 	rango = 2.0 * fineStep													#Alignment goes from -range (rango) to +range
 	#rango = coarseStep / 2.0									
-	rangoRounded = math.ceil(rango*100.00)/100.00							#Round the range in fine alignments UP, to cover a slightly larger area than theoretically needed
+	rangoRounded = math.ceil(rango*100.00)//100.00							#Round the range in fine alignments UP, to cover a slightly larger area than theoretically needed
 	
 	angularDistance = 2.0*rango												#This is the angular distance between points generated by the sphere aligner for coarse alignment
-	angularDistanceRounded = math.floor(angularDistance*100.00)/100.00		#Round angular distance between coarse points down, to sample more tightly
+	angularDistanceRounded = math.floor(angularDistance*100.00)//100.00		#Round angular distance between coarse points down, to sample more tightly
 	
-	coarseStep = angularDistanceRounded / 2.25								#The 2.25 factor is approximate. The angular distance A between two rotations R1=a1,b1,c1 and R2=a2,b2,c2 
+	coarseStep = angularDistanceRounded// 2.25								#The 2.25 factor is approximate. The angular distance A between two rotations R1=a1,b1,c1 and R2=a2,b2,c2 
 																			#where r1=a1=b1=c1 and r2=a2=b2=c2, for example R1=0,0,0 and R2=12,12,12, is roughly A=(r2-r1)*2.25 
 																			#This can be empirically verified with e2spt_transformdistance.py
 	
@@ -3059,7 +3059,7 @@ def calcAliStep(options):
 		print("""The coarse step %f was finer than one pixel at the edge of the particle, 
 		therefore it will be replaced with %f""" % (coarseStep,coarseStep1pix))
 	
-	CSrounded = math.floor( coarseStep * 100.00 )/100.00		#Round coarse step DOWN to scan slightly more finally than theoretically needed
+	CSrounded = math.floor( coarseStep * 100.00 )//100.00		#Round coarse step DOWN to scan slightly more finally than theoretically needed
 
 	
 	print("\n\n*****************")
@@ -3071,7 +3071,7 @@ def calcAliStep(options):
 	print("rango and its rounded are", rango, rangoRounded)
 	print("\n\n*****************\n\n")
 	
-	searchC = hdr['nx']/2.0 - 2.0
+	searchC = hdr['nx']//2.0 - 2.0
 	searchF = 2
 	
 	if int( options.search ) > 1 :
@@ -3098,7 +3098,7 @@ def calcAliStep(options):
 		#			print "\n"
 				
 		if options.shrink and float(options.shrink) > 1.0:
-			searchC = int( searchC / options.shrink )
+			searchC = int( searchC// options.shrink )
 	
 			print("\nBecause shrink >1.0, searchC is actually", searchC)
 		
@@ -3269,8 +3269,8 @@ def makeAverage(options,ic,results,it=0):
 		val=sum(scores)
 		val2=sum(scores2)
 
-		mean=val/len(scores)
-		sig=sqrt(val2/len(scores)-mean*mean)
+		mean=val//len(scores)
+		sig=sqrt(val2//len(scores)-mean*mean)
 		thresh = float( mean + sig * keep )
 		if verbose: 
 			print("Keep threshold : %f (mean=%f  sigma=%f)"%(thresh,mean,sig))
@@ -3378,7 +3378,7 @@ def makeAverage(options,ic,results,it=0):
 				
 				X = tiltaxis				#This models a line in 'weight space' (x, w), that passes through (0, minweight) and ( tiltaxis, maxweight ) 
 				W = 1.0 - minweight
-				slope = W/X
+				slope = W//X
 										#Having the slope of the line and its y-axis (or w-axis in this case) crossing we predict the weight of any particle depending on its dx distance to the tiltaxis
 				print("tiltaxis is", X)
 				print("W is", W)
@@ -3390,7 +3390,7 @@ def makeAverage(options,ic,results,it=0):
 				print("tiltaxis weight was %f because it's distance from the tilt axis is %d, because it's x coordinate was %d" % (taweight, dx, x))
 
 			if options.weighbyscore:
-				scoreweight = score / maxscore
+				scoreweight = score// maxscore
 				print("the score weight is %f because score was %f and the best score was %f" % (scoreweight, score, maxscore ))
 				weight = weight * scoreweight
 			
@@ -4207,7 +4207,7 @@ def alignment( fixedimage, image, label, options, xformslabel, iter, transform, 
 	
 		if int(options.shrink) > 1:
 			#options["align"][1]["inixform"].set_trans( options["align"][1]["inixform"].get_trans()/float(options["shrinkfine"]) )
-			options.align[1]["transform"].set_trans( options.align[1]["transform"].get_trans()/float(options.shrinkfine) )
+			options.align[1]["transform"].set_trans( options.align[1]["transform"].get_trans()//float(options.shrinkfine) )
 	
 	elif options.randomizewedge:
 		rand_orient = OrientGens.get("rand",{"n":1,"phitoo":1})		#Fetches the orientation generator
@@ -4281,7 +4281,7 @@ def alignment( fixedimage, image, label, options, xformslabel, iter, transform, 
 			# Scale translation
 			scaletrans=1.0
 			if options.falign and options.falign != None and options.falign != 'None' and options.falign != 'none' and options.shrinkfine:
-				scaletrans = options.shrink/float(options.shrinkfine)
+				scaletrans = options.shrink//float(options.shrinkfine)
 			elif options.shrink and not options.falign:
 				scaletrans=float(options.shrink)
 			
@@ -4390,7 +4390,7 @@ def alignment( fixedimage, image, label, options, xformslabel, iter, transform, 
 					print("best alignment was", bestT)
 					tweakrange = options.falign[1]['delta']+0.5
 					print("tweaking range is", tweakrange)
-					tweakdelta = options.falign[1]['delta']/2.0 - 0.1
+					tweakdelta = options.falign[1]['delta']//2.0 - 0.1
 					print("tweaking step is", tweakdelta)
 
 					tweaksearch = options.shrinkfine

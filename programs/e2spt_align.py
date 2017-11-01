@@ -104,8 +104,8 @@ This program will take an input stack of subtomograms and a reference volume, an
 		ref.append(EMData(reffile,0))
 
 		if options.goldstandard>0 :
-			ref[0].process_inplace("filter.lowpass.randomphase",{"cutoff_freq":1.0/options.goldstandard})
-			ref[1].process_inplace("filter.lowpass.randomphase",{"cutoff_freq":1.0/options.goldstandard})
+			ref[0].process_inplace("filter.lowpass.randomphase",{"cutoff_freq":1.0//options.goldstandard})
+			ref[1].process_inplace("filter.lowpass.randomphase",{"cutoff_freq":1.0//options.goldstandard})
 			ref[0].write_image("{}/align_ref.hdf".format(options.path),0)
 			ref[1].write_image("{}/align_ref.hdf".format(options.path),1)
 

@@ -60,9 +60,9 @@ def print_iminfo(data, label):
 
 def calcsf(data):
 	dataf = data.do_fft()
-	curve = dataf.calc_radial_dist(ny/2, 0, 1.0,True)
-	curve=[i/(dataf["nx"]*dataf["ny"]*dataf["nz"]) for i in curve]
-	Util.save_data(0, 1.0/(apix*ny), curve, options.calcsf);
+	curve = dataf.calc_radial_dist(ny//2, 0, 1.0,True)
+	curve=[i//(dataf["nx"]*dataf["ny"]*dataf["nz"]) for i in curve]
+	Util.save_data(0, 1.0//(apix*ny), curve, options.calcsf);
 	return()
 
 def main():
@@ -197,10 +197,10 @@ def main():
 		if shrink>10 : print("Shrinking by >10x is not recommended")
 
 		nx,ny,nz=hdr["nx"],hdr["ny"],hdr["nz"]
-		nnx=nx/shrink
-		nny=ny/shrink
-		nnz=nz/shrink
-		print("%d x %d x %d --> %d x %d x %d    %1.1f GB of RAM required"%(nx,ny,nz,nnx,nny,nnz,(nnx*nny*nnz*4+shrink*4*ny*shrink*4)/1.0e9))
+		nnx=nx//shrink
+		nny=ny//shrink
+		nnz=nz//shrink
+		print("%d x %d x %d --> %d x %d x %d    %1.1f GB of RAM required"%(nx,ny,nz,nnx,nny,nnz,(nnx*nny*nnz*4+shrink*4*ny*shrink*4)//1.0e9))
 
 		out=EMData(nnx,nny,nnz)
 		out.to_zero()
@@ -213,7 +213,7 @@ def main():
 			for y in range(0,ny,4*shrink):
 				tmp=EMData(infile,0,False,Region(0,y,z,nx,4*shrink,shrink))
 				tmp.process_inplace("math.meanshrink",{"n":shrink})
-				out.insert_clip(tmp,(0,y/shrink,z/shrink))
+				out.insert_clip(tmp,(0,y//shrink,z//shrink))
 
 		#try: stype=tmp["datatype"]
 		#except: stype=EM_FLOAT
@@ -291,7 +291,7 @@ def main():
 		curves=[]
 		for i in range(n0,n1+1,n2):
 			img=EMData(infile,i)
-			c=img.calc_radial_dist(img["nx"]/2,0,1,options.calcradial)
+			c=img.calc_radial_dist(img["nx"]//2,0,1,options.calcradial)
 			curves.append(c)
 
 		out=open(outfile,"w")
@@ -312,7 +312,7 @@ def main():
 		for i in range(n0,n1+1,n2):
 			avgr.add_image( EMData(infile,i) )
 			if options.verbose:
-				print("Added ptcl %d / %d" %( i+1, (n1-n0)/n2 + 1))
+				print("Added ptcl %d / %d" %( i+1, (n1-n0)//n2 + 1))
 		avg=avgr.finish()
 
 		try :
@@ -366,9 +366,9 @@ def main():
 	y = datlst[0].get_ysize()
 	z = datlst[0].get_zsize()
 
-	xc = x/2
-	yc = y/2
-	zc = z/2
+	xc = x//2
+	yc = y//2
+	zc = z//2
 
 	nx = x
 	ny = y
@@ -428,19 +428,19 @@ def main():
 			elif option1 == "calcfsc" :
 				datafsc=EMData(options.calcfsc)
 				fsc = data.calc_fourier_shell_correlation(datafsc)
-				third = len(fsc)/3
+				third = len(fsc)//3
 				xaxis = fsc[0:third]
 				fsc = fsc[third:2*third]
-				saxis = [x/apix for x in xaxis]
+				saxis = [x//apix for x in xaxis]
 				Util.save_data(saxis[1],saxis[1]-saxis[0],fsc[1:-1],args[1])
 				print("Exiting after FSC calculation")
 				sys.exit(0)
 
 			elif option1 == "calcsf":
 				dataf = data.do_fft()
-				curve = dataf.calc_radial_dist(ny/2, 0, 1.0,True)
-				curve=[i/(dataf["nx"]*dataf["ny"]*dataf["nz"]) for i in curve]
-				Util.save_data(0, 1.0/(apix*ny), curve, options.calcsf);
+				curve = dataf.calc_radial_dist(ny//2, 0, 1.0,True)
+				curve=[i//(dataf["nx"]*dataf["ny"]*dataf["nz"]) for i in curve]
+				Util.save_data(0, 1.0//(apix*ny), curve, options.calcsf);
 
 			elif option1 == "setsf":
 				if options.verbose>1 : print("setsf -> ",options.setsf)
@@ -467,7 +467,7 @@ def main():
 				xy = XYData()
 				xy.read_file(tf)
 				ny=data["ny"]
-				filt=[xy.get_yatx_smooth(i/(apix*ny),1) for i in range(int(ceil(ny*sqrt(3.0)/2)))]
+				filt=[xy.get_yatx_smooth(i//(apix*ny),1) for i in range(int(ceil(ny*sqrt(3.0)/2)))]
 				if options.verbose>1 : print(filt)
 				data.process_inplace("filter.radialtable",{"table":filt})	
 
@@ -497,8 +497,8 @@ def main():
 			elif option1 == "ralignzphi":
 #				print "ralignzphi ",options.ralignzphi[index_d[option1]]
 				zalignref=EMData(options.ralignzphi[index_d[option1]],0)
-				dang=80.0/data["ny"];		# 1 pixel at ~3/4 radius
-				dzmax=data["ny"]/20			# max +-z shift
+				dang=80.0//data["ny"];		# 1 pixel at ~3/4 radius
+				dzmax=data["ny"]//20			# max +-z shift
 				best=(1000,0,0,data)
 
 				dsd=data.process("math.meanshrink",{"n":2})			# downsampled data
@@ -539,9 +539,9 @@ def main():
 					print("Error: please specify D symmetry as alignctod")
 					sys.exit(1)
 				nsym=int(options.alignctod[0][1:])
-				angrange=360.0/nsym		# probably more than necessary, but we'll do it anyway...
-				astep=360.0/pi*atan(2.0/data["nx"])
-				nstep=int(angrange/astep)
+				angrange=360.0//nsym		# probably more than necessary, but we'll do it anyway...
+				astep=360.0/pi*atan(2.0//data["nx"])
+				nstep=int(angrange//astep)
 
 				best=(1e23,0)
 				for azi in range(nstep):
@@ -559,8 +559,8 @@ def main():
 					best=min(best,(c,az))
 					if options.verbose: print(azi,az,c,best)
 
-				print("alignctod, rotate:",best[1]/2.0)
-				data.process_inplace("xform",{"transform":Transform({"type":"eman","az":best[1]/2.0})})	# 1/2 the angle to get it on the 2-fold
+				print("alignctod, rotate:",best[1]//2.0)
+				data.process_inplace("xform",{"transform":Transform({"type":"eman","az":best[1]//2.0})})	# 1/2 the angle to get it on the 2-fold
 
 			elif option1 == "align":
 				if alignref==None :
@@ -653,27 +653,27 @@ def main():
 					(nx, ny, nz, xc, yc, zc) = options.clip
 				elif(len(options.clip) == 3):
 					(nx, ny, nz) = options.clip
-					xc = x/2
-					yc = y/2
-					zc = z/2
+					xc = x//2
+					yc = y//2
+					zc = z//2
 				elif(len(options.clip) ==1):
 					nx = options.clip[0]
 					ny=nx
 					nz=nx
-					xc = x/2
-					yc = y/2
-					zc = z/2
+					xc = x//2
+					yc = y//2
+					zc = z//2
 				else:
 					print('clip option takes 1, 3 or 6 arguments. --clip=x[,y,z[,xc,yc,zc]]')
 					return
 
 				if not (xc>=0 and yc>=0 and zc>=0 and xc<x and yc<y and zc<z):
-					xc = x/2
-					yc = y/2
-					zc = z/2
+					xc = x//2
+					yc = y//2
+					zc = z//2
 
 				if x != nx or y != ny or z != nz:
-					data.clip_inplace(Region(xc-nx/2, yc-ny/2, zc-nz/2, nx, ny, nz))
+					data.clip_inplace(Region(xc-nx//2, yc-ny//2, zc-nz//2, nx, ny, nz))
 					index_d[option1] += 1
 
 			elif option1 == "sym":

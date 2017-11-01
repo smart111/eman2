@@ -596,7 +596,7 @@ class EMFilterTool(QtGui.QMainWindow):
 						v.updateSG()
 					elif isinstance(v,EMPlot2DWidget):
 						fft=self.procdata[0].do_fft()
-						pspec=fft.calc_radial_dist(self.ny/2,0.0,1.0,1)
+						pspec=fft.calc_radial_dist(self.ny//2,0.0,1.0,1)
 						v.set_data((self.pspecs,self.pspecorig),"Orginal",True,True,color=1)
 						v.set_data((self.pspecs,pspec),"Processed",color=2)
 
@@ -667,7 +667,7 @@ class EMFilterTool(QtGui.QMainWindow):
 
 			if self.origdata["nz"]==1:
 				if self.nimg>20 :
-					self.origdata=EMData.read_images(data,list(range(0,self.nimg,self.nimg/20)))		# read regularly separated images from the file totalling ~20
+					self.origdata=EMData.read_images(data,list(range(0,self.nimg,self.nimg//20)))		# read regularly separated images from the file totalling ~20
 				elif self.nimg>1 :
 					self.origdata=EMData.read_images(data,list(range(self.nimg)))
 				else: self.origdata=[self.origdata]
@@ -686,8 +686,8 @@ class EMFilterTool(QtGui.QMainWindow):
 		EMProcessorWidget.parmdefault["apix"]=(0,(0.2,10.0),self.apix,None)
 
 		origfft=self.origdata[0].do_fft()
-		self.pspecorig=origfft.calc_radial_dist(self.ny/2,0.0,1.0,1)
-		ds=1.0/(self.apix*self.ny)
+		self.pspecorig=origfft.calc_radial_dist(self.ny//2,0.0,1.0,1)
+		ds=1.0//(self.apix*self.ny)
 		self.pspecs=[ds*i for i in range(len(self.pspecorig))]
 
 

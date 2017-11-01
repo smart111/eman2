@@ -67,18 +67,18 @@ def opt_rectangular_subdivision(x,y,n):
 		# and from that the corresponding maximum transfer cost (x/xsub+y/ysub)*xsub*ysub
 		# we wish to minimize that quantity (note that it doesn't simplify due to int/float issues)
 		for xsub in range(1,x):
-			ysub=int(ceil(float(n/xsub)))
+			ysub=int(ceil(float(n//xsub)))
 			if ysub>y or ysub<1 : continue		# can't have more subdivisions than rows
 
 			# the ceil() makes us overestimate cases uneven division, but that breaks the tie in a good way
-			cost=(ceil(float(x)/xsub)+ceil(float(y)/ysub))*xsub*ysub
+			cost=(ceil(float(x)//xsub)+ceil(float(y)//ysub))*xsub*ysub
 			candidates.append((cost,(xsub,ysub)))
 
 		if len(candidates)==0:  return (x,y)		# should only happen if we have more processors than similarity matrix pixels
 
 		candidates.sort()
 		#print candidates
-		print(" %d x %d blocks -> %d subprocesses (%d x %d each)"%(candidates[0][1][0],candidates[0][1][1],candidates[0][1][0]*candidates[0][1][1],x/candidates[0][1][0],y/candidates[0][1][1]))
+		print(" %d x %d blocks -> %d subprocesses (%d x %d each)"%(candidates[0][1][0],candidates[0][1][1],candidates[0][1][0]*candidates[0][1][1],x//candidates[0][1][0],y//candidates[0][1][1]))
 
 		return candidates[0][1]
 
@@ -176,8 +176,8 @@ class EMParallelSimMX:
 		[col_div,row_div] = opt_rectangular_subdivision(self.clen,self.rlen,total_jobs)
 
 
-		block_c = self.clen/col_div
-		block_r = self.rlen/row_div
+		block_c = self.clen//col_div
+		block_r = self.rlen//row_div
 
 		residual_c = self.clen-block_c*col_div # residual left over by integer division
 
@@ -288,7 +288,7 @@ class EMParallelSimMX:
 							self.etc.rerun_task(tid)
 							continue
 						if self.logger != None:
-							E2progress(self.logger,1.0-len(self.tids)/float(len(blocks)))
+							E2progress(self.logger,1.0-len(self.tids)//float(len(blocks)))
 							if self.options.verbose>0:
 								print("%d/%d\r"%(len(self.tids),len(blocks)))
 								sys.stdout.flush()
@@ -447,7 +447,7 @@ class EMSimTaskDC(JSTask):
 		data = {}
 		cbli=0
 		for ref_idx,ref in list(refs.items()):
-			if not progress_callback(int(100*(cbi+cbli/float(len(refs)))/cbn)) : break
+			if not progress_callback(int(100*(cbi+cbli//float(len(refs)))/cbn)) : break
 			cbli+=1
 			if partial!=None :
 				for i in partial:
@@ -767,7 +767,7 @@ def main():
 #		else:
 #			rimg = rimages[r]
 
-		E2progress(E2n,float(r-rrange[0])/(rrange[1]-rrange[0]))
+		E2progress(E2n,float(r-rrange[0])//(rrange[1]-rrange[0]))
 		shrink = options.shrink
 		if options.verbose>1 : print("%d. "%r, end=' ')
 		row=cmponetomany(cimgs,rimg,options.align,options.aligncmp,options.cmp, options.ralign, options.raligncmp,options.shrink,mask,subset,options.prefilt,options.verbose)
@@ -851,9 +851,9 @@ def check(options,verbose):
 			print("Error: shrink must be greater than 1 if set")
 			error = True
 
-		newsize=int(ysize/options.shrink)
+		newsize=int(ysize//options.shrink)
 		if newsize!=good_size(newsize) :
-			options.shrink=ysize/float(good_size(newsize)+.1)
+			options.shrink=ysize//float(good_size(newsize)+.1)
 			print("Shrink adjusted to {:1.3f} to produce a good size".format(options.shrink))
 
 

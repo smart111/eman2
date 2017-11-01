@@ -82,7 +82,7 @@ def main():
 	else:
 		#### generate tilt angles from tilt step size
 		if options.zeroid<0:
-			options.zeroid=int(num/2)
+			options.zeroid=int(num//2)
 		tlts=np.arange(num, dtype=float)*options.tltstep
 		tlts-=tlts[options.zeroid]
 	
@@ -90,8 +90,8 @@ def main():
 	print("tilt angle from {:.1f} to {:.1f}, step {:.1f}".format(np.min(tlts), np.max(tlts), options.tltstep))
 	options.tlt_init=tlts.copy()
 
-	nx=imgs[0]["nx"]/2
-	ny=imgs[0]["ny"]/2
+	nx=imgs[0]["nx"]//2
+	ny=imgs[0]["ny"]//2
 	options.minsz=min(nx, ny)*2
 	
 	#### make a folder to write tmp files
@@ -302,7 +302,7 @@ def calc_loss( inp, imgs, allparams, options, mode="none", iid=[], ptrans=[], ma
 	num=len(imgs)
 	npk=options.npk
 	zeroid=options.zeroid
-	bx=options.bxsz/2
+	bx=options.bxsz//2
 	if doplot:
 		try: os.remove(options.tmppath+"tmpptcls_calcloss.hdf")
 		except: pass
@@ -354,14 +354,14 @@ def calc_loss( inp, imgs, allparams, options, mode="none", iid=[], ptrans=[], ma
 			
 			pxf=get_xf_pos(ttparams[nid], pks[pid],  miscglobal)
 
-			pxf[0]+=imgs[nid]["nx"]/2
-			pxf[1]+=imgs[nid]["ny"]/2
+			pxf[0]+=imgs[nid]["nx"]//2
+			pxf[1]+=imgs[nid]["ny"]//2
 
 
 			e=imgs[nid].get_clip(Region(pxf[0]-bx,pxf[1]-bx, bx*2, bx*2))
 			if mask:
 				e.process_inplace("normalize.edgemean")
-				e.process_inplace("mask.gaussian",{"outer_radius":e["nx"]/4})
+				e.process_inplace("mask.gaussian",{"outer_radius":e["nx"]//4})
 				
 #			 edge=np.min([pxf[0], pxf[1], imgs[nid]["nx"]-pxf[0], imgs[nid]["ny"]-pxf[1]])
 
@@ -406,8 +406,8 @@ def calc_global_trans(imgs, options, excludes=[]):
 	
 	imgout=[0]*num
 	e0=imgs[options.zeroid].copy()
-	e0.clip_inplace(Region(e0["nx"]/2-sz/2, e0["ny"]/2-sz/2, sz,sz))
-	e0.process_inplace("mask.gaussian",{"outer_radius":sz/4})
+	e0.clip_inplace(Region(e0["nx"]//2-sz//2, e0["ny"]//2-sz//2, sz,sz))
+	e0.process_inplace("mask.gaussian",{"outer_radius":sz//4})
 	e0["xform.align2d"]=Transform()
 	imgout[options.zeroid]=e0
 	
@@ -425,15 +425,15 @@ def calc_global_trans(imgs, options, excludes=[]):
 			if nid in excludes: continue
 			e0=imgout[options.zeroid+i*dr]
 			e1=imgs[nid].copy()
-			e1.clip_inplace(Region(e1["nx"]/2-sz/2, e1["ny"]/2-sz/2, sz,sz))
-			e1.process_inplace("mask.gaussian",{"outer_radius":sz/4})
+			e1.clip_inplace(Region(e1["nx"]//2-sz//2, e1["ny"]//2-sz//2, sz,sz))
+			e1.process_inplace("mask.gaussian",{"outer_radius":sz//4})
 			
 			e1a=e1.align("translational", e0)
 			
 			e1=imgs[nid].copy()
 			e1.transform(e1a["xform.align2d"])
-			e1.clip_inplace(Region(e1["nx"]/2-sz/2, e1["ny"]/2-sz/2, sz,sz))
-			e1.process_inplace("mask.gaussian",{"outer_radius":sz/4})
+			e1.clip_inplace(Region(e1["nx"]//2-sz//2, e1["ny"]//2-sz//2, sz,sz))
+			e1.process_inplace("mask.gaussian",{"outer_radius":sz//4})
 			
 			imgout[nid]=e1
 			if options.writetmp:
@@ -466,14 +466,14 @@ def calc_tltax_rot(imgs, options):
 	
 	
 	sm=np.mean(imgnp, axis=0)
-	sm=np.abs(sm[:,sz/2:])
+	sm=np.abs(sm[:,sz//2:])
 	print(np.max(sm), np.min(sm))
 	rr=np.arange(min(sm.shape[1], sz*.25), dtype=float)
 	angs=np.arange(0., 180, .5)
 	vs=[]
 	for ang in angs:
 		a=ang/180.*np.pi
-		pts=[np.round(rr*np.sin(a)).astype(int), np.round(rr*np.cos(a)+sz/2).astype(int) ]
+		pts=[np.round(rr*np.sin(a)).astype(int), np.round(rr*np.cos(a)+sz//2).astype(int) ]
 		v=sm[pts[1], pts[0]]
 		vs.append(np.mean(v))
 	vs[0]=vs[180]=0
@@ -502,7 +502,7 @@ def make_tomogram(imgs, allparams, options, outname=None, premask=True, padr=1.2
 	outxy=good_size(max(nx, ny))
 	
 	pad=good_size(outxy*padr)
-	zthick=good_size(pad/2)
+	zthick=good_size(pad//2)
 	if options.verbose:
 		print("\t Image size: {:d} x {:d}".format(nx, ny))
 		print("\tPadded volume to: {:d} x {:d} x {:d}".format(pad, pad, zthick))
@@ -549,19 +549,19 @@ def make_tomogram(imgs, allparams, options, outname=None, premask=True, padr=1.2
 		p0=np.min(threed.numpy(), axis=1)
 		z0=np.min(p0, axis=1)
 		zp=np.where(z0<np.mean(z0))[0]
-		zcent=int(zp[0]+zp[-1])/2
+		zcent=int(zp[0]+zp[-1])//2
 		zthk=int((zp[-1]-zp[0])*.6)
 		zthk=np.min([zthk, zthick-zcent, zcent])-1
 		if options.verbose:
 			print("Z axis center at {:d}, thickness {:d} pixels".format(zcent, zthk*2))
-		threed.clip_inplace(Region((pad-outxy)/2, (pad-outxy)/2, zcent-zthk, outxy, outxy, zthk*2))
+		threed.clip_inplace(Region((pad-outxy)//2, (pad-outxy)//2, zcent-zthk, outxy, outxy, zthk*2))
 		
 		for nid in range(num):
-			tltinfo[nid]["xform.projection"].translate(0, 0, zthick/2-zcent)
+			tltinfo[nid]["xform.projection"].translate(0, 0, zthick//2-zcent)
 		
 	else:
 		
-		threed.clip_inplace(Region((pad-outxy)/2, (pad-outxy)/2, 0, outxy, outxy, zthick))
+		threed.clip_inplace(Region((pad-outxy)//2, (pad-outxy)//2, 0, outxy, outxy, zthick))
 	
 	apix=imgs[0]["apix_x"]
 	threed["apix_x"]=threed["apix_y"]=threed["apix_z"]=apix
@@ -577,7 +577,7 @@ def make_tomogram(imgs, allparams, options, outname=None, premask=True, padr=1.2
 #### reconstruction function for the subprocesses
 def reconstruct(nid, img, recon, pad, xform, premask, exclude, options):
 	
-	p2=img.get_clip(Region(img["nx"]/2-pad/2,img["ny"]/2-pad/2, pad, pad))
+	p2=img.get_clip(Region(img["nx"]//2-pad//2,img["ny"]//2-pad//2, pad, pad))
 	rr=xform.get_params("xyz")
 	if options.writetmp:
 		po=p2.copy()
@@ -588,7 +588,7 @@ def reconstruct(nid, img, recon, pad, xform, premask, exclude, options):
 		po.process_inplace("normalize")
 		po.write_image(options.tmppath+"tmpimg_ali.hdf", nid)
 	if premask:
-		p2.process_inplace("mask.soft",{"outer_radius":options.minsz/2-1, "width":16, "dx":rr["tx"], "dy":rr["ty"]})
+		p2.process_inplace("mask.soft",{"outer_radius":options.minsz//2-1, "width":16, "dx":rr["tx"], "dy":rr["ty"]})
 	if not exclude:
 		
 		p3=recon.preprocess_slice(p2, xform)
@@ -608,7 +608,7 @@ def locate_peaks(threed, options, returnall=False):
 	mapsmall.process_inplace("normalize")
 	mapsmall.process_inplace("threshold.belowtozero", {"minval":0})
 	mappks=mapsmall.process("mask.onlypeaks")
-	mappks.process_inplace("mask.soft",{"outer_radius":options.minsz/4-1})
+	mappks.process_inplace("mask.soft",{"outer_radius":options.minsz//4-1})
 	#mapsmall.write_image("tmppks.hdf")
 	#mappks.write_image("tmppks1.hdf")
 	
@@ -626,7 +626,7 @@ def locate_peaks(threed, options, returnall=False):
 		except: pass
 	scrs=[]
 	nnpk=[]
-	bx=options.bxsz/4
+	bx=options.bxsz//4
 	for i,p in enumerate(newpks):
 		
 		
@@ -645,7 +645,7 @@ def locate_peaks(threed, options, returnall=False):
 		scrs.append(e["score"])
 		nnpk.append(p)
 		
-	nnpk=np.array(nnpk).copy()*2-[pad/2, pad/2, zthick/2]
+	nnpk=np.array(nnpk).copy()*2-[pad//2, pad//2, zthick//2]
 	
 	#### return all peaks for fiducial removal
 	if returnall:
@@ -685,7 +685,7 @@ def make_samples(imgs, allparams, options, refinepos=False, outname=None, errtlt
 		nrange=list(range(num))
 	else:
 		nrange=np.argsort(errtlt)[:int(num*options.tltkeep)]
-	bx=options.bxsz/2
+	bx=options.bxsz//2
 	for pid in range(npk):
 		pad=good_size(bx*4)
 		recon=Reconstructors.get("fourier", {"sym":'c1',"size":[pad,pad,pad]})
@@ -697,17 +697,17 @@ def make_samples(imgs, allparams, options, refinepos=False, outname=None, errtlt
 			
 			pxf=get_xf_pos(ttparams[nid], pks[pid],  miscglobal)
 
-			pxf[0]+=imgs[nid]["nx"]/2
-			pxf[1]+=imgs[nid]["ny"]/2
+			pxf[0]+=imgs[nid]["nx"]//2
+			pxf[1]+=imgs[nid]["ny"]//2
 
-			e=imgs[nid].get_clip(Region(pxf[0]-pad/2,pxf[1]-pad/2, pad, pad))
+			e=imgs[nid].get_clip(Region(pxf[0]-pad//2,pxf[1]-pad//2, pad, pad))
 			p2=e
 			rot=Transform({"type":"xyz","ztilt":tpm[2],"ytilt":tpm[3], "xtilt":tpm[4]})
 			p3=recon.preprocess_slice(p2, rot)
 			recon.insert_slice(p3,rot,1)
 		bxcr=np.round(pks[pid]).astype(int).tolist()
 		threed=recon.finish(True)
-		threed=threed.get_clip(Region((pad-bx*2)/2,(pad-bx*2)/2,(pad-bx*2)/2,bx*2,bx*2,bx*2))
+		threed=threed.get_clip(Region((pad-bx*2)//2,(pad-bx*2)//2,(pad-bx*2)//2,bx*2,bx*2,bx*2))
 		threed.process_inplace("normalize")
 		
 		#### center particles by center of mass in fiducial less mode
@@ -891,7 +891,7 @@ def remove_gold(imgs, allparams, threed, options):
 	print("{:d} gold fiducials found.".format(len(pks)))
 	
 	imgs_rmgd=[m.copy() for m in imgs]
-	b2=options.bxsz/4
+	b2=options.bxsz//4
 	
 	jobs=[]
 	for i in range(num):
@@ -927,13 +927,13 @@ def do_rm_gold(args):
 	for pp in pks:
 		pxf=get_xf_pos(ttparams[nid],pp, miscglobal)
 
-		pxf[0]+=img["nx"]/2
-		pxf[1]+=img["ny"]/2
+		pxf[0]+=img["nx"]//2
+		pxf[1]+=img["ny"]//2
 		
 		e=img.get_clip(Region(pxf[0]-b2,pxf[1]-b2, b2*4, b2*4))
 		e.process_inplace("mask.soft",{"inner_radius":goldsize})
 		meanval=e["mean_nonzero"]
-		img.process_inplace("mask.soft",{"dx":int(pxf[0]-img["nx"]/2),"dy":int(pxf[1]-img["ny"]/2),"inner_radius":goldsize, "value":meanval})
+		img.process_inplace("mask.soft",{"dx":int(pxf[0]-img["nx"]//2),"dy":int(pxf[1]-img["ny"]//2),"inner_radius":goldsize, "value":meanval})
 	
 	return
 

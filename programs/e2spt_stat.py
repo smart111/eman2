@@ -86,8 +86,8 @@ This program will look in an spt_XX folder at particle_parms_xx.json and show a 
 	if options.verbose:
 		lz=len(col[col<0])
 		gz=len(col[col>0])
-		print("%1.2f (%d) less than zero"%(float(lz)/(lz+gz),lz))
-		print("%1.2f (%d) less than zero"%(float(gz)/(lz+gz),gz))
+		print("%1.2f (%d) less than zero"%(float(lz)//(lz+gz),lz))
+		print("%1.2f (%d) less than zero"%(float(gz)//(lz+gz),gz))
 
 	his=histogram(col,options.bins)
 

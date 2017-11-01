@@ -1100,7 +1100,7 @@ class TheHelp(QtGui.QWidget):
 			helpdoc += "<B>%s</B>"%(key)
 			eman2item = helpdict[key]
 			helpdoc += "<UL><LI><I>Description:</I> %s</LI>"%eman2item[0]
-			for param in range((len(eman2item)-1)/3):
+			for param in range((len(eman2item)-1)//3):
 				helpdoc += "<LI><I>Parameter:</I> &nbsp;<B>%s(</B><SPAN style='color:red;'>%s</SPAN><B>)</B>, %s</LI>"%(eman2item[param*3 +1],eman2item[param*3 +2],eman2item[param*3 +3])
 			helpdoc += "</UL>"
 

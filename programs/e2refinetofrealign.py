@@ -194,7 +194,7 @@ for i in range(len(all_set_data)):
       film = len(film_dict)
       film_dict[film] = ctf_dict
    bool_found = 0
-   mag = APERPIX / ctf_dict['apix']
+   mag = APERPIX// ctf_dict['apix']
    apix_shift = ctf_dict['apix']
    class_num = cls_class_list[i]
    try:
@@ -248,7 +248,7 @@ for option1 in optionList:
         IFLAG = str(options.mode)
     elif option1 == "randomizemodel":
         if float(options.randomizemodel) != 0.0:
-            s1 = "e2proc3d.py " + E2FA + "/3DMapInOut.mrc " + E2FA + "/3DMapInOut.mrc --process=filter.lowpass.randomphase:apix=" + str(apix_shift) + ":cutoff_freq=" + str(1/float(options.randomizemodel))
+            s1 = "e2proc3d.py " + E2FA + "/3DMapInOut.mrc " + E2FA + "/3DMapInOut.mrc --process=filter.lowpass.randomphase:apix=" + str(apix_shift) + ":cutoff_freq=" + str(1//float(options.randomizemodel))
             call(s1, shell=True)
 
 OUTFILE2 = E2FA + "/card.txt"          # Cards required by FA
@@ -270,7 +270,7 @@ PBC = '20'
 BOFF = '30'
 IPMAX = '10' 
 PSIZE = str(apix_shift) 
-WGH = str(ctf_dict['ampcont']/100)
+WGH = str(ctf_dict['ampcont']//100)
 MASS = str(options.mass)
 s = RO + SPACE + RI + SPACE + PSIZE + SPACE + MASS + SPACE + WGH + SPACE + XSTD + SPACE + PBC + SPACE + BOFF + SPACE + DANG + SPACE + ITMAX + SPACE + IPMAX + '\n'
 f.write(s)

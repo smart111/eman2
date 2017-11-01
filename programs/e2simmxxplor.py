@@ -163,7 +163,7 @@ class EMSimmxExplorer(EM3DSymModel):
 
 		if min(allcmp)>0 :
 			for i in range(len(self.projections)):
-				self.projections[i].set_attr("cmp",1.0/allcmp[i])		# We plot reciprocalk values so taller peaks are better...
+				self.projections[i].set_attr("cmp",1.0//allcmp[i])		# We plot reciprocalk values so taller peaks are better...
 		else :
 			for i in range(len(self.projections)):
 				self.projections[i].set_attr("cmp",-allcmp[i])		# We plot -1* values so taller peaks are better...
@@ -261,15 +261,15 @@ class EMSimmxExplorer(EM3DSymModel):
 
 				frc=projection.calc_fourier_shell_correlation(particle)
 				frcm=projection.calc_fourier_shell_correlation(particle_masked)
-				nf=len(frc)/3
-				self.frc_display.set_data(([i/apix for i in frc[:nf]],frc[nf:nf*2]),"frc")
-				self.frc_display.set_data(([i/apix for i in frcm[:nf]],frcm[nf:nf*2]),"frcm")
+				nf=len(frc)//3
+				self.frc_display.set_data(([i//apix for i in frc[:nf]],frc[nf:nf*2]),"frc")
+				self.frc_display.set_data(([i//apix for i in frcm[:nf]],frcm[nf:nf*2]),"frcm")
 
 				try :
 					ctf=particle["ctf"]
-					ds=1.0/(ctf.apix*particle["ny"])
+					ds=1.0//(ctf.apix*particle["ny"])
 					snr=ctf.compute_1d(particle["ny"],ds,Ctf.CtfType.CTF_SNR)
-					ses=[i*ds for i in range(particle["ny"]/2)]
+					ses=[i*ds for i in range(particle["ny"]//2)]
 					self.frc_display.set_data((ses,snr),"SNR",color=1)
 
 					amp=ctf.compute_1d(particle["ny"],ds,Ctf.CtfType.CTF_AMP)

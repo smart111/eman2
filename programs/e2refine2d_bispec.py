@@ -178,19 +178,19 @@ def main():
 	else: step=""
 	run("e2msa.py %s %s --normalize --nbasis=%0d --scratchfile=%s/msa_scratch.bin %s"%(fpfile,fpbasis,options.nbasisfp,options.path,step))
 	proc_tally += 1.0
-	if logid : E2progress(logid,proc_tally/total_procs)
+	if logid : E2progress(logid,proc_tally//total_procs)
 
 	# reproject the particle footprints into the basis subspace
 	inputproj=options.path+"/basis_proj_00.hdf"
 	run("e2basis.py project %s %s %s --oneout --mean1 --verbose=%d"%(fpbasis,fpfile,inputproj,subverbose))
 	proc_tally += 1.0
-	if logid : E2progress(logid,proc_tally/total_procs)
+	if logid : E2progress(logid,proc_tally//total_procs)
 
 	# Classification
 	run("e2classifykmeans.py %s --original=%s --mininclass=2 --ncls=%d --clsmx=%s/classmx_00.hdf --onein --fastseed"%(inputproj,options.input,options.ncls,options.path))
 
 	proc_tally += 1.0
-	if logid : E2progress(logid,proc_tally/total_procs)
+	if logid : E2progress(logid,proc_tally//total_procs)
 
 	# Make class averages
 	cls_cmd = "e2classaverage.py --input=%s --classmx=%s/classmx_00.hdf --output=%s/classes_00.hdf --iter=3 --force --bootstrap --center=%s" %(options.input,options.path,options.path,options.center)
@@ -200,7 +200,7 @@ def main():
 	class_postproc(options,0)
 
 	proc_tally += 1.0
-	if logid : E2progress(logid,proc_tally/total_procs)
+	if logid : E2progress(logid,proc_tally//total_procs)
 
 	# this is the main refinement loop
 	for it in range(1,options.iter+1) :
@@ -209,17 +209,17 @@ def main():
 		# MSA on class-average bispectra
 		run("e2msa.py %s/classes_fp_%02d.hdf %s/basis_%02d.hdf  --normalize --nbasis=%0d --scratchfile=%s/msa_scratch.bin"%(options.path,it-1,options.path,it,options.nbasisfp,options.path))
 		proc_tally += 1.0
-		if logid : E2progress(logid,proc_tally/total_procs)
+		if logid : E2progress(logid,proc_tally//total_procs)
 
 		# now project original image bispectra into class-average basis space
 		run("e2basis.py project %s/basis_%02d.hdf %s %s/basis_proj_%02d.hdf --oneout --mean1 --verbose=%d"%(options.path,it,fpfile,options.path,it,subverbose))
 		proc_tally += 1.0
-		if logid : E2progress(logid,proc_tally/total_procs)
+		if logid : E2progress(logid,proc_tally//total_procs)
 
 		# Classification
 		run("e2classifykmeans.py %s/basis_proj_%02d.hdf --original=%s --mininclass=2 --ncls=%d --clsmx=%s/classmx_%02d.hdf --onein --fastseed"%(options.path,it,options.input,options.ncls,options.path,it))
 		proc_tally += 1.0
-		if logid : E2progress(logid,proc_tally/total_procs)
+		if logid : E2progress(logid,proc_tally//total_procs)
 
 
 		# Make class averages
@@ -227,7 +227,7 @@ def main():
 		cls_cmd += get_classaverage_extras(options)
 		run (cls_cmd)
 		proc_tally += 1.0
-		if logid : E2progress(logid,proc_tally/total_procs)
+		if logid : E2progress(logid,proc_tally//total_procs)
 
 		class_postproc(options,it)
 

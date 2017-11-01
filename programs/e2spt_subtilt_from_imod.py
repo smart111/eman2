@@ -83,7 +83,7 @@ def main():
 	
 	print("Full size tomogram shape:", rawshp)
 	
-	corsft=rawshp/2-np.mean(trimshp, axis=1)
+	corsft=rawshp//2-np.mean(trimshp, axis=1)
 	#corsft[2]=0
 	print("Coordinates shift: ", corsft)
 
@@ -129,11 +129,11 @@ def main():
 	a_ny=a0["ny"]
 	atoum=float(10*1000) # A to um
 	
-	box-=tomoshape/2
+	box-=tomoshape//2
 	
 	if options.unbin<=0:
 		print("Apix of ali is {:.2f}, Apix from tomo is {:.2f}".format(aapix, eapix))
-		options.unbin=eapix/aapix
+		options.unbin=eapix//aapix
 		print("Box coordinates unbinned by {} based on apix..".format(options.unbin))
 	
 	box*=options.unbin
@@ -147,7 +147,7 @@ def main():
 		if options.weight:
 			wt=ctfsave[:,options.defcol]
 			print("Weight particles by the variance of esitimated defocus, from {:.2f} to {:.2f}".format(np.max(wt), np.min(wt)))
-			wt=1./(wt+.1)
+			wt=1.//(wt+.1)
 			wt/=np.max(wt)
 		
 		f=open(options.ctffile,'r')
@@ -175,12 +175,12 @@ def main():
 			
 			p=tr.transform(Vec3f(b.astype(int).tolist()))
 			
-			p[0]+=a_nx/2
-			p[1]+=a_ny/2
+			p[0]+=a_nx//2
+			p[1]+=a_ny//2
 			
 			allb.append([p[0],p[1], "manual", i])
 			#print p
-			e=EMData(alifile, 0, False, Region(p[0]-sz/2,p[1]-sz/2,i,sz,sz,1))
+			e=EMData(alifile, 0, False, Region(p[0]-sz//2,p[1]-sz//2,i,sz,sz,1))
 			e.mult(-1)
 			e.process_inplace("normalize.edgemean")
 			e["box2d"]=[int(p[0]),int(p[1])]
@@ -194,7 +194,7 @@ def main():
 			
 			if options.ctffile:
 				df=defocus[i]
-				px=a_nx/2-p[0]
+				px=a_nx//2-p[0]
 				ddf=aapix/atoum*np.sin(t/180.*np.pi) * px
 				bz=aapix/atoum*np.cos(t/180.*np.pi) * float(b[2])
 				df=df+ddf+bz

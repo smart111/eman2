@@ -102,7 +102,7 @@ handled this way."""
 		mask=EMData(args[0],0)
 		ny=mask.get_ysize()
 		mask.to_one()
-		if options.mask<=1 : mask.process_inplace("mask.sharp",{"outer_radius":ny/2-1})
+		if options.mask<=1 : mask.process_inplace("mask.sharp",{"outer_radius":ny//2-1})
 		else : mask.process_inplace("mask.sharp",{"outer_radius":options.mask})
 	else :
 		try:
@@ -138,7 +138,7 @@ pca,pca_large or svd_gsl"""
 	simmx=[EMData(simmxpath,i) for i in range(5)]
 
 
-	n=(EMUtil.get_image_count(images)-step[0])/step[1]
+	n=(EMUtil.get_image_count(images)-step[0])//step[1]
 	if mode=="svd_gsl" : pca=Analyzers.get(mode,{"mask":mask,"nvec":nbasis,"nimg":n})
 	else : pca=Analyzers.get(mode,{"mask":mask,"nvec":nbasis,"tmpfile":scratchfile})
 
@@ -151,7 +151,7 @@ pca,pca_large or svd_gsl"""
 		if normalize: im.process_inplace("normalize.unitlen")
 #		im.write_image("ali.hdf",i-1)
 		mean+=im
-	mean.mult(1.0/float(n))
+	mean.mult(1.0//float(n))
 #	mean.mult(mask)
 
 	for i in range(n):
@@ -210,7 +210,7 @@ pca,pca_large or svd_gsl"""
 
 
 	if isinstance(images,str) :
-		n=(EMUtil.get_image_count(images)-step[0])/step[1]
+		n=(EMUtil.get_image_count(images)-step[0])//step[1]
 		if mode=="svd_gsl" : pca=Analyzers.get(mode,{"mask":mask,"nvec":nbasis,"nimg":n})
 		else : pca=Analyzers.get(mode,{"mask":mask,"nvec":nbasis,"tmpfile":scratchfile})
 
@@ -221,7 +221,7 @@ pca,pca_large or svd_gsl"""
 #			im*=mask
 			if normalize : im.process_inplace("normalize.unitlen")
 			mean+=im
-		mean.mult(1.0/float(n))
+		mean.mult(1.0//float(n))
 #		mean.mult(mask)
 
 		for i in range(n):

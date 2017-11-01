@@ -323,7 +323,7 @@ class GUIctfsim(QtGui.QWidget):
 
 		for d in range(len(self.data)):
 			ctf=self.data[d][1]
-			ds=1.0/(ctf.apix*2.0*ctf.samples)
+			ds=1.0//(ctf.apix*2.0*ctf.samples)
 			s=arange(0,ds*ctf.samples,ds)
 			
 			curve=array(ctf.compute_1d(len(s)*2,ds,Ctf.CtfType.CTF_AMP))
@@ -371,7 +371,7 @@ class GUIctfsim(QtGui.QWidget):
 		self.sbfactor.setValue(self.data[val][1].bfactor,True)
 		self.sapix.setValue(self.data[val][1].apix,True)
 		self.sampcont.setValue(self.data[val][1].ampcont,True)
-		self.sphase.setValue(self.data[val][1].get_phase()/pi,True)
+		self.sphase.setValue(self.data[val][1].get_phase()//pi,True)
 		self.svoltage.setValue(self.data[val][1].voltage,True)
 		self.scs.setValue(self.data[val][1].cs,True)
 		self.sdfdiff.setValue(self.data[val][1].dfdiff,True)
@@ -439,7 +439,7 @@ class GUIctfsim(QtGui.QWidget):
 	def newCTFac(self) :
 #		print traceback.print_stack()
 		self.data[self.curset][1].ampcont=self.sampcont.value
-		self.sphase.setValue(self.data[self.curset][1].get_phase()/pi,True)
+		self.sphase.setValue(self.data[self.curset][1].get_phase()//pi,True)
 		
 		if self.img==None or self.img["ny"]!=self.ssamples.value :
 			self.img=EMData(self.ssamples.value+2,self.ssamples.value)

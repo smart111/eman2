@@ -93,7 +93,7 @@ def main():
 	recon=Reconstructors.get("fourier",{"size":padsize,"sym":options.sym,"mode":"gauss_2","verbose":max(options.verbose-2,0)})
 	ptclsf=[]			# particles that have been preprocessed for reconstruction
 	for i in range(len(ptcls)):
-		padded=ptcls[i].get_clip(Region((boxsize-padsize)/2,(boxsize-padsize)/2,padsize,padsize))
+		padded=ptcls[i].get_clip(Region((boxsize-padsize)//2,(boxsize-padsize)//2,padsize,padsize))
 		ptclsf.append(recon.preprocess_slice(padded,Transform()))
 
 	# angles to use for testing
@@ -137,7 +137,7 @@ def main():
 				trymapf=recon.finish(False)
 				trymap=trymapf.do_ift()
 				trymap.process_inplace("xform.phaseorigin.tocenter")
-				trymap=trymap.get_clip(Region((padsize-boxsize)/2,(padsize-boxsize)/2,(padsize-boxsize)/2,boxsize,boxsize,boxsize))
+				trymap=trymap.get_clip(Region((padsize-boxsize)//2,(padsize-boxsize)//2,(padsize-boxsize)//2,boxsize,boxsize,boxsize))
 	
 				# then we reproject that map to see how well it matches the original image
 				# effectively this is just a very expensive way of doing self-common-lines until we add multiple projections
@@ -194,7 +194,7 @@ def main():
 	if options.verbose : print("Best map: ",used[0])
 	
 	# we add in 1/3 more of the best matching volumes
-	for n in range(len(allbest)/3):
+	for n in range(len(allbest)//3):
 		# Find the best match to the current sum and add it in
 		best=(1.0,None)
 		for i in range(len(allbest)):

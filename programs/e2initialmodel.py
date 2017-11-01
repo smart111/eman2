@@ -217,7 +217,7 @@ class InitMdlTask(JSTask):
 			bslst=[]
 			quals=[]
 			for i in range(len(ptcls)):
-				sim=cmponetomany(projs,ptcls[i],align=("rotate_translate_flip",{"maxshift":boxsize/5}),alicmp=("ccc",{}),ralign=("refine",{}),cmp=("frc",{"minres":80,"maxres":20}))
+				sim=cmponetomany(projs,ptcls[i],align=("rotate_translate_flip",{"maxshift":boxsize//5}),alicmp=("ccc",{}),ralign=("refine",{}),cmp=("frc",{"minres":80,"maxres":20}))
 				bs=min(sim)
 #				print bs[0]
 				bss+=bs[0]
@@ -249,7 +249,7 @@ class InitMdlTask(JSTask):
 			# insert slices into initial volume
 			recon.setup()
 			for p in aptcls:
-				p2=p.get_clip(Region(-(pad-boxsize)/2,-(pad-boxsize)/2,pad,pad))
+				p2=p.get_clip(Region(-(pad-boxsize)//2,-(pad-boxsize)//2,pad,pad))
 				p3=recon.preprocess_slice(p2,p["xform.projection"])
 				recon.insert_slice(p3,p["xform.projection"],p.get_attr_default("ptcl_repr",1.0))
 
@@ -281,11 +281,11 @@ class InitMdlTask(JSTask):
 			if verbose>1 : print("Iter %d \t %1.4g (%1.4g)"%(it,bss,qual))
 
 			threed[-1].process_inplace("xform.centerofmass")
-			threed[-1]=threed[-1].get_clip(Region((pad-boxsize)/2,(pad-boxsize)/2,(pad-boxsize)/2,boxsize,boxsize,boxsize))
+			threed[-1]=threed[-1].get_clip(Region((pad-boxsize)//2,(pad-boxsize)//2,(pad-boxsize)//2,boxsize,boxsize,boxsize))
 			threed[-1].process_inplace("normalize.edgemean")
-			threed[-1].process_inplace("mask.gaussian",{"inner_radius":boxsize/3.0,"outer_radius":boxsize/12.0})
+			threed[-1].process_inplace("mask.gaussian",{"inner_radius":boxsize//3.0,"outer_radius":boxsize//12.0})
 			threed[-1].process_inplace("filter.lowpass.gauss",{"cutoff_abs":.2})
-			if it>1 : threed[-1].process_inplace("mask.auto3d",{"radius":boxsize/6,"threshold":threed[-1]["sigma_nonzero"]*.85,"nmaxseed":30,"nshells":boxsize/20,"nshellsgauss":boxsize/20})
+			if it>1 : threed[-1].process_inplace("mask.auto3d",{"radius":boxsize//6,"threshold":threed[-1]["sigma_nonzero"]*.85,"nmaxseed":30,"nshells":boxsize//20,"nshellsgauss":boxsize//20})
 			if mask2!=None:threed[-1].mult(mask2)
 			threed[-1]["apix_x"]=apix
 			threed[-1]["apix_y"]=apix
@@ -322,7 +322,7 @@ def make_random_map(boxsize,sfcurve=None):
 	ret.process_inplace("filter.lowpass.gauss",{"cutoff_abs":.05})
 	ret.process_inplace("xform.centerofmass",{})
 #	ret.process_inplace("mask.gaussian",{"inner_radius":boxsize/3.0,"outer_radius":boxsize/12.0})
-	ret.process_inplace("mask.gaussian.nonuniform",{"radius_x":boxsize/random.uniform(2.0,5.0),"radius_y":boxsize/random.uniform(2.0,5.0),"radius_z":boxsize/random.uniform(2.0,5.0)})
+	ret.process_inplace("mask.gaussian.nonuniform",{"radius_x":boxsize//random.uniform(2.0,5.0),"radius_y":boxsize//random.uniform(2.0,5.0),"radius_z":boxsize//random.uniform(2.0,5.0)})
 
 	return ret
 
@@ -338,13 +338,13 @@ def make_random_map_byort(ptcls):
 	# insert slices into initial volume
 	recon.setup()
 	for p in ptcls:
-		p2=p.get_clip(Region(-(pad-boxsize)/2,-(pad-boxsize)/2,pad,pad))
+		p2=p.get_clip(Region(-(pad-boxsize)//2,-(pad-boxsize)//2,pad,pad))
 		p3=recon.preprocess_slice(p2,Transform())
 #		recon.insert_slice(p3,Transform({"type":"spin","n1":random.uniform(-1.0,1.0),"n2":random.uniform(-1.0,1.0),"n3":random.uniform(-1.0,1.0),"omega":random.uniform(0,360.0)}),p.get_attr_default("ptcl_repr",1.0))
 		recon.insert_slice(p3,Transform({"type":"spin","n1":random.uniform(-1.0,1.0),"n2":random.uniform(-1.0,1.0),"n3":random.uniform(-1.0,1.0),"omega":random.uniform(0,360.0)}),1.0)
 
 	ret=recon.finish(True)
-	ret.clip_inplace(Region((pad-boxsize)/2,(pad-boxsize)/2,(pad-boxsize)/2,boxsize,boxsize,boxsize))
+	ret.clip_inplace(Region((pad-boxsize)//2,(pad-boxsize)//2,(pad-boxsize)//2,boxsize,boxsize,boxsize))
 	ret.process_inplace("normalize.edgemean")
 	return ret
 
@@ -360,7 +360,7 @@ def apply_sym(data,sym):
 		dc=ref.copy()
 		dc.transform(xf.get_sym(sym,i))
 		data.add(dc)
-	data.mult(1.0/nsym)
+	data.mult(1.0//nsym)
 
 
 if __name__ == "__main__":

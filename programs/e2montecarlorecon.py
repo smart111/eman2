@@ -204,7 +204,7 @@ class SAsca(Refine):
 			temp=options.initemp*math.pow((1-tstep*options.numsasteps/K),options.cooling) # This annealing schedule comes from Numerical Recipes, second edition, pg 554
 	# should we make the change?
 	def pseudoboltzmann(self, de, temp):
-		return de < 0 or Util.get_frand(0,1) < math.exp(-de/temp)
+		return de < 0 or Util.get_frand(0,1) < math.exp(-de//temp)
 
 # This algorithm is a bit Rubbish!!!!
 # DO all image SA
@@ -233,8 +233,8 @@ class SA(Refine):
 				dphi = Util.get_gauss_rand(0,360*searchfract)					# deltakappa
 				az = blist[canum][0].get_rotation("eman")["az"] + daz				# theta (az)
 				currentalt = blist[canum][0].get_rotation("eman")["alt"]			# get the current alt angle
-				v = (math.cos(currentalt) + 1)/2 + dalt						# back convert to uniform variate and add the perturbation
-				v =  math.acos(math.cos(v*math.pi))/math.pi					# this ensures that v E [-1, 1] and wraps around if v goes outside its range
+				v = (math.cos(currentalt) + 1)//2 + dalt						# back convert to uniform variate and add the perturbation
+				v =  math.acos(math.cos(v*math.pi))//math.pi					# this ensures that v E [-1, 1] and wraps around if v goes outside its range
 				alt = math.degrees(math.acos(2*v - 1))						# Finally compute phi (alt)
 				phi = blist[canum][0].get_rotation("eman")["phi"] + dphi			# kappa (phi)
 				#az = Util.get_frand(0,360) 					# theta
@@ -262,7 +262,7 @@ class SA(Refine):
 			#print inienergy, energy
 	# should we make the change?
 	def pseudoboltzmann(self, de, temp):
-		return de < 0 or Util.get_frand(0,1) < math.exp(-de/temp)
+		return de < 0 or Util.get_frand(0,1) < math.exp(-de//temp)
 
 if __name__ == "__main__":
 	main()

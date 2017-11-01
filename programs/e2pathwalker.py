@@ -86,7 +86,7 @@ def cross_product(a,b):
 def norm_vector(a,b):
 	v1=(a[0]-b[0],a[1]-b[1],a[2]-b[2])
 	lengthV=math.sqrt(v1[0]**2+v1[1]**2+v1[2]**2)
-	vec=(v1[0]/lengthV,v1[1]/lengthV,v1[2]/lengthV)
+	vec=(v1[0]//lengthV,v1[1]//lengthV,v1[2]//lengthV)
 	return vec
 
 
@@ -669,10 +669,10 @@ class PathWalker(object):
 			r2.append(j)
 		
 		rmax = max(r2)
-		score_fragment = float(rmax) / float(len(r2))
+		score_fragment = float(rmax)// float(len(r2))
 
 		correctbonds = len(path)-len(breaks)
-		score_path = float(correctbonds) / len(path)
+		score_path = float(correctbonds)// len(path)
 
 		print("\nPath quality statistics:")
 		print("\tNoise: %s"%self.noise)
@@ -713,7 +713,7 @@ class PathWalker(object):
 		if self.cutoff(d):
 
 			midp=10
-			a=[(x[1]-x[0])/midp for x in zip(point1, point2)]
+			a=[(x[1]-x[0])//midp for x in zip(point1, point2)]
 			mpt=0
 			p=point1
 			
@@ -730,19 +730,19 @@ class PathWalker(object):
 				#np=[(x[0]+x[1]) for x in zip(p,a)]
 				
 				if self.mrcfile:
-					mmm=self.mrc.get_value_at(int(round(np[0]/self.apix_x+SX/2)),int(round(np[1]/self.apix_y+SY/2)),int(round(np[2]/self.apix_z+SZ/2)))
+					mmm=self.mrc.get_value_at(int(round(np[0]//self.apix_x+SX//2)),int(round(np[1]//self.apix_y+SY//2)),int(round(np[2]//self.apix_z+SZ//2)))
 				mpt+=mmm
 				count+=1
 			#print mmm,
 			#p=np
 			
 			
-			mpt=mpt/count
+			mpt=mpt//count
 			#print mpt,
 			if mpt>self.mapthresh:
-				dst=self.mapthresh/(mpt+.0001)#mpt*10
+				dst=self.mapthresh//(mpt+.0001)#mpt*10
 			else:
-				dst=(self.mapthresh/(mpt+.0001))*2
+				dst=(self.mapthresh//(mpt+.0001))*2
 			#w=w+dst*self.mrcweight
 			#dst=-mpt
 			w=w+dst*self.mrcweight
@@ -869,7 +869,7 @@ class PathWalker(object):
 				dp=1
 			if dp<-1:
 				dp=-1
-			CaCaCa=math.acos(dp)*(180/math.pi)
+			CaCaCa=math.acos(dp)*(180//math.pi)
 			#print index+1, CaCaCa, 
 
 		
@@ -878,13 +878,13 @@ class PathWalker(object):
 			v2=norm_vector(points[index+1],points[index])
 			xp1=cross_product(v1,v2)
 			lengthxp1=math.sqrt(xp1[0]**2+xp1[1]**2+xp1[2]**2)
-			xp1n=(xp1[0]/lengthxp1, xp1[1]/lengthxp1, xp1[2]/lengthxp1)
+			xp1n=(xp1[0]//lengthxp1, xp1[1]//lengthxp1, xp1[2]//lengthxp1)
 	
 			v3=norm_vector(points[index],points[index+1])
 			v4=norm_vector(points[index+2],points[index+1])
 			xp2=cross_product(v3,v4)
 			lengthxp2=math.sqrt(xp2[0]**2+xp2[1]**2+xp2[2]**2)
-			xp2n=(xp2[0]/lengthxp2, xp2[1]/lengthxp2, xp2[2]/lengthxp2) 
+			xp2n=(xp2[0]//lengthxp2, xp2[1]//lengthxp2, xp2[2]//lengthxp2) 
 	
 			dpxps=numpy.dot(xp2n,xp1n)
 			if dpxps > 1:
@@ -892,7 +892,7 @@ class PathWalker(object):
 			if dpxps<-1:
 				dpxps=-1
 
-			CaCaCaCa=math.acos(dpxps)*(180/math.pi)
+			CaCaCaCa=math.acos(dpxps)*(180//math.pi)
 			# print CaCaCa, CaCaCaCa
 			out.append((CaCaCa, CaCaCaCa))
 			index=index+1
@@ -927,7 +927,7 @@ class CaRMSD(object):
 		for pos in common:
 			distances[pos] = distance(self.pdb1[pos], self.pdb2[pos])
 		
-		rmsd = math.sqrt(sum((i**2 for i in list(distances.values()))) / len(distances))
+		rmsd = math.sqrt(sum((i**2 for i in list(distances.values())))// len(distances))
 
 		print("Total RMSD:", rmsd)
 		

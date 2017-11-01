@@ -115,7 +115,7 @@ together."""
 
 	print(len(data)," images to classify.")
 
-	if options.minchange<=0 : options.minchange=len(data)/(options.ncls*25)+1
+	if options.minchange<=0 : options.minchange=len(data)//(options.ncls*25)+1
 	if options.fastseed : slowseed=0
 	else : slowseed=1
 	an=Analyzers.get("kmeans")

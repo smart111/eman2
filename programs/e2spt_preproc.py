@@ -476,13 +476,13 @@ def clip3D( vol, sizex, sizey=0, sizez=0 ):
 	if not sizez:
 		sizez=sizex
 	
-	volxc = vol['nx']/2
-	volyc = vol['ny']/2
-	volzc = vol['nz']/2
+	volxc = vol['nx']//2
+	volyc = vol['ny']//2
+	volzc = vol['nz']//2
 	
 	print("clipping volume to size", sizex, sizey, sizez)
 	
-	Rvol =  Region( (2*volxc - sizex)/2, (2*volyc - sizey)/2, (2*volzc - sizez)/2, sizex , sizey , sizez)
+	Rvol =  Region( (2*volxc - sizex)//2, (2*volyc - sizey)//2, (2*volzc - sizez)//2, sizex , sizey , sizez)
 	vol.clip_inplace( Rvol )
 	#vol.process_inplace('mask.sharp',{'outer_radius':-1})
 	

@@ -375,7 +375,7 @@ def main():
 				if options.symcopy:
 					for i in range(npt):
 						c=np.asarray(corr[i])
-						cls=np.argmin(c.reshape(len(corr[i])/len(models),len(models)),1)
+						cls=np.argmin(c.reshape(len(corr[i])//len(models),len(models)),1)
 						#### the class it belongs to
 						v=cmxcls[0,i] 
 						#### index of the class of each asym-unit
@@ -389,7 +389,7 @@ def main():
 					clso=np.argmin(corr,1)
 					cls=clso%len(models)
 					clsm=clso//len(models)
-					print(eo,[float(sum(cls==k))/float(npt) for k in models])
+					print(eo,[float(sum(cls==k))//float(npt) for k in models])
 					for i in range(npt):
 						v=cmxcls[0,i]
 						if options.breaksym:

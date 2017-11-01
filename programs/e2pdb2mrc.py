@@ -242,8 +242,8 @@ def main():
 
 		infile.close()
 
-		print("%d atoms used with a total charge of %d e- and a mass of %d kDa"%(natm,nelec,mass/1000))
-		print("Atomic center at %1.1f,%1.1f,%1.1f (center of volume at 0,0,0)"%(aavg[0]/natm,aavg[1]/natm,aavg[2]/natm))
+		print("%d atoms used with a total charge of %d e- and a mass of %d kDa"%(natm,nelec,mass//1000))
+		print("Atomic center at %1.1f,%1.1f,%1.1f (center of volume at 0,0,0)"%(aavg[0]//natm,aavg[1]//natm,aavg[2]//natm))
 		print("Bounding box: x: %7.2f - %7.2f"%(amin[0],amax[0]))
 		print("              y: %7.2f - %7.2f"%(amin[1],amax[1]))
 		print("              z: %7.2f - %7.2f"%(amin[2],amax[2]))
@@ -264,7 +264,7 @@ def main():
 
 		if options.omit > 0.0 and options.omit < 100.0:
 			natm = pa.get_number_points()
-			nrm = int(round(natm*(options.omit/100.),0))
+			nrm = int(round(natm*(options.omit//100.),0))
 			print(("Randomly omitting {}% ({}/{}) of atoms from output map.".format(options.omit,nrm,natm)))
 			for i in range(nrm):
 				n = np.random.randint(0,natm,dtype=int)
@@ -277,7 +277,7 @@ def main():
 
 		if options.full:
 			p = np.asmatrix(pa.get_points()).T
-			p = p.reshape(p.shape[0]/3,3)
+			p = p.reshape(p.shape[0]//3,3)
 			points = []
 
 			for tfid in list(tfs.keys()):
@@ -292,7 +292,7 @@ def main():
 		# apply additional, user specified symmetry
 		if options.addsym != "c1":
 			p = np.asmatrix(pa.get_points()).T
-			p = p.reshape(p.shape[0]/3,3)
+			p = p.reshape(p.shape[0]//3,3)
 			points = []
 			for tf in sym.get_syms():
 				m = np.asarray(tf.get_matrix()).reshape(3,4)
@@ -407,8 +407,8 @@ def pdb_2_mrc(file_name,apix=1.0,res=2.8,het=False,box=None,chains=None,model=No
 	infile.close()
 
 	if not quiet:
-		print("%d atoms used with a total charge of %d e- and a mass of %d kDa"%(natm,nelec,mass/1000))
-		print("atomic center at %1.1f,%1.1f,%1.1f (center of volume at 0,0,0)"%(aavg[0]/natm,aavg[1]/natm,aavg[2]/natm))
+		print("%d atoms used with a total charge of %d e- and a mass of %d kDa"%(natm,nelec,mass//1000))
+		print("atomic center at %1.1f,%1.1f,%1.1f (center of volume at 0,0,0)"%(aavg[0]//natm,aavg[1]//natm,aavg[2]//natm))
 		print("Bounding box: x: %7.2f - %7.2f"%(amin[0],amax[0]))
 		print("              y: %7.2f - %7.2f"%(amin[1],amax[1]))
 		print("              z: %7.2f - %7.2f"%(amin[2],amax[2]))
@@ -440,9 +440,9 @@ def pdb_2_mrc(file_name,apix=1.0,res=2.8,het=False,box=None,chains=None,model=No
 				outbox[2]=int(spl[2])
 	except:
 		pad=int(2.0*res/apix)
-		outbox[0]=int((amax[0]-amin[0])/apix)+pad
-		outbox[1]=int((amax[1]-amin[1])/apix)+pad
-		outbox[2]=int((amax[2]-amin[2])/apix)+pad
+		outbox[0]=int((amax[0]-amin[0])//apix)+pad
+		outbox[1]=int((amax[1]-amin[1])//apix)+pad
+		outbox[2]=int((amax[2]-amin[2])//apix)+pad
 		outbox[0]+=outbox[0]%2
 		outbox[1]+=outbox[1]%2
 		outbox[2]+=outbox[2]%2
@@ -453,11 +453,11 @@ def pdb_2_mrc(file_name,apix=1.0,res=2.8,het=False,box=None,chains=None,model=No
 	outmap=EMData()
 	outmap.set_size(outbox[0],outbox[1],outbox[2])
 	outmap.to_zero()
-	for i in range(len(aavg)): aavg[i] = aavg[i]/float(natm)
+	for i in range(len(aavg)): aavg[i] = aavg[i]//float(natm)
 	# fill in the atom gaussians
-	xt = outbox[0]/2 - (amax[0]-amin[0])/(2*apix)
-	yt = outbox[1]/2 - (amax[1]-amin[1])/(2*apix)
-	zt = outbox[2]/2 - (amax[2]-amin[2])/(2*apix)
+	xt = outbox[0]//2 - (amax[0]-amin[0])//(2*apix)
+	yt = outbox[1]//2 - (amax[1]-amin[1])//(2*apix)
+	zt = outbox[2]//2 - (amax[2]-amin[2])//(2*apix)
 	for i,a in enumerate(atoms):
 		if not quiet and i%1000==0 :
 			print('\r   %d'%i, end=' ')
@@ -467,8 +467,8 @@ def pdb_2_mrc(file_name,apix=1.0,res=2.8,het=False,box=None,chains=None,model=No
 			elec=atomdefs[a[0].translate(None,"0123456789").upper()][0]
 # This was producing different results than the "quick" mode, and did not match the statement printed above!!!
 #			outmap.insert_scaled_sum(gaus,(a[1]/apix+xt-amin[0]/apix,a[2]/apix+yt-amin[1]/apix,a[3]/apix+zt-amin[2]/apix),res/(pi*12.0*apix),elec)
-			if center: outmap.insert_scaled_sum(gaus,((a[1]-aavg[0])/apix+outbox[0]/2,(a[2]-aavg[1])/apix+outbox[1]/2,(a[3]-aavg[2])/apix+outbox[2]/2),res/(pi*12.0*apix),elec)
-			else: outmap.insert_scaled_sum(gaus,(a[1]/apix+outbox[0]/2,a[2]/apix+outbox[1]/2,a[3]/apix+outbox[2]/2),res/(pi*12.0*apix),elec)
+			if center: outmap.insert_scaled_sum(gaus,((a[1]-aavg[0])//apix+outbox[0]//2,(a[2]-aavg[1])//apix+outbox[1]//2,(a[3]-aavg[2])//apix+outbox[2]//2),res//(pi*12.0*apix),elec)
+			else: outmap.insert_scaled_sum(gaus,(a[1]//apix+outbox[0]//2,a[2]//apix+outbox[1]//2,a[3]//apix+outbox[2]//2),res//(pi*12.0*apix),elec)
 		except: print("Skipping %d '%s'"%(i,a[0]))
 	if not quiet: print('\r   %d\nConversion complete'%len(atoms))
 	outmap.set_attr("apix_x",apix)

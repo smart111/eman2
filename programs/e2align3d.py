@@ -138,7 +138,7 @@ def main():
 	if options.shrink > 1:
 		sfixed = fixed.process('math.medianshrink', {'n':options.shrink})
 		smoving = moving.process('math.medianshrink', {'n':options.shrink})
-		options.search = options.search/options.shrink		# must adjust the search range
+		options.search = options.search//options.shrink		# must adjust the search range
 	else:
 		sfixed = fixed
 		smoving = moving

@@ -72,18 +72,18 @@ def avg_this_pixel (filename, imagedict, thr, i,j,k):
             numth=numth+1
             sumrth=sumrth+re
             sumith=sumith+im
-    rst=sumrst/num
-    ist=sumist/num
+    rst=sumrst//num
+    ist=sumist//num
     rth=0.
     ith=0.
     if (numth>0):
-        rth=sumrth/numth
-        ith=sumith/numth
+        rth=sumrth//numth
+        ith=sumith//numth
     rwt=0.
     iwt=0.
     if (suma>0):
-        rwt=sumr2/suma
-        iwt=sumi2/suma
+        rwt=sumr2//suma
+        iwt=sumi2//suma
 #        process (filename, imagedict[filename] )
 #        print filename, thr, i,j,k
     return (rst,ist,rth,ith,rwt,iwt)

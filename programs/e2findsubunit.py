@@ -94,10 +94,10 @@ def main() :
 	while (1):
 		# invert the voxel, and zero the symmetric ones
 		data.set_value_at(cur[0],cur[1],cur[2],-data.get_value_at(cur[0],cur[1],cur[2]))
-		c2=(cur[0]-data.get_xsize()/2,cur[1]-data.get_ysize()/2,cur[2]-data.get_zsize()/2)
+		c2=(cur[0]-data.get_xsize()//2,cur[1]-data.get_ysize()//2,cur[2]-data.get_zsize()//2)
 		for a in range(1,csym):
 			c2=(c2*symop).as_list()
-			c3=(int(c2[0]+data.get_xsize()/2),int(c2[1]+data.get_ysize()/2),int(c2[2]+data.get_zsize()/2))
+			c3=(int(c2[0]+data.get_xsize()//2),int(c2[1]+data.get_ysize()//2),int(c2[2]+data.get_zsize()//2))
 			for l in totest:
 				data.set_value_at(c3[0]+l[0],c3[1]+l[1],c3[2]+l[2],0.0)
 		

@@ -82,7 +82,7 @@ def load_micrograph(filename):
 		for i in range(1,n):
 			im=EMData(filename,i)
 			img.add(im)
-		img.mult(1.0/n)
+		img.mult(1.0//n)
 		
 	if invert_on_read : img.mult(-1.0)
 	global apix
@@ -173,7 +173,7 @@ def main():
 		options.boxsize=good_size(options.boxsize)
 	project_db["global.boxsize"]=options.boxsize
 	boxsize=options.boxsize
-	boxsize2=boxsize/2
+	boxsize2=boxsize//2
 
 	if options.ptclsize<2:
 		try: options.ptclsize=project_db["global.ptclsize"]
@@ -225,7 +225,7 @@ def main():
 
 	if options.ptclsize*1.5>boxsize :
 		print("WARNING: Strongly recommend using a box size 1.5 - 2.0x the maximum dimension of the particle! This may be pushed to ~1.25x in some cases, but results may be suboptimal.")
-		print("Your box size is {:1.2f}x the particle size. Recommend a size of at least {:d}".format(boxsize/float(options.ptclsize),good_size(int(options.ptclsize*1.5))))
+		print("Your box size is {:1.2f}x the particle size. Recommend a size of at least {:d}".format(boxsize//float(options.ptclsize),good_size(int(options.ptclsize*1.5))))
 		
 		
 	logid=E2init(sys.argv,options.ppid)
@@ -301,7 +301,7 @@ def write_boxfiles(files,boxsize):
 	
 	try: os.mkdir("boxfiles")
 	except: pass
-	boxsize2=boxsize/2
+	boxsize2=boxsize//2
 
 	print(len(files)," files to consider writing .box files for")
 	for m in [i.split()[1] for i in files]:
@@ -321,7 +321,7 @@ def write_particles(files,boxsize,verbose):
 	
 	try: os.mkdir("particles")
 	except: pass
-	boxsize2=boxsize/2
+	boxsize2=boxsize//2
 	
 	for nm in files:
 		n,m=nm.split()
@@ -373,7 +373,7 @@ class boxerByRef(QtCore.QObject):
 				print("Error, no threshold (0.1-2) specified")
 				return
 		
-		downsample=10.0/apix			# we downsample to 10 A/pix
+		downsample=10.0//apix			# we downsample to 10 A/pix
 		microdown=micrograph.process("normalize.edgemean").process("math.fft.resample",{"n":downsample})
 		gs=good_size(max(microdown["nx"],microdown["ny"]))
 		microf=microdown.get_clip(Region(0,0,gs,gs)).do_fft()
@@ -442,8 +442,8 @@ class boxerByRef(QtCore.QObject):
 		# smooth out a few spurious peaks. Hopefully doesn't mess up ownership assignment significantly
 		final.process_inplace("filter.lowpass.gauss",{"cutoff_freq":0.2})
 		# get rid of nasty edges
-		final.clip_inplace(Region(0,0,int(micrograph["nx"]/downsample),int(micrograph["ny"]/downsample)))
-		owner.clip_inplace(Region(0,0,int(micrograph["nx"]/downsample),int(micrograph["ny"]/downsample)))
+		final.clip_inplace(Region(0,0,int(micrograph["nx"]//downsample),int(micrograph["ny"]//downsample)))
+		owner.clip_inplace(Region(0,0,int(micrograph["nx"]//downsample),int(micrograph["ny"]//downsample)))
 		#norm.clip_inplace(Region(0,0,int(micrograph["nx"]/downsample),int(micrograph["ny"]/downsample)))
 		#norm.process("math.sqrt")
 		#norm.process_inplace("math.reciprocal")
@@ -451,7 +451,7 @@ class boxerByRef(QtCore.QObject):
 		final.add(-final["mean"]) 
 		# Now pull out only local peaks
 		# Zero edges to eliminate boxes within 1/2 box size of edge
-		edge=int(goodrefs[0]["nx"]/(2.0*downsample)+0.5)
+		edge=int(goodrefs[0]["nx"]//(2.0*downsample)+0.5)
 		#final.mult(norm)
 		final.process_inplace("mask.zeroedge2d",{"x0":edge,"y0":edge})
 		final.process_inplace("mask.onlypeaks",{"npeaks":0,"usemean":0})
@@ -484,7 +484,7 @@ class boxerByRef(QtCore.QObject):
 			owna=(box[3]-ownn)*360.0
 			ref=goodrefs[ownn].process("xform",{"transform":Transform({"type":"2d","alpha":owna})})
 			ref.process_inplace("normalize.edgemean")
-			ptcl=micrograph.get_clip(Region(box[0]-ref["nx"]/2,box[1]-ref["ny"]/2,ref["nx"],ref["ny"]))		# of course, nx == ny anyway
+			ptcl=micrograph.get_clip(Region(box[0]-ref["nx"]//2,box[1]-ref["ny"]//2,ref["nx"],ref["ny"]))		# of course, nx == ny anyway
 			ali=ref.align("rotate_translate",ptcl)
 			ax,ay=ali["xform.align2d"].get_trans_2d()
 			boxes2.append((box[0]+ax,box[1]+ay,box[2]))
@@ -502,7 +502,7 @@ class boxerByRef(QtCore.QObject):
 	@staticmethod
 	def ccftask(jsd,ref,downsample,gs,microf,ri):
 
-		mref=ref.process("mask.soft",{"outer_radius":ref["nx"]/2-4,"width":3})
+		mref=ref.process("mask.soft",{"outer_radius":ref["nx"]//2-4,"width":3})
 		mref.process_inplace("normalize.unitlen")
 		
 		for ang in range(0,360,10):
@@ -510,12 +510,12 @@ class boxerByRef(QtCore.QObject):
 			# don't downsample until after rotation
 			dsref.process_inplace("math.fft.resample",{"n":downsample})
 			dsref.process_inplace("normalize")
-			diff=(gs-dsref["nx"])/2
+			diff=(gs-dsref["nx"])//2
 			dsref=dsref.get_clip(Region(-diff,-diff,gs,gs))
 			dsref.process_inplace("xform.phaseorigin.tocorner")
 			ccf=microf.calc_ccf(dsref)
 			#ccf.process_inplace("normalize")
-			ccf["ortid"]=ri+ang/360.0			# integer portion is projection number, fractional portion is angle, should be enough precision with the ~100 references we're using
+			ccf["ortid"]=ri+ang//360.0			# integer portion is projection number, fractional portion is angle, should be enough precision with the ~100 references we're using
 
 			jsd.put(ccf)
 		sys.stdout.write("*")
@@ -542,9 +542,9 @@ class boxerLocal(QtCore.QObject):
 				return
 		
 		nx=goodrefs[0]["nx"]
-		downsample=8.0/apix			# we downsample to 10 A/pix
-		nxdown=good_size(int(nx/downsample))
-		downsample=float(nx)/float(nxdown)
+		downsample=8.0//apix			# we downsample to 10 A/pix
+		nxdown=good_size(int(nx//downsample))
+		downsample=float(nx)//float(nxdown)
 		microdown=micrograph.process("normalize.edgemean").process("math.fft.resample",{"n":downsample})
 		print("downsample by ",downsample)
 		
@@ -599,11 +599,11 @@ class boxerLocal(QtCore.QObject):
 #		final.add(-final["mean"]) 
 		# Now pull out only local peaks
 		# Zero edges to eliminate boxes within 1/2 box size of edge
-		edge=int(goodrefs[0]["nx"]/(2.0*downsample)+0.5)
+		edge=int(goodrefs[0]["nx"]//(2.0*downsample)+0.5)
 		#final.mult(norm)
 		final.process_inplace("mask.zeroedge2d",{"x0":edge,"y0":edge})
 		final.process_inplace("mask.onlypeaks",{"npeaks":0,"usemean":0})
-		final.mult(1.0/final["sigma_nonzero"])
+		final.mult(1.0//final["sigma_nonzero"])
 #		final.process_inplace("normalize.edgemean")
 #		final.process_inplace("threshold.belowtozero",{"minval":threshold})
 
@@ -635,7 +635,7 @@ class boxerLocal(QtCore.QObject):
 #			owna=(box[3]-ownn)*360.0
 #			ref=goodrefs[ownn].process("xform",{"transform":Transform({"type":"2d","alpha":owna})})
 			ref=goodrefs[ownn].process("normalize.edgemean")
-			ptcl=micrograph.get_clip(Region(box[0]-ref["nx"]/2,box[1]-ref["ny"]/2,ref["nx"],ref["ny"]))		# of course, nx == ny anyway
+			ptcl=micrograph.get_clip(Region(box[0]-ref["nx"]//2,box[1]-ref["ny"]//2,ref["nx"],ref["ny"]))		# of course, nx == ny anyway
 			ali=ref.align("rotate_translate",ptcl)
 			ax,ay=ali["xform.align2d"].get_trans_2d()
 			boxes2.append((box[0]+ax,box[1]+ay,box[2]))
@@ -653,7 +653,7 @@ class boxerLocal(QtCore.QObject):
 	@staticmethod
 	def ccftask(jsd,ref,downsample,microdown,ri):
 
-		mref=ref.process("mask.soft",{"outer_radius":ref["nx"]/2-4,"width":3})
+		mref=ref.process("mask.soft",{"outer_radius":ref["nx"]//2-4,"width":3})
 		mref.process_inplace("math.fft.resample",{"n":downsample})
 		nxdown=mref["nx"]
 		
@@ -677,8 +677,8 @@ class boxerLocal(QtCore.QObject):
 				frc=-ali.cmp("frc",ptcl,{"minres":200,"maxres":20,"sweight":0})		# we want larger better in this case
 				
 				# Write results in one pixel
-				ax=int(ax+x+nxdown/2)
-				ay=int(ay+y+nxdown/2)
+				ax=int(ax+x+nxdown//2)
+				ay=int(ay+y+nxdown//2)
 				if frc>ptclmap[ax,ay] : ptclmap[ax,ay]=frc
 		
 		jsd.put(ptclmap)
@@ -759,7 +759,7 @@ class boxerConvNet(QtCore.QObject):
 		nnet_savename="nnet_pickptcls.hdf"
 		bxsz=goodrefs[0]["nx"]
 		sz=64
-		shrinkfac=float(bxsz)/float(sz)
+		shrinkfac=float(bxsz)//float(sz)
 		
 		rng = np.random.RandomState(123)
 		nkernel=[20,20,1]
@@ -790,7 +790,7 @@ class boxerConvNet(QtCore.QObject):
 			if nref<5:
 				print("Not enough references. Please box at least 5 good and 5 background reference...")
 				return []
-			ncopy=nref_target/nref + 1
+			ncopy=nref_target//nref + 1
 			
 			for pp in refs:
 				ptl=pp.process("math.fft.resample",{"n":shrinkfac})
@@ -821,7 +821,7 @@ class boxerConvNet(QtCore.QObject):
 		train_set_x= theano.shared(data,borrow=True)
 		
 		#### make target output
-		img=EMData(sz/2,sz/2)
+		img=EMData(sz//2,sz//2)
 		img.process_inplace("testimage.gaussian",{'sigma':5.})
 		img.div(img["maximum"])
 		gaus=img.numpy().copy().flatten()
@@ -836,7 +836,7 @@ class boxerConvNet(QtCore.QObject):
 		classify=convnet.get_classify_func(train_set_x,labels,batch_size)
 		learning_rate=0.001
 		weightdecay=1e-5
-		n_train_batches = len(data) / batch_size
+		n_train_batches = len(data)// batch_size
 		for epoch in range(20):
 		# go through the training set
 			c = []
@@ -861,7 +861,7 @@ class boxerConvNet(QtCore.QObject):
 		nnet_savename="nnet_classify.hdf"
 		bxsz=goodrefs[0]["nx"]
 		sz=64
-		shrinkfac=float(bxsz)/float(sz)
+		shrinkfac=float(bxsz)//float(sz)
 		
 		print("Setting up  network for bad particle exclusion ...")
 		rng = np.random.RandomState(123)
@@ -898,7 +898,7 @@ class boxerConvNet(QtCore.QObject):
 			if nref<5:
 				print("Not enough references. Please box at least 5 good and 5 bad reference...")
 				return []
-			ncopy=nref_target/nref + 1
+			ncopy=nref_target//nref + 1
 			
 			for pp in refs:
 				ptl=pp.process("math.fft.resample",{"n":shrinkfac})
@@ -936,7 +936,7 @@ class boxerConvNet(QtCore.QObject):
 		classify=boxerConvNet.get_classify_func(convnet, train_set_x,labels,batch_size)
 		learning_rate=0.005
 		weightdecay=1e-5
-		n_train_batches = len(data) / batch_size
+		n_train_batches = len(data)// batch_size
 		for epoch in range(20):
 		# go through the training set
 			c = []
@@ -1013,7 +1013,7 @@ class boxerConvNet(QtCore.QObject):
 			
 			img=from_numpy(m)
 			nx=img["nx"]
-			img=img.get_clip(Region(-nx/2,-nx/2,nx*2,nx*2))
+			img=img.get_clip(Region(-nx//2,-nx//2,nx*2,nx*2))
 			img.scale(2.)
 			#img.process_inplace("math.fft.resample",{"n":.5})
 			img.mult(5)
@@ -1027,15 +1027,15 @@ class boxerConvNet(QtCore.QObject):
 		nnet_savename="nnet_pickptcls.hdf"
 		bxsz=goodrefs[0]["nx"]
 		sz=64
-		shrinkfac=float(bxsz)/float(sz)
+		shrinkfac=float(bxsz)//float(sz)
 		
 		if os.path.isfile(nnet_savename)==False:
 			print("Cannot find saved network, retrain from scratch...")
 			do_training((goodrefs, badrefs, bgrefs))
 			
 		#else:
-		nx=int(micrograph["nx"]/shrinkfac)
-		ny=int(micrograph["ny"]/shrinkfac)
+		nx=int(micrograph["nx"]//shrinkfac)
+		ny=int(micrograph["ny"]//shrinkfac)
 		
 			
 		layers=boxerConvNet.load_network(nnet_savename, nx, ny)
@@ -1085,7 +1085,7 @@ class boxerConvNet(QtCore.QObject):
 				
 				for mi in range(s[1]):
 					sw=allw[wi][mi]["nx"]
-					allw[wi][mi]=allw[wi][mi].get_clip(Region((sw-nx)/2,(sw-ny)/2,nx,ny))
+					allw[wi][mi]=allw[wi][mi].get_clip(Region((sw-nx)//2,(sw-ny)//2,nx,ny))
 					
 					allw[wi][mi].process_inplace("xform.phaseorigin.tocenter")
 					#allw[wi][mi].do_fft_inplace()
@@ -1163,10 +1163,10 @@ class boxerConvNet(QtCore.QObject):
 				thrn=2.
 		
 		threshold=final["mean"]+final["sigma"]*thrn
-		pks=final.peak_ccf(sz/4)
+		pks=final.peak_ccf(sz//4)
 		
 		if nnet_classify==None:
-			tstout=np.ones(len(pks)/3+1)
+			tstout=np.ones(len(pks)//3+1)
 		else:
 			coord=np.array(pks).reshape((-1,3))
 			#data=[]
@@ -1175,7 +1175,7 @@ class boxerConvNet(QtCore.QObject):
 				if p[0]<threshold:
 					break
 				#print p
-				e=fm.get_clip(Region(int(p[1]*2-sz/2),int(p[2]*2-sz/2),sz, sz))
+				e=fm.get_clip(Region(int(p[1]*2-sz//2),int(p[2]*2-sz//2),sz, sz))
 				mout=boxerConvNet.do_convolve([e],nnet_classify)[0]
 				mout.mult(-1)
 				mout.process_inplace("threshold.belowtominval", {"minval":-1})
@@ -1204,7 +1204,7 @@ class boxerConvNet(QtCore.QObject):
 		for i in range(0,len(pks),3):
 			if pks[i]<threshold:
 				break
-			if tstout[i/3]>0.2:
+			if tstout[i//3]>0.2:
 				boxes.append([int(pks[i+1]*downsample),int(pks[i+2]*downsample),"auto_convnet"])
 			else:
 				continue
@@ -1222,13 +1222,13 @@ class boxerConvNet(QtCore.QObject):
 		nnet_savename_classify="nnet_classify.hdf"
 		bxsz=goodrefs[0]["nx"]
 		sz=64
-		shrinkfac=float(bxsz)/float(sz)
+		shrinkfac=float(bxsz)//float(sz)
 		
 		## need the micrograph size to pad the kernels
 		fsp=filenames[0].split()[1]
 		hdr=EMData(fsp, 0, True)
-		nx=int(hdr["nx"]/shrinkfac)
-		ny=int(hdr["ny"]/shrinkfac)
+		nx=int(hdr["nx"]//shrinkfac)
+		ny=int(hdr["ny"]//shrinkfac)
 		
 		#### load network...
 		layers=boxerConvNet.load_network(nnet_savename, nx, ny)
@@ -1620,14 +1620,14 @@ class GUIBoxer(QtGui.QWidget):
 		xsize3d=vol["nx"]
 		xsize=self.vbbsize.getValue()
 
-		if ( xsize3d != xsize or fabs(fabs(apix1/apix3)-1.0)>.001 ) :
+		if ( xsize3d != xsize or fabs(fabs(apix1//apix3)-1.0)>.001 ) :
 			print("WARNING: the boxsize and/or sampling (%d @ %1.4f A/pix) do not match (%d @ %1.4f A/pix). I will attempt to adjust the volume appropriately."%(xsize,apix1,xsize3d,apix3))
 			try:
-				scale=apix3/apix1
+				scale=apix3//apix1
 				print("Reference is {box3} x {box3} x {box3} at {apix3:1.2f} A/pix, particles are {box2} x {box2} at {apix2:1.2f} A/pix. Scaling by {scale:1.3f}".format(box3=xsize3d,box2=xsize,apix3=apix3,apix2=apix1,scale=scale))
 			except:
 				print("A/pix unknown, assuming scale same as relative box size")
-				scale=float(xsize)/xsize3d
+				scale=float(xsize)//xsize3d
 				
 			vol.process_inplace("xform.scale",{"clip":xsize,"scale":scale})
 		
@@ -1661,14 +1661,14 @@ class GUIBoxer(QtGui.QWidget):
 		xsize=self.vbbsize.getValue()
 		scale=1.0
 
-		if ( xsize2 != xsize or fabs(fabs(apix1/apix2)-1.0)>.001 ) :
+		if ( xsize2 != xsize or fabs(fabs(apix1//apix2)-1.0)>.001 ) :
 			print("WARNING: the boxsize and/or sampling (%d @ %1.4f A/pix) do not match (%d @ %1.4f A/pix). I will attempt to adjust the volume appropriately."%(xsize,apix1,xsize2,apix2))
 			try:
-				scale=apix2/apix1
+				scale=apix2//apix1
 				print("Reference is {box3} x {box3} x {box3} at {apix3:1.2f} A/pix, particles are {box2} x {box2} at {apix2:1.2f} A/pix. Scaling by {scale:1.3f}".format(box3=xsize2,box2=xsize,apix3=apix2,apix2=apix1,scale=scale))
 			except:
 				print("A/pix unknown, assuming scale same as relative box size")
-				scale=float(xsize)/xsize2
+				scale=float(xsize)//xsize2
 			
 		for r in refs:
 			r.process_inplace("normalize.circlemean")
@@ -1998,7 +1998,7 @@ class GUIBoxer(QtGui.QWidget):
 		try: color=self.boxcolors[box[2]]
 		except: color=self.boxcolors["unknown"]
 		self.wimage.add_shape("box{}".format(i),EMShape(("rect",color[0],color[1],color[2],box[0]-boxsize//2,box[1]-boxsize//2,box[0]+boxsize//2,box[1]+boxsize//2,2)))
-		self.wimage.add_shape("cir{}".format(i),EMShape(("circle",color[0],color[1],color[2],box[0],box[1],ptclsize/2,1.5)))
+		self.wimage.add_shape("cir{}".format(i),EMShape(("circle",color[0],color[1],color[2],box[0],box[1],ptclsize//2,1.5)))
 
 		boxim=self.micrograph.get_clip(Region(box[0]-boxsize//2,box[1]-boxsize//2,boxsize,boxsize))
 		boxim["ptcl_source_coord"]=(box[0],box[1])

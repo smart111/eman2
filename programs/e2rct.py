@@ -125,7 +125,7 @@ def main():
 			exit(1)
 	
 	#initialize some stuff
-	search = tiltimgs[0].get_attr('nx')/4 # the search range for the 3D aligner
+	search = tiltimgs[0].get_attr('nx')//4 # the search range for the 3D aligner
 	arlist = []
 	totalptcls = 0
 	tiltcorrection = 0.0
@@ -184,7 +184,7 @@ def main():
 					# Do the alignment, perhaps I should use e2align3d.py?
 					if options.cuda: EMData.switchoncuda()
 					nbest = currentrct.xform_align_nbest('rotate_translate_3d', reference, {'delta':options.aligngran, 'dphi':options.aligngran,'sym':'c1', 'verbose':1}, 1, 'ccc.tomo',{})
-					raligned = currentrct.align('refine_3d_grid', reference, {"xform.align3d":nbest[0]["xform.align3d"],"delta":1,"range":(options.aligngran/2 + 1),"verbose":1}, "ccc.tomo")
+					raligned = currentrct.align('refine_3d_grid', reference, {"xform.align3d":nbest[0]["xform.align3d"],"delta":1,"range":(options.aligngran//2 + 1),"verbose":1}, "ccc.tomo")
 					if options.cuda: EMData.switchoffcuda()
 					# write output
 					arlist.append(raligned)
@@ -220,7 +220,7 @@ def average_rcts(arlist, totalptcls):
 def center_particles(particles, avnum, iterations):
 	if options.verbose>0: print("Centering tilted particles")
 	centeredimgs = []
-	radius = particles[0].get_attr("nx")/2 # nx = ny, always.....
+	radius = particles[0].get_attr("nx")//2 # nx = ny, always.....
 	for it in range(iterations):
 		ptclavgr = Averagers.get('mean')
 		# Make average

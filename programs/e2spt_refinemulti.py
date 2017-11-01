@@ -476,7 +476,7 @@ def main():
 					ncls = options.nref
 
 					#for j in range( options.nref ):
-					reffiles *= int( math.ceil( float(options.nref) / float(len(reffiles) ) ) )
+					reffiles *= int( math.ceil( float(options.nref)// float(len(reffiles) ) ) )
 					reffiles = reffiles[:options.nrefs]
 				
 		
@@ -595,7 +595,7 @@ def main():
 			ptclnumsdict = {}
 		
 			try:
-				groupsize = nptcls / ncls
+				groupsize = nptcls// ncls
 			except:
 				print("in the abscence of --ref, --nref required")
 				sys.exit()
@@ -806,7 +806,7 @@ def main():
 
 			classmxScores.to_zero()
 		
-			groupsize = nptcls / ncls
+			groupsize = nptcls// ncls
 		
 			for ii in range(ncls):
 				ptclist = [jj for jj in range(groupsize*ii, groupsize*(ii+1))]	
@@ -1456,8 +1456,8 @@ def makeAverage(options, klass, klassIndx, klassesLen, iterNum, finalize, origin
 			val = sum([ score[-1] for score in klass ])
 			val2 = sum([ score[-1]**2 for score in klass ])
 
-			mean = val/len( klass )
-			sig = sqrt( val2 /len(klass) - mean*mean )
+			mean = val//len( klass )
+			sig = sqrt( val2//len(klass) - mean*mean )
 			thresh = mean + sig*options.keep
 			if options.verbose: 
 				print("Keep threshold : %f (mean=%f  sigma=%f)"%(thresh,mean,sig))
@@ -1542,7 +1542,7 @@ def makeAverage(options, klass, klassIndx, klassesLen, iterNum, finalize, origin
 					
 					X = tiltaxis				#This models a line in 'weight space' (x, w), that passes through (0, minweight) and ( tiltaxis, maxweight ) 
 					W = 1.0 - minweight
-					slope = W/X
+					slope = W//X
 											#Having the slope of the line and its y-axis (or w-axis in this case) crossing we predict the weight of any particle depending on its dx distance to the tiltaxis
 					print("Tiltaxis is", X)
 					print("W is", W)
@@ -1557,7 +1557,7 @@ def makeAverage(options, klass, klassIndx, klassesLen, iterNum, finalize, origin
 					print("tiltaxis weight was %f because it's distance from the tilt axis is %d, because it's x coordinate was %d" % (taweight, dx, x))
 
 				if options.weighbyscore:
-					scoreweight = score / maxscore
+					scoreweight = score// maxscore
 					print("the score weight is %f because score was %f and the best score was %f" % (scoreweight, score, maxscore ))
 					weight = weight * scoreweight
 		

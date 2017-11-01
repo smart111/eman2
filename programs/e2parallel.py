@@ -358,7 +358,7 @@ class TaskData(QtCore.QAbstractTableModel):
 			try: 
 				if task.progtime==None or task.progtime[1]==-1 : ret = "-"
 				elif task.progtime[1]==0 : ret= "#"
-				elif task.progtime[1]<100 : ret= "#"*(1+task.progtime[1]/5)
+				elif task.progtime[1]<100 : ret= "#"*(1+task.progtime[1]//5)
 				else : ret = "DONE"
 				if task.progtime[0]-time.time()>300 : ret+=" ?"
 			except: ret="?"

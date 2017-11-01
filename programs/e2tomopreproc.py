@@ -213,14 +213,14 @@ def main():
 		nyquist = 2.0 * apix
 		print("\n(e2spt_preproc)(main) therefore nyquist resolution is", nyquist)
 		print()
-		lowpassres = nyquist/options.lowpassfrac
+		lowpassres = nyquist//options.lowpassfrac
 		
-		options.lowpassfrac = 1.0/(lowpassres)
+		options.lowpassfrac = 1.0//(lowpassres)
 		if float(options.shrink) > 1.0:
 			options.lowpassfrac /= float(options.shrink)
 			
 			print("there's shrinking", options.shrink)
-			lowpassres = nyquist/options.lowpassfrac
+			lowpassres = nyquist//options.lowpassfrac
 
 		print("\n(e2spt_preproc)(main) and final lowpass frequency is", options.lowpassfrac)
 

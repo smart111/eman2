@@ -175,10 +175,10 @@ def fscOddVsEven( options, filename, odd, even ):
 	apix = odd['apix_x']
 	
 	fsc = odd.calc_fourier_shell_correlation( even )
-	third = len( fsc )/3
+	third = len( fsc )//3
 	xaxis = fsc[0:third]
 	fsc = fsc[ third:2*third ]
-	saxis = [ x/apix for x in xaxis ]
+	saxis = [ x//apix for x in xaxis ]
 	
 	if filename:
 		fscfilename = options.path +'/' + os.path.basename(filename).replace('.hdf','_evenOddFSC.txt')
@@ -345,11 +345,11 @@ def genOddAndEvenVols( options, fi, imgs ):
 
 def clip3D( vol, size ):
 	
-	volxc = vol['nx']/2
-	volyc = vol['ny']/2
-	volzc = vol['nz']/2
+	volxc = vol['nx']//2
+	volyc = vol['ny']//2
+	volzc = vol['nz']//2
 	
-	Rvol =  Region( (2*volxc - size)/2, (2*volyc - size)/2, (2*volzc - size)/2, size , size , size)
+	Rvol =  Region( (2*volxc - size)//2, (2*volyc - size)//2, (2*volzc - size)//2, size , size , size)
 	vol.clip_inplace( Rvol )
 	#vol.process_inplace('mask.sharp',{'outer_radius':-1})
 	
@@ -358,11 +358,11 @@ def clip3D( vol, size ):
 
 def clip2D( img, size ):
 	
-	imgxc = img['nx']/2
-	imgyc = img['ny']/2
+	imgxc = img['nx']//2
+	imgyc = img['ny']//2
 	#imgzc = img['nz']/2
 	
-	Rimg =  Region( (2*imgxc - size)/2, (2*imgyc - size)/2, 0, size , size , 1)
+	Rimg =  Region( (2*imgxc - size)//2, (2*imgyc - size)//2, 0, size , size , 1)
 	img.clip_inplace( Rimg )
 	#img.process_inplace('mask.sharp',{'outer_radius':-1})
 	

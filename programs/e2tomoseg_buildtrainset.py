@@ -145,7 +145,7 @@ def main():
 		n=len(imgs)
 		
 		#n=EMUtil.get_image_count(options.trainset_output)
-		idx=list(range(int((ngood/2)*(1-options.validset))))+list(range((ngood/2), int(n/2*(1-options.validset))))
+		idx=list(range(int((ngood//2)*(1-options.validset))))+list(range((ngood//2), int(n/2*(1-options.validset))))
 		random.shuffle(idx)
 		for i in idx:
 			imgs[i*2]["valid_set"]=0
@@ -153,7 +153,7 @@ def main():
 			imgs[i*2+1]["valid_set"]=0
 			imgs[i*2+1].write_image(options.trainset_output,-1)
 			
-		idx=list(range(int((ngood/2)*(1-options.validset)), ngood/2))+list(range( int(n/2*(1-options.validset)), n/2))
+		idx=list(range(int((ngood//2)*(1-options.validset)), ngood//2))+list(range( int(n/2*(1-options.validset)), n//2))
 		random.shuffle(idx)
 		for i in idx:
 			imgs[i*2]["valid_set"]=1
@@ -166,7 +166,7 @@ def main():
 			#e=EMData(options.trainset_output,i*2+1)
 			#e.write_image(tmpfile,-1)
 		#shutil.move(tmpfile,options.trainset_output)
-		print("Generate a training set of {:d} samples.".format(n/2))
+		print("Generate a training set of {:d} samples.".format(n//2))
 		
 	print("Done")
 	E2end(logid)
@@ -195,13 +195,13 @@ def get_box(fname, idx, nz):
 			print("skipping box ",idx)
 			return None
 		
-		c=EMData(src,0,False,Region(box[0]-sz/2,box[1]-sz/2,boxz,sz,sz,1))
+		c=EMData(src,0,False,Region(box[0]-sz//2,box[1]-sz//2,boxz,sz,sz,1))
 		outnp[nz]=c.numpy().copy()
 		
 		for i in range(nz):
-			c=EMData(src,0,False,Region(box[0]-sz/2,box[1]-sz/2,boxz+(i+1)*sep,sz,sz,1))
+			c=EMData(src,0,False,Region(box[0]-sz//2,box[1]-sz//2,boxz+(i+1)*sep,sz,sz,1))
 			outnp[nz+i+1]=c.numpy().copy()
-			c=EMData(src,0,False,Region(box[0]-sz/2,box[1]-sz/2,boxz-(i+1)*sep,sz,sz,1))
+			c=EMData(src,0,False,Region(box[0]-sz//2,box[1]-sz//2,boxz-(i+1)*sep,sz,sz,1))
 			outnp[nz-i-1]=c.numpy().copy()
 			
 		return out

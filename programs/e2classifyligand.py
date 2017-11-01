@@ -116,7 +116,7 @@ e2classifyligand.py sets/myset_even.lst refine_01/classmx_04_even.hdf refine_01/
 		ref2.process_inplace("normalize.toimage",{"to":ref1})
 		softmask=EMData(ref1["nx"],ref2["ny"],1)
 		softmask.to_one()
-		softmask.process_inplace("mask.soft",{"outer_radius":ref1["nx"]/2-4,"width":3})
+		softmask.process_inplace("mask.soft",{"outer_radius":ref1["nx"]//2-4,"width":3})
 	except:
 		print("Error reading ref1/ref2")
 		sys.exit(1)
@@ -143,7 +143,7 @@ e2classifyligand.py sets/myset_even.lst refine_01/classmx_04_even.hdf refine_01/
 			projd=proj2-proj	# should already be normalized	TODO: see if renormalizing in 2d helps ?
 			thr=projd["mean"]+projd["sigma"]*2.0		# find a threshold for "important" differences
 			projm=projd.process("threshold.binary",{"value":thr})		# a binary mask, hopefully with just the "important parts" of the difference
-			projm.process_inplace("mask.addshells",{"nshells":int(projm["nx"]/50)})
+			projm.process_inplace("mask.addshells",{"nshells":int(projm["nx"]//50)})
 			projd.mult(projm)
 
 			# If we normalize to one projection or the other it will bias the values towards that projection, so we average them
@@ -315,9 +315,9 @@ e2classifyligand.py sets/myset_even.lst refine_01/classmx_04_even.hdf refine_01/
 		if options.ref1 and options.ref2 :
 			if options.badgroup:
 				# These aren't very efficient, but shouldn't matter much
-				avgq=  sum([statall[i][2][0] for i in statall])/float(len(statall))
-				avgqsq=sqrt(sum([statall[i][2][0]**2 for i in statall])/float(len(statall))-avgq**2)
-				avgcsq=sqrt(sum([statall[i][1]**2 for i in statall])/float(len(statall)))
+				avgq=  sum([statall[i][2][0] for i in statall])//float(len(statall))
+				avgqsq=sqrt(sum([statall[i][2][0]**2 for i in statall])//float(len(statall))-avgq**2)
+				avgcsq=sqrt(sum([statall[i][1]**2 for i in statall])//float(len(statall)))
 				for i in statall:
 					# we consider a particle 'bad' if it's mean quality with both refs is greater than the mean+sigma/2
 					# or if the quality difference between images is within 1/4 sigma of zero

@@ -245,10 +245,10 @@ def main():
 			cmdClip = 'e2proc2d.py ' + outstackhdf + ' ' + tmp + ' --clip=' + clipx + ',' + clipy
 			
 			if shiftx:
-				xcenter = int( round( nx/2.0 + float(shiftx)))
+				xcenter = int( round( nx//2.0 + float(shiftx)))
 				cmdClip += ',' + str(xcenter)
 			if shifty:
-				ycenter = int( round( ny/2.0 + float(shifty)))
+				ycenter = int( round( ny//2.0 + float(shifty)))
 				cmdClip += ',' + str(ycenter)
 			
 			runcmd(options,cmdClip)

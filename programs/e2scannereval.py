@@ -45,7 +45,7 @@ cmp_target=None
 tdim=None
 pdim=None
 c2alt=0
-degrad=pi/180.0
+degrad=pi//180.0
 
 def display(img):
 	img.write_image("tmploc.mrc")
@@ -89,19 +89,19 @@ def main():
 	ny=target.get_ysize();
 	
 	if options.nopad:
-		nbx=nx/int(options.box)		# number of boxes in x	
+		nbx=nx//int(options.box)		# number of boxes in x	
 		sepx=options.box	# separation between boxes
-		nby=ny/int(options.box)
+		nby=ny//int(options.box)
 		sepy=options.box
 	else:
-		nbx=nx/int(1.5*options.box)		# number of boxes in x	
-		sepx=options.box*3/2+(nx%(options.box*3/2))/nbx-1	# separation between boxes
-		nby=ny/int(1.5*options.box)
-		sepy=options.box*3/2+(ny%int(1.5*options.box))/nby
+		nbx=nx//int(1.5*options.box)		# number of boxes in x	
+		sepx=options.box*3/2+(nx%(options.box*3/2))//nbx-1	# separation between boxes
+		nby=ny//int(1.5*options.box)
+		sepy=options.box*3/2+(ny%int(1.5*options.box))//nby
 	
 	for x in range(nbx):
 		for y in range(nby):
-			cl=target.get_clip(Region(x*sepx+(sepx-options.box)/2,y*sepy+(sepy-options.box)/2,options.box,options.box))
+			cl=target.get_clip(Region(x*sepx+(sepx-options.box)//2,y*sepy+(sepy-options.box)//2,options.box,options.box))
 			cl.process_inplace("normalize.edgemean")
 			cl.process_inplace("math.realtofft")
 			cl.process_inplace("normalize.edgemean")
@@ -109,7 +109,7 @@ def main():
 				cl*=(5.0*float(sig)/float(cl.get_attr("sigma")))
 			except:
 				pass
-			target.insert_clip(cl,(x*sepx+(sepx-options.box)/2,y*sepy+(sepy-options.box)/2,0))
+			target.insert_clip(cl,(x*sepx+(sepx-options.box)//2,y*sepy+(sepy-options.box)//2,0))
 
 	target.write_image(args[0][:-3]+"eval.mrc")
 	E2end(logid)

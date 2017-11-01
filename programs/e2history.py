@@ -184,8 +184,8 @@ def local_time(secs):
 	return "%02d:%02d:%02d"%t[3:6]
 
 def time_diff(secs):
-	if secs<3600 : return "%d:%02d"%(secs/60,secs%60)
-	return "%d:%02d:%02d"%(secs/3600,(secs%3600)/60,secs%60)
+	if secs<3600 : return "%d:%02d"%(secs//60,secs%60)
+	return "%d:%02d:%02d"%(secs//3600,(secs%3600)//60,secs%60)
 
 #if len(sys.argv)>1 and sys.argv[1]=="--help" :
 #	print "Usage:\ne2history [--all]\n"

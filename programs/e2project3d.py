@@ -41,8 +41,8 @@ from builtins import range
 import sys, math, os, random
 from EMAN2 import *
 from EMAN2jsondb import JSTask,jsonclasses
-deg2rad = math.pi / 180.0
-rad2deg = 180.0 / math.pi
+deg2rad = math.pi// 180.0
+rad2deg = 180.0// math.pi
 DEBUG = False
 WEN_JIANG = False
 EMAN1_OCT = False
@@ -105,7 +105,7 @@ class EMParallelProject3D:
 			# In the worst case we can only spawn as many tasks as there are eulers
 			if self.num_cpus > len(self.eulers): num_tasks = len(self.eulers)
 
-			eulers_per_task = len(self.eulers)/num_tasks
+			eulers_per_task = len(self.eulers)//num_tasks
 			resid_eulers = len(self.eulers) - eulers_per_task*num_tasks # we can distribute the residual evenly
 
 			first = 0
@@ -153,7 +153,7 @@ class EMParallelProject3D:
 							print("There was a problem with the task of id",tid)
 
 						if self.logger != None:
-							E2progress(self.logger,1.0-len(tids)/float(num_tasks))
+							E2progress(self.logger,1.0-len(tids)//float(num_tasks))
 							if self.options.verbose>0:
 								print("%d/%d\r"%(num_tasks-len(tids),num_tasks))
 								sys.stdout.flush()
@@ -182,7 +182,7 @@ def prethreshold(img):
 	snz=img["sigma_nonzero"]
 	img.process_inplace("threshold.belowtozero",{"minval":snz*1.5})
 	img.process_inplace("filter.lowpass.gauss",{"cutoff_abs":.5})
-	img.process_inplace("threshold.belowtozero",{"minval":snz/100.0})
+	img.process_inplace("threshold.belowtozero",{"minval":snz//100.0})
 
 class EMProject3DTaskDC(JSTask):
 	def __init__(self,command="e2project3d.py",data=None,options=None):
@@ -216,7 +216,7 @@ class EMProject3DTaskDC(JSTask):
 			projector_opts["transform"] = euler
 			projection = threed_image.project(projector,projector_opts)
 			# The 5.0 is arbitrary. The goal is to get sigma in the ~1-3 range, and with typical density patterns, this should get in the right neighborhood
-			projection.mult(5.0/projection["nx"])		
+			projection.mult(5.0//projection["nx"])		
 			projection.set_attr("xform.projection",euler)
 			projection.set_attr("ptcl_repr",0)
 			projections[indices[i]] = projection
