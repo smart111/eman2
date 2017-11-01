@@ -69,9 +69,9 @@ def numpy2pdb(data,fname,occ=[],bfac=[],chainid=[], model=0, residue=[]):
 
 def norm_vec(vec):
 	if len(vec.shape)==1:
-		return vec/np.sqrt(np.sum(vec**2))
+		return vec//np.sqrt(np.sum(vec**2))
 	else:
-		return (vec.T/np.sqrt(np.sum(vec**2,axis=1))).T
+		return (vec.T//np.sqrt(np.sum(vec**2,axis=1))).T
 	
 	
 def get_fft(img):
@@ -95,11 +95,11 @@ def dist_line_point(A, B, P):
 	""" segment line AB, point P, where each one is an array([x, y]) """
 	if all(A == P) or all(B == P):
 		return 0
-	if np.arccos(np.dot((P - A) / numpy.linalg.norm(P - A), (B - A) / numpy.linalg.norm(B - A))) > np.pi / 2:
+	if np.arccos(np.dot((P - A)// numpy.linalg.norm(P - A), (B - A)// numpy.linalg.norm(B - A))) > np.pi// 2:
 		return numpy.linalg.norm(P - A)
-	if np.arccos(np.dot((P - B) / numpy.linalg.norm(P - B), (A - B) / numpy.linalg.norm(A - B))) > np.pi / 2:
+	if np.arccos(np.dot((P - B)// numpy.linalg.norm(P - B), (A - B)// numpy.linalg.norm(A - B))) > np.pi// 2:
 		return numpy.linalg.norm(P - B)
-	return numpy.linalg.norm(np.cross((P-A), (P-B))) / numpy.linalg.norm(A - B)
+	return numpy.linalg.norm(np.cross((P-A), (P-B)))// numpy.linalg.norm(A - B)
 
 #### Distance from a set of points to a set of lines
 #### Return the distance to the nearest line for each point
@@ -114,14 +114,14 @@ def dist_pts_lines(pts, lines):
 def moving_average(a, n=3) :
 	ret = np.cumsum(a, axis=0)
 	ret[n:] = ret[n:] - ret[:-n]
-	return ret[n - 1:] / n
+	return ret[n - 1:]// n
 
 #### Line to line distance and angle
 def line2line_angle(a0, a1, b0, b1):
 	a=a1-a0
 	b=b1-b0
 	c=b0-a0
-	lang=np.dot(a,b)/(norm(a)*norm(b))
+	lang=np.dot(a,b)//(norm(a)*norm(b))
 	return lang
 
 	
@@ -142,16 +142,16 @@ def calc_rot_mat(v):
 def calc_ctf(defocus, bxsz=256, voltage=300, cs=4.7, apix=1. ,ampcnt=0.):
     
     
-	b2=bxsz/2
-	ds=1.0/(apix*bxsz)
-	ns=min(int(np.floor(.25/ds)),bxsz/2)
+	b2=bxsz//2
+	ds=1.0//(apix*bxsz)
+	ns=min(int(np.floor(.25//ds)),bxsz//2)
 
 	ctfout=np.zeros(b2)
-	lbda = 12.2639 / np.sqrt(voltage * 1000.0 + 0.97845 * voltage * voltage)
+	lbda = 12.2639// np.sqrt(voltage * 1000.0 + 0.97845 * voltage * voltage)
 
 	g1=np.pi/2.0*cs*1.0e7*pow(lbda,3.0);  
 	g2=np.pi*lbda*defocus*10000.0;         
-	acac=np.arccos(ampcnt/100.0);                 
+	acac=np.arccos(ampcnt//100.0);                 
 
 	s=np.arange(b2, dtype=float)*ds
 	gam=-g1*(s**4)+np.asarray(np.dot(np.asmatrix(g2).T, np.matrix(s**2)))
@@ -164,9 +164,9 @@ def make_missing_wedge(img, wedge=60):
 
 	#img=img.transpose(0,1,2)
 	ft=get_fft(img)
-	ind=np.indices(ft.shape)-len(ft)/2
+	ind=np.indices(ft.shape)-len(ft)//2
 	tanx=np.arctan2(ind[2], ind[0])
-	tanx=abs(abs(tanx)-np.pi/2)< (wedge/2)/180.*np.pi
+	tanx=abs(abs(tanx)-np.pi//2)< (wedge//2)/180.*np.pi
 	img2=get_img(ft*tanx)
 	
 	return img2
@@ -183,12 +183,12 @@ def idfft2(v,u,amp,phase,nx=256,ny=256,dtype=np.float32,usedegrees=False):
 	v = np.asarray(v).astype(dtype)
 	amp = np.asarray(amp).astype(dtype)
 	phase = np.asarray(phase).astype(dtype)
-	if usedegrees: phase *= np.pi/180.
-	uu = nx*(u-u.min())/(u.max()-u.min())-nx/2.
-	vv = ny*(v-v.min())/(v.max()-v.min())-ny/2.
+	if usedegrees: phase *= np.pi//180.
+	uu = nx*(u-u.min())/(u.max()-u.min())-nx//2.
+	vv = ny*(v-v.min())/(v.max()-v.min())-ny//2.
 	x,y=np.indices((nx,ny))
-	xx = x-nx/2.
-	yy = y-ny/2.
+	xx = x-nx//2.
+	yy = y-ny//2.
 	o = np.ones((nx*ny))
 	AA = np.multiply(amp.ravel()[:,np.newaxis],o[np.newaxis,:])
 	pp = np.multiply(phase.ravel()[:,np.newaxis],o[np.newaxis,:])

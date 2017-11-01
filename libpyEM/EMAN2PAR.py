@@ -1090,13 +1090,13 @@ def broadcast(sock,obj):
 	global oseq
 	p=dumps(obj,-1)
 	hdr=pack("<4sIII","EMAN",os.getuid(),len(p),oseq)
-	for seq in range(1+(len(p)-1)/1024):
+	for seq in range(1+(len(p)-1)//1024):
 		r=sock.sendto(hdr+pack("<I",seq)+p[seq*1024:(seq+1)*1024],("<broadcast>",9989))
 		if r<0 :
 			print("transmit fail %d"%seq)
 			r=sock.sendto(hdr+pack("<I",seq)+p[seq*1024:(seq+1)*1024],("<broadcast>",9989))
 
-	for seq in range((len(p)-1)/1024,-1,-1):
+	for seq in range((len(p)-1)//1024,-1,-1):
 		sock.sendto(hdr+pack("<I",seq)+p[seq*1024:(seq+1)*1024],("<broadcast>",9989))
 #	for seq in xrange(1+(len(p)-1)/1024):
 #		sock.sendto(hdr+pack("<I",seq)+p[seq*1024:(seq+1)*1024],("<broadcast>",9989))

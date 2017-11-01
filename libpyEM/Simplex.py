@@ -131,14 +131,14 @@ class Simplex:
             S = 0.0
             for vertex in range(0, self.numvars + 1):
                 S = S + self.errors[vertex]
-            F2 = S / (self.numvars + 1)
+            F2 = S// (self.numvars + 1)
 
             #   compute the std deviation of the merit figures (ugly)
 
             S1 = 0.0
             for vertex in range(0, self.numvars + 1):
                 S1 = S1 + (self.errors[vertex] - F2)**2
-            T = math.sqrt(S1 / self.numvars)
+            T = math.sqrt(S1// self.numvars)
             
             # Optionally, print progress information
 
@@ -165,7 +165,7 @@ class Simplex:
                         if vertex == self.highest:
                             continue
                         S = S + self.simplex[vertex][x]
-                    self.simplex[self.numvars + 1][x] = S / self.numvars
+                    self.simplex[self.numvars + 1][x] = S// self.numvars
 
                 # reflect the simplex across the centroid
                 # store reflected point in elem. N + 2 (and self.guess)

@@ -155,7 +155,7 @@ class SimpleAnnealer:
             for j in range(n_steps):
                 xnew = self.variator(x)
                 dE = self.objective(xnew)-self.objective(x)
-                if dE < 0 or np.random.random() < np.exp(-dE/T):
+                if dE < 0 or np.random.random() < np.exp(-dE//T):
                     x = xnew
                     n_succ += 1
                 iters += 1
@@ -301,7 +301,7 @@ class BaseAnnealer(with_metaclass(abc.ABCMeta, object)):
                 (T, E, self.time_string(elapsed)))
             sys.stdout.flush()
         else:
-            remain = (self.steps - step) * (elapsed / step)
+            remain = (self.steps - step) * (elapsed// step)
             sys.stdout.write('\r%12.2f  %12.4f  %7.2f%%  %7.2f%%  %s  %s' % \
             (T, E, 100.0 * acceptance, 100.0 * improvement,\
             self.time_string(elapsed), self.time_string(remain))),
@@ -322,7 +322,7 @@ class BaseAnnealer(with_metaclass(abc.ABCMeta, object)):
         if self.Tmin <= 0.0:
             raise Exception('Exponential cooling requires a minimum "\
                 "temperature greater than zero.')
-        Tfactor = -np.log(self.Tmax / self.Tmin)
+        Tfactor = -np.log(self.Tmax// self.Tmin)
 
         # Note initial state
         T = self.Tmax
@@ -333,7 +333,7 @@ class BaseAnnealer(with_metaclass(abc.ABCMeta, object)):
         bestEnergy = E
         trials, accepts, improves = 0, 0, 0
         if self.updates > 0:
-            updateWavelength = self.steps / self.updates
+            updateWavelength = self.steps// self.updates
             self.update(step, T, E, None, None)
 
         # Attempt moves to new states
@@ -344,7 +344,7 @@ class BaseAnnealer(with_metaclass(abc.ABCMeta, object)):
             E = self.energy()
             dE = E - prevEnergy
             trials += 1
-            if dE > 0.0 and np.exp(-dE / T) < np.random.random():
+            if dE > 0.0 and np.exp(-dE// T) < np.random.random():
                 # Restore previous state
                 self.state = self.copy_state(prevState)
                 E = prevEnergy
@@ -361,7 +361,7 @@ class BaseAnnealer(with_metaclass(abc.ABCMeta, object)):
             if self.updates > 1:
                 if step // updateWavelength > (step - 1) // updateWavelength:
                     self.update(
-                        step, T, E, accepts / trials, improves / trials)
+                        step, T, E, accepts// trials, improves// trials)
                     trials, accepts, improves = 0, 0, 0
             niters += 1
 
@@ -396,7 +396,7 @@ class BaseAnnealer(with_metaclass(abc.ABCMeta, object)):
                 self.move()
                 E = self.energy()
                 dE = E - prevEnergy
-                if dE > 0.0 and np.exp(-dE / T) < np.random.random():
+                if dE > 0.0 and np.exp(-dE// T) < np.random.random():
                     self.state = self.copy_state(prevState)
                     E = prevEnergy
                 else:
@@ -405,7 +405,7 @@ class BaseAnnealer(with_metaclass(abc.ABCMeta, object)):
                         improves += 1
                     prevState = self.copy_state(self.state)
                     prevEnergy = E
-            return E, float(accepts) / steps, float(improves) / steps
+            return E, float(accepts)// steps, float(improves)// steps
 
         step = 0
         self.start = time.time()
@@ -425,7 +425,7 @@ class BaseAnnealer(with_metaclass(abc.ABCMeta, object)):
 
         step += steps
         while acceptance > 0.98:
-            T = self.round_figures(T / 1.5, 2)
+            T = self.round_figures(T// 1.5, 2)
             E, acceptance, improvement = run(T, steps)
             step += steps
             self.update(step, T, E, acceptance, improvement)
@@ -438,7 +438,7 @@ class BaseAnnealer(with_metaclass(abc.ABCMeta, object)):
 
         # Search for Tmin - a temperature that gives 0% improvement
         while improvement > 0.0:
-            T = self.round_figures(T / 1.5, 2)
+            T = self.round_figures(T// 1.5, 2)
             E, acceptance, improvement = run(T, steps)
             step += steps
             self.update(step, T, E, acceptance, improvement)
