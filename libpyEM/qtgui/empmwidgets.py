@@ -908,10 +908,10 @@ class PMFSCTableWidget(PMTableBase):
 				xyd=XYData()
 				xyd.read_file("{}/{}".format(directory,fscs[-1]))
 				for ii in range(2,xyd.get_size()-2):
-					v=(xyd.get_y(ii-2)+xyd.get_y(ii-1)+xyd.get_y(ii)+xyd.get_y(ii+1)+xyd.get_y(ii+2))//5.0
+					v=(xyd.get_y(ii-2)+xyd.get_y(ii-1)+xyd.get_y(ii)+xyd.get_y(ii+1)+xyd.get_y(ii+2))/5.0
 					if v<0.143 : break
 				
-				self.tablewidget.setItem(i,2,QtGui.QTableWidgetItem("{:1.1f}".format(1.0//xyd.get_x(ii-1))))
+				self.tablewidget.setItem(i,2,QtGui.QTableWidgetItem("{:1.1f}".format(1.0/xyd.get_x(ii-1))))
 			except:
 				self.tablewidget.setItem(i,2,QtGui.QTableWidgetItem("?"))
 
@@ -920,10 +920,10 @@ class PMFSCTableWidget(PMTableBase):
 				xyd=XYData()
 				xyd.read_file("{}/fsc_un{}".format(directory,fscs[-1][4:]))
 				for ii in range(2,xyd.get_size()-2):
-					v=(xyd.get_y(ii-2)+xyd.get_y(ii-1)+xyd.get_y(ii)+xyd.get_y(ii+1)+xyd.get_y(ii+2))//5.0
+					v=(xyd.get_y(ii-2)+xyd.get_y(ii-1)+xyd.get_y(ii)+xyd.get_y(ii+1)+xyd.get_y(ii+2))/5.0
 					if v<0.143 : break
 				
-				self.tablewidget.setItem(i,3,QtGui.QTableWidgetItem("{:1.1f}".format(1.0//xyd.get_x(ii-1))))
+				self.tablewidget.setItem(i,3,QtGui.QTableWidgetItem("{:1.1f}".format(1.0/xyd.get_x(ii-1))))
 			except:
 				self.tablewidget.setItem(i,3,QtGui.QTableWidgetItem("?"))
 
@@ -948,7 +948,7 @@ class PMFSCTableWidget(PMTableBase):
 				if v1 != v2:
 					d = v1-v2
 					offset = v1-thr
-					interp = offset //d
+					interp = offset/d
 					soln = idx+interp
 				else: soln = idx
 				break
@@ -959,9 +959,9 @@ class PMFSCTableWidget(PMTableBase):
 			if soln == -1:
 				return "???"
 			elif int(soln) == soln:
-				return "%.1f" %(1.0//xaxis(soln))
+				return "%.1f" %(1.0/xaxis(soln))
 			else:
 				# interpolated frequency
-				return "%.1f" %(1.0//(soln/len(yaxis)*xaxis[-1]))
+				return "%.1f" %(1.0/(soln/len(yaxis)*xaxis[-1]))
 		except:
 			return "invalid"

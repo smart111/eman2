@@ -169,9 +169,9 @@ class E2FoldHunterStat:
 			elif (itemS == "HETATM"):
 				continue
 			elif (itemS == "ATOM"):
-				tempX=int((((float(item[30:38].strip()))//apix_x)+(xMax*.5))+.5)
-				tempY=int((((float(item[38:46].strip()))//apix_y)+(yMax*.5))+.5)
-				tempZ=int((((float(item[46:54].strip()))//apix_z)+(zMax*.5))+.5)	
+				tempX=int((((float(item[30:38].strip()))/apix_x)+(xMax*.5))+.5)
+				tempY=int((((float(item[38:46].strip()))/apix_y)+(yMax*.5))+.5)
+				tempZ=int((((float(item[46:54].strip()))/apix_z)+(zMax*.5))+.5)	
 				tempValue = target.get(tempX, tempY, tempZ)
 				pixelValues.append(tempValue)
 				atomCount=atomCount+1
@@ -216,9 +216,9 @@ class E2FoldHunterStat:
 
 
 			for m in range(0, atomCount): 
-				tempX_t=int(((float(points[(p)])//apix_x)+(xMax*.5))+.5)
-				tempY_t=int(((float(points[(p+1)])//apix_y)+(yMax*.5))+.5)
-				tempZ_t=int(((float(points[(p+2)])//apix_z)+(zMax*.5))+.5)
+				tempX_t=int(((float(points[(p)])/apix_x)+(xMax*.5))+.5)
+				tempY_t=int(((float(points[(p+1)])/apix_y)+(yMax*.5))+.5)
+				tempZ_t=int(((float(points[(p+2)])/apix_z)+(zMax*.5))+.5)
 				if (tempX_t>=xMax): tempX_t = xMax-1	
 				if (tempY_t>=yMax): tempY_t = yMax-1
 				if (tempZ_t>=zMax): tempZ_t = zMax-1
@@ -234,16 +234,16 @@ class E2FoldHunterStat:
 			sumValues = 0.0
 			for x in t_pixelValues:
 				sumValues = sumValues + x
-			sumValues = (sumValues//atomCount)
+			sumValues = (sumValues/atomCount)
 			####################################
 
 			###### score 2 - atom inclusion percentage
 			includeValue = 0.0
-			cutOff = (1//(s2iso*10.))
+			cutOff = (1/(s2iso*10.))
 			isoValue = s2iso
 			for x in t_pixelValues:
 				if (x>=isoValue): includeValue = includeValue + 1.0
-			percentAbove = (includeValue//atomCount)
+			percentAbove = (includeValue/atomCount)
 			####################################
 
 			###### score 3 - volume inclusion percentage
@@ -265,7 +265,7 @@ class E2FoldHunterStat:
 			elif (MRC_volume==0): 
 				excludePercent = 1.0
 				print("Try choosing a different (smaller) isosurface threshold value. ")
-			else: excludePercent = (float(remainder_volume)//MRC_volume)
+			else: excludePercent = (float(remainder_volume)/MRC_volume)
 			volumePercent = 1-excludePercent
 			#####################################
 
@@ -317,9 +317,9 @@ class E2FoldHunterStat:
 				s2.append(0.0)
 				s3.append(0.0)
 			else:
-				temp_std_x = ((calc1[cCount]-s1_mean)//s1_std)
-				temp_std_y = ((calc2[cCount]-s2_mean)//s2_std)
-				temp_std_z = ((calc3[cCount]-s3_mean)//s3_std)
+				temp_std_x = ((calc1[cCount]-s1_mean)/s1_std)
+				temp_std_y = ((calc2[cCount]-s2_mean)/s2_std)
+				temp_std_z = ((calc3[cCount]-s3_mean)/s3_std)
 
 				s1p.append(int(self.get_percentile(float(temp_std_x))))
 				s2p.append(int(self.get_percentile(float(temp_std_y))))

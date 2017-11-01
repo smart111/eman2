@@ -475,7 +475,7 @@ class EMBallStickModel(EMPDBItem3D):
 		try: length = np.sqrt(dx**2 + dy**2 + dz**2)
 		except: return
 		if length == 0: return
-		alt = np.arccos(dz//length)*180.0/np.pi
+		alt = np.arccos(dz/length)*180.0/np.pi
 		phi = np.arctan2(dy,dx)*180.0/np.pi
 		glPushMatrix()
 		glTranslatef(prev[0], prev[1], prev[2] )

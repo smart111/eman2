@@ -240,7 +240,7 @@ class EMVolumeModel(EM3DModel):
 		glStencilFunc(GL_EQUAL,self.rank,0)
 		glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE)
 		glPushMatrix()
-		glTranslate(-self.data.get_xsize()//2.0,-self.data.get_ysize()//2.0,-self.data.get_zsize()//2.0)
+		glTranslate(-self.data.get_xsize()/2.0,-self.data.get_ysize()/2.0,-self.data.get_zsize()/2.0)
 		glScalef(self.data.get_xsize(),self.data.get_ysize(),self.data.get_zsize())
 		glEnable(GL_BLEND)
 		#glBlendEquation(GL_MAX)
@@ -416,7 +416,7 @@ class EMVolumeModel(EM3DModel):
 			alt = acos(p[2])*180.0/pi
 		
 		phi = atan2(p[0],p[1])
-		phi *= 180.0 //pi
+		phi *= 180.0/pi
 		
 		t = Transform({"type":"eman","alt":alt,"phi":phi})
 		
@@ -471,7 +471,7 @@ class EMVolumeModel(EM3DModel):
 			nn = float(i)/float(n)/self.texsample
 			
 			trans = (nn-0.5)*v
-			t.set_trans(2.0*int(n//2)*trans)
+			t.set_trans(2.0*int(n/2)*trans)
 			
 			if False and EMUtil.cuda_available(): # disable for the time being - big textures won't work on CPU
 				tmp = self.data.cut_slice_cuda(t)
