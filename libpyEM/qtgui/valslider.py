@@ -250,7 +250,7 @@ class ValSlider(QtGui.QWidget):
 	def sliderChange(self,x):
 		if self.ignore : return
 		ov=self.value
-		self.value=(self.slider.value()/4095.0)*(self.rng[1]-self.rng[0])+self.rng[0]
+		self.value=(self.slider.value()//4095.0)*(self.rng[1]-self.rng[0])+self.rng[0]
 		if self.intonly : 
 			self.value=int(self.value+.5)
 			if self.value==ov : return
@@ -667,7 +667,7 @@ class RangeSlider(QtGui.QWidget):
 		p.setPen(Qt.blue)
 		p.drawLine(3,self.vtoy(self.value[0]),self.size().width()-4,self.vtoy(self.value[0]))
 		p.drawLine(3,self.vtoy(self.value[1]),self.size().width()-4,self.vtoy(self.value[1]))
-		p.drawLine(self.size().width()/2,self.vtoy(self.value[0]),self.size().width()/2,self.vtoy(self.value[1]))
+		p.drawLine(self.size().width()//2,self.vtoy(self.value[0]),self.size().width()//2,self.vtoy(self.value[1]))
 		
 	def mousePressEvent(self,event):
 		y=event.y()
@@ -1028,7 +1028,7 @@ class EMLightControls(QtOpenGL.QGLWidget):
 		glViewport(0,0,width,height)
 		glMatrixMode(GL_PROJECTION)
 		glLoadIdentity()
-		GLU.gluPerspective(60.0, (float(width)/float(height)), 1.0, 100.0)
+		GLU.gluPerspective(60.0, (float(width)//float(height)), 1.0, 100.0)
 		glMatrixMode(GL_MODELVIEW)
 		glLoadIdentity()
 		glTranslate(0,0,-10.0)
@@ -1124,7 +1124,7 @@ class CameraControls(QtOpenGL.QGLWidget):
 		glViewport(0,0,width,height)
 		glMatrixMode(GL_PROJECTION)
 		glLoadIdentity()
-		glOrtho(-width/2, width/2, -height/2, height/2, -100.0, 100.0)
+		glOrtho(-width//2, width //2, -height //2, height //2, -100.0, 100.0)
 		glMatrixMode(GL_MODELVIEW)
 		glLoadIdentity()
 	
@@ -1134,7 +1134,7 @@ class CameraControls(QtOpenGL.QGLWidget):
 	def mouseMoveEvent(self, event):
 		""" Move the clipping planes"""
 		self.movement = float(event.x() - self.init_x)*self.scale
-		if math.fabs(event.x()-(self.near_clipping + self.width/2)) > math.fabs(event.x()-(self.far_clipping + self.width/2)):
+		if math.fabs(event.x()-(self.near_clipping + self.width //2)) > math.fabs(event.x()-(self.far_clipping + self.width //2)):
 			self.emit(QtCore.SIGNAL("farMoved(float)"), self.movement)
 		else:
 			self.emit(QtCore.SIGNAL("nearMoved(float)"), self.movement)
@@ -1151,13 +1151,13 @@ class CameraControls(QtOpenGL.QGLWidget):
 		self.scale = float(self.scenegraph().camera.getWidth())/float(size)*self.scenegraph().camera.getViewPortWidthScaling()
 		origin = 0.0
 		#print self.scenegraph().camera.getClipNear()
-		self.near_clipping = origin + (self.scenegraph().camera.getClipNear() + self.scenegraph().camera.getZclip())/self.scale
-		self.far_clipping = origin + (self.scenegraph().camera.getClipFar() + self.scenegraph().camera.getZclip())/self.scale
+		self.near_clipping = origin + (self.scenegraph().camera.getClipNear() + self.scenegraph().camera.getZclip()) //self.scale
+		self.far_clipping = origin + (self.scenegraph().camera.getClipFar() + self.scenegraph().camera.getZclip()) //self.scale
 		glBegin(GL_LINES)
-		glVertex(self.near_clipping, -self.height/2.2, 0)
-		glVertex(self.near_clipping, self.height/2.2, 0)
-		glVertex(self.far_clipping, -self.height/2.2, 0)
-		glVertex(self.far_clipping, self.height/2.2, 0)
+		glVertex(self.near_clipping, -self.height //2.2, 0)
+		glVertex(self.near_clipping, self.height //2.2, 0)
+		glVertex(self.far_clipping, -self.height //2.2, 0)
+		glVertex(self.far_clipping, self.height //2.2, 0)
 		glEnd()
 		
 	def _drawZslice(self):
@@ -1179,18 +1179,18 @@ class CameraControls(QtOpenGL.QGLWidget):
 		glEnable(GL_TEXTURE_2D)
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE)
 		glBindTexture(GL_TEXTURE_2D, self.texture)
-		aspectratio = float(self.scenegraph().camera.getHeight())/float(self.scenegraph().camera.getWidth())
+		aspectratio = float(self.scenegraph().camera.getHeight()) //float(self.scenegraph().camera.getWidth())
 
 		glBegin(GL_QUADS)
 		glTexCoord2f(0.0,0.0)
 		size = min(self.width, self.height)
-		glVertex(-size/2,-aspectratio*size/2,-1)
+		glVertex(-size//2,-aspectratio*size/2,-1)
 		glTexCoord2f(1.0,0.0)
-		glVertex(size/2,-aspectratio*size/2,-1)
+		glVertex(size//2,-aspectratio*size/2,-1)
 		glTexCoord2f(1.0,1.0)
-		glVertex(size/2,aspectratio*size/2,-1)
+		glVertex(size//2,aspectratio*size/2,-1)
 		glTexCoord2f(0.0,1.0)
-		glVertex(-size/2,aspectratio*size/2,-1)
+		glVertex(-size//2,aspectratio*size/2,-1)
 		glEnd()
 		glDisable(GL_TEXTURE_2D)
 		

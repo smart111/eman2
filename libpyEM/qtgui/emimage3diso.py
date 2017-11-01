@@ -160,7 +160,7 @@ class EMIsosurfaceModel(EM3DModel):
 		glMaterial(GL_FRONT, GL_EMISSION, self.colors[self.isocolor]["emission"])
 		glColor(self.colors[self.isocolor]["ambient"])
 		glPushMatrix()
-		glTranslate(-self.data.get_xsize()/2.0,-self.data.get_ysize()/2.0,-self.data.get_zsize()/2.0)
+		glTranslate(-self.data.get_xsize()//2.0,-self.data.get_ysize()//2.0,-self.data.get_zsize()//2.0)
 		if ( self.texture ):
 			glScalef(self.data.get_xsize(),self.data.get_ysize(),self.data.get_zsize())
 		glCallList(self.isodl)

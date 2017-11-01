@@ -803,7 +803,7 @@ class EMPDBModel(EM3DModel):
 		except: return
 		if length == 0: return
 
-		alt = acos(dz/length)*180.0/pi
+		alt = acos(dz//length)*180.0/pi
 		phi = atan2(dy,dx)*180.0/pi
 		
 		glPushMatrix()

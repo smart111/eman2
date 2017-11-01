@@ -389,7 +389,7 @@ class ImgHistogram(QtGui.QWidget):
 		
 		for i in self.histdata: self.norm+=float(i)*i
 		self.norm-=max(self.histdata)**2
-		self.norm=sqrt(self.norm/255)*3.0
+		self.norm=sqrt(self.norm//255)*3.0
 		self.total=sum(self.histdata)
 		if self.norm==0 : self.norm=1.0
 		if self.total==0 : self.histdata=None

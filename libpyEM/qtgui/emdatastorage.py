@@ -237,7 +237,7 @@ valid_properties = {
 	),
 	
 "angle":("degree",
-	{"degree":1.0,"radian":180.0/pi, "mrad":0.18/pi},
+	{"degree":1.0,"radian":180.0//pi, "mrad":0.18//pi},
 	{"deg":"degree", "degrees":"degree"}
 	),
 	
@@ -788,7 +788,7 @@ class Record(DictMixin):
 
 			try:
 				# convert units
-				value = value * ( valid_properties[pd.property][1][units] / valid_properties[pd.property][1][defaultunits] )
+				value = value * ( valid_properties[pd.property][1][units] // valid_properties[pd.property][1][defaultunits] )
 				print("newval: %s"%value)
 			except:
 				raise ValueError("Unable to convert %s = %s; skipping value"%(pd.name,value))

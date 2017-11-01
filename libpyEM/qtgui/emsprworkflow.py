@@ -234,7 +234,7 @@ class WorkFlowTask:
 		'''
 		project_db = db_open_dict("bdb:project")
 		ncpu = project_db.get("global.num_cpus",dfl=num_cpus())
-		cf = float(len(options.filenames))/float(ncpu) # common factor
+		cf = float(len(options.filenames)) //float(ncpu) # common factor
 		
 		files = []
 		for n in range(ncpu):
@@ -1279,8 +1279,8 @@ project database, and gives an opportunity to apply a number of common filters t
 	def get_thumb_shrink(self,nx,ny):
 		if self.thumb_shrink == -1:
 			shrink = 1
-			inx =  nx/2
-			iny =  ny/2
+			inx =  nx  //2
+			iny =  ny  //2
 			while ( inx >= 128 and iny >= 128):
 				inx /= 2
 				iny /= 2
@@ -1462,7 +1462,7 @@ class CTFColumns:
 		ctf = self.get_ctf(name)
 		if ctf != None:
 			snr = 0
-			try: snr = sum(ctf.snr)/len(ctf.snr)
+			try: snr = sum(ctf.snr) //len(ctf.snr)
 			except: pass
 			return "%.3f" %snr
 		else: return ""
@@ -1848,7 +1848,7 @@ class EMParticleCoordImportTask(WorkFlowTask):
 			fsp=best_match(f,img_list)
 			lns=open(ff,"r").readlines()
 			lns=[l.split() for l in lns]
-			bxs=[[int(l[0])+int(l[2])/2,int(l[1])+int(l[3])/2,"manual"] for l in lns]
+			bxs=[[int(l[0])+int(l[2])//2,int(l[1])+int(l[3])//2,"manual"] for l in lns]
 			bdb[fsp]=bxs
 			print("imported ",f," into ",fsp)
 								
@@ -2365,8 +2365,8 @@ def recover_old_boxer_database():
 							if box_name in value:
 								old_boxes =  value[box_name]
 								for box in old_boxes:
-									x = box.xcorner+box.xsize/2
-									y = box.ycorner+box.ysize/2
+									x = box.xcorner+box.xsize//2
+									y = box.ycorner+box.ysize//2
 	#									score = box.correlation_score
 									new_boxes.append([x,y,"manual"])
 						
@@ -3752,7 +3752,7 @@ class E2MakeSetTask(E2ParticleExamineTask):
 				return False,cmd
 			else:
 				get_application().setOverrideCursor(Qt.ArrowCursor)
-				progress.setValue(1000*(N+(i+1.0)/len(filenames))/M)
+				progress.setValue(1000*(N+(i+1.0)//len(filenames))/M)
 				get_application().processEvents()
 				
 			try:
@@ -5130,8 +5130,8 @@ class E2RefineParticlesTaskBase(EMClassificationTools, E2Make3DTools):
 		def_mask_dltn = 5
 		if len(self.ptcls) > 0:
 			nx,ny,nz = gimme_image_dimensions3D(self.ptcls[0])
-			def_rad = int(nx/8.0)
-			def_mask_dltn = int(nx/20.0)
+			def_rad = int(nx//8.0)
+			def_mask_dltn = int(nx//20.0)
 		
 		pamthreshold =  ParamDef(name="amthreshold",vartype="float",desc_short="Threshold",desc_long="An isosurface threshold that well defines your structure.",property=None,defaultunits=db.get("amthreshold",dfl=0.7),choices=None)
 		pamradius =  ParamDef(name="amradius",vartype="int",desc_short="Radius",desc_long="The radius of a sphere at the the origin which contains seeding points for the flood file operation using the given threshold",property=None,defaultunits=db.get("amradius",dfl=def_rad),choices=None)
@@ -5217,12 +5217,12 @@ class E2RefineParticlesTaskBase(EMClassificationTools, E2Make3DTools):
 			return "initial model isn't square"
 		
 		if nx != x:
-			scale = float(nx)/x
+			scale = float(nx) //x
 			new_model = "bdb:"+options.path + "#initial_model"
 			
 			image = EMData()
 			image.read_image(model,0)
-			start = (x-nx)/2
+			start = (x-nx) //2
 			if scale > 1:
 				image.clip_inplace(Region(start,start,start,nx,nx,nx))
 				t = Transform()
@@ -5656,8 +5656,8 @@ post-process - This is an optional filter to apply to the model as a final step,
 		def_mask_dltn = 5
 		if len(self.ptcls) > 0:
 			nx,ny,nz = gimme_image_dimensions3D(self.ptcls[0])
-			def_rad = int(nx/8.0)
-			def_mask_dltn = int(nx/20.0)
+			def_rad = int(nx//8.0)
+			def_mask_dltn = int(nx//20.0)
 		
 		pamthreshold =  ParamDef(name="amthreshold",vartype="float",desc_short="Threshold",desc_long="An isosurface threshold that well defines your structure.",property=None,defaultunits=db.get("amthreshold",dfl=0.7),choices=None)
 		pamradius =  ParamDef(name="amradius",vartype="int",desc_short="Radius",desc_long="The radius of a sphere at the the origin which contains seeding points for the flood file operation using the given threshold",property=None,defaultunits=db.get("amradius",dfl=def_rad),choices=None)
@@ -6137,7 +6137,7 @@ class ResolutionReportTask(ParticleWorkFlowTask):
 				if v1 != v2:
 					d = v1-v2
 					offset = v1-0.5
-					interp = offset/d
+					interp = offset //d
 					soln = idx+interp
 				else: soln = idx
 				break
@@ -6148,10 +6148,10 @@ class ResolutionReportTask(ParticleWorkFlowTask):
 			if soln == -1:
 				return "???"
 			elif int(soln) == soln:
-				return "%.1f" %(1.0/xaxis(soln))
+				return "%.1f" %(1.0//xaxis(soln))
 			else:
 				# interpolated frequency
-				return "%.1f" %(1.0/(soln/len(yaxis)*xaxis[-1]))
+				return "%.1f" %(1.0//(soln/len(yaxis)*xaxis[-1]))
 		except:
 			return "invalid"
 		
