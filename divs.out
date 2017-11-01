@@ -1,0 +1,585 @@
+FILENAME:  libpyEM/qtgui//em3Dfonts.py
+FIXER: lineno: 164:  (ifevalref+1)/2
+FIXER: lineno: 165:  (ifevalref+1)/2
+FIXER: lineno: 166:  (ifevalref+1)/2
+FIXER: lineno: 172:  len(spfac)/2
+FIXER: lineno: 184:  (tvar[0]-tvar[3])/2
+FIXER: lineno: 184:  (tvar[1]-tvar[4]-(((spfac[i-1])*self.lspacing)-0))/2
+FIXER: lineno: 184:  -(tvar[2]-tvar[5])/2
+FILENAME:  libpyEM/qtgui//em3Dhelloworld.py
+FIXER: lineno: 126:   2.0/(n+1)
+FILENAME:  libpyEM/qtgui//emanimationutil.py
+FIXER: lineno: 99:   1.0/self.time_interval
+FIXER: lineno: 113:   (1+ (tanh(-4+float(i)/(self.n-1)*8)))/2.0
+FIXER: lineno: 117:  float(i)/(self.n-1)
+FIXER: lineno: 415:   (sin(t2)*self.start_point + sin(t1)*self.end_point)/self.sinangle
+FILENAME:  libpyEM/qtgui//emapplication.py
+FILENAME:  libpyEM/qtgui//emboxerbase.py
+FIXER: lineno: 227:  nx/shrink
+FIXER: lineno: 228:  ny/shrink
+FIXER: lineno: 236:  nx/old_shrink
+FIXER: lineno: 237:  ny/old_shrink
+FIXER: lineno: 238:   (oldxsize-xsize)/2
+FIXER: lineno: 238:   (oldysize-ysize)/2
+FIXER: lineno: 240:   float(xsize)/float(oldxsize)
+FIXER: lineno: 247:  float(xsize)/float(oldxsize)
+FIXER: lineno: 250:  float(xsize)/float(oldxsize)
+FIXER: lineno: 342:  box_size/2
+FIXER: lineno: 342:  box_size/2
+FIXER: lineno: 344:  box_size/2
+FIXER: lineno: 344:  box_size/2
+FIXER: lineno: 363:  box_size/2
+FIXER: lineno: 363:  box_size/2
+FIXER: lineno: 363:  box_size/2
+FIXER: lineno: 363:  box_size/2
+FIXER: lineno: 368:  box_size/2
+FIXER: lineno: 368:  box_size/2
+FIXER: lineno: 368:  box_size/2
+FIXER: lineno: 368:  box_size/2
+FIXER: lineno: 890:  box_size/2
+FIXER: lineno: 891:  box_size/2
+FIXER: lineno: 895:  particle.get_xsize()/2
+FIXER: lineno: 895:  particle.get_ysize()/2
+FIXER: lineno: 1454:  box.x/subsample_rate
+FIXER: lineno: 1455:  box.y/subsample_rate
+FIXER: lineno: 1488:  box_size/2
+FIXER: lineno: 1488:  box_size/2
+FIXER: lineno: 1488:  box_size/2
+FIXER: lineno: 1488:  box_size/2
+FIXER: lineno: 1522:  box_size/2
+FIXER: lineno: 1522:  box_size/2
+FIXER: lineno: 1522:  box_size/2
+FIXER: lineno: 1522:  box_size/2
+FIXER: lineno: 1527:  box_size/2
+FIXER: lineno: 1528:  box_size/2
+FIXER: lineno: 1564:  float(self.box_size)/float(TEMPLATE_MIN)
+FIXER: lineno: 1640:  x/sr
+FIXER: lineno: 1640:  y/sr
+FIXER: lineno: 1644:  self.box_size/(2*sr)
+FIXER: lineno: 1699:  self.box_size/(2*sr)
+FIXER: lineno: 1701:  box.x/sr
+FIXER: lineno: 1701:  box.y/sr
+FIXER: lineno: 1707:  x/self.get_subsample_rate()
+FIXER: lineno: 1708:  y/self.get_subsample_rate()
+FIXER: lineno: 1710:  radius/self.get_subsample_rate()
+FIXER: lineno: 1877:  box.x/subsample_rate
+FIXER: lineno: 1878:  box.y/subsample_rate
+FILENAME:  libpyEM/qtgui//embrowse.py
+FILENAME:  libpyEM/qtgui//embrowser.py
+FIXER: lineno: 1738:  val/1000000000
+FIXER: lineno: 1739:  val/1000000
+FIXER: lineno: 1740:  val/1000
+FILENAME:  libpyEM/qtgui//emdataitem3d.py
+FIXER: lineno: 314:   1.0/(max-min)
+FIXER: lineno: 383:   math.log(interior_diagonal)/math.log(2)
+FIXER: lineno: 384:   diag/2
+FIXER: lineno: 474:  1.0/nx
+FIXER: lineno: 474:   1.0/ny
+FIXER: lineno: 474:   1.0/nz
+FIXER: lineno: 576:  -nz/2.0
+FIXER: lineno: 576:   nz/2.0
+FIXER: lineno: 577:  -nx/2.0
+FIXER: lineno: 577:   nx/2.0
+FIXER: lineno: 578:  -ny/2.0
+FIXER: lineno: 578:   ny/2.0
+FIXER: lineno: 690:   (self.isothr - self.mean)/self.sigma
+FIXER: lineno: 757:   1.0/(max - min)
+FIXER: lineno: 776:   interior_diagonal/2
+FIXER: lineno: 816:  1.0/nx
+FIXER: lineno: 816:   1.0/ny
+FIXER: lineno: 816:   1.0/nz
+FIXER: lineno: 934:  (self.item3d().isothr+self.item3d().maxden)/2
+FIXER: lineno: 1024:  cmrange/50.0
+FIXER: lineno: 1025:  cmrange/50.0
+FIXER: lineno: 1026:  cmrange/2.0
+FIXER: lineno: 1290:   (self.isothr - self.mean)/self.sigma
+FIXER: lineno: 1306:   data.get_xsize()/2.0
+FIXER: lineno: 1308:  data.get_xsize()/2.0
+FIXER: lineno: 1309:  data.get_ysize()/2.0
+FIXER: lineno: 1310:  data.get_zsize()/2.0
+FIXER: lineno: 1513:  scenegraph.camera.getWidth()/2.0
+FIXER: lineno: 1514:  scenegraph.camera.getHeight()/2.0
+FIXER: lineno: 1628:  -self.parent.data.get_xsize()/2.0
+FIXER: lineno: 1628:  -self.parent.data.get_ysize()/2.0
+FIXER: lineno: 1628:  -self.parent.data.get_zsize()/2.0
+FILENAME:  libpyEM/qtgui//emdatastorage.py
+FIXER: lineno: 240:  180.0/pi
+FIXER: lineno: 240:  0.18/pi
+FIXER: lineno: 791:   valid_properties[pd.property][1][units] / valid_properties[pd.property][1][defaultunits]
+FILENAME:  libpyEM/qtgui//emfoldhunterstat.py
+FIXER: lineno: 172:  (float(item[30:38].strip()))/apix_x
+FIXER: lineno: 173:  (float(item[38:46].strip()))/apix_y
+FIXER: lineno: 174:  (float(item[46:54].strip()))/apix_z
+FIXER: lineno: 219:  float(points[(p)])/apix_x
+FIXER: lineno: 220:  float(points[(p+1)])/apix_y
+FIXER: lineno: 221:  float(points[(p+2)])/apix_z
+FIXER: lineno: 237:  sumValues/atomCount
+FIXER: lineno: 242:  1/(s2iso*10.)
+FIXER: lineno: 246:  includeValue/atomCount
+FIXER: lineno: 268:  float(remainder_volume)/MRC_volume
+FIXER: lineno: 320:  (calc1[cCount]-s1_mean)/s1_std
+FIXER: lineno: 321:  (calc2[cCount]-s2_mean)/s2_std
+FIXER: lineno: 322:  (calc3[cCount]-s3_mean)/s3_std
+FILENAME:  libpyEM/qtgui//emform.py
+FIXER: lineno: 1894:   float(self.table_widget.width())/cumulative_width
+FIXER: lineno: 2100:  len(params)/3
+FIXER: lineno: 2101:  len(params)/3
+FILENAME:  libpyEM/qtgui//emglobjects.py
+FIXER: lineno: 424:  length/2.0
+FIXER: lineno: 606:   (PM_inv[0,2]*xNDC1 + PM_inv[1,2]*yNDC1 + PM_inv[3,2])/(-PM_inv[2,2])
+FIXER: lineno: 608:   (PM_inv[0,2]*xNDC2 + PM_inv[1,2]*yNDC2 + PM_inv[3,2])/(-PM_inv[2,2])
+FIXER: lineno: 613:   1.0/(xNDC1*self.P_inv[0,3]+yNDC1*self.P_inv[1,3]+zNDC1*self.P_inv[2,3]+self.P_inv[3,3])
+FIXER: lineno: 614:   1.0/(xNDC2*self.P_inv[0,3]+yNDC2*self.P_inv[1,3]+zNDC2*self.P_inv[2,3]+self.P_inv[3,3])
+FIXER: lineno: 652:   (PM_inv[0,2]*xNDC + PM_inv[1,2]*yNDC + PM_inv[3,2])/(-PM_inv[2,2])
+FIXER: lineno: 655:   1.0/(xNDC*self.P_inv[0,3]+yNDC*self.P_inv[1,3]+zNDC*self.P_inv[2,3]+self.P_inv[3,3])
+FIXER: lineno: 793:  length/2.0
+FIXER: lineno: 969:   (PM_inv[0,2]*xNDC1 + PM_inv[1,2]*yNDC1 + PM_inv[3,2])/(-PM_inv[2,2])
+FIXER: lineno: 971:   (PM_inv[0,2]*xNDC2 + PM_inv[1,2]*yNDC2 + PM_inv[3,2])/(-PM_inv[2,2])
+FIXER: lineno: 976:   1.0/(xNDC1*self.P_inv[0,3]+yNDC1*self.P_inv[1,3]+zNDC1*self.P_inv[2,3]+self.P_inv[3,3])
+FIXER: lineno: 977:   1.0/(xNDC2*self.P_inv[0,3]+yNDC2*self.P_inv[1,3]+zNDC2*self.P_inv[2,3]+self.P_inv[3,3])
+FIXER: lineno: 1015:   (PM_inv[0,2]*xNDC + PM_inv[1,2]*yNDC + PM_inv[3,2])/(-PM_inv[2,2])
+FIXER: lineno: 1018:   1.0/(xNDC*self.P_inv[0,3]+yNDC*self.P_inv[1,3]+zNDC*self.P_inv[2,3]+self.P_inv[3,3])
+FIXER: lineno: 1232:  1.0/self.scale
+FIXER: lineno: 1232:  1.0/self.scale
+FIXER: lineno: 1232:  1.0/self.scale
+FIXER: lineno: 1273:   1.0/self.mag_factor
+FIXER: lineno: 1416:  1.0/self.scale
+FIXER: lineno: 1592:   1.0/self.mag_factor
+FIXER: lineno: 2087:  -width/2.0
+FIXER: lineno: 2087:  -height/2.0
+FIXER: lineno: 2087:  -depth/2.0
+FIXER: lineno: 2107:   rx/float(self.gl_widget.width())
+FIXER: lineno: 2108:   ry/float(self.gl_widget.height())
+FIXER: lineno: 2342:   float(width)/float(height)
+FILENAME:  libpyEM/qtgui//emhist.py
+FIXER: lineno: 449:  self.width()/72.0
+FIXER: lineno: 449:  self.height()/72.0
+FIXER: lineno: 590:  (-(self.scrlim[2]*log(x)) + (self.scrlim[0] + self.scrlim[2])*log(10)*log10(self.plotlim[0])-self.scrlim[0]*log(10)*log10(self.plotlim[0] +self.plotlim[2])) /(log(10)*(log10(self.plotlim[0]) - log10(self.plotlim[0] + self.plotlim[2])))
+FIXER: lineno: 592:  (self.scrlim[3]*log(y) + self.height()*log(10.0)*log10(self.plotlim[1])-self.scrlim[1]*log(10.0)*log10(self.plotlim[1])-self.scrlim[3]*log(10.0)*log10(self.plotlim[1]) - self.height()*log(10.0)*log10(self.plotlim[1]+self.plotlim[3]) + self.scrlim[1]*log(10)*log10(self.plotlim[1]+self.plotlim[3])) / (log(10)*(log10(self.plotlim[1]) - log10(self.plotlim[1]+self.plotlim[3])))
+FIXER: lineno: 796:  xmin/1.1
+FIXER: lineno: 812:  ymin/1.1
+FILENAME:  libpyEM/qtgui//emimage.py
+FILENAME:  libpyEM/qtgui//emimage2d.py
+FIXER: lineno: 129:   1.0/self.mag
+FIXER: lineno: 413:   len(data)/2
+FIXER: lineno: 506:   float(w)/data[0]
+FIXER: lineno: 507:   float(h)/data[1]
+FIXER: lineno: 525:  1.0/self.scale
+FIXER: lineno: 662:  self.height()/2
+FIXER: lineno: 664:  self.width()/2
+FIXER: lineno: 665:  self.width()/2
+FIXER: lineno: 665:  self.height()/2
+FIXER: lineno: 679:  self.width()/2
+FIXER: lineno: 679:  self.height()/2
+FIXER: lineno: 687:  self.width()/2.0
+FIXER: lineno: 687:  self.width()/2.0
+FIXER: lineno: 687:  self.height()/2.0
+FIXER: lineno: 687:  self.height()/2.0
+FIXER: lineno: 919:  self.origin[0] / self.scale
+FIXER: lineno: 920:  self.origin[1] / self.scale
+FIXER: lineno: 959:  self.origin[0]/self.scale
+FIXER: lineno: 959:  self.origin[1]/self.scale
+FIXER: lineno: 962:  self.origin[0]/self.scale
+FIXER: lineno: 962:  self.origin[1]/self.scale
+FIXER: lineno: 968:  self.origin[0]/self.scale
+FIXER: lineno: 968:  self.origin[1]/self.scale
+FIXER: lineno: 970:  self.origin[0]/self.scale
+FIXER: lineno: 970:  self.origin[1]/self.scale
+FIXER: lineno: 972:  self.origin[0]/self.scale
+FIXER: lineno: 972:  self.origin[1]/self.scale
+FIXER: lineno: 997:   self.width()/2.0
+FIXER: lineno: 998:   self.height()/2.0
+FIXER: lineno: 1047:  w/bpp
+FIXER: lineno: 1084:  self.origin[0]/scale
+FIXER: lineno: 1084:  self.origin[1]/scale
+FIXER: lineno: 1142:  self.origin[0]/self.scale
+FIXER: lineno: 1142:  self.origin[1]/self.scale
+FIXER: lineno: 1248:   - (display_width-pixel_x)/2.0
+FIXER: lineno: 1249:   - (display_height-pixel_y)/2.0
+FIXER: lineno: 1253:   - (display_width-pixel_x)/2.0
+FIXER: lineno: 1254:    - (display_height-pixel_y)/2.0
+FIXER: lineno: 1263:  pi/180.0
+FIXER: lineno: 1336:  (x1+x2)/2.0
+FIXER: lineno: 1336:   (y1+y2)/2.0
+FIXER: lineno: 1337:  (x1-x2)/2.0
+FIXER: lineno: 1337:   (y1-y2)/2.0
+FIXER: lineno: 1347:  (x1+x2)/2.0
+FIXER: lineno: 1347:   (y1+y2)/2.0
+FIXER: lineno: 1348:  (x1-x2)/2.0
+FIXER: lineno: 1348:   (y1-y2)/2.0
+FIXER: lineno: 1352:   (x1+x2)/2.0
+FIXER: lineno: 1352:   (y1+y2)/2.0
+FIXER: lineno: 1543:  self.origin[0]/self.scale
+FIXER: lineno: 1544:  self.origin[1]/self.scale
+FIXER: lineno: 1546:   (v0+origin_x)/self.scale
+FIXER: lineno: 1546:   (self.height()-(v1-origin_y))/self.scale
+FIXER: lineno: 1547:  (v0[0]+origin_x)/self.scale
+FIXER: lineno: 1547:  (self.height()-(v0[1]-origin_y))/self.scale
+FIXER: lineno: 1557:  self.origin[0]/self.scale
+FIXER: lineno: 1558:  self.origin[1]/self.scale
+FIXER: lineno: 1592:  sz/2
+FIXER: lineno: 1592:  sz/2
+FIXER: lineno: 1592:  (sz+1)/2
+FIXER: lineno: 1592:  (sz+1)/2
+FIXER: lineno: 1595:  sz/2
+FIXER: lineno: 1595:  sz/2
+FIXER: lineno: 1689:  xs/2
+FIXER: lineno: 1689:  xs/2
+FIXER: lineno: 1690:  xs/2
+FIXER: lineno: 1691:  ys/2
+FIXER: lineno: 1691:  ys/2
+FIXER: lineno: 1692:  ys/2
+FIXER: lineno: 1744:   1.0/20.0
+FIXER: lineno: 1745:   event.delta()/120.0
+FIXER: lineno: 1751:   self.height()/sqrt(self.scale)
+FIXER: lineno: 1757:   self.width()/sqrt(self.scale)
+FIXER: lineno: 2267:  fft["ny"]/2
+FIXER: lineno: 2268:  1.0/(fft["ny"]*data["apix_x"])
+FIXER: lineno: 2269:  fft["ny"]/2
+FIXER: lineno: 2288:  1.0/len(self.target().list_data)
+FIXER: lineno: 2289:  fft["ny"]/2
+FIXER: lineno: 2290:  1.0/(fft["ny"]*self.target().get_data()["apix_x"])
+FIXER: lineno: 2291:  fft["ny"]/2
+FIXER: lineno: 2520:  (self.mins.value-self.maxs.value)/(2.0*(self.lowlim-self.highlim))
+FIXER: lineno: 2527:  (self.lowlim+self.highlim)/2.0
+FIXER: lineno: 2528:  (self.lowlim+self.highlim)/2.0
+FILENAME:  libpyEM/qtgui//emimage3d.py
+FIXER: lineno: 294:   float(self.width())/float(self.height())
+FIXER: lineno: 298:  -self.xwidth/2.0
+FIXER: lineno: 298:  self.xwidth/2.0
+FIXER: lineno: 298:  -self.yheight/2.0
+FIXER: lineno: 298:  self.yheight/2.0
+FIXER: lineno: 301:   float(self.width())/float(self.height())
+FIXER: lineno: 441:   height/float(self.last_window_height)
+FIXER: lineno: 442:   width/float(self.last_window_width)
+FIXER: lineno: 463:  image.get_ysize()/2.0
+FIXER: lineno: 463:   (image.get_ysize()/2.0)/tan(fov/2.0*pi/180.0)
+FIXER: lineno: 491:   (model.isothr - self.data["mean"])/self.data["sigma"]
+FIXER: lineno: 589:  -self.xwidth/2.0
+FIXER: lineno: 589:  -self.yheight/2.0
+FIXER: lineno: 589:   self.xwidth/2.0
+FIXER: lineno: 589:  self.yheight/2.0
+FILENAME:  libpyEM/qtgui//emimage3diso.py
+FIXER: lineno: 163:  -self.data.get_xsize()/2.0
+FIXER: lineno: 163:  -self.data.get_ysize()/2.0
+FIXER: lineno: 163:  -self.data.get_zsize()/2.0
+FILENAME:  libpyEM/qtgui//emimage3dmorph.py
+FILENAME:  libpyEM/qtgui//emimage3dslice.py
+FIXER: lineno: 144:   1.0/(max-min)
+FIXER: lineno: 171:   data.get_zsize()/2
+FIXER: lineno: 172:   data.get_zsize()/2
+FIXER: lineno: 174:   data.get_ysize()/2
+FIXER: lineno: 176:   data.get_xsize()/2
+FIXER: lineno: 200:   180.0/pi
+FIXER: lineno: 247:   float(self.slice)/float(n)
+FIXER: lineno: 334:  -self.data.get_xsize()/2.0
+FIXER: lineno: 334:  -self.data.get_ysize()/2.0
+FIXER: lineno: 334:  -self.data.get_zsize()/2.0
+FIXER: lineno: 425:   1.0/self.vdtools.getCurrentScale()
+FILENAME:  libpyEM/qtgui//emimage3dsym.py
+FIXER: lineno: 119:   (value-self.min_score)/self.interval
+FIXER: lineno: 243:   (val-mn)/(diff)
+FIXER: lineno: 508:   (triangles[0][2]+triangles[0][1])/2.0
+FIXER: lineno: 624:   (sin(angle-timeangle)*p1Copy + sin(timeangle)*p2Copy)/sinangle
+FIXER: lineno: 640:  dz/length
+FIXER: lineno: 1255:   float(self.width())/float(self.height())
+FILENAME:  libpyEM/qtgui//emimage3dvol.py
+FIXER: lineno: 243:  -self.data.get_xsize()/2.0
+FIXER: lineno: 243:  -self.data.get_ysize()/2.0
+FIXER: lineno: 243:  -self.data.get_zsize()/2.0
+FIXER: lineno: 419:   180.0/pi
+FIXER: lineno: 474:  n/2
+FILENAME:  libpyEM/qtgui//emimagemx.py
+FIXER: lineno: 95:   xsep/2
+FIXER: lineno: 97:  len(view_data)/float(self.visiblecols)
+FIXER: lineno: 104:  view_width/(rendered_image_width+self.min_sep)
+FIXER: lineno: 117:  -y/(h+2)
+FIXER: lineno: 119:  float(view_height-yoff)/(h+2)
+FIXER: lineno: 120:  float(view_height-y)/(h+2)
+FIXER: lineno: 122:  float(len(view_data))/visiblecols
+FIXER: lineno: 123:  -y/(h+2)
+FIXER: lineno: 140:  view_width/(rendered_image_width+self.min_sep)
+FIXER: lineno: 141:  view_height/(rendered_image_height+self.min_sep)
+FIXER: lineno: 243:   1.0/self.mag
+FIXER: lineno: 338:  width/2
+FIXER: lineno: 338:  height/2
+FIXER: lineno: 694:   len(self.data)/self.matrix_panel.visiblecols
+FIXER: lineno: 804:  len(self.data)/nrep
+FIXER: lineno: 912:  float(self.height())/self.data.get_ysize()
+FIXER: lineno: 912:  float(self.view_width())/self.data.get_xsize()
+FIXER: lineno: 985:  vec[0]/h
+FIXER: lineno: 985:  vec[1]/h
+FIXER: lineno: 1105:  1.0/self.scale
+FIXER: lineno: 1180:  tw/2.0
+FIXER: lineno: 1180:  th/2.0
+FIXER: lineno: 1181:  tw/2.0
+FIXER: lineno: 1181:  th/2.0
+FIXER: lineno: 1206:   w/2.0
+FIXER: lineno: 1207:   h/2.0
+FIXER: lineno: 1425:   w/2.0
+FIXER: lineno: 1426:   h/2.0
+FIXER: lineno: 1490:  self.height()/2
+FIXER: lineno: 1493:  self.view_width()/2
+FIXER: lineno: 1493:  self.height()/2
+FIXER: lineno: 1495:  hypot(self.targetorigin[0]-self.origin[0],self.targetorigin[1]-self.origin[1])/20.0
+FIXER: lineno: 1536:  (absloc[0]-data[0])/self.scale
+FIXER: lineno: 1536:  (absloc[1]-data[1])/self.scale
+FIXER: lineno: 1685:   image.get_xsize()/2
+FIXER: lineno: 1686:   image.get_ysize()/2
+FIXER: lineno: 2000:  self.width/2
+FIXER: lineno: 2004:  self.arrow_height/self.arrow_width
+FIXER: lineno: 2044:  -float(current_y)/adjusted_height
+FIXER: lineno: 2101:  self.width/2
+FIXER: lineno: 2110:  self.width/2
+FIXER: lineno: 2162:   dy/float(self.scroll_bar_height)
+FIXER: lineno: 2540:  (self.mins.value-self.maxs.value)/(2.0*(self.lowlim-self.highlim))
+FIXER: lineno: 2548:  (self.lowlim+self.highlim)/2.0
+FIXER: lineno: 2549:  (self.lowlim+self.highlim)/2.0
+FIXER: lineno: 2923:  self.cache_max/2
+FIXER: lineno: 3043:   self.cache_size/2
+FIXER: lineno: 3173:   self.cache_size/2
+FIXER: lineno: 3229:   self.cache_size/2
+FIXER: lineno: 3312:  self.nz/2
+FILENAME:  libpyEM/qtgui//emimageutil.py
+FIXER: lineno: 392:  self.norm/255
+FILENAME:  libpyEM/qtgui//emitem3d.py
+FILENAME:  libpyEM/qtgui//emlights.py
+FIXER: lineno: 107:   (sin(angle-timeangle)*p1Copy + sin(timeangle)*p2Copy)/sinangle
+FIXER: lineno: 122:  dz/length
+FIXER: lineno: 165:  self.radius/10.0
+FIXER: lineno: 165:  self.radius/10.0
+FIXER: lineno: 165:  self.radius/10.0
+FIXER: lineno: 193:  self.radius/10.0
+FIXER: lineno: 193:  self.radius/10.0
+FIXER: lineno: 193:  self.radius/10.0
+FIXER: lineno: 290:   (top-bot)/(n-1)
+FIXER: lineno: 352:   (top-bot)/(n-1)
+FIXER: lineno: 353:  1.0/n
+FILENAME:  libpyEM/qtgui//empdbitem3d.py
+FIXER: lineno: 478:  dz/length
+FILENAME:  libpyEM/qtgui//empdbvaltool.py
+FILENAME:  libpyEM/qtgui//empdbviewer.py
+FIXER: lineno: 806:  dz/length
+FILENAME:  libpyEM/qtgui//emplot2d.py
+FIXER: lineno: 533:  self.width()/72.0
+FIXER: lineno: 533:  self.height()/72.0
+FIXER: lineno: 665:  (-(self.scrlim[2]*log(x)) + (self.scrlim[0] + self.scrlim[2])*log(10)*log10(self.plotlim[0])-self.scrlim[0]*log(10)*log10(self.plotlim[0] +self.plotlim[2])) /(log(10)*(log10(self.plotlim[0]) - log10(self.plotlim[0] + self.plotlim[2])))
+FIXER: lineno: 667:  (self.scrlim[3]*log(y) + self.height()*log(10.0)*log10(self.plotlim[1])-self.scrlim[1]*log(10.0)*log10(self.plotlim[1])-self.scrlim[3]*log(10.0)*log10(self.plotlim[1]) - self.height()*log(10.0)*log10(self.plotlim[1]+self.plotlim[3]) + self.scrlim[1]*log(10)*log10(self.plotlim[1]+self.plotlim[3])) / (log(10)*(log10(self.plotlim[1]) - log10(self.plotlim[1]+self.plotlim[3])))
+FIXER: lineno: 792:  len(cmts)/2
+FIXER: lineno: 861:  1.0/lc[0]
+FIXER: lineno: 885:  1.0/lc[0]
+FIXER: lineno: 944:  xmin/1.1
+FIXER: lineno: 957:  ymin/1.1
+FIXER: lineno: 1109:   self.width()/2.0
+FIXER: lineno: 1110:   self.height()/2.0
+FIXER: lineno: 1129:  self.width() / 2
+FIXER: lineno: 1129:  self.height() / 2
+FIXER: lineno: 1155:   rad/(2.0*self.plotlim[3]/scaling)
+FIXER: lineno: 1192:   self.width()/2.0
+FIXER: lineno: 1193:   self.height()/2.0
+FIXER: lineno: 1219:  sigmaAngSin/pcount
+FIXER: lineno: 1219:  sigmaAngCos/pcount
+FIXER: lineno: 1220:   sigmaRad/pcount
+FIXER: lineno: 1227:  sigmaAngSin/pcount
+FIXER: lineno: 1228:  sigmaAngSin/pcount
+FIXER: lineno: 1229:  sigmaRad/pcount
+FIXER: lineno: 1230:  varAngSin/pcount
+FIXER: lineno: 1230:  varAngCos/pcount
+FIXER: lineno: 1231:  varRad/pcount
+FIXER: lineno: 1370:  self.width()/72.0
+FIXER: lineno: 1370:  self.height()/72.0
+FIXER: lineno: 1492:  (-(self.scrlim[2]*log(x)) + (self.scrlim[0] + self.scrlim[2])*log(10)*log10(self.plotlim[0])-self.scrlim[0]*log(10)*log10(self.plotlim[0] +self.plotlim[2])) /(log(10)*(log10(self.plotlim[0]) - log10(self.plotlim[0] + self.plotlim[2])))
+FIXER: lineno: 1494:  (self.scrlim[3]*log(y) + self.height()*log(10.0)*log10(self.plotlim[1])-self.scrlim[1]*log(10.0)*log10(self.plotlim[1])-self.scrlim[3]*log(10.0)*log10(self.plotlim[1]) - self.height()*log(10.0)*log10(self.plotlim[1]+self.plotlim[3]) + self.scrlim[1]*log(10)*log10(self.plotlim[1]+self.plotlim[3])) / (log(10)*(log10(self.plotlim[1]) - log10(self.plotlim[1]+self.plotlim[3])))
+FIXER: lineno: 1655:   (q3+q1)/2
+FIXER: lineno: 1657:   (mad - q2) / mad
+FIXER: lineno: 1830:   (x-mu)/sigma
+FIXER: lineno: 1834:   (x-xmin)/(xmax-xmin)
+FIXER: lineno: 1983:  i.copy()/std(i)
+FILENAME:  libpyEM/qtgui//emplot3d.py
+FIXER: lineno: 537:  self.width()/72.0
+FIXER: lineno: 537:  self.height()/72.0
+FIXER: lineno: 677:  (-(self.scrlim[2]*log(x)) + (self.scrlim[0] + self.scrlim[2])*log(10)*log10(self.plotlim[0])-self.scrlim[0]*log(10)*log10(self.plotlim[0] +self.plotlim[2])) /(log(10)*(log10(self.plotlim[0]) - log10(self.plotlim[0] + self.plotlim[2])))
+FIXER: lineno: 679:  (self.scrlim[3]*log(y) + self.height()*log(10.0)*log10(self.plotlim[1])-self.scrlim[1]*log(10.0)*log10(self.plotlim[1])-self.scrlim[3]*log(10.0)*log10(self.plotlim[1]) - self.height()*log(10.0)*log10(self.plotlim[1]+self.plotlim[3]) + self.scrlim[1]*log(10)*log10(self.plotlim[1]+self.plotlim[3])) / (log(10)*(log10(self.plotlim[1]) - log10(self.plotlim[1]+self.plotlim[3])))
+FIXER: lineno: 805:  len(cmts)/2
+FIXER: lineno: 892:  1.0/lc[0]
+FIXER: lineno: 958:  xmin/1.1
+FIXER: lineno: 971:  ymin/1.1
+FIXER: lineno: 984:  zmin/1.1
+FIXER: lineno: 1011:  1.0/1.05
+FIXER: lineno: 1014:  sum(self.xlimits)/2.0
+FIXER: lineno: 1018:  sum(self.ylimits)/2.0
+FIXER: lineno: 1022:  sum(self.zlimits)/2.0
+FIXER: lineno: 1134:   (q3+q1)/2
+FIXER: lineno: 1136:   (mad - q2) / mad
+FIXER: lineno: 1320:   (x-mu)/sigma
+FIXER: lineno: 1324:   (x-xmin)/(xmax-xmin)
+FIXER: lineno: 1473:  i.copy()/std(i)
+FILENAME:  libpyEM/qtgui//empmtabwidgets.py
+FIXER: lineno: 524:  1.0/(200.0*ctf.dsbg)
+FIXER: lineno: 525:  1.0/(20.0*ctf.dsbg)
+FIXER: lineno: 526:  1.0/(10.0*ctf.dsbg)
+FIXER: lineno: 527:  1.0/(4.0*ctf.dsbg)
+FIXER: lineno: 528:  sum(ctf.snr[s0:s1])/(s1-s0)
+FIXER: lineno: 529:  sum(ctf.snr[s2:s3])/(s3-s2)
+FILENAME:  libpyEM/qtgui//empmwidgets.py
+FIXER: lineno: 911:  (xyd.get_y(ii-2)+xyd.get_y(ii-1)+xyd.get_y(ii)+xyd.get_y(ii+1)+xyd.get_y(ii+2))/5.0
+FIXER: lineno: 914:  1.0/xyd.get_x(ii-1)
+FIXER: lineno: 923:  (xyd.get_y(ii-2)+xyd.get_y(ii-1)+xyd.get_y(ii)+xyd.get_y(ii+1)+xyd.get_y(ii+2))/5.0
+FIXER: lineno: 926:  1.0/xyd.get_x(ii-1)
+FIXER: lineno: 951:   offset/d
+FIXER: lineno: 962:  1.0/xaxis(soln)
+FIXER: lineno: 965:  1.0/(soln/len(yaxis)*xaxis[-1])
+FILENAME:  libpyEM/qtgui//emrctboxergui.py
+FILENAME:  libpyEM/qtgui//emrctstrategy.py
+FIXER: lineno: 229:   (rotA[0,0] - rotA[1,1]*math.cos(math.radians(self.tiltangle)))/(rotA[1,0]*math.cos(math.radians(self.tiltangle)) + rotA[0,1])
+FIXER: lineno: 237:   math.pi/2
+FILENAME:  libpyEM/qtgui//emsave.py
+FILENAME:  libpyEM/qtgui//emscene3d.py
+FIXER: lineno: 843:   viewport[2]/2
+FIXER: lineno: 844:  viewport[3]/2
+FIXER: lineno: 849:   dx/2
+FIXER: lineno: 849:   dy/2
+FIXER: lineno: 875:   self.camera.getWidth()/2
+FIXER: lineno: 876:   self.camera.getWidth()/2
+FIXER: lineno: 877:   self.camera.getHeight()/2
+FIXER: lineno: 878:   self.camera.getHeight()/2
+FIXER: lineno: 1093:   self.camera.getWidth()/2
+FIXER: lineno: 1094:   self.camera.getHeight()/2
+FIXER: lineno: 1129:  dx/self.camera.getViewPortWidthScaling()
+FIXER: lineno: 1131:  magnitude/self.camera.getViewPortWidthScaling()
+FIXER: lineno: 1131:  -dy/magnitude
+FIXER: lineno: 1131:  -dx/magnitude
+FIXER: lineno: 1172:  (self.camera.getPseudoFovyWidth()+self.camera.getWidth())/25
+FIXER: lineno: 1177:  (self.camera.getPseudoFovyWidth()+self.camera.getWidth())/25
+FIXER: lineno: 1838:   (self.near-self.far)/2.0
+FIXER: lineno: 1852:   float(self.height)/float(self.width)
+FIXER: lineno: 1876:  (self.width*self.width)/(2*dims)
+FIXER: lineno: 1876:  self.width/2
+FIXER: lineno: 1902:  -self.width/2
+FIXER: lineno: 1902:   self.width/2
+FIXER: lineno: 1902:   -self.height/2
+FIXER: lineno: 1902:   self.height/2
+FIXER: lineno: 1908:  float(self.width)/float(self.height)
+FIXER: lineno: 1917:  self.fovy/2
+FIXER: lineno: 1917:   -(boundingbox*2/screenfraction)/(2*math.tan(math.radians(self.fovy/2)))
+FIXER: lineno: 1978:   (self.maxviewport[0] - self.width)/2
+FIXER: lineno: 1996:   float(self.getWidth())/float(self.getWidth() + 2*self.getPseudoFovyWidth())
+FIXER: lineno: 2002:   float(self.getHeight())/float(self.getHeight() + 2*self.getPseudoFovyHeight())
+FIXER: lineno: 2550:  float(rgb[0])/255.0
+FIXER: lineno: 2550:   float(rgb[1])/255.0
+FIXER: lineno: 2550:   float(rgb[2])/255.0
+FIXER: lineno: 2707:  float(rgb[0])/255.0
+FIXER: lineno: 2707:   float(rgb[1])/255.0
+FIXER: lineno: 2707:   float(rgb[2])/255.0
+FIXER: lineno: 2746:   (al[0] + al[1] + al[2])/3
+FIXER: lineno: 2895:  length/5
+FIXER: lineno: 2899:  length/5
+FIXER: lineno: 2903:  length/5
+FILENAME:  libpyEM/qtgui//emselector.py
+FILENAME:  libpyEM/qtgui//emshape.py
+FIXER: lineno: 49:  pi/180.0
+FIXER: lineno: 198:  w_vect[0]/mag
+FIXER: lineno: 198:   w_vect[1]/mag
+FIXER: lineno: 240:  (p1[0]+p2[0])/2
+FIXER: lineno: 240:  (p1[1]+p2[1])/2
+FIXER: lineno: 253:  (p1[0]+p2[0])/2
+FIXER: lineno: 253:  (p1[1]+p2[1])/2
+FIXER: lineno: 260:  (v[0]+v2[0])/2.0
+FIXER: lineno: 260:  (v[1]+v2[1])/2.0
+FIXER: lineno: 261:  (v2[0]-v[0])/2.0
+FIXER: lineno: 261:  (v2[1]-v[1])/2.0
+FIXER: lineno: 273:  (v[0]+v2[0])/2.0
+FIXER: lineno: 273:  (v[1]+v2[1])/2.0
+FIXER: lineno: 274:  (v2[0]-v[0])/2.0
+FIXER: lineno: 274:  (v2[1]-v[1])/2.0
+FIXER: lineno: 542:   (s[4]+s[6])/2.0
+FIXER: lineno: 542:   (s[5]+s[7])/2.0
+FIXER: lineno: 545:  l_vect[0]/length
+FIXER: lineno: 545:   l_vect[1]/length
+FIXER: lineno: 552:   width/2.0
+FIXER: lineno: 555:   length/2.0
+FIXER: lineno: 593:  (s[4]+s[6])/2.0
+FIXER: lineno: 593:   (s[5]+s[7])/2.0
+FILENAME:  libpyEM/qtgui//emshapeitem3d.py
+FIXER: lineno: 217:  (x2-x1)/self.getLength()
+FIXER: lineno: 217:   (y2-y1)/self.getLength()
+FIXER: lineno: 217:   (z2-z1)/self.getLength()
+FIXER: lineno: 245:  self.rsinO/2.0
+FIXER: lineno: 245:  self.rcosO/2.0
+FIXER: lineno: 246:  self.rsinO/2.0
+FIXER: lineno: 246:  self.rcosO/2.0
+FIXER: lineno: 287:   -size/2
+FIXER: lineno: 288:   -size/2
+FIXER: lineno: 289:   -size/2
+FIXER: lineno: 290:   size/2
+FIXER: lineno: 291:   size/2
+FIXER: lineno: 292:   size/2
+FIXER: lineno: 545:  -self.height/2
+FIXER: lineno: 619:  width/2
+FIXER: lineno: 620:  width/2
+FIXER: lineno: 629:   self.length/10.0
+FIXER: lineno: 631:   self.length/10.0
+FIXER: lineno: 645:  self.width/2
+FIXER: lineno: 654:  self.width/2
+FIXER: lineno: 708:   180.0/math.pi
+FIXER: lineno: 726:  vz/self.length
+FIXER: lineno: 747:  self.width/2
+FIXER: lineno: 747:  self.width/2
+FIXER: lineno: 829:  -self.height/2
+FIXER: lineno: 954:  (tvar[0]-tvar[3])/2
+FIXER: lineno: 954:  (tvar[1]-tvar[4])/2
+FIXER: lineno: 954:  -(tvar[2]-tvar[5])/2
+FIXER: lineno: 1046:  float(rgb[0])/255.0
+FIXER: lineno: 1046:  float(rgb[1])/255.0
+FIXER: lineno: 1046:  float(rgb[2])/255.0
+FIXER: lineno: 1052:  float(rgb[0])/255.0
+FIXER: lineno: 1052:  float(rgb[1])/255.0
+FIXER: lineno: 1052:  float(rgb[2])/255.0
+FIXER: lineno: 1058:  float(rgb[0])/255.0
+FIXER: lineno: 1058:  float(rgb[1])/255.0
+FIXER: lineno: 1058:  float(rgb[2])/255.0
+FILENAME:  libpyEM/qtgui//emsprworkflow.py
+FIXER: lineno: 237:   float(len(options.filenames))/float(ncpu)
+FIXER: lineno: 1282:    nx/2
+FIXER: lineno: 1283:    ny/2
+FIXER: lineno: 1465:   sum(ctf.snr)/len(ctf.snr)
+FIXER: lineno: 1851:  int(l[2])/2
+FIXER: lineno: 1851:  int(l[3])/2
+FIXER: lineno: 2368:  box.xsize/2
+FIXER: lineno: 2369:  box.ysize/2
+FIXER: lineno: 3755:  (i+1.0)/len(filenames)
+FIXER: lineno: 5133:  nx/8.0
+FIXER: lineno: 5134:  nx/20.0
+FIXER: lineno: 5220:   float(nx)/x
+FIXER: lineno: 5225:   (x-nx)/2
+FIXER: lineno: 5659:  nx/8.0
+FIXER: lineno: 5660:  nx/20.0
+FIXER: lineno: 6140:   offset/d
+FIXER: lineno: 6151:  1.0/xaxis(soln)
+FIXER: lineno: 6154:  1.0/(soln/len(yaxis)*xaxis[-1])
+FILENAME:  libpyEM/qtgui//emtprworkflow.py
+FILENAME:  libpyEM/qtgui//expand_string.py
+FILENAME:  libpyEM/qtgui//matching.py
+FILENAME:  libpyEM/qtgui//pmicons.py
+FILENAME:  libpyEM/qtgui//valslider.py
+FIXER: lineno: 253:  self.slider.value()/4095.0
+FIXER: lineno: 670:  self.size().width()/2
+FIXER: lineno: 670:  self.size().width()/2
+FIXER: lineno: 1031:  float(width)/float(height)
+FIXER: lineno: 1127:  -width/2
+FIXER: lineno: 1127:   width/2
+FIXER: lineno: 1127:   -height/2
+FIXER: lineno: 1127:   height/2
+FIXER: lineno: 1137:   self.width/2
+FIXER: lineno: 1137:   self.width/2
+FIXER: lineno: 1154:   (self.scenegraph().camera.getClipNear() + self.scenegraph().camera.getZclip())/self.scale
+FIXER: lineno: 1155:   (self.scenegraph().camera.getClipFar() + self.scenegraph().camera.getZclip())/self.scale
+FIXER: lineno: 1157:   -self.height/2.2
+FIXER: lineno: 1158:   self.height/2.2
+FIXER: lineno: 1159:   -self.height/2.2
+FIXER: lineno: 1160:   self.height/2.2
+FIXER: lineno: 1182:   float(self.scenegraph().camera.getHeight())/float(self.scenegraph().camera.getWidth())
+FIXER: lineno: 1187:  -size/2
+FIXER: lineno: 1189:  size/2
+FIXER: lineno: 1191:  size/2
+FIXER: lineno: 1193:  -size/2
