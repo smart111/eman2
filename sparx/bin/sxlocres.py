@@ -52,7 +52,7 @@ def makeAngRes(freqvol, nx, ny, nz, pxSize):
 				if (freqvol[x,y,z] == 0):
 					outAngResVol[x,y,z] = 0
 				else:
-					outAngResVol[x,y,z] = pxSize / freqvol[x,y,z]
+					outAngResVol[x,y,z] = pxSize// freqvol[x,y,z]
 
 	return outAngResVol
 
@@ -203,7 +203,7 @@ def main():
 				break
 		"""		
 		lp = int(nn/2/options.step+0.5)
-		step = 0.5/lp
+		step = 0.5//lp
 
 		freqvol = model_blank(nn,nn,nn)
 		resolut = []
@@ -221,7 +221,7 @@ def main():
 
 			tmp3 = Util.muln_img(u,v)
 			dp = Util.infomask(tmp3,m,True)[0]
-			resolut.append([i,(fl+fh)/2.0, dp/do])
+			resolut.append([i,(fl+fh)//2.0, dp//do])
 
 			tmp1 = Util.box_convolution(tmp1, nk)
 			tmp2 = Util.box_convolution(tmp2, nk)
@@ -240,7 +240,7 @@ def main():
 			Util.div_img(tmp3,tmp1)
 
 			Util.mul_img(tmp3,m)
-			freq=(fl+fh)/2.0
+			freq=(fl+fh)//2.0
 			bailout = True
 			for x in range(nn):
 				for y in range(nn):

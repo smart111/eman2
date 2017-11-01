@@ -69,7 +69,7 @@ def TotalDistance(city, lccc):
 
 def reverse(city, n):
     nct = len(city)
-    nn = (1+ ((n[1]-n[0]) % nct))/2 # half the lenght of the segment to be reversed
+    nn = (1+ ((n[1]-n[0]) % nct))//2 # half the lenght of the segment to be reversed
     # the segment is reversed in the following way n[0]<->n[1], n[0]+1<->n[1]-1, n[0]+2<->n[1]-2,...
     # Start at the ends of the segment and swap pairs of cities, moving towards the center.
     for j in range(nn):
@@ -107,7 +107,7 @@ def tsp(lccc):
 
 	#     ncity = 100        # Number of cities to visit
 	from math import sqrt
-	ncity = int( (1+sqrt(1+8*len(lccc)))/2 )        # Number of cities to visit
+	ncity = int( (1+sqrt(1+8*len(lccc)))//2 )        # Number of cities to visit
     #  sanity check
 	if( ncity*(ncity-1)/2 != len(lccc) ): return [-1]
 
@@ -159,7 +159,7 @@ def tsp(lccc):
 				de = Distance(city[n[2]], city[n[1]], lccc) + Distance(city[n[3]], city[n[0]], lccc)\
 					 - Distance(city[n[2]], city[n[0]], lccc) - Distance(city[n[3]] ,city[n[1]], lccc)
 
-				if de<0 or exp(-de/T)>rand(): # Metropolis
+				if de<0 or exp(-de//T)>rand(): # Metropolis
 					accepted += 1
 					dist += de
 					reverse(city, n)
@@ -175,7 +175,7 @@ def tsp(lccc):
 				de += Distance( city[n[0]], city[n[4]], lccc) + Distance( city[n[1]], city[n[5]], lccc) \
 						+ Distance( city[n[2]], city[n[3]], lccc)
 
-				if de<0 or exp(-de/T)>rand(): # Metropolis
+				if de<0 or exp(-de//T)>rand(): # Metropolis
 					accepted += 1
 					dist += de
 					city = transpt(city, n)
@@ -574,7 +574,7 @@ def main():
 
 			table = [0.0]*len(rops_dst)
 			for j in range( len(rops_dst) ):
-				table[j] = sqrt( rops_dst[j]/rops_src[j] )
+				table[j] = sqrt( rops_dst[j]//rops_src[j] )
 
 			if( fl > 0.0):
 				img = filt_tanl(img, fl, aa)
@@ -739,12 +739,12 @@ def main():
 		pixel   = parm_apix
 		voltage = 120.0
 		ampcont = 10.0
-		ibd     = 4096/2-boxsize
+		ibd     = 4096//2-boxsize
 		iprj    = 0
 
 		width = 240
-		xstart = 8 + boxsize/2
-		ystart = 8 + boxsize/2
+		xstart = 8 + boxsize//2
+		ystart = 8 + boxsize//2
 		rowlen = 17
 		from random import randint
 		params = []
@@ -823,7 +823,7 @@ def main():
 		import subprocess
 		grpfile = 'groupid%04d'%randint(1000,9999)
 		ctfpfile = 'ctfpfile%04d'%randint(1000,9999)
-		cterr = [options.defocuserror/100.0, options.astigmatismerror]
+		cterr = [options.defocuserror//100.0, options.astigmatismerror]
 		ctfs = read_text_row(options.importctf)
 		for kk in range(len(ctfs)):
 			root,name = os.path.split(ctfs[kk][-1])
@@ -854,7 +854,7 @@ def main():
 				for ll in range(len(ctfs)):
 					if(name2 == ctfs[ll][-1]):
 						#  found correct
-						if(ctfs[ll][8]/ctfs[ll][0] <= cterr[0]):
+						if(ctfs[ll][8]//ctfs[ll][0] <= cterr[0]):
 							#  acceptable defocus error
 							ctfp = ctfs[ll][:8]
 							if(ctfs[ll][10] > cterr[1] ):
@@ -1005,10 +1005,10 @@ def main():
 				if options.B_enhance ==0.0 or options.B_enhance == -1.:
 					guinierline = rot_avg_table(power(periodogram(e1),.5))
 					if options.B_stop:
-						freq_max   =  1./(2.*options.pixel_size)
+						freq_max   =  1.//(2.*options.pixel_size)
 					else:
-						freq_max =1./options.B_stop
-					freq_min   =  1./options.B_start
+						freq_max =1.//options.B_stop
+					freq_min   =  1.//options.B_start
 					log_main.add("B-factor exp(-B*s^2) is estimated from %f Angstrom to %f Angstrom"%(options.B_start, 2*options.pixel_size))
 					b,junk,ifreqmin, ifreqmax =compute_bfactor(guinierline, freq_min, freq_max, options.pixel_size)
 					global_b = b*4
@@ -1016,13 +1016,13 @@ def main():
 				else:
 					global_b = option.B_enhance
 					log_main.add( "User provided B_factor is %f"%global_b)
-				sigma_of_inverse = sqrt(2./global_b)
+				sigma_of_inverse = sqrt(2.//global_b)
 				e1 = filt_gaussinv(e1,sigma_of_inverse)
 				if options.fl > 0.0 and options.fl < 0.5:
 					log_main.add("low-pass filter ff %   aa  %f"%(options.fl, options.aa))
 					e1 =filt_tanl(e1,options.fl, options.aa)
 				elif options.fl > 0.5:
-					e1 =filt_tanl(e1,options.fl/option.pixel_size, options.aa)
+					e1 =filt_tanl(e1,options.fl//option.pixel_size, options.aa)
 				e1.write_image(options.output)
 				
 		else: # 3D case
@@ -1117,7 +1117,7 @@ def main():
 			"""
 			resolution_in_angstrom = [None]*len(fsc_true[0])
 			for ifreq in range(len(fsc_true[0])):
-				if fsc_true[0][ifreq] !=0.0: resolution_in_angstrom [ifreq] = options.pixel_size/fsc_true[0][ifreq]
+				if fsc_true[0][ifreq] !=0.0: resolution_in_angstrom [ifreq] = options.pixel_size//fsc_true[0][ifreq]
 				else: resolution_in_angstrom [ifreq] = 9999.0
 					
 			fsc_true[1][0] =1.0  # always reset fsc of zero frequency as 1.0
@@ -1173,8 +1173,8 @@ def main():
 			for ifreq in range(len(fsc_true[0])): fsc_true[1][ifreq] = max(fsc_true[1][ifreq], 0.0)
 			## smooth FSC after FSC143 and set other values to zero
 			for ifreq in range(nfreq143+1, len(fsc_true[1])):
-				if ifreq ==nfreq143+1: fsc_true[1][ifreq] = (fsc_true[1][nfreq143-2] + fsc_true[1][nfreq143-1])/5.
-				elif ifreq ==nfreq143+2: fsc_true[1][ifreq] = (fsc_true[1][nfreq143-1])/5.
+				if ifreq ==nfreq143+1: fsc_true[1][ifreq] = (fsc_true[1][nfreq143-2] + fsc_true[1][nfreq143-1])//5.
+				elif ifreq ==nfreq143+2: fsc_true[1][ifreq] = (fsc_true[1][nfreq143-1])//5.
 				else:  fsc_true[1][ifreq] = 0.0
 			###															
 			map1 +=map2 #(get_im(args[0])+get_im(args[1]))/2.0
@@ -1220,8 +1220,8 @@ def main():
 					guinierline    = rot_avg_table(power(periodogram(map1),.5))
 					logguinierline = []
 					for ig in range(len(guinierline)):logguinierline.append(log(guinierline[ig]))
-					freq_min = 1./options.B_start  # given frequencies in Angstrom unit, say, B_start is 10 Angstrom, or 15  Angstrom
-					if options.B_stop!=0.0: freq_max = 1./options.B_stop 
+					freq_min = 1.//options.B_start  # given frequencies in Angstrom unit, say, B_start is 10 Angstrom, or 15  Angstrom
+					if options.B_stop!=0.0: freq_max = 1.//options.B_stop 
 					if freq_min>= freq_max:
 						log_main.add("Your B_start is too high! Decrease it and rerun the program!")
 						ERROR("Your B_start is too high! Decrease it and re-run the program!", "--postprocess option", 1)
@@ -1230,12 +1230,12 @@ def main():
 					cc = pearson(junk[1],logguinierline)
 					log_main.add("Similarity between the fitted line and 1-D rotationally average power spectrum within [%d, %d] is %5.3f"%(ifreqmin, ifreqmax, pearson(junk[1][ifreqmin:ifreqmax],logguinierline[ifreqmin:ifreqmax])))
 					log_main.add("The slope is %6.2f Angstrom^2 "%(round(-b,2)))
-					sigma_of_inverse = sqrt(2./(global_b/options.pixel_size**2))
+					sigma_of_inverse = sqrt(2.//(global_b//options.pixel_size**2))
 					
 				else: # User provided value
 					#log_main.add( " apply user provided B-factor to enhance map!")
 					log_main.add("User provided B-factor is %6.2f Angstrom^2   "%options.B_enhance)
-					sigma_of_inverse = sqrt(2./((abs(options.B_enhance))/options.pixel_size**2))
+					sigma_of_inverse = sqrt(2.//((abs(options.B_enhance))//options.pixel_size**2))
 					global_b = options.B_enhance
 					
 				map1 = filt_gaussinv(map1, sigma_of_inverse)
@@ -1251,16 +1251,16 @@ def main():
 									
 			if options.fl !=-1.: # User provided low-pass filter #4.
 				if options.fl>0.5: # Input is in Angstrom 
-					map1   = filt_tanl(map1,options.pixel_size/options.fl, min(options.aa,.1))
+					map1   = filt_tanl(map1,options.pixel_size//options.fl, min(options.aa,.1))
 					cutoff = options.fl
 					
 				elif options.fl>0.0 and options.fl<0.5:  # input is in absolution frequency
 					map1   = filt_tanl(map1,options.fl, min(options.aa,.1))
-					cutoff = options.pixel_size/options.fl
+					cutoff = options.pixel_size//options.fl
 					
 				else: # low-pass filter to resolution determined by FSC0.143
 					map1   = filt_tanl(map1,resolution_FSC143, options.aa)
-					cutoff = options.pixel_size/resolution_FSC143
+					cutoff = options.pixel_size//resolution_FSC143
 			else: log_main.add("low_pass filter is not applied to map! ")
 			
 			file_name, file_ext = os.path.splitext(options.output)
@@ -1272,7 +1272,7 @@ def main():
 			
 			map1.write_image(options.output)
 			log_main.add("---------- >>>Summary<<<------------")
-			log_main.add("Resolution 0.5/0.143 are %5.2f/%5.2f Angstrom "%(round((options.pixel_size/resolution_FSChalf),3), round((options.pixel_size/resolution_FSC143),3)))
+			log_main.add("Resolution 0.5/0.143 are %5.2f/%5.2f Angstrom "%(round((options.pixel_size//resolution_FSChalf),3), round((options.pixel_size//resolution_FSC143),3)))
 			if dip_at_fsc: log_main.add("There is a dip in your fsc in the region between 0.5 and 0.143, and you might consider ploting your fsc curve")
 			if options.B_enhance !=-1:  log_main.add( "B-factor is  %6.2f Angstrom^2  "%(round((-global_b),2)))
 			else:  log_main.add( "B-factor is not applied  ")

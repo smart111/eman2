@@ -131,5 +131,5 @@ for i in range(0,0+1):
 	    snorm=1.0
 	  if(tnorm==0.0):
 	    tnorm=1.0
-	  out.write("%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\n" % (i, cs, ct, cg, inorm, snorm, tnorm, gnorm, inorm/snorm, inorm/tnorm, inorm/gnorm))
+	  out.write("%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\n" % (i, cs, ct, cg, inorm, snorm, tnorm, gnorm, inorm//snorm, inorm//tnorm, inorm//gnorm))
 

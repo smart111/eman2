@@ -42,7 +42,7 @@ M = iqwtr.get_xsize()  # image size
 alpha = 1.75
 K = 6
 N = M*2  # npad*image size
-r=M/2
+r=M//2
 v=K/2.0/N
 
 params = {"filter_type" : Processor.fourier_filter_types.KAISER_SINH,

@@ -69,7 +69,7 @@ def image_decimate_window_xform_ctf(img, decimation = 0.5, window_size = 0, CTF 
 		if window_size >0: 
 			img = Util.window(img, window_size, window_size, 1, 0, 0, 0)
 			e = filt_btwl(img, frequency_low, frequency_high)
-			decimated_image = Util.decimate(e, int(1./decimation), int(1./decimation), 1)
+			decimated_image = Util.decimate(e, int(1.//decimation), int(1.//decimation), 1)
 	else: #increase image size
 		if window_size ==0:
 			new_nx = int(nx*decimation+0.5)
@@ -282,9 +282,9 @@ def main():
 					ERROR("Input stack is not prepared for symmetry, please follow instructions", "sx3dvariability", myid=myid)
 				from utilities import get_symt
 				i = len(get_symt(options.sym))
-				if((nima/i)*i != nima):
+				if((nima//i)*i != nima):
 					ERROR("The length of the input stack is incorrect for symmetry processing", "sx3dvariability", myid=myid)
-				symbaselen = nima/i
+				symbaselen = nima//i
 			else:  symbaselen = nima
 		else:
 			nima = 0
@@ -310,7 +310,7 @@ def main():
 		Tracker["ny"]  = ny
 		Tracker["nz"]  = nx
 		symbaselen     = bcast_number_to_all(symbaselen)
-		if radiuspca == -1: radiuspca = nx/2-2
+		if radiuspca == -1: radiuspca = nx//2-2
 
 		if myid == main_node:
 			print_msg("%-70s:  %d\n"%("Number of projection", nima))
@@ -418,7 +418,7 @@ def main():
 				print_msg("%-70s:  %.2f\n"%("Finding neighboring projections lasted [s]", time()-t2))
 				print_msg("%-70s:  %d\n"%("Number of groups processed on the main node", len(proj_list)))
 				if options.VERBOSE:
-					print("Grouping projections took: ", (time()-t2)/60	, "[min]")
+					print("Grouping projections took: ", (time()-t2)//60	, "[min]")
 					print("Number of groups on main node: ", len(proj_list))
 			mpi_barrier(MPI_COMM_WORLD)
 
@@ -488,7 +488,7 @@ def main():
 
 				if not options.no_norm:
 					#print grp_imgdata[j].get_xsize()
-					mask = model_circle(nx/2-2, nx, nx)
+					mask = model_circle(nx//2-2, nx, nx)
 					for k in range(img_per_grp):
 						ave, std, minn, maxx = Util.infomask(grp_imgdata[k], mask, False)
 						grp_imgdata[k] -= ave
@@ -543,7 +543,7 @@ def main():
 
 				var = model_blank(nx,ny)
 				for q in grp_imgdata:  Util.add_img2( var, q )
-				Util.mul_scalar( var, 1.0/(len(grp_imgdata)-1))
+				Util.mul_scalar( var, 1.0//(len(grp_imgdata)-1))
 				# Switch to std dev
 				var = square_root(threshold(var))
 				#if options.CTF:	ave, var = avgvar_ctf(grp_imgdata, mode="a")
@@ -719,12 +719,12 @@ def main():
 			if myid == main_node:
 				print_msg("%-70s:  %.2f\n"%("Reconstructing 3D variability took [s]", time()-t6))
 				if options.VERBOSE:
-					print("Reconstruction took: %.2f [min]"%((time()-t6)/60))
+					print("Reconstruction took: %.2f [min]"%((time()-t6)//60))
 
 			if myid == main_node:
 				print_msg("%-70s:  %.2f\n"%("Total time for these computations [s]", time()-t0))
 				if options.VERBOSE:
-					print("Total time for these computations: %.2f [min]"%((time()-t0)/60))
+					print("Total time for these computations: %.2f [min]"%((time()-t0)//60))
 				print_end_msg("sx3dvariability")
 
 		from mpi import mpi_finalize

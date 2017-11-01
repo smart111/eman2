@@ -77,7 +77,7 @@ class TestCorrelationFunctions(unittest.TestCase):
 				for z in range(tz):
 					S.set_value_at(x, y, z, A.get_value_at( (x)%anx, (y)%any, (z)%anz ))
 		if center:
-			S = cyclic_shift(S, anx/2, any/2, anz/2)
+			S = cyclic_shift(S, anx//2, any//2, anz//2)
 		R = model_blank(anx, any, anz)
 		for x in range(anx):
 			for y in range(any):
@@ -89,18 +89,18 @@ class TestCorrelationFunctions(unittest.TestCase):
 								s += S.get_value_at(x+x2, y+y2, z+z2) * B.get_value_at(x2, y2, z2)
 					R.set_value_at(x, y, z, s)
 		if lag_normalization:
-			cx = anx/2
-			cy = any/2
-			cz = anz/2
+			cx = anx//2
+			cy = any//2
+			cz = anz//2
 			for x in range(anx):
 				x_center = abs(x-cx)
-				x_lag = 1 + (x_center * 1.0) / (anx - x_center)
+				x_lag = 1 + (x_center * 1.0)// (anx - x_center)
 				for y in range(any):
 					y_center = abs(y-cy)
-					y_lag = 1 + (y_center * 1.0) / (any - y_center)
+					y_lag = 1 + (y_center * 1.0)// (any - y_center)
 					for z in range(anz):
 						z_center = abs(z-cz)
-						z_lag = 1 + (z_center * 1.0) / (anz - z_center)
+						z_lag = 1 + (z_center * 1.0)// (anz - z_center)
 						R.set_value_at(x, y, z, R.get_value_at(x,y,z) * x_lag * y_lag * z_lag )
 		return R
 
@@ -115,7 +115,7 @@ class TestCorrelationFunctions(unittest.TestCase):
 		for x in range(nx):
 			for y in range(ny):
 				for z in range(nz):
-					delta = abs(A.get_value_at(x,y,z)) / 100.0 # allowed error: 1% of value
+					delta = abs(A.get_value_at(x,y,z))// 100.0 # allowed error: 1% of value
 					if delta < 0.001:
 						delta = 0.001
 					self.assertAlmostEqual(A.get_value_at(x,y,z), B.get_value_at(x,y,z), delta=delta)
@@ -155,7 +155,7 @@ class TestCorrelationFunctions(unittest.TestCase):
 		e = EMData()
 		e.set_size(nx, ny, nz)
 		e.process_inplace("testimage.tomo.objects")
-		e = cyclic_shift(e, nx/2, ny/3, nz/5)
+		e = cyclic_shift(e, nx//2, ny//3, nz//5)
 		e = mirror(e)
 		return  e
 	

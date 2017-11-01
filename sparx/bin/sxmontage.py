@@ -69,7 +69,7 @@ def write_montage_file(stack, montage_file, N, gx, gy, bg, scale, number, begin_
 	ny = data[0].get_ysize()
 	
 	K = len(data)
-	M = (K-1)/N+1
+	M = (K-1)//N+1
 	
 	NX = (nx+gx)*N
 	NY = (ny+gy)*M
@@ -97,7 +97,7 @@ def write_montage_file(stack, montage_file, N, gx, gy, bg, scale, number, begin_
 
 	for i in range(K):
 		col = i%N
-		row = M-1-i/N
+		row = M-1-i//N
 		for s in range(nx):
 			for t in range(ny):
 				v = data[i].get_value_at(s, t)

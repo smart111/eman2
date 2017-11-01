@@ -87,7 +87,7 @@ print_col(kernel,n//2)
 #a = model_gauss_noise(1.0,mx,my)
 a = model_circle(0.5,mx,my)
  
-scale = fc/0.5
+scale = fc//0.5
 print(ttime())
 #b = rsconvolution(a,kernel)
 b = a.downsample(sb, scale)

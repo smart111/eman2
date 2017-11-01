@@ -82,7 +82,7 @@ def main():
 		nx = class_data[0].get_xsize()
 		ou = options.radius
 		num_ali = options.num_ali
-		if ou == -1: ou = nx/2-2
+		if ou == -1: ou = nx//2-2
 		from utilities import model_circle, get_params2D, set_params2D
 		mask = model_circle(ou, nx, nx)
 

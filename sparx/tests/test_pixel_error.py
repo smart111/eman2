@@ -51,7 +51,7 @@ class TestMultiAlignStability(unittest.TestCase):
         from pixel_error import align_diff_params, multi_align_stability
         
         # number of images
-        N = len(a1) / 4
+        N = len(a1)// 4
         
         # ideal G matrices (we assumed that the last one always equals 0)
         alpha, sx, sy, mirror = align_diff_params(a1, a2)  # I am not sure that it is a global solution for L=2...
@@ -80,18 +80,18 @@ class TestMultiAlignStability(unittest.TestCase):
             while GT1_alpha > GT2_alpha + 180.0:
                 GT1_alpha -= 360.0
             # H matrix
-            H_alpha  = (GT1_alpha + GT2_alpha) / 2
-            H_tx     = (GT1_tx    + GT2_tx   ) / 2
-            H_ty     = (GT1_ty    + GT2_ty   ) / 2
+            H_alpha  = (GT1_alpha + GT2_alpha)// 2
+            H_tx     = (GT1_tx    + GT2_tx   )// 2
+            H_ty     = (GT1_ty    + GT2_ty   )// 2
             H_mirror = GT1.get_params("2D")["mirror"]
             self.assertEqual( H_mirror, GT2.get_params("2D")["mirror"] )
             H.append( Transform({"type":"2D","alpha":H_alpha,"tx":H_tx,"ty":H_ty,"mirror":H_mirror,"scale":1.0}) )
             #pixel error
             sum_sin = sin( GT1_alpha * pi / 180.0 ) + sin( GT2_alpha * pi / 180.0 )
             sum_cos = cos( GT1_alpha * pi / 180.0 ) + cos( GT2_alpha * pi / 180.0 )
-            var_sx = (GT1_tx - GT2_tx)**2 / 2
-            var_sy = (GT1_ty - GT2_ty)**2 / 2
-            squared_pixel_error = (d/2)**2 * (1 - sqrt(sum_sin**2 + sum_cos**2) / 2) + var_sx + var_sy
+            var_sx = (GT1_tx - GT2_tx)**2// 2
+            var_sy = (GT1_ty - GT2_ty)**2// 2
+            squared_pixel_error = (d//2)**2 * (1 - sqrt(sum_sin**2 + sum_cos**2)// 2) + var_sx + var_sy
             pixel_error.append( sqrt(squared_pixel_error) )
         
         # function being tested
@@ -125,7 +125,7 @@ class TestMultiAlignStability(unittest.TestCase):
 
     def internal_test_conf_without_mirror(self, T1, T2):
         diameters = [64]#, 75, 100, 128]
-        N = len(T1) / 3
+        N = len(T1)// 3
         a1 = []
         a2 = []
         for i in range(N):
@@ -142,7 +142,7 @@ class TestMultiAlignStability(unittest.TestCase):
 
     def internal_test_conf_with_mirror(self, T1, T2):
         diameters = [64, 75, 100, 128]
-        N = len(T1) / 3
+        N = len(T1)// 3
         a1 = []
         a2 = []
         a1m = []

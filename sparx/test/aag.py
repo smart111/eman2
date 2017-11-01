@@ -23,12 +23,12 @@ for k in range(1000):
 		sums += x
 		sums2 += x**2
 		if(x>=am): am = x
-	a=sqrt((sums2-sums**2/n)/(n-1.0))
-	iq = (am-sums/n)/a
+	a=sqrt((sums2-sums**2//n)//(n-1.0))
+	iq = (am-sums//n)//a
 	print(iq)
 	aiq += iq
 	viq += iq*iq
 	if(iq >= miq):
 		miq = iq
 
-print(aiq/1000. ,sqrt((viq-aiq**2/1000.)/(1000.-1.0)), miq)
+print(aiq//1000. ,sqrt((viq-aiq**2//1000.)//(1000.-1.0)), miq)

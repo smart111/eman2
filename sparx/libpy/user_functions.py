@@ -329,7 +329,7 @@ def ref_ali3d( ref_data ):
 	#vol = filt_btwl(vol, fl, fh)
 	stat = Util.infomask(ref_data[2], ref_data[0], False)
 	volf = ref_data[2] - stat[0]
-	Util.mul_scalar(volf, 1.0/stat[1])
+	Util.mul_scalar(volf, 1.0//stat[1])
 	#volf = threshold(volf)
 	Util.mul_img(volf, ref_data[0])
 	fl, aa = fit_tanh(ref_data[3])
@@ -416,7 +416,7 @@ def reference3( ref_data ):
 
 	stat = Util.infomask(ref_data[2], ref_data[0], False)
 	volf = ref_data[2] - stat[0]
-	Util.mul_scalar(volf, 1.0/stat[1])
+	Util.mul_scalar(volf, 1.0//stat[1])
 	volf = threshold(volf)
 	Util.mul_img(volf, ref_data[0])
 	#fl, aa = fit_tanh1(ref_data[3], 0.1)
@@ -451,7 +451,7 @@ def reference4( ref_data ):
 
 	stat = Util.infomask(ref_data[2], ref_data[0], False)
 	volf = ref_data[2] - stat[0]
-	Util.mul_scalar(volf, 1.0/stat[1])
+	Util.mul_scalar(volf, 1.0//stat[1])
 	volf = threshold(volf)
 	#Util.mul_img(volf, ref_data[0])
 	#fl, aa = fit_tanh(ref_data[3])
@@ -487,7 +487,7 @@ def ref_aliB_cone( ref_data ):
 
 	stat = Util.infomask(ref_data[2], None, True)
 	volf = ref_data[2] - stat[0]
-	Util.mul_scalar(volf, 1.0/stat[1])
+	Util.mul_scalar(volf, 1.0//stat[1])
 
 	volf = threshold(volf)
 	Util.mul_img(volf, ref_data[0])
@@ -496,7 +496,7 @@ def ref_aliB_cone( ref_data ):
 	pwem = rops_table(volf)
 	ftb = []
 	for idum in range(len(pwem)):
-		ftb.append(sqrt(ref_data[1][idum]/pwem[idum]))
+		ftb.append(sqrt(ref_data[1][idum]//pwem[idum]))
 	from filter import filt_table
 	volf = filt_table(volf, ftb)
 
@@ -508,7 +508,7 @@ def ref_aliB_cone( ref_data ):
 	volf = filt_tanl(volf, fl, aa)
 	stat = Util.infomask(volf, None, True)
 	volf -= stat[0]
-	Util.mul_scalar(volf, 1.0/stat[1])
+	Util.mul_scalar(volf, 1.0//stat[1])
 	"""
 	if(ref_data[1] == 1):
 		cs    = volf.phase_cog()
@@ -536,7 +536,7 @@ def ref_7grp( ref_data ):
 
 	stat = Util.infomask(ref_data[2], None, False)
 	volf = ref_data[2] - stat[0]
-	Util.mul_scalar(volf, 1.0/stat[1])
+	Util.mul_scalar(volf, 1.0//stat[1])
 	volf = Util.muln_img(threshold(volf), ref_data[0])
 
 	fl, aa = fit_tanh(ref_data[3])
@@ -570,12 +570,12 @@ def spruce_up( ref_data ):
 
 	stat = Util.infomask(ref_data[2], None, True)
 	volf = ref_data[2] - stat[0]
-	Util.mul_scalar(volf, 1.0/stat[1])
+	Util.mul_scalar(volf, 1.0//stat[1])
 	volf = threshold(volf)
 	# Apply B-factor
 	from filter import filt_gaussinv
 	from math import sqrt
-	B = 1.0/sqrt(2.*14.0)
+	B = 1.0//sqrt(2.*14.0)
 	volf = filt_gaussinv(volf, B, False)
 	nx = volf.get_xsize()
 	from utilities import model_circle
@@ -626,7 +626,7 @@ def spruce_up_variance( ref_data ):
 
 	stat = Util.infomask(volf, None, True)
 	volf = volf - stat[0]
-	Util.mul_scalar(volf, 1.0/stat[1])
+	Util.mul_scalar(volf, 1.0//stat[1])
 
 	from utilities import model_circle
 	nx = volf.get_xsize()
@@ -700,7 +700,7 @@ def ref_ali3dm_new( refdata ):
 			vtab = rops_table( vol[i] )
 			ftab = [None]*len(vtab)
 			for j in range(len(vtab)):
-		        	ftab[j] = sqrt( reftab[j]/vtab[j] )
+		        	ftab[j] = sqrt( reftab[j]//vtab[j] )
 			vol[i] = filt_table( vol[i], ftab )
 
 	if ali50S:
@@ -744,7 +744,7 @@ def spruce_up_var_m( refdata ):
 		volf = filt_tanl(volf, flmin, aamin)
 		stat = Util.infomask(volf, mask, True)
 		volf -= stat[0]
-		Util.mul_scalar(volf, 1.0/stat[1])
+		Util.mul_scalar(volf, 1.0//stat[1])
 
 		nx = volf.get_xsize()
 		stat = Util.infomask(volf,model_circle(nx//2-2,nx,nx,nx)-model_circle(nx//2-6,nx,nx,nx), True)
@@ -845,7 +845,7 @@ def temp_dovolume( ref_data ):
 
 	stat = Util.infomask(ref_data[2], ref_data[0], False)
 	vol = ref_data[2] - stat[0]
-	Util.mul_scalar(vol, 1.0/stat[1])
+	Util.mul_scalar(vol, 1.0//stat[1])
 	vol = threshold(vol)
 	#Util.mul_img(vol, ref_data[0])
 	try:
@@ -866,7 +866,7 @@ def temp_dovolume( ref_data ):
 		rt = read_text_file( "pwreference.txt" )
 		ro = rops_table(vol)
 		#  Here unless I am mistaken it is enough to take the beginning of the reference pw.
-		for i in range(1,len(ro)):  ro[i] = (rt[i]/ro[i])**0.5
+		for i in range(1,len(ro)):  ro[i] = (rt[i]//ro[i])**0.5
 		vol = fft( filt_table( filt_tanl(vol, fl, aa), ro) )
 		msg = "Power spectrum adjusted\n"
 		print_msg(msg)
@@ -875,7 +875,7 @@ def temp_dovolume( ref_data ):
 
 	stat = Util.infomask(vol, ref_data[0], False)
 	vol -= stat[0]
-	Util.mul_scalar(vol, 1.0/stat[1])
+	Util.mul_scalar(vol, 1.0//stat[1])
 	vol = threshold(vol)
 	vol = filt_btwl(vol, 0.38, 0.5)
 	Util.mul_img(vol, ref_data[0])
@@ -912,7 +912,7 @@ def dovolume( ref_data ):
 
 	stat = Util.infomask(ref_data[2], ref_data[0], False)
 	vol = ref_data[2] - stat[0]
-	Util.mul_scalar(vol, 1.0/stat[1])
+	Util.mul_scalar(vol, 1.0//stat[1])
 	vol = threshold(vol)
 	#Util.mul_img(vol, ref_data[0])
 	try:
@@ -933,7 +933,7 @@ def dovolume( ref_data ):
 		rt = read_text_file( "pwreference.txt" )
 		ro = rops_table(vol)
 		#  Here unless I am mistaken it is enough to take the beginning of the reference pw.
-		for i in range(1,len(ro)):  ro[i] = (rt[i]/ro[i])**0.5
+		for i in range(1,len(ro)):  ro[i] = (rt[i]//ro[i])**0.5
 		vol = fft( filt_table( filt_tanl(vol, fl, aa), ro) )
 		msg = "Power spectrum adjusted\n"
 		print_msg(msg)
@@ -942,7 +942,7 @@ def dovolume( ref_data ):
 
 	stat = Util.infomask(vol, ref_data[0], False)
 	vol -= stat[0]
-	Util.mul_scalar(vol, 1.0/stat[1])
+	Util.mul_scalar(vol, 1.0//stat[1])
 	vol = threshold(vol)
 	vol = filt_btwl(vol, 0.38, 0.5)
 	Util.mul_img(vol, ref_data[0])
@@ -1033,13 +1033,13 @@ def do_volume_mrk02(ref_data):
 			nxm = mask3D.get_xsize()
 			if( nx != nxm):
 				from fundamentals import rot_shift3D
-				mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
+				mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)//float(nxm)),nx,nx,nx)
 				nxm = mask3D.get_xsize()
 				assert(nx == nxm)
 
 		stat = Util.infomask(vol, mask3D, False)
 		vol -= stat[0]
-		Util.mul_scalar(vol, 1.0/stat[1])
+		Util.mul_scalar(vol, 1.0//stat[1])
 		vol = threshold(vol)
 		Util.mul_img(vol, mask3D)
 		if( Tracker["PWadjustment"] ):
@@ -1048,14 +1048,14 @@ def do_volume_mrk02(ref_data):
 			fftip(vol)
 			ro = rops_table(vol)
 			#  Here unless I am mistaken it is enough to take the beginning of the reference pw.
-			for i in range(1,len(ro)):  ro[i] = (rt[i]/ro[i])**Tracker["upscale"]
+			for i in range(1,len(ro)):  ro[i] = (rt[i]//ro[i])**Tracker["upscale"]
 			#write_text_file(rops_table(filt_table( vol, ro),1),"foo.txt")
 			if Tracker["constants"]["sausage"]:
 				ny = vol.get_ysize()
 				y = float(ny)
 				from math import exp
 				for i in range(len(ro)):  ro[i] *= \
-				  (1.0+1.0*exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.10)/0.025)**2)+1.0*exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.215)/0.025)**2))
+				  (1.0+1.0*exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.10)//0.025)**2)+1.0*exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.215)//0.025)**2))
 
 			if local_filter:
 				# skip low-pass filtration
@@ -1073,7 +1073,7 @@ def do_volume_mrk02(ref_data):
 				ro = [0.0]*(ny//2+2)
 				from math import exp
 				for i in range(len(ro)):  ro[i] = \
-				  (1.0+1.0*exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.10)/0.025)**2)+1.0*exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.215)/0.025)**2))
+				  (1.0+1.0*exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.10)//0.025)**2)+1.0*exp(-(((i/y/Tracker["constants"]["pixel_size"])-0.215)//0.025)**2))
 				fftip(vol)
 				filt_table(vol, ro)
 				del ro
@@ -1097,12 +1097,12 @@ def do_volume_mrk02(ref_data):
 			if(lx != nx):
 				if(lx < nx):
 					from fundamentals import fdecimate, rot_shift3D
-					mask = Util.window(rot_shift3D(mask,scale=float(lx)/float(nx)),lx,lx,lx)
+					mask = Util.window(rot_shift3D(mask,scale=float(lx)//float(nx)),lx,lx,lx)
 					vol = fdecimate(vol, lx,lx,lx)
 				else:  ERROR("local filter cannot be larger than input volume","user function",1)
 			stat = Util.infomask(vol, mask, False)
 			vol -= stat[0]
-			Util.mul_scalar(vol, 1.0/stat[1])
+			Util.mul_scalar(vol, 1.0//stat[1])
 		else:
 			lx = 0
 			locres = model_blank(1,1,1)
@@ -1130,7 +1130,7 @@ def do_volume_mrk02(ref_data):
 			#write_text_file(rops_table(vol,1),"goo.txt")
 			stat = Util.infomask(vol, mask3D, False)
 			vol -= stat[0]
-			Util.mul_scalar(vol, 1.0/stat[1])
+			Util.mul_scalar(vol, 1.0//stat[1])
 			vol = threshold(vol)
 			vol = filt_btwl(vol, 0.38, 0.5)#  This will have to be corrected.
 			Util.mul_img(vol, mask3D)
@@ -1197,7 +1197,7 @@ def do_volume_mrk03(ref_data):
 			nxm = mask3D.get_xsize()
 			if( nx != nxm ):
 				from fundamentals import rot_shift3D
-				mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
+				mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)//float(nxm)),nx,nx,nx)
 				nxm = mask3D.get_xsize()
 				assert(nx == nxm)
 
@@ -1220,12 +1220,12 @@ def do_volume_mrk03(ref_data):
 			if(lx != nx):
 				if(lx < nx):
 					from fundamentals import fdecimate, rot_shift3D
-					mask = Util.window(rot_shift3D(mask,scale=float(lx)/float(nx)),lx,lx,lx)
+					mask = Util.window(rot_shift3D(mask,scale=float(lx)//float(nx)),lx,lx,lx)
 					vol = fdecimate(vol, lx,lx,lx)
 				else:  ERROR("local filter cannot be larger than input volume","user function",1)
 			stat = Util.infomask(vol, mask, False)
 			vol -= stat[0]
-			Util.mul_scalar(vol, 1.0/stat[1])
+			Util.mul_scalar(vol, 1.0//stat[1])
 		else:
 			lx = 0
 			locres = model_blank(1,1,1)
@@ -1253,7 +1253,7 @@ def do_volume_mrk03(ref_data):
 			#write_text_file(rops_table(vol,1),"goo.txt")
 			stat = Util.infomask(vol, mask3D, False)
 			vol -= stat[0]
-			Util.mul_scalar(vol, 1.0/stat[1])
+			Util.mul_scalar(vol, 1.0//stat[1])
 			#vol = threshold(vol)
 			# vol.write_image('toto%03d.hdf'%iter)
 	# broadcast volume
@@ -1321,13 +1321,13 @@ def do_volume_mrk04(ref_data):
 			nxm = mask3D.get_xsize()
 			if( nx != nxm):
 				from fundamentals import rot_shift3D
-				mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
+				mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)//float(nxm)),nx,nx,nx)
 				nxm = mask3D.get_xsize()
 				assert(nx == nxm)
 
 		stat = Util.infomask(vol, mask3D, False)
 		vol -= stat[0]
-		Util.mul_scalar(vol, 1.0/stat[1])
+		Util.mul_scalar(vol, 1.0//stat[1])
 		vol = threshold(vol)
 		Util.mul_img(vol, mask3D)
 
@@ -1344,12 +1344,12 @@ def do_volume_mrk04(ref_data):
 			if(lx != nx):
 				if(lx < nx):
 					from fundamentals import fdecimate, rot_shift3D
-					mask = Util.window(rot_shift3D(mask,scale=float(lx)/float(nx)),lx,lx,lx)
+					mask = Util.window(rot_shift3D(mask,scale=float(lx)//float(nx)),lx,lx,lx)
 					vol = fdecimate(vol, lx,lx,lx)
 				else:  ERROR("local filter cannot be larger than input volume","user function",1)
 			stat = Util.infomask(vol, mask, False)
 			vol -= stat[0]
-			Util.mul_scalar(vol, 1.0/stat[1])
+			Util.mul_scalar(vol, 1.0//stat[1])
 		else:
 			lx = 0
 			locres = model_blank(1,1,1)
@@ -1425,13 +1425,13 @@ def do_volume_mrk05(ref_data):
 		nxm = mask3D.get_xsize()
 		if( nx != nxm):
 			from fundamentals import rot_shift3D
-			mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)/float(nxm)),nx,nx,nx)
+			mask3D = Util.window(rot_shift3D(mask3D,scale=float(nx)//float(nxm)),nx,nx,nx)
 			nxm = mask3D.get_xsize()
 			assert(nx == nxm)
 
 	stat = Util.infomask(vol, mask3D, False)
 	vol -= stat[0]
-	Util.mul_scalar(vol, 1.0/stat[1])
+	Util.mul_scalar(vol, 1.0//stat[1])
 	
 	#=========================================================================
 	return Util.muln_img(vol, mask3D)#, vol

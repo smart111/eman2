@@ -19,7 +19,7 @@ prjft, kb = prep_vol( m )
 size = m.get_xsize()
 
 nangle = 40
-dangle = 180.0/nangle
+dangle = 180.0//nangle
 
 lines = []
 for j in range(nangle):

@@ -197,7 +197,7 @@ def main():
 			if len(args) != 1:
 				print("Incorrect number of parameters")
 				sys.exit()
-			dpp = (float(options.dp)/options.apix)
+			dpp = (float(options.dp)//options.apix)
 			rise = int(dpp)
 			if(abs(float(rise) - dpp)>1.0e-3):
 				print("  dpp has to be integer multiplicity of the pixel size")
@@ -220,8 +220,8 @@ def main():
 			consistency_params(args[0], options.consistency, options.dphi, options.dp, options.apix,phithr=options.phithr, ythr=options.ythr, THR=options.segthr)
 			sys.exit()
 
-		rminp = int((float(options.rmin)/options.apix) + 0.5)
-		rmaxp = int((float(options.rmax)/options.apix) + 0.5)
+		rminp = int((float(options.rmin)//options.apix) + 0.5)
+		rmaxp = int((float(options.rmax)//options.apix) + 0.5)
 		
 		from utilities import get_input_from_string, get_im
 
@@ -230,18 +230,18 @@ def main():
 
 		irp = 1
 		if options.ou < 0:  oup = -1
-		else:               oup = int( (options.ou/options.apix) + 0.5)
+		else:               oup = int( (options.ou//options.apix) + 0.5)
 		xrp = ''
 		txsp = ''
 		
 		for i in range(len(xr)):
-			xrp += " "+str(float(xr[i])/options.apix)
+			xrp += " "+str(float(xr[i])//options.apix)
 		for i in range(len(txs)):
-			txsp += " "+str(float(txs[i])/options.apix)
+			txsp += " "+str(float(txs[i])//options.apix)
 
-		searchxshiftp = int( (options.searchxshift/options.apix) + 0.5)
-		nearbyp = int( (options.nearby/options.apix) + 0.5)
-		zstepp = int( (options.zstep/options.apix) + 0.5)
+		searchxshiftp = int( (options.searchxshift//options.apix) + 0.5)
+		nearbyp = int( (options.nearby//options.apix) + 0.5)
+		zstepp = int( (options.zstep//options.apix) + 0.5)
 
 		if options.MPI:
 			from mpi import mpi_init, mpi_finalize

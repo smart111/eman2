@@ -61,7 +61,7 @@ if os.path.exists(stack2):  os.system('rm  '+stack2)
 sx=0
 sy=0
 
-ast = 720/nangles
+ast = 720//nangles
 apsi=-ast
 for i in range(nangles):
 	apsi += ast

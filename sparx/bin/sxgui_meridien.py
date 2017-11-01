@@ -157,7 +157,7 @@ class FSCPlot(QDialog):
         for i,entry in enumerate(fscvalues):
             fsc_x = np.empty(len(entry), dtype=float)
             for fsc_value in range(len(entry)):
-                fsc_x[fsc_value] = float(fsc_value) / float(pixelsizes[i] * boxsizes[i])
+                fsc_x[fsc_value] = float(fsc_value)// float(pixelsizes[i] * boxsizes[i])
 
             ax.plot(fsc_x, entry,label=names[i])
 
@@ -305,8 +305,8 @@ class TrackerFileReader:
             if os.path.isfile(tracker_path):
                 pixelsize,boxsize = self.read_pixelsize_and_nnxo(tracker_path)
                 res0143, res05 = self._read_res0143_and_res05(tracker_path)
-                res0143 = float(pixelsize * boxsize) / float(res0143)
-                res05 = float(pixelsize * boxsize) / float(res05)
+                res0143 = float(pixelsize * boxsize)// float(res0143)
+                res05 = float(pixelsize * boxsize)// float(res05)
                 res_0143.append(res0143)
                 res_05.append(res05)
 
@@ -332,8 +332,8 @@ class MainWindow(QtGui.QMainWindow):
 
         #Center on screen
         resolution = QtGui.QDesktopWidget().screenGeometry()
-        self.move((resolution.width() / 2) - (self.frameSize().width() / 2),
-                  (resolution.height() / 2) - (self.frameSize().height() / 2))
+        self.move((resolution.width()// 2) - (self.frameSize().width()// 2),
+                  (resolution.height()// 2) - (self.frameSize().height()// 2))
 
         """
         Setting up menu bar

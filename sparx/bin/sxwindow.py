@@ -590,9 +590,9 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 					dummy_cter_entry[idx_cter_cv_def]       = 0.0
 					dummy_cter_entry[idx_cter_cv_astig_amp] = 0.0
 					dummy_cter_entry[idx_cter_spectra_diff] = 0.0
-					dummy_cter_entry[idx_cter_error_def]    = 0.5/dummy_cter_entry[idx_cter_apix] # Set to Nyquist frequency
-					dummy_cter_entry[idx_cter_error_astig]  = 0.5/dummy_cter_entry[idx_cter_apix] # Set to Nyquist frequency
-					dummy_cter_entry[idx_cter_error_ctf]    = 0.5/dummy_cter_entry[idx_cter_apix] # Set to Nyquist frequency
+					dummy_cter_entry[idx_cter_error_def]    = 0.5//dummy_cter_entry[idx_cter_apix] # Set to Nyquist frequency
+					dummy_cter_entry[idx_cter_error_astig]  = 0.5//dummy_cter_entry[idx_cter_apix] # Set to Nyquist frequency
+					dummy_cter_entry[idx_cter_error_ctf]    = 0.5//dummy_cter_entry[idx_cter_apix] # Set to Nyquist frequency
 					dummy_cter_entry[idx_cter_mic_path]     = ""
 		
 					assert (not subkey_cter_entry in mic_id_entry)
@@ -763,7 +763,7 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 	if my_mpi_proc_id == main_mpi_proc:
 		print(" ")
 		print("Micrographs processed by main process (including percent of progress):")
-		progress_percent_step = len(valid_mic_id_substr_list)/100.0 # the number of micrograms for main node divided by 100
+		progress_percent_step = len(valid_mic_id_substr_list)//100.0 # the number of micrograms for main node divided by 100
 	
 	# ------------------------------------------------------------------------------------
 	# Starting main parallel execution
@@ -776,7 +776,7 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 		mic_basename = global_entry_dict[mic_id_substr][subkey_selected_mic_basename]
 		assert (mic_basename == mic_basename_pattern.replace("*", mic_id_substr))
 		if my_mpi_proc_id == main_mpi_proc:
-			print("%s ---> % 2.2f%%" % (mic_basename, mic_id_substr_idx / progress_percent_step))
+			print("%s ---> % 2.2f%%" % (mic_basename, mic_id_substr_idx// progress_percent_step))
 		
 		# --------------------------------------------------------------------------------
 		# Read the associated coordinates according to the specified format and 
@@ -802,7 +802,7 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 		if resample_ratio < 1.0:
 			assert (resample_ratio > 0.0)
 			# store the resampled pixel size to the cter_entry to generate CTF object of this micrograph
-			cter_entry[idx_cter_apix] = src_pixel_size / resample_ratio
+			cter_entry[idx_cter_apix] = src_pixel_size// resample_ratio
 			if my_mpi_proc_id == main_mpi_proc:
 				print("Resample micrograph to pixel size %6.4f [A/Pixels] from %6.4f [A/Pixels] and window segments from resampled micrograph." % (cter_entry[idx_cter_apix], src_pixel_size))
 		# else:
@@ -859,7 +859,7 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 				abs_ctf_limit = resample_ratio * abs_ctf_limit / float(box_size)
 			else:
 				assert (resample_ratio == 1.0) # -> src_pixel_size == resampled_pixel_size -> src_pixel_size / resampled_pixel_size == 1.0
-				abs_ctf_limit = abs_ctf_limit / float(box_size)
+				abs_ctf_limit = abs_ctf_limit// float(box_size)
 			
 			# If ctf limit is lower than Nyquist frequency, apply the low pass filter with the cutoff at CTF limit frequencye.
 			if abs_ctf_limit < 0.5:
@@ -871,7 +871,7 @@ For negative staining data, set the pixel size [A/Pixels] as the source of CTF p
 		# Cut off frequency components lower than one that the (resampled) box size can express.
 		# Then, move back to the real space processing
 		# --------------------------------------------------------------------------------
-		mic_img = fft(filt_gaussh(mic_img, resample_ratio / box_size))
+		mic_img = fft(filt_gaussh(mic_img, resample_ratio// box_size))
 		
 		# --------------------------------------------------------------------------------
 		# Resample micrograph, map coordinates, and window segments from resampled micrograph using new coordinates

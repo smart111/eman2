@@ -55,7 +55,7 @@ sy=0
 ee=model_gauss_noise(1.0,256,256)
 
 for i in range(0,400+1):
-      a=i/100.0
+      a=i//100.0
       o = rtshg(ee,a,sx,sy)
 
 

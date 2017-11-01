@@ -96,7 +96,7 @@ for iter in range(20):
 		temp = rtshgkb(data[im], psi, sx, sy, kb)
 		if  mirror: temp = temp.process("mirror",{"axis":'x'})
 		#  Subtract current image from the average
-		refim = tave - temp/nima
+		refim = tave - temp//nima
 		stuff.append(refim)  # curent ave-1
 		stuff.append(data[im])  # curent image
 		# perform amoeba alignment
@@ -110,7 +110,7 @@ for iter in range(20):
 		temp = rtshgkb(data[im], outparams[0][0], outparams[0][1], outparams[0][2], kb)
 		if  mirror: temp = temp.process("mirror",{"axis":'x'})
 		#  Subtract current image from the average
-		tave = refim + temp/nima
+		tave = refim + temp//nima
 		print(im,tave.cmp("dot", tave, {"negative":0,"mask":mask}),params,outparams[0],outparams[2])
 
 	# calculate total average using current alignment parameters
