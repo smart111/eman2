@@ -156,7 +156,7 @@ as not all elements are computed.
 			im=EMData(cm,0,False,Region(0,y,nx,1))
 			im2=im.copy()										# here we make a copy with the max value-> zero. Used with 2-stage classification to get a better sigma
 			im2.add(-im2["maximum"])
-			try : Z=(im["mean"]-im["minimum"])/im2["sigma_nonzero"]
+			try : Z=(im["mean"]-im["minimum"])//im2["sigma_nonzero"]
 			except: Z=0
 			Zs.append(Z)
 			Q=im["minimum"]
@@ -250,7 +250,7 @@ as not all elements are computed.
 				nsnr=len(snr)
 				# This gives integrated radial weighted SSNR over 3 resolution ranges
 #				out.write("%1.3g\t%1.3g\t%1.3g\t"%(sum(snrw[1:nsnr/8])/(nsnr/8),sum(snrw[nsnr/16:nsnr/3])/(nsnr/3-nsnr/16),sum(snrw[nsnr/3:nsnr*2/3])/(nsnr*2/3-nsnr/3)));
-				out.write("%1.3g\t%1.3g\t%1.3g # %d;%s"%(sum(snr[3:nsnr/6])/(nsnr/6-3),sum(snr[nsnr/8:nsnr/3])/(nsnr/3-nsnr/8),sum(snr[nsnr/3:nsnr*2/3])/(nsnr*2/3-nsnr/3),y,options.inimgs));
+				out.write("%1.3g\t%1.3g\t%1.3g # %d;%s"%(sum(snr[3:nsnr//6])//(nsnr//6-3),sum(snr[nsnr//8:nsnr//3])//(nsnr//3-nsnr//8),sum(snr[nsnr//3:nsnr*2/3])//(nsnr*2/3-nsnr//3),y,options.inimgs));
 				if y==0:
 					outkey.write( "%d - defocus\n"%(colh))
 					colh+=1
@@ -288,8 +288,8 @@ as not all elements are computed.
 	# we convert the output we just generated to an image file for other potential analysis techniques
 	import numpy
 	ary=numpy.loadtxt(options.output).transpose()[1:]		# load the entire text file, rotate so we can manipulate columns, and throw away the row number column
-	for i in angcols: ary[i-1]*=pi/180.0					# convert angles to radians to better match scale of other parameters
-	ary[colbfac-1]=numpy.sqrt(ary[colbfac-1])/100.0				# B-factor -> sqrt(B)/100.0
+	for i in angcols: ary[i-1]*=pi//180.0					# convert angles to radians to better match scale of other parameters
+	ary[colbfac-1]=numpy.sqrt(ary[colbfac-1])//100.0				# B-factor -> sqrt(B)/100.0
 	print(ncols)
 	print(max(ary[ncols[0]-1]))
 	for i in ncols: ary[i-1]/=max(ary[i-1])					# class numbers -> 0-1 range

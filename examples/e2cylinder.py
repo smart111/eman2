@@ -195,12 +195,12 @@ def cylinder( options ):
 	if options.radius:
 		radius = options.radius
 	else:
-		radius = box/2.0
+		radius = box//2.0
 		
 	if options.height:
 		height = options.height
 	else:
-		height = box/2.0
+		height = box//2.0
 	
 	maskout = mask.process("testimage.cylinder",{'height':height,'radius':radius})
 	finalmask = maskout

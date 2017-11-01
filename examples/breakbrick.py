@@ -59,7 +59,7 @@ class EMBreakBrick(EMImage2DWidget):
 		self.bar_len=minxy*.1
 		self.bar_ypos=-self.sy*.2
 		self.bar_thick=20
-		self.bar_xpos=self.sx/2
+		self.bar_xpos=self.sx//2
 		self.bar=EMShape()
 		self.barspeed=0.02*minxy
 		
@@ -160,7 +160,7 @@ class EMBreakBrick(EMImage2DWidget):
 				self.ball_vec=np.array([self.ball_speed*np.cos(self.ball_ori),self.ball_speed*np.sin(self.ball_ori)])
 				
 				self.del_msk.to_one()
-				self.del_msk.process_inplace("mask.soft", {"dx":p[0]-self.sx/2, "dy": p[1]-self.sy/2, "outer_radius":30})
+				self.del_msk.process_inplace("mask.soft", {"dx":p[0]-self.sx//2, "dy": p[1]-self.sy//2, "outer_radius":30})
 				delimg=self.data*self.del_msk
 				delval=delimg["mean"]*self.sx*self.sy
 				self.score+=delval

@@ -276,7 +276,7 @@ def fixlines(inlines):
 
 def normalize(data):
 	dminusmin = [d-min(data) for d in data]
-	dminusminovermax = [d/max(dminusmin) for d in dminusmin]
+	dminusminovermax = [d//max(dminusmin) for d in dminusmin]
 
 	return dminusminovermax
 

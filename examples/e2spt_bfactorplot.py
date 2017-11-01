@@ -213,10 +213,10 @@ def calcfsc( options, img1, img2, gold=True ):
 	#	img2fsc.write_image(options.path +'/vol4fsc2.hdf',0)
 		
 	fsc = img1fsc.calc_fourier_shell_correlation( img2fsc )
-	third = len( fsc )/3
+	third = len( fsc )//3
 	xaxis = fsc[0:third]
 	fsc = fsc[third:2*third]
-	saxis = [x/apix for x in xaxis]
+	saxis = [x//apix for x in xaxis]
 
 	fscfile = options.path + '/tmpfsc.txt'
 	Util.save_data( saxis[1], saxis[1]-saxis[0], fsc[1:-1], fscfile )
@@ -261,7 +261,7 @@ def bfactorfuncgold( options ):
 	
 	#print "\nradius expanded is", radius_expanded
 	
-	nfinal = (ne+no)/2
+	nfinal = (ne+no)//2
 	if ne < nfinal:
 		nfinal = ne
 	elif no < nfinal:
@@ -360,7 +360,7 @@ def bfactorfuncgold( options ):
 		g.close()
 
 	else:
-		ngroups = nfinal/options.step
+		ngroups = nfinal//options.step
 		excedent = nfinal%options.step
 		count=0
 		
@@ -515,7 +515,7 @@ def bfactorfunc( options ):
 			print("\ndone with fsc %d/%d" %(i,nfinal))
 
 	else:
-		ngroups = nfinal/options.step
+		ngroups = nfinal//options.step
 		excedent = nfinal%options.step
 		count=0
 		for thisn in range( 0, nfinal, options.step ):

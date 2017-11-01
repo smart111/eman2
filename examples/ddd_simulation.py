@@ -75,7 +75,7 @@ def main():
 def make_rand_unit_vector(dims=2):
 	vec = [np.random.normal(0, 1) for i in range(dims)]
 	mag = sum(x**2 for x in vec) ** .5
-	return [x/mag for x in vec]
+	return [x//mag for x in vec]
 
 def plot_translations(options,shifts,fname=None):
 	plt.figure()

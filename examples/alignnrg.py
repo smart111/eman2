@@ -110,7 +110,7 @@ for ta in arange(da-5,da+5,0.01):
 
 outf=open("nrg.txt","w")
 for i in range(len(out1[0])):
-	outf.write("%d\t%f\t%f\t%f\n"%(i-len(out1[0])/2,out1[0][i],out1[1][i],out1[2][i]))
+	outf.write("%d\t%f\t%f\t%f\n"%(i-len(out1[0])//2,out1[0][i],out1[1][i],out1[2][i]))
 outf.close()
 
 plot(out1[0],out1[1],out1[2])

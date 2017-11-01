@@ -92,7 +92,7 @@ def main():
 	for ii in range(1):
 		newhlx=0
 		hlx=atoms.fit_helix(mrc,options.lenthr,options.denthr,eg,options.dirs,options.minlen)
-		for i in range(len(hlx)/8):
+		for i in range(len(hlx)//8):
 			h=[hlx[i*8+2],hlx[i*8+3],hlx[i*8+4],hlx[i*8+5],hlx[i*8+6],hlx[i*8+7]]
 			mindist=min(np.sum((allhlx-h)*(allhlx-h),axis=1))
 			print(h,mindist)
@@ -115,7 +115,7 @@ def main():
 		l1=p2-p1
 		l2=p2-p3
 		#print l1.length(),l2.length(),i,
-		a=(l1.dot(l2))/(l1.length()*l2.length())
+		a=(l1.dot(l2))//(l1.length()*l2.length())
 		a=min(a,1)
 		a=max(a,-1)
 		#print a,

@@ -430,7 +430,7 @@ def unbinned_extractor(options,x,y,z,tomogram,coordindx=None):
 	#	print "The actual coordinates used for extraction are", x, y, z
 
 	#print "defining region"
-	r = Region((2*x-boxsize)/2,(2*y-boxsize)/2, (2*z-boxsize)/2, boxsize, boxsize, boxsize)
+	r = Region((2*x-boxsize)//2,(2*y-boxsize)//2, (2*z-boxsize)//2, boxsize, boxsize, boxsize)
 	#print "r",r
 	e = EMData()
 	e.read_image(tomogram,0,False,r)
@@ -498,7 +498,7 @@ def unbinned_extractor(options,x,y,z,tomogram,coordindx=None):
 			z = z - tz
 			if options.verbose : print("Thus the new ones are", x, y, z)
 
-			r = Region((2*x - boxsize)/2,(2*y - boxsize)/2, (2*z - boxsize)/2, boxsize, boxsize, boxsize)
+			r = Region((2*x - boxsize)//2,(2*y - boxsize)//2, (2*z - boxsize)//2, boxsize, boxsize, boxsize)
 			e = EMData()
 			e.read_image(tomogram,0,False,r)
 
@@ -799,7 +799,7 @@ def commandline_tomoboxer(tomogram,options):
 			nameprjs = options.output.replace('.hdf','__prjsz.hdf')
 			os.rename('sptboxer_dummy_prjs.hdf',nameprjs)
 
-		radius = options.boxsize/4.0	#the particle's diameter is boxsize/2
+		radius = options.boxsize//4.0	#the particle's diameter is boxsize/2
 		
 		#if options.cshrink:
 		#	radius /= options.cshrink
@@ -1150,7 +1150,7 @@ def sptboxergui(options,args):
 				return
 
 			if self.wfilt.getValue()>4 :
-				self.fdata=self.data.process("filter.lowpass.gauss",{"cutoff_freq":1.0/self.wfilt.getValue(),"apix":self.data['apix_x']}) #JESUS
+				self.fdata=self.data.process("filter.lowpass.gauss",{"cutoff_freq":1.0//self.wfilt.getValue(),"apix":self.data['apix_x']}) #JESUS
 
 			xyd=self.fdata.process("misc.directional_sum",{"axis":"z"})
 			xzd=self.fdata.process("misc.directional_sum",{"axis":"y"})
@@ -1370,7 +1370,7 @@ def sptboxergui(options,args):
 			self.boxes=[]
 			self.curbox=-1
 
-			self.wdepth.setValue(self.datasize[2]/2)
+			self.wdepth.setValue(self.datasize[2]//2)
 			self.update_all()
 
 		def set_data(self,data):
@@ -1394,7 +1394,7 @@ def sptboxergui(options,args):
 			self.boxes=[]
 			self.curbox=-1
 
-			self.wdepth.setValue(self.datasize[2]/2)
+			self.wdepth.setValue(self.datasize[2]//2)
 			self.update_all()
 
 		def get_cube(self,x,y,z):
@@ -1403,13 +1403,13 @@ def sptboxergui(options,args):
 
 			if self.yshort:
 				if self.data!=None:
-					r=self.data.get_clip(Region(x-bs/2,z-bs/2,y-bs/2,bs,bs,bs))
+					r=self.data.get_clip(Region(x-bs//2,z-bs//2,y-bs//2,bs,bs,bs))
 					if options.normproc:
 						r.process_inplace(options.normproc)
 					r.process_inplace("xform",{"transform":Transform({"type":"eman","alt":90.0})})
 					r.process_inplace("xform.mirror",{"axis":"z"})
 				elif self.datafile!=None:
-					r=EMData(self.datafile,0,0,Region(x-bs/2,z-bs/2,y-bs/2,bs,bs,bs))
+					r=EMData(self.datafile,0,0,Region(x-bs//2,z-bs//2,y-bs//2,bs,bs,bs))
 					if options.normproc:
 						r.process_inplace(options.normproc)
 					r.process_inplace("xform",{"transform":Transform({"type":"eman","alt":90.0})})
@@ -1418,9 +1418,9 @@ def sptboxergui(options,args):
 
 			else :
 				if self.data!=None:
-					r=self.data.get_clip(Region(x-bs/2,y-bs/2,z-bs/2,bs,bs,bs))
+					r=self.data.get_clip(Region(x-bs//2,y-bs//2,z-bs//2,bs,bs,bs))
 				elif self.datafile!=None:
-					r=EMData(self.datafile,0,0,Region(x-bs/2,y-bs/2,z-bs/2,bs,bs,bs))
+					r=EMData(self.datafile,0,0,Region(x-bs//2,y-bs//2,z-bs//2,bs,bs,bs))
 				else: return None
 
 			if self.apix!=0 :
@@ -1572,7 +1572,7 @@ def sptboxergui(options,args):
 			f=open(fsp,"r")
 			if options.helixboxer:
 				for b in f:
-					b2=[int(float(i))/self.shrink for i in b.split()[:6]]
+					b2=[int(float(i))//self.shrink for i in b.split()[:6]]
 					self.boxes.append(self.load_box_yshort(b2[3:6]))
 					self.update_box(len(self.boxes)-1)
 					self.helixboxes.append(b2)
@@ -1581,7 +1581,7 @@ def sptboxergui(options,args):
 					self.update_box(len(self.boxes)-1)
 			else:
 				for b in f:
-					b2=[int(float(i))/self.shrink for i in b.split()[:3]]
+					b2=[int(float(i))//self.shrink for i in b.split()[:3]]
 					self.boxes.append(b2)
 					self.update_box(len(self.boxes)-1)
 			f.close()
@@ -1758,7 +1758,7 @@ def sptboxergui(options,args):
 			y2 = round(helixbox[4]*cshrink)
 			z2 = round(helixbox[5]*cshrink)
 
-			bs=self.boxsize()/2
+			bs=self.boxsize()//2
 			# Get the extended vector based on boxsize
 			a = Vec3f((x2-x1), (y2-y1), (z2-z1))	# Find the a, the long vector
 			tcs = self.get_box_coord_system([x1,y1,z1,x2,y2,z2])							# Get the local coord system
@@ -1772,7 +1772,7 @@ def sptboxergui(options,args):
 			e.read_image(tomogram,0,False,r)
 			e.set_attr("source_path", tomogram)
 			e["ptcl_source_image"]=tomogram
-			e["ptcl_source_coord"]=((rvmin[0]+rvmax[0])/2,(rvmin[1]+rvmax[1])/2,(rvmin[2]+rvmax[2])/2)
+			e["ptcl_source_coord"]=((rvmin[0]+rvmax[0])//2,(rvmin[1]+rvmax[1])//2,(rvmin[2]+rvmax[2])//2)
 			# Next adjust the transform matrix to move it to the origin
 			origin = self.transform_coords([0,0,0], tcs)
 			tcs.set_trans(origin[0] - rvmin[0], origin[1] - rvmin[1], origin[2] - rvmin[2])
@@ -1795,8 +1795,8 @@ def sptboxergui(options,args):
 				return
 
 			if self.curbox==-1 :
-				x=self.datasize[0]/2
-				y=self.datasize[1]/2
+				x=self.datasize[0]//2
+				y=self.datasize[1]//2
 				z=0
 			else:
 				x,y,z=self.boxes[self.curbox][:3]
@@ -1813,17 +1813,17 @@ def sptboxergui(options,args):
 						if i + 1 >= len(self.boxes):
 							break
 						#if abs(self.boxes[i][1] - zc) < bs/2 or abs(self.boxes[i+1][2] - zc) < bs/2:
-						if (self.boxes[i][1]<self.cury+bs/2 and self.boxes[i][1]>self.cury-bs/2) or (self.boxes[i+1][1]<self.cury+bs/2 and self.boxes[i+1][1]>self.cury-bs/2):
+						if (self.boxes[i][1]<self.cury+bs//2 and self.boxes[i][1]>self.cury-bs//2) or (self.boxes[i+1][1]<self.cury+bs//2 and self.boxes[i+1][1]>self.cury-bs//2):
 							xzs[i][0]="rect"
-							xzs[str(i/2)+"helix"][0]="line"
+							xzs[str(i//2)+"helix"][0]="line"
 							xzs[i+1][0]="rect"
 						else:
 							xzs[i][0]="hidden"
-							xzs[str(i/2)+"helix"][0]="hidden"
+							xzs[str(i//2)+"helix"][0]="hidden"
 							xzs[i+1][0]="hidden"
 				else:
 						for i in range(len(self.boxes)):
-							if self.boxes[i][1]<self.cury+bs/2 and self.boxes[i][1]>self.cury-bs/2:
+							if self.boxes[i][1]<self.cury+bs//2 and self.boxes[i][1]>self.cury-bs//2:
 								xzs[i][0]="rect"
 							else:
 								xzs[i][0]="hidden"
@@ -1833,17 +1833,17 @@ def sptboxergui(options,args):
 					for i in range(0, len(self.boxes), 2):
 						if i + 1 >= len(self.boxes):
 							break
-						if (self.boxes[i][0]<self.curx+bs/2 and self.boxes[i][0]>self.curx-bs/2) or (self.boxes[i+1][0]<self.curx+bs/2 and self.boxes[i+1][0]>self.curx-bs/2):
+						if (self.boxes[i][0]<self.curx+bs//2 and self.boxes[i][0]>self.curx-bs//2) or (self.boxes[i+1][0]<self.curx+bs//2 and self.boxes[i+1][0]>self.curx-bs//2):
 							zys[i][0]="rect"
-							zys[str(i/2)+"helix"][0]="line"
+							zys[str(i//2)+"helix"][0]="line"
 							zys[i+1][0]="rect"
 						else:
 							zys[i][0]="hidden"
-							zys[str(i/2)+"helix"][0]="hidden"
+							zys[str(i//2)+"helix"][0]="hidden"
 							zys[i+1][0]="hidden"
 				else:
 					for i in range(len(self.boxes)):
-						if self.boxes[i][0]<self.curx+bs/2 and self.boxes[i][0]>self.curx-bs/2:
+						if self.boxes[i][0]<self.curx+bs//2 and self.boxes[i][0]>self.curx-bs//2:
 							zys[i][0]="rect"
 						else:
 							zys[i][0]="hidden"
@@ -1855,10 +1855,10 @@ def sptboxergui(options,args):
 						if i + 1 >= len(self.boxes):
 							break
 						xzs[i][0]="rect"
-						xzs[str(i/2)+"helix"][0]="line"
+						xzs[str(i//2)+"helix"][0]="line"
 						xzs[i+1][0]="rect"
 						zys[i][0]="rect"
-						zys[str(i/2)+"helix"][0]="line"
+						zys[str(i//2)+"helix"][0]="line"
 						zys[i+1][0]="rect"
 				else:
 					for i in range(len(self.boxes)):
@@ -1871,7 +1871,7 @@ def sptboxergui(options,args):
 			# yz
 			avgr=self.get_averager()
 
-			for x in range(x-self.nlayers()/2,x+(self.nlayers()+1)/2):
+			for x in range(x-self.nlayers()//2,x+(self.nlayers()+1)//2):
 				slc=self.get_slice(x,0)
 				avgr.add_image(slc)
 
@@ -1880,20 +1880,20 @@ def sptboxergui(options,args):
 				av.process_inplace("xform.transpose")
 
 			if self.wfilt.getValue()!=0.0:
-				av.process_inplace("filter.lowpass.gauss",{"cutoff_freq":1.0/self.wfilt.getValue(),"apix":self.apix})
+				av.process_inplace("filter.lowpass.gauss",{"cutoff_freq":1.0//self.wfilt.getValue(),"apix":self.apix})
 
 			self.zyview.set_data(av)
 
 			# xz
 			avgr=self.get_averager()
 
-			for y in range(y-self.nlayers()/2,y+(self.nlayers()+1)/2):
+			for y in range(y-self.nlayers()//2,y+(self.nlayers()+1)//2):
 				slc=self.get_slice(y,1)
 				avgr.add_image(slc)
 
 			av=avgr.finish()
 			if self.wfilt.getValue()!=0.0:
-				av.process_inplace("filter.lowpass.gauss",{"cutoff_freq":1.0/self.wfilt.getValue(),"apix":self.apix})
+				av.process_inplace("filter.lowpass.gauss",{"cutoff_freq":1.0//self.wfilt.getValue(),"apix":self.apix})
 
 			self.xzview.set_data(av)
 
@@ -1919,19 +1919,19 @@ def sptboxergui(options,args):
 					for i in range(0, len(self.boxes), 2):
 						if i + 1 >= len(self.boxes):
 							break
-						if abs(self.boxes[i][2] - zc) < bs/2 or abs(self.boxes[i+1][2] - zc) < bs/2:
+						if abs(self.boxes[i][2] - zc) < bs//2 or abs(self.boxes[i+1][2] - zc) < bs//2:
 							xys[i][0]="rect"
-							xys[str(i/2)+"helix"][0]="line"
+							xys[str(i//2)+"helix"][0]="line"
 							xys[i+1][0]="rect"
 						else:
 							xys[i][0]="hidden"
-							xys[str(i/2)+"helix"][0]="hidden"
+							xys[str(i//2)+"helix"][0]="hidden"
 							xys[i+1][0]="hidden"
 				else:
 					for i in range(len(self.boxes)):
 						#print "the z coord of box %d is %d" %(i,self.boxes[i][2])
 						#print "therefore the criteria to determine whether to display it is", abs(self.boxes[i][2] - zc)
-						if abs(self.boxes[i][2] - zc) < bs/2:
+						if abs(self.boxes[i][2] - zc) < bs//2:
 							#print "Which is less than half the box thus it survives"
 							xys[i][0]="rect"
 						else :
@@ -1947,7 +1947,7 @@ def sptboxergui(options,args):
 				avgr=Averagers.get("mean")
 
 			slc=EMData()
-			for z in range(self.wdepth.value()-self.nlayers()/2,self.wdepth.value()+(self.nlayers()+1)/2):
+			for z in range(self.wdepth.value()-self.nlayers()//2,self.wdepth.value()+(self.nlayers()+1)//2):
 				slc=self.get_slice(z,2)
 				avgr.add_image(slc)
 
@@ -1957,7 +1957,7 @@ def sptboxergui(options,args):
 
 			if self.wfilt.getValue()!=0.0:
 
-				av.process_inplace("filter.lowpass.gauss",{"cutoff_freq":1.0/self.wfilt.getValue(),"apix":self.apix})
+				av.process_inplace("filter.lowpass.gauss",{"cutoff_freq":1.0//self.wfilt.getValue(),"apix":self.apix})
 			self.xyview.set_data(av)
 
 		def update_all(self):
@@ -1983,9 +1983,9 @@ def sptboxergui(options,args):
 		def inside_box(self,n,x=-1,y=-1,z=-1):
 			"""Checks to see if a point in image coordinates is inside box number n. If any value is negative, it will not be checked."""
 			box=self.boxes[n]
-			if x>=0 and (x<box[0]-self.boxsize()/2 or x>box[0]+self.boxsize()/2) : return False
-			if y>=0 and (y<box[1]-self.boxsize()/2 or y>box[1]+self.boxsize()/2) : return False
-			if z>=0 and (z<box[2]-self.boxsize()/2 or z>box[2]+self.boxsize()/2) : return False
+			if x>=0 and (x<box[0]-self.boxsize()//2 or x>box[0]+self.boxsize()//2) : return False
+			if y>=0 and (y<box[1]-self.boxsize()//2 or y>box[1]+self.boxsize()//2) : return False
+			if z>=0 and (z<box[2]-self.boxsize()//2 or z>box[2]+self.boxsize()//2) : return False
 			return True
 
 		def do_deletion(self, n, delimgs=True):
@@ -2046,11 +2046,11 @@ def sptboxergui(options,args):
 					self.do_deletion(n, delimgs=False)
 				else:								# Delete box pairs
 					if n % 2:
-						self.do_helix_deletion(int(n/2))
+						self.do_helix_deletion(int(n//2))
 						self.do_deletion(n, delimgs=False)
 						self.do_deletion(n-1, delimgs=False)
 					else:
-						self.do_helix_deletion(int(n/2))
+						self.do_helix_deletion(int(n//2))
 						self.do_deletion(n+1, delimgs=False)
 						self.do_deletion(n, delimgs=False)
 					return "DELHELIX"	# If we have deleted a pair do not reset the pair toggle/counter
@@ -2145,7 +2145,7 @@ def sptboxergui(options,args):
 				box=self.boxes[n]
 			except IndexError:
 				return
-			bs2=self.boxsize()/2
+			bs2=self.boxsize()//2
 
 			#if self.curbox!=n :
 				#self.xzview.scroll_to(None,box[2])
@@ -2231,7 +2231,7 @@ def sptboxergui(options,args):
 						if self.del_box(i) != "DELHELIX": self.firsthbclick = None
 					else:
 						self.xydown=(i,x,y,self.boxes[i][0],self.boxes[i][1])
-						if options.helixboxer: self.update_helixbox(int(i/2))
+						if options.helixboxer: self.update_helixbox(int(i//2))
 						self.update_box(i)
 					break
 			else:
@@ -2265,14 +2265,14 @@ def sptboxergui(options,args):
 			dy=y-self.xydown[2]
 			if options.helixboxer:
 				if len(self.boxes) % 2 == 0 or (self.xydown[0] != len(self.boxes)-1):	# Only update the helix boxer if it is paired, otherwise treat it as a regular box
-					hb = self.helixboxes[int(self.xydown[0]/2)]
+					hb = self.helixboxes[int(self.xydown[0]//2)]
 					if self.xydown[0] % 2 == 0:
 						hb[3] = dx+self.xydown[3]
 						hb[4] = dy+self.xydown[4]
 					else:
 						hb[0] = dx+self.xydown[3]
 						hb[1] = dy+self.xydown[4]
-					self.update_helixbox(int(self.xydown[0]/2))
+					self.update_helixbox(int(self.xydown[0]//2))
 				else:
 					self.firsthbclick[0] = x
 					self.firsthbclick[1] = y
@@ -2322,7 +2322,7 @@ def sptboxergui(options,args):
 						if self.del_box(i) != "DELHELIX": self.firsthbclick = None
 					else :
 						self.xzdown=(i,x,z,self.boxes[i][0],self.boxes[i][2])
-						if options.helixboxer: self.update_helixbox(int(i/2))
+						if options.helixboxer: self.update_helixbox(int(i//2))
 						self.update_box(i)
 					break
 			else:
@@ -2355,14 +2355,14 @@ def sptboxergui(options,args):
 			dz=z-self.xzdown[2]
 			if options.helixboxer:
 				if len(self.boxes) % 2 == 0 or (self.xzdown[0] != len(self.boxes)-1):	# Only update the helix boxer if it is paired, otherwise treat it as a regular box
-					hb = self.helixboxes[int(self.xzdown[0]/2)]
+					hb = self.helixboxes[int(self.xzdown[0]//2)]
 					if self.xzdown[0] % 2 == 0:
 						hb[3] = dx+self.xzdown[3]
 						hb[5] = dz+self.xzdown[4]
 					else:
 						hb[0] = dx+self.xzdown[3]
 						hb[2] = dz+self.xzdown[4]
-					self.update_helixbox(int(self.xzdown[0]/2))
+					self.update_helixbox(int(self.xzdown[0]//2))
 				else:
 					self.firsthbclick[0] = x
 					self.firsthbclick[2] = z
@@ -2403,7 +2403,7 @@ def sptboxergui(options,args):
 						if self.del_box(i) != "DELHELIX": self.firsthbclick = None
 					else :
 						self.zydown=(i,z,y,self.boxes[i][2],self.boxes[i][1])
-						if options.helixboxer: self.update_helixbox(int(i/2))
+						if options.helixboxer: self.update_helixbox(int(i//2))
 						self.update_box(i)
 					break
 			else:
@@ -2436,14 +2436,14 @@ def sptboxergui(options,args):
 			dy=y-self.zydown[2]
 			if options.helixboxer:
 				if len(self.boxes) % 2 == 0 or (self.zydown[0] != len(self.boxes)-1):	# Only update the helix boxer if it is paired, otherwise treat it as a regular box
-					hb = self.helixboxes[int(self.zydown[0]/2)]
+					hb = self.helixboxes[int(self.zydown[0]//2)]
 					if self.zydown[0] % 2 == 0:
 						hb[5] = dz+self.zydown[3]
 						hb[4] = dy+self.zydown[4]
 					else:
 						hb[2] =  dz+self.zydown[3]
 						hb[1] = dy+self.zydown[4]
-					self.update_helixbox(int(self.zydown[0]/2))
+					self.update_helixbox(int(self.zydown[0]//2))
 				else:
 					self.firsthbclick[2] = z
 					self.firsthbclick[1] = y
@@ -2511,7 +2511,7 @@ def sptboxergui(options,args):
 			print("The contrast of the tomogram has been reversed")
 
 		if options.lowpass:
-			filt=1.0/options.lowpass
+			filt=1.0//options.lowpass
 			print("The tomogram is being low pass filtered to %d Angstroms resolution" %(options.lowpass))
 			img = img.process('filter.lowpass.gauss',{'cutoff_freq':filt,"apix":img['apix_x']})
 
@@ -2568,7 +2568,7 @@ def sptboxergui(options,args):
 			if '_editedtemp.' not in img:
 				os.system('rm *_editedtemp*')
 				imgnew = img.split('/')[-1].replace('.','_editedtemp.')
-			filt=1.0/options.lowpass
+			filt=1.0//options.lowpass
 
 			imghdr = EMData(img,0,True)
 			tapix = imghdr['apix_x']

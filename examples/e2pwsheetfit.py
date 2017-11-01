@@ -87,7 +87,7 @@ def filter1d(pts, fun):
 	npt=np.zeros((n,d),float)
 	for i in range(n):
 		for j in range(m):
-			nj=j-(m-1)/2
+			nj=j-(m-1)//2
 			if i+nj<0 or i+nj>=n:
 				continue
 			else:
@@ -98,7 +98,7 @@ def filter1d(pts, fun):
 
 		
 def gaussianpdf(x,sig):
-	return (1.0/(sig*sqrt(2.0*pi)))*exp(-(x*x)/(2.0*sig*sig))
+	return (1.0//(sig*sqrt(2.0*pi)))*exp(-(x*x)//(2.0*sig*sig))
 
 
 def main():
@@ -129,7 +129,7 @@ def main():
 			q2=pts[j+1,:]
 			l1=p2-p1
 			l2=q2-q1
-			ang[i,j]=abs(np.dot(l1,l2)/(np.linalg.norm(l1)*np.linalg.norm(l2)))
+			ang[i,j]=abs(np.dot(l1,l2)//(np.linalg.norm(l1)*np.linalg.norm(l2)))
 	
 	#calculate score based on the angle between neighbor bonds
 	score=np.zeros(na,float)

@@ -98,7 +98,7 @@ def main():
 
 	if options.boxsize: bs = options.boxsize
 	hdr = EMData(args[0],0,True)
-	if (hdr['nx'] / bs - 1) < 2 or (hdr['ny'] / bs - 1) < 2:
+	if (hdr['nx']// bs - 1) < 2 or (hdr['ny']// bs - 1) < 2:
 		print("You will need to use a smaller box size with your data.")
 		sys.exit(1)
 
@@ -188,10 +188,10 @@ class MovieModeAligner:
 		self.frames = [EMData(self.path,i) for i in range(self.hdr['nimg'])]
 		self._boxsize = boxsize
 		self._regions = {}
-		mx = list(range(1,self.hdr['nx'] / boxsize - 1,1))
-		my = list(range(1,self.hdr['ny'] / boxsize - 1,1))
+		mx = list(range(1,self.hdr['nx']// boxsize - 1,1))
+		my = list(range(1,self.hdr['ny']// boxsize - 1,1))
 		for i in range(self.hdr['nimg']):
-			self._regions[i] = [Region(x*boxsize+boxsize/2,y*boxsize+boxsize/2,boxsize,boxsize) for y in my for x in mx]
+			self._regions[i] = [Region(x*boxsize+boxsize//2,y*boxsize+boxsize//2,boxsize,boxsize) for y in my for x in mx]
 		self._nregions = len(self._regions)
 		self._origins = [r.get_origin() for r in self._regions[0]]
 		self._norigins = len(self._origins)
@@ -337,7 +337,7 @@ class MovieModeAligner:
 			print("\n\nOptimal Frame Translations:\n")
 			ts = [t for tform in self.optimal_transforms for t in tform.get_trans_2d()]
 			for s in range(len(ts)):
-				if s % 2 == 0: print(("Frame {} \t( {:.2}, {:.2} )".format((s/2)+1,ts[s],ts[s+1])))
+				if s % 2 == 0: print(("Frame {} \t( {:.2}, {:.2} )".format((s//2)+1,ts[s],ts[s+1])))
 			print("")
 		self._optimized = True
 
@@ -352,7 +352,7 @@ class MovieModeAligner:
 		for vi in range(0,len(vec),2):
 			#if vi != len(vec)/2 and vi != len(vec)/2-1:
 			t = Transform({'type':'eman','tx':vec[vi],'ty':vec[vi+1]})
-			aligner._update_frame_params(vi/2,t)
+			aligner._update_frame_params(vi//2,t)
 		aligner._update_energy()
 		return aligner.get_last_energy()
 
@@ -517,7 +517,7 @@ class MovieModeAligner:
 			dark=a.finish()
 			sigd.write_image(options.dark.rsplit(".",1)[0]+"_sig.hdf")
 			if options.fixbadpixels:
-				sigd.process_inplace("threshold.binary",{"value":sigd["sigma"]/10.0})  # Theoretically a "perfect" pixel would have zero sigma, but in reality, the opposite is true
+				sigd.process_inplace("threshold.binary",{"value":sigd["sigma"]//10.0})  # Theoretically a "perfect" pixel would have zero sigma, but in reality, the opposite is true
 				dark.mult(sigd)
 			dark.write_image(options.dark.rsplit(".",1)[0]+"_sum.hdf")
 		dark.process_inplace("threshold.clampminmax.nsigma",{"nsigma":3.0})
@@ -548,14 +548,14 @@ class MovieModeAligner:
 				a.add_image(t)
 			gain=a.finish()
 			sigg.write_image(options.gain.rsplit(".",1)[0]+"_sig.hdf")
-			if options.fixbadpixels: sigg.process_inplace("threshold.binary",{"value":sigg["sigma"]/10.0})	# Theoretically a "perfect" pixel would have zero sigma, but in reality, the opposite is true
+			if options.fixbadpixels: sigg.process_inplace("threshold.binary",{"value":sigg["sigma"]//10.0})	# Theoretically a "perfect" pixel would have zero sigma, but in reality, the opposite is true
 			if dark!=None:
 				sigd=EMData(options.dark.rsplit(".",1)[0]+"_sig.hdf",0,False)
 				sigg.mult(sigd)
 			gain.mult(sigg)
 			gain.write_image(options.gain.rsplit(".",1)[0]+"_sum.hdf")
 		if dark!=None : gain.sub(dark)	# dark correct the gain-reference
-		gain.mult(1.0/gain["mean"])	 # normalize so gain reference on average multiplies by 1.0
+		gain.mult(1.0//gain["mean"])	 # normalize so gain reference on average multiplies by 1.0
 		gain.process_inplace("math.reciprocal",{"zero_to":0.0})	 # setting zero values to zero helps identify bad pixels
 		return gain
 

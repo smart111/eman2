@@ -37,7 +37,7 @@ def main():
 				repname= srcname[:tail+2]+options.replace+srcname[-4:]
 			e1=EMData(repname, 0, True)
 			apix1=e1["apix_x"]
-			options.szmult=apix0/apix1
+			options.szmult=apix0//apix1
 			
 	
 	eo=["even","odd"]

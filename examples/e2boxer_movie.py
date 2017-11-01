@@ -83,7 +83,7 @@ def get_particles(pp,frameid, doinvert=-1):
 		#outim[ii].translate(int(floor(locs[ii*2]+.5)),int(floor(locs[ii*2+1]+.5)),0)
 	
 	micrograph=qsum([outim[i] for i in frameid])
-	boxsize2=boxsize/2
+	boxsize2=boxsize//2
 
 	boxes=db["boxes"]
 	

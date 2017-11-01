@@ -83,9 +83,9 @@ Locates the best 'docking' locations for a small probe in a large target map."""
 		print(v[2],"/32")
 		for v[1] in range(32):
 			for v[0] in range(32):
-				if "x" in axes: dx=(v[axes.find("x")]-16)/2.0
-				if "y" in axes: dy=(v[axes.find("y")]-16)/2.0
-				if "z" in axes: dz=(v[axes.find("z")]-16)/2.0
+				if "x" in axes: dx=(v[axes.find("x")]-16)//2.0
+				if "y" in axes: dy=(v[axes.find("y")]-16)//2.0
+				if "z" in axes: dz=(v[axes.find("z")]-16)//2.0
 				if "a" in axes: alt=(v[axes.find("a")]-16)*2*pi/180.0
 				if "q" in axes: az =(v[axes.find("q")]-16)*2*pi/180.0
 				if "p" in axes: phi=(v[axes.find("p")]-16)*2*pi/180.0

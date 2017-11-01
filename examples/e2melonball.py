@@ -143,7 +143,7 @@ def main():
 		'''
 		Clip to data's boxsize
 		'''
-		r=Region( (2*maskcx - inputhdr['nx'])/2, (2*maskcx - inputhdr['ny'])/2, (2*maskcx - inputhdr['nz'])/2, inputhdr['nx'],inputhdr['ny'],inputhdr['nz'])
+		r=Region( (2*maskcx - inputhdr['nx'])//2, (2*maskcx - inputhdr['ny'])//2, (2*maskcx - inputhdr['nz'])//2, inputhdr['nx'],inputhdr['ny'],inputhdr['nz'])
 		mask.clip_inplace( r )
 	
 	print("\nMask done")
@@ -274,9 +274,9 @@ def main():
 			center = t*groundv
 			centers.update( {k: center} )
 			
-			newcenterx = int( round(center[0] + mask['nx']/2.0 )) 
-			newcentery = int( round(center[1] + mask['ny']/2.0 ))
-			newcenterz = int( round(center[2] + mask['nz']/2.0 ))
+			newcenterx = int( round(center[0] + mask['nx']//2.0 )) 
+			newcentery = int( round(center[1] + mask['ny']//2.0 ))
+			newcenterz = int( round(center[2] + mask['nz']//2.0 ))
 			
 			tout = Transform()
 			rot = t.get_rotation()
@@ -296,7 +296,7 @@ def main():
 			
 			f.write(centerline)
 			
-			centersmap.set_value_at( int( round(center[0] + mask['nx']/2.0 )) , int( round(center[1] + mask['ny']/2.0 )), int( round(center[2] + mask['nz']/2.0 )), 1.0 )
+			centersmap.set_value_at( int( round(center[0] + mask['nx']//2.0 )) , int( round(center[1] + mask['ny']//2.0 )), int( round(center[2] + mask['nz']//2.0 )), 1.0 )
 		
 			
 			
@@ -368,14 +368,14 @@ def main():
 					
 					box = options.boxsize
 		
-					extra = math.fabs( math.sqrt(2.0) * ( box/2.0 - 1.0 ) - ( box/2.0 - 1 ) )	
+					extra = math.fabs( math.sqrt(2.0) * ( box//2.0 - 1.0 ) - ( box//2.0 - 1 ) )	
 					paddedbox = int( math.ceil( float(box) + extra ) )
 					
 					#print "Center for region is", sx,sy,sz
 						
 					print("\nExtracting this scoop", key)
 					print("With a padded box of this size", paddedbox)
-					bigr = Region( (sx*2 - paddedbox)/2 ,  (sy*2 - paddedbox)/2 ,  (sz*2 - paddedbox)/2, paddedbox,paddedbox,paddedbox)
+					bigr = Region( (sx*2 - paddedbox)//2 ,  (sy*2 - paddedbox)//2 ,  (sz*2 - paddedbox)//2, paddedbox,paddedbox,paddedbox)
 					bigscoop = scoop.get_clip(bigr)
 					
 					#bigscoop.write_image( options.path + '/bigscoops.hdf', key)
@@ -396,9 +396,9 @@ def main():
 					
 					#bigscoop.write_image( options.path + '/bigscoopsOriented.hdf', key)
 					
-					sxB = bigscoop['nx']/2
-					syB = bigscoop['ny']/2
-					szB = bigscoop['nz']/2
+					sxB = bigscoop['nx']//2
+					syB = bigscoop['ny']//2
+					szB = bigscoop['nz']//2
 					
 					print("\nCenter of bigs scoops is", sxB,syB,szB)
 					
@@ -449,11 +449,11 @@ def main():
 
 def clip3D( vol, size ):
 	
-	volxc = vol['nx']/2
-	volyc = vol['ny']/2
-	volzc = vol['nz']/2
+	volxc = vol['nx']//2
+	volyc = vol['ny']//2
+	volzc = vol['nz']//2
 	
-	Rvol =  Region( (2*volxc - size)/2, (2*volyc - size)/2, (2*volzc - size)/2, size , size , size)
+	Rvol =  Region( (2*volxc - size)//2, (2*volyc - size)//2, (2*volzc - size)//2, size , size , size)
 	vol.clip_inplace( Rvol )
 	#vol.process_inplace('mask.sharp',{'outer_radius':-1})
 	

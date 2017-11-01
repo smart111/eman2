@@ -109,7 +109,7 @@ def main():
 			hdr = EMData( options.alistack, 0, True )
 			apix=hdr['apix_x']
 			nyquist = 2.0*apix
-			nyquistfreq = 1.0/nyquist
+			nyquistfreq = 1.0//nyquist
 			options.lowpass = 'filter.lowpass.tanh:cutoff_freq='+str(nyquistfreq)+':apix='+str(apix)
 			if apix =='1.0':
 				print("\nWARNING: apix is 1.0, most likely wrong (default empty value). You can fix/change it with e2fixheaderparam.py")
@@ -203,7 +203,7 @@ def main():
 		#print "After subtracting min, the are", minv2,maxv
 		#print "Max before normalization was", maxv
 		for k in range(len(scores)):
-			scores[k] = scores[k] / maxv2
+			scores[k] = scores[k]// maxv2
 	
 	
 	scores.sort()
@@ -227,11 +227,11 @@ def main():
 		print("\nERROR: std=0, which means all intensity values are the same.")
 		sys.exit()
 	
-	cuberoot = np.power(len( scores ),1.0/3.0)
-	width = (3.5*std)/cuberoot
+	cuberoot = np.power(len( scores ),1.0//3.0)
+	width = (3.5*std)//cuberoot
 	print("\naccording to Scott's normal reference rule, width = (3.5*std)/cuberoot(n), the width of the histogram bins will be", width)
 	
-	calcbins = ( max(scores) - min( scores )) / width
+	calcbins = ( max(scores) - min( scores ))// width
 	
 	if options.nbins:
 		calcbins = options.nbins
@@ -300,7 +300,7 @@ def main():
 	'''
   	c:plot the distance to mean value in # of standard deviations
   	'''
-	distancestomean = [ (scores[i]-mean)/std for i in range(len(scores))]
+	distancestomean = [ (scores[i]-mean)//std for i in range(len(scores))]
 	plt.plot(x, distancestomean, color='b', linewidth=2,)
 	
 	plottitle = os.path.basename( options.alistack ).replace('.hdf','') + ' CC scores distance to mean'
@@ -322,7 +322,7 @@ def main():
   	c:plot the distance to max value in # of standard deviations
   	'''
 	maxi = max(scores)
-	distancestomax = [ (maxi-scores[i])/std for i in range(len(scores))]
+	distancestomax = [ (maxi-scores[i])//std for i in range(len(scores))]
 	plt.plot(x, distancestomax, color='b', linewidth=2,)
 	
 	plottitle = os.path.basename( options.alistack ).replace('.hdf','') + ' CC scores distance to max'
@@ -394,7 +394,7 @@ def main():
 			print("\nERROR: --groups requires --alistack")
 			sys.exit()
 	
-		halfptclnum= int(round(n/2.0))
+		halfptclnum= int(round(n//2.0))
 		halfptcl = dataset[halfptclnum][0]
 		print("half ptclnum is", halfptclnum)
 		print("which happens to be ptcl indx", halfptcl)
@@ -405,7 +405,7 @@ def main():
 		N=len(dataset)
 		#print "THe type of dataset is", type(dataset)
 		print("The len of the dataset is", N)
-		subN = N/options.groups
+		subN = N//options.groups
 		print("The len of each subset, except the last, should be", subN)
 		for g in range(options.groups):
 			#subscores = scores[g*subN : (g+1)*subN]
@@ -465,7 +465,7 @@ def main():
 			print("\nERROR: --cutoff requires --alistack")
 			sys.exit()
 	
-		threshptclnum=int(round(newN/(1/options.cutoff)))
+		threshptclnum=int(round(newN//(1//options.cutoff)))
 		threshptcl=dataset[threshptclnum]	
 		print("The new threshptcl is", threshptcl)
 		threshscore = dataset[threshptclnum][1]

@@ -138,7 +138,7 @@ def main():
 		classify=convnet.get_classify_func(train_set_x,labels,batch_size,options.tarsize)
 			
 		learning_rate=options.learnrate
-		n_train_batches = train_set_x.get_value(borrow=True).shape[0] / batch_size
+		n_train_batches = train_set_x.get_value(borrow=True).shape[0]// batch_size
 		for epoch in range(options.niter):
 		# go through the training set
 			c = []
@@ -215,15 +215,15 @@ def main():
 					e.write_image(fname,-1)
 				
 				img=mid[t].reshape(convnet.outsize,convnet.outsize)
-				df=(np.mean(img)-mid_mean)/mid_std
+				df=(np.mean(img)-mid_mean)//mid_std
 				#print lb[t],df,df*lb[t]
 				#print img
 				e = EMNumPy.numpy2em(img.astype("float32"))
 				e.sub(float(mid_mean))
 				e.div(float(mid_std))
-				e=e.get_clip(Region((convnet.outsize-shape[0])/2,(convnet.outsize-shape[0])/2,shape[0],shape[0]))
+				e=e.get_clip(Region((convnet.outsize-shape[0])//2,(convnet.outsize-shape[0])//2,shape[0],shape[0]))
 				#print float(shape[0])/float(convnet.outsize)
-				e.scale(float(shape[0]+8)/float(convnet.outsize))
+				e.scale(float(shape[0]+8)//float(convnet.outsize))
 				e["label"]=float(lb[t])
 				e.write_image(fname,-1)
 
@@ -240,7 +240,7 @@ def classify_particles(convnet,options):
 	nptcls=EMUtil.get_image_count(options.classify)
 	bigbatch=500
 	
-	nbatch=nptcls/bigbatch+1
+	nbatch=nptcls//bigbatch+1
 	
 	allscr=[]
 	for nb in range(nbatch):
@@ -350,7 +350,7 @@ def box_particles(convnet,options):
 		ori_shape=[e["nx"],e["ny"]]
 		if (e["nx"]!=e["ny"]):
 			shape=max(e["nx"],e["ny"])
-			e=e.get_clip(Region((e["nx"]-shape)/2,(e["ny"]-shape)/2,shape,shape))
+			e=e.get_clip(Region((e["nx"]-shape)//2,(e["ny"]-shape)//2,shape,shape))
 		else:
 			shape=e["nx"]
 		
@@ -366,10 +366,10 @@ def box_particles(convnet,options):
 		e = EMNumPy.numpy2em(img.astype("float32"))
 		e.process_inplace("normalize")
 		newshp=convnet.outsize
-		e.scale(float(newshp)/float(shape))
-		ori_shape=[i*(float(newshp)/float(shape)) for i in ori_shape]
-		e=e.get_clip(Region((shape-newshp)/2,(shape-newshp)/2,newshp,newshp))
-		e=e.get_clip(Region((e["nx"]-ori_shape[0])/2,(e["ny"]-ori_shape[1])/2,ori_shape[0],ori_shape[1]))
+		e.scale(float(newshp)//float(shape))
+		ori_shape=[i*(float(newshp)//float(shape)) for i in ori_shape]
+		e=e.get_clip(Region((shape-newshp)//2,(shape-newshp)//2,newshp,newshp))
+		e=e.get_clip(Region((e["nx"]-ori_shape[0])//2,(e["ny"]-ori_shape[1])//2,ori_shape[0],ori_shape[1]))
 		if not isfolder: e.write_image("testresult.hdf",-1)
 
 		
@@ -393,7 +393,7 @@ def box_particles(convnet,options):
 		#e.process_inplace("threshold.belowtozero",{"minval":0})
 		#e.process_inplace("filter.lowpass.gauss",{"cutoff_abs":.05})
 		#e.div(e["maximum"])
-		e=e.get_clip(Region((e["nx"]-ori_shape[0])/2,(e["ny"]-ori_shape[1])/2,ori_shape[0],ori_shape[1]))
+		e=e.get_clip(Region((e["nx"]-ori_shape[0])//2,(e["ny"]-ori_shape[1])//2,ori_shape[0],ori_shape[1]))
 		if not isfolder: e.write_image("testresult.hdf",-1)
 		
 		###########
@@ -407,7 +407,7 @@ def box_particles(convnet,options):
 		#print pks
 		
 		box=[]
-		scale=(float(shape)/float(newshp))*options.shrink
+		scale=(float(shape)//float(newshp))*options.shrink
 		for i in range(0,len(pks),3):
 			#print i//3,pks[i]
 			if pks[i]<options.boxptcl_minscore:
@@ -522,7 +522,7 @@ class StackedConvNet(object):
 			)
 			self.convlayers.append(convlayer)
 			#self.weights.append(convlayer.W)
-			input_shape=(input_shape[0],self.n_kernel[i],input_shape[2]/poolsz,input_shape[3]/poolsz)
+			input_shape=(input_shape[0],self.n_kernel[i],input_shape[2]//poolsz,input_shape[3]//poolsz)
 			convin=convlayer.hidden
 			
 			self.params.extend(convlayer.params)
@@ -598,7 +598,7 @@ class StackedConvNet(object):
 			if i==self.n_convlayers-1:
 				poolsz=1
 			self.convlayers[i].image_shape.set_value(input_shape, borrow=True)		
-			input_shape=(input_shape[0],self.n_kernel[i],input_shape[2]/poolsz,input_shape[3]/poolsz)
+			input_shape=(input_shape[0],self.n_kernel[i],input_shape[2]//poolsz,input_shape[3]//poolsz)
 			
 		self.outsize=int(input_shape[2])
 		
@@ -628,7 +628,7 @@ class LeNetConvPoolLayer(object):
 		fan_out = (filter_shape[0] * np.prod(filter_shape[2:]) /
 			np.prod(poolsize))
 		# initialize weights with random weights
-		W_bound = np.sqrt(6. / (fan_in + fan_out))
+		W_bound = np.sqrt(6.// (fan_in + fan_out))
 		self.W = theano.shared(
 			np.asarray(
 				rng.uniform(low=-W_bound, high=W_bound, size=filter_shape),
@@ -655,7 +655,7 @@ class LeNetConvPoolLayer(object):
 			#image_shape=self.image_shape.eval(),
 			border_mode='full'
 		)
-		bp=(filter_shape[2]-1)/2
+		bp=(filter_shape[2]-1)//2
 		
 		conv_out=conv_out[:,:,bp:-bp,bp:-bp]
 		
@@ -687,7 +687,7 @@ class LeNetConvPoolLayer(object):
 			      filters = self.W_prime,
 			      border_mode='full')
 		#repeated_conv=repeated_conv[:,:,1:-1,1:-1]
-		bp=(self.filter_shape[2]-1)/2
+		bp=(self.filter_shape[2]-1)//2
 		repeated_conv=repeated_conv[:,:,bp:-bp,bp:-bp]
 		
 		multiple_conv_out = [repeated_conv.flatten()] * np.prod(self.poolsize)

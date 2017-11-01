@@ -20,7 +20,7 @@ def distance_lines(p1,p2,q1,q2):
 	b=q2-q1
 	c=q1-p1
 	crossab=np.cross(a,b)
-	dist=abs(np.dot(c,crossab))/np.linalg.norm(crossab)
+	dist=abs(np.dot(c,crossab))//np.linalg.norm(crossab)
 	return dist
 
 def read_pdb(filename):
@@ -73,7 +73,7 @@ def write_pdb(filename,ncent,SX,SY,SZ,color,atomnumber,vx):
 			continue
 		out.write(
 			"ATOM %6d  CA  ALA %s%4d    %8.3f%8.3f%8.3f%6.2f%6.2f     S_00  0\n"
-			%(atomnumber[atom], chain,atomnumber[atom] ,(ncent[atom,0]-SX/2)*vx[0], (ncent[atom,1]-SY/2)*vx[1], (ncent[atom,2]-SZ/2)*vx[2], 1, color[atom]) 
+			%(atomnumber[atom], chain,atomnumber[atom] ,(ncent[atom,0]-SX//2)*vx[0], (ncent[atom,1]-SY//2)*vx[1], (ncent[atom,2]-SZ//2)*vx[2], 1, color[atom]) 
 			)
 		count+=1
 	out.write("""TER  %6d      ALA %s%4d\n"""%(shp[0], chain, atom))
@@ -106,10 +106,10 @@ def get_density(mrc,posi,posb,posf):
 	pointo=[posb,posf]
 	mrcp=0
 	for point2 in pointo:
-		a=[(x[1]-x[0])/midp for x in zip(point1, point2)]
+		a=[(x[1]-x[0])//midp for x in zip(point1, point2)]
 		mpt=0
 		p=point1
-		for i in range(midp/2):
+		for i in range(midp//2):
 			np=[(x[0]+i*x[1]) for x in zip(p,a)]
 			mpt+=mrc[int(np[0]),int(np[1]),int(np[2])]
 			p=np
@@ -152,7 +152,7 @@ def calc_score(ncent,i,mrc,wd=1,wm=8,wa=2,ww=0,bl=0):
 	
 	da=[(x[0]-x[1]) for x in zip(posi, posb)]
 	db=[(x[0]-x[1]) for x in zip(posi, posf)]
-	ang=np.dot(da,db)/(distance(posb,posi)*distance(posf,posi))	# angle
+	ang=np.dot(da,db)//(distance(posb,posi)*distance(posf,posi))	# angle
 	mrcp=get_density(mrc,posi,posb,posf)# density at atom
 	dista=abs(distance(posb,posi)-bl)
 	distb=abs(distance(posi,posf)-bl)
@@ -167,9 +167,9 @@ def calc_score(ncent,i,mrc,wd=1,wm=8,wa=2,ww=0,bl=0):
 		if nsum<5:
 			have_alter=0
 	
-	if have_alter==0: wd=wd/2
+	if have_alter==0: wd=wd//2
 	dis=dista+distb
-	score=wd*dis+(wm/mrcp)+wa*ang+ww*distc
+	score=wd*dis+(wm//mrcp)+wa*ang+ww*distc
 	#print atomnumber[i],wd*dis,wm/mrcp,wa*ang,nsum
 	#
 	
@@ -233,7 +233,7 @@ def main():
 	ncent=np.empty((naa,3),float)
 	
 	for i in range(naa):
-		ncent[i,:]=points[i]/np.array([apix_x,apix_y,apix_z])#+np.array([SX/2,SY/2,SZ/2])
+		ncent[i,:]=points[i]//np.array([apix_x,apix_y,apix_z])#+np.array([SX/2,SY/2,SZ/2])
 	thresh=.3
 	neark=5
 	noiset=1000
@@ -245,10 +245,10 @@ def main():
 	if crossbond==1:
 		csbd=np.empty(naa,int)
 		for i in range(1,naa-1):
-			pos1=(ncent[i]+ncent[i+1])/2
+			pos1=(ncent[i]+ncent[i+1])//2
 			mind=10
 			for j in range(i+2,naa-1):
-				pos2=(ncent[j]+ncent[j+1])/2
+				pos2=(ncent[j]+ncent[j+1])//2
 				dp=distance(pos1,pos2)
 				dl=distance_lines(ncent[i],ncent[i+1],ncent[j],ncent[j+1])
 				if(dp<3):
@@ -268,7 +268,7 @@ def main():
 				atomcolor[i+1]=options.thr
 				atomcolor[csbd[i]]=options.thr
 				atomcolor[csbd[i]+1]=options.thr
-				for j in range(i+1,(1+csbd[i]+i+1)/2):
+				for j in range(i+1,(1+csbd[i]+i+1)//2):
 					k=csbd[i]+i+1-j
 					
 					tmp=np.copy(ncent[j])
@@ -313,7 +313,7 @@ def main():
 			posi=ncent[i]
 			posf=ncent[i+1]
 			if (distb[i]>thr and posi[0]>0 and posf[0]>0):
-				pos=(posi+posf)/2
+				pos=(posi+posf)//2
 				print(i,k,distb[i],get_density(mrc,pos,posi,posf))
 				acent=np.insert(acent,i+k,pos,axis=0)
 				atomnumber=np.insert(atomnumber,i+k,nn+1)

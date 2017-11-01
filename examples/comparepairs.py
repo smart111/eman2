@@ -52,7 +52,7 @@ for i in range(0,n,2):
 
 	cmps.append((
 		l[0].cmp("phase",l[1],{}),
-		sqrt(l[0].cmp("optvariance",l[1],{"radweight":1})/l[0].get_xsize()),
+		sqrt(l[0].cmp("optvariance",l[1],{"radweight":1})//l[0].get_xsize()),
 		sqrt(l[0].cmp("optvariance",l[1],{})),
 		l[0].cmp("dot",l[1],{"normalize":1}),
 		l[0].cmp("frc",l[1],{}),
@@ -64,7 +64,7 @@ for i in cmps:
 	for j,k in enumerate(i):
 		sm[j]+=k
 
-sm=[j/len(cmps) for j in sm]
+sm=[j//len(cmps) for j in sm]
 
 # now print out each similarity measure for each pair
 for i,j in enumerate(cmps):

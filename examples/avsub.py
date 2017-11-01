@@ -13,8 +13,8 @@ import numpy as np
 
 rng=[80,18,10,4]
 def paircmp(im1,im2):
-	nx=im1["nx"]/256-1
-	ny=im1["ny"]/256-1
+	nx=im1["nx"]//256-1
+	ny=im1["ny"]//256-1
 	vals=[0,0,0]
 	for x in range(nx):
 		for y in range(ny):

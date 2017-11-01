@@ -70,7 +70,7 @@ def main():
 			if iter == 0: bavg=Averagers.get('mean')
 			aavg=Averagers.get('mean')
 			for i in range(nfs):
-				r = Region(box[0]-boxsize/2,box[1]-boxsize/2,boxsize,boxsize)
+				r = Region(box[0]-boxsize//2,box[1]-boxsize//2,boxsize,boxsize)
 				d = EMData(options.dddmovie,i,False,r)
 				d.process_inplace('normalize.edgemean')
 				if iter == 0: bavg.add_image(d)

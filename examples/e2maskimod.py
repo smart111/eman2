@@ -138,7 +138,7 @@ def interpolate(pt1,pt2):
 	#print pt1,pt2
 	ret=[]
 	for u in range(int(round(d))+1):
-		t=u/d
+		t=u//d
 		ret.append([int(round((1-t)*i[0]+t*i[1])) for i in zip(pt1,pt2)])
 	return ret
 
