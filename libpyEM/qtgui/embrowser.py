@@ -1735,9 +1735,9 @@ def humansize(val) :
 	try : val = int(val)
 	except : return val
 
-	if val > 1000000000 : return "%d g"%(val/1000000000)
-	elif val > 1000000 : return "%d m"%(val/1000000)
-	elif val > 1000 : return "%d k"%(val/1000)
+	if val > 1000000000 : return "%d g"%(val//1000000000)
+	elif val > 1000000 : return "%d m"%(val//1000000)
+	elif val > 1000 : return "%d k"%(val//1000)
 	return str(val)
 
 #---------------------------------------------------------------------------

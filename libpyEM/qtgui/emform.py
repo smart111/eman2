@@ -1891,7 +1891,7 @@ class EMParamTableEventHandler:
 		#print self.table_widget.getContentsMargins()
 		
 		if cumulative_width < self.table_widget.width():
-			scale = float(self.table_widget.width())/cumulative_width
+			scale = float(self.table_widget.width())//cumulative_width
 			for i in range(cols):
 				w = self.table_widget.columnWidth(i)
 				self.table_widget.setColumnWidth(i,w*scale)
@@ -2097,8 +2097,8 @@ def get_small_example_form_params():
 
 def get_example_table_form_params():
 	params = get_example_form_params()
-	p1 = params[0:len(params)/3]
-	p2 = params[len(params)/3:2*len(params)/3]
+	p1 = params[0:len(params)//3]
+	p2 = params[len(params)//3:2*len(params)/3]
 	p3 = params[2*len(params)/3:]
 	
 	par =[]

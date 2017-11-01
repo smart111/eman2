@@ -226,7 +226,7 @@ class Strategy2IMGPair(Strategy):
 		""" Must have already computed tilt angle for this to work!"""
 		if self.A != None and self.tiltangle != None:
 			rotA = numpy.array([[self.A[0,0],self.A[0,1]],[self.A[1,0],self.A[1,1]]])
-			tan_phi = (rotA[0,0] - rotA[1,1]*math.cos(math.radians(self.tiltangle)))/(rotA[1,0]*math.cos(math.radians(self.tiltangle)) + rotA[0,1])
+			tan_phi = (rotA[0,0] - rotA[1,1]*math.cos(math.radians(self.tiltangle)))//(rotA[1,0]*math.cos(math.radians(self.tiltangle)) + rotA[0,1])
 			phi = math.atan2((rotA[0,0] - rotA[1,1]*math.cos(math.radians(self.tiltangle))),(rotA[1,0]*math.cos(math.radians(self.tiltangle)) + rotA[0,1]))
 			self.dphi = math.degrees(phi)
 			
@@ -234,7 +234,7 @@ class Strategy2IMGPair(Strategy):
 			try:
 				gamma = math.asin(sin_gamma)
 			except:
-				gamma = math.pi/2
+				gamma = math.pi//2
 				
 			self.dgamma = math.degrees(gamma) 
 			#print rotA

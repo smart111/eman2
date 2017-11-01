@@ -104,7 +104,7 @@ class EMLightsDrawer:
 				timeangle = float(t)/float(self.arc_t)*angle
 				p1Copy = self.radius*Vec3f(p1[0],p1[1],p1[2])
 				p2Copy = self.radius*Vec3f(p2[0],p2[1],p2[2])
-				next = (sin(angle-timeangle)*p1Copy + sin(timeangle)*p2Copy)/sinangle
+				next = (sin(angle-timeangle)*p1Copy + sin(timeangle)*p2Copy)//sinangle
 				
 				self.cylinder_to_from(next,prev)
 				prev = Vec3f(next[0],next[1],next[2])
@@ -119,7 +119,7 @@ class EMLightsDrawer:
 		
 		if length == 0: return
 		
-		alt = acos(dz/length)*180.0/pi
+		alt = acos(dz//length)*180.0/pi
 		phi = atan2(dy,dx)*180.0/pi
 		
 		glPushMatrix()
@@ -162,7 +162,7 @@ class EMLightsDrawer:
 			self.ball_dl = glGenLists(1)
 			glNewList(self.ball_dl,GL_COMPILE)
 			glPushMatrix()
-			glScale(self.radius/10.0,self.radius/10.0,self.radius/10.0)
+			glScale(self.radius//10.0,self.radius//10.0,self.radius//10.0)
 			self.draw_light_cocoon()
 			self.draw_inside_light()
 			glPopMatrix()
@@ -190,7 +190,7 @@ class EMLightsDrawer:
 				glTranslate(0,0,-.5)
 				glRotate(rot,0,0,1)
 				glRotate(90,0,1,0)
-				glScale(self.radius/10.0,self.radius/10.0,self.radius/10.0)
+				glScale(self.radius//10.0,self.radius//10.0,self.radius//10.0)
 				glutSolidTorus(.1,0.71,32,32)
 				glPopMatrix()
 			
@@ -287,7 +287,7 @@ class EMLightsDrawer:
 		bot = 0.5 # square width at bottom
 		top = 1.0 # square width at top
 		
-		dz = (top-bot)/(n-1)
+		dz = (top-bot)//(n-1)
 		yellow = [1,1,0,0.5]
 		glMaterial(GL_FRONT, GL_AMBIENT, yellow)
 		glMaterial(GL_FRONT, GL_DIFFUSE, yellow)
@@ -349,8 +349,8 @@ class EMLightsDrawer:
 		bot = 0.5 # square width at bottom
 		top = 1.0 # square width at top
 		
-		dz = (top-bot)/(n-1)
-		yellow = [1,1,0,1.0/n]
+		dz = (top-bot)//(n-1)
+		yellow = [1,1,0,1.0//n]
 		glMaterial(GL_FRONT, GL_AMBIENT, yellow)
 		glMaterial(GL_FRONT, GL_DIFFUSE, yellow)
 		glMaterial(GL_FRONT, GL_SPECULAR, yellow)

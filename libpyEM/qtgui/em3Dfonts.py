@@ -161,15 +161,15 @@ class EM3DFontModel(EMLightsDrawer,EM3DModel,DynamicFonts):
 		i = 0
 		self.ifevalstr = self.render_string.split("\n")
 		ifevalref = len(self.ifevalstr)-1
-		spfac_i = -1*int((ifevalref+1)/2)
-		spfac_f = int((ifevalref+1)/2)
-		spfac = [-1*int((ifevalref+1)/2)]
+		spfac_i = -1*int((ifevalref+1)//2)
+		spfac_f = int((ifevalref+1)//2)
+		spfac = [-1*int((ifevalref+1)//2)]
 		while spfac_i<spfac_f:
 			spfac_i = spfac_i+1
 			spfac.append(spfac_i)
 		if ifevalref%2!=0:
 			spfac.remove(0)
-			while i<len(spfac)/2:
+			while i<len(spfac)//2:
 				i = i+1
 				spfac[i-1]=spfac[i-1]+0.5
 			while (i<len(spfac)):
@@ -181,7 +181,7 @@ class EM3DFontModel(EMLightsDrawer,EM3DModel,DynamicFonts):
 			tvar = str("bbox"+str(i))
 			tvar = self.font_renderer.bounding_box(self.ifevalstr[i-1])
 			glPushMatrix()
-			glTranslate((tvar[0]-tvar[3])/2,(tvar[1]-tvar[4]-(((spfac[i-1])*self.lspacing)-0))/2,-(tvar[2]-tvar[5])/2)
+			glTranslate((tvar[0]-tvar[3])//2,(tvar[1]-tvar[4]-(((spfac[i-1])*self.lspacing)-0))//2,-(tvar[2]-tvar[5])//2)
 			self.font_renderer.render_string(self.ifevalstr[i-1]);
 			glPopMatrix()	
 
