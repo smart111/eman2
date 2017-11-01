@@ -279,7 +279,7 @@ class TestTypeConverter(unittest.TestCase):
         ny = e.get_ysize()
 
         a = EMNumPy.em2numpy(e)
-        n = ny/2
+        n = ny//2
 
         for i in range(nx):
             self.assertEqual(e.get_value_at(i, n), a[n][i])

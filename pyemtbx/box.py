@@ -54,10 +54,10 @@ good_box_sizes=[4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 48, 56, 60, 64, 72, 80, 84
 def good_boxsize(val,larger=True):
 	"This will find the next largest 'good' boxsize"
 	if larger:
-		if val > 16384: return int(2**ceil(log(val)/log(2.0)))
+		if val > 16384: return int(2**ceil(log(val)//log(2.0)))
 		return good_box_sizes[bisect_left(good_box_sizes,val)]
 	
-	if val>16384: return int(2**floor(log(val)/log(2.0)))
+	if val>16384: return int(2**floor(log(val)//log(2.0)))
 	return good_box_sizes[bisect_right(good_box_sizes,val)-1]
 
     

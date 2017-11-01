@@ -439,8 +439,8 @@ class TestProcessor(unittest.TestCase):
             cmax = e.get_attr("maximum")
             cmin = e.get_attr("minimum")
 			
-            nmax = cmax/2.0
-            nmin = cmin/2.0
+            nmax = cmax//2.0
+            nmin = cmin//2.0
 			
             a = {}
             a["minval"] = nmin
@@ -686,7 +686,7 @@ class TestProcessor(unittest.TestCase):
         for x in range(32):
             for y in range(32):
                 for z in range(32):
-                    self.assertAlmostEqual(d2[z][y][x], exp(d[z][y][x]/2.56 - 3.23), 3)
+                    self.assertAlmostEqual(d2[z][y][x], exp(d[z][y][x]//2.56 - 3.23), 3)
     
     def test_RangeThreshold(self):
         """test range threshhold processor .................."""
@@ -1359,7 +1359,7 @@ class TestProcessor(unittest.TestCase):
             offset = nx%2==0
             for i in range(0,5):
                 a.to_zero()
-                lst = [Util.get_irand(offset,nx/2-offset) for i in range(3)] # go from 1 because even dimension flip 0s the 0 pixel
+                lst = [Util.get_irand(offset,nx//2-offset) for i in range(3)] # go from 1 because even dimension flip 0s the 0 pixel
                 for j in lst:
                     for y in range(a.get_ysize()):
                         for z in range(a.get_zsize()):
@@ -1376,7 +1376,7 @@ class TestProcessor(unittest.TestCase):
             offset = ny%2==0
             for i in range(0,5):
                 a.to_zero()
-                lst = [Util.get_irand(offset,ny/2-offset) for i in range(3)] # go from 1 because even dimension flip 0s the 0 pixel
+                lst = [Util.get_irand(offset,ny//2-offset) for i in range(3)] # go from 1 because even dimension flip 0s the 0 pixel
                 for j in lst:
                     for x in range(a.get_xsize()):
                         for z in range(a.get_zsize()):
@@ -1394,7 +1394,7 @@ class TestProcessor(unittest.TestCase):
             offset = nz%2==0
             for i in range(0,5):
                 a.to_zero()
-                lst = [Util.get_irand(offset,nz/2-offset) for i in range(3)] # go from 1 because even dimension flip 0s the 0 pixel
+                lst = [Util.get_irand(offset,nz//2-offset) for i in range(3)] # go from 1 because even dimension flip 0s the 0 pixel
                 for j in lst:
                     for x in range(a.get_xsize()):
                         for y in range(a.get_ysize()):
@@ -1711,9 +1711,9 @@ class TestProcessor(unittest.TestCase):
                     
                     e = EMData(x,y,z)
                     if z != 1:
-                        e.set(x/2+1,y/2+1,z/2+1,val)
+                        e.set(x//2+1,y//2+1,z//2+1,val)
                     else:
-                        e.set(x/2+1,y/2+1,val)
+                        e.set(x//2+1,y//2+1,val)
                 
                     e.process_inplace(processor_string)
                     if val > 0:
@@ -1721,11 +1721,11 @@ class TestProcessor(unittest.TestCase):
                     elif val < 0:
                         mx = e.calc_min_location()
                     
-                    self.assertFalse(mx[0] != x/2)
-                    self.assertFalse(mx[1] != y/2)
+                    self.assertFalse(mx[0] != x//2)
+                    self.assertFalse(mx[1] != y//2)
                     
                     if z != 1:
-                        self.assertFalse(mx[2] != z/2)
+                        self.assertFalse(mx[2] != z//2)
 
     def test_xform_centeracf(self):
         """test xform.centeracf processor ..................."""

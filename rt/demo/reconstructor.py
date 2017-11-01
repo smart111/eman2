@@ -45,7 +45,7 @@ r = Reconstructors.get("back_projection")
 r.set_params({"size":100, "weight":1})
 r.setup()
 r.insert_slice(e1, Transform(EULER_EMAN, 0,0,0))
-r.insert_slice(e2, Transform(EULER_EMAN, math.pi/2,0,0))
+r.insert_slice(e2, Transform(EULER_EMAN, math.pi//2,0,0))
 
 result = r.finish()
 result.write_image("reconstructor.mrc")

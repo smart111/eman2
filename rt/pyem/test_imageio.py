@@ -1100,13 +1100,13 @@ class TestImageIO(unittest.TestCase):
 		ny = e.get_ysize()
 		nz = e.get_zsize()
 
-		x0 = nx/4
-		y0 = ny/4
-		z0 = nz/4
+		x0 = nx//4
+		y0 = ny//4
+		z0 = nz//4
 		
-		xsize = nx/2
-		ysize = ny/2
-		zsize = nz/2
+		xsize = nx//2
+		ysize = ny//2
+		zsize = nz//2
 		
 		if zsize == 0:
 			zsize = 1
@@ -1200,17 +1200,17 @@ class TestImageIO(unittest.TestCase):
 
 		(region_2d, region_3d) = self.create_dummy_region(e)
 
-		zsize = e.get_zsize()/2
+		zsize = e.get_zsize()//2
 		if zsize == 0:
 			zsize = 1
 			
 		e3 = EMData()
-		e3.set_size(e.get_xsize()/2, e.get_ysize()/2, zsize)
+		e3.set_size(e.get_xsize()//2, e.get_ysize()//2, zsize)
 		e3.to_zero()
 
 		image_index = 0
 		if outtype == IMAGE_SPIDER:
-			image_index = e.get_zsize()/2
+			image_index = e.get_zsize()//2
 		
 		e3.write_image(writefile_2d, image_index, outtype, False, region_2d)
 		TestUtil.check_image(writefile_2d)

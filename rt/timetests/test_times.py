@@ -74,8 +74,8 @@ def precision_test():
 	err_az = 0
 	
 	for i in range(0,1):
-		for dx in range(-n/4+1,n/4-1):
-			for dy in range(-n/4+1,n/4-1):
+		for dx in range(-n//4+1,n//4-1):
+			for dy in range(-n//4+1,n//4-1):
 				for az in range(0,181,5):
 					t3d = Transform({'type':'eman', 'az':az, 'alt':alt, 'phi':phi})
 					t3d.set_trans(dx,dy)
@@ -89,7 +89,7 @@ def precision_test():
 					
 					e3.transform(t3d)
 					
-					e5 = e4.align('rotate_translate', e3, {'maxshift':n/2})
+					e5 = e4.align('rotate_translate', e3, {'maxshift':n//2})
 					
 					soln_dx = e5.get_attr("align.dx")
 					soln_dy = e5.get_attr("align.dy")
