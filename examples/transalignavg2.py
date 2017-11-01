@@ -55,10 +55,10 @@ for i in range(2):
 		im=EMData(fsp,0)
 		im.process_inplace("normalize.edgemean")
 		if im["nx"]!=nx or im["ny"]!=ny :
-			im=im.get_clip(Region(-(nx-im["nx"])/2,-(ny-im["ny"])/2,nx,ny))
+			im=im.get_clip(Region(-(nx-im["nx"])//2,-(ny-im["ny"])//2,nx,ny))
 	
 		im.write_image("seq.hdf",-1)
-		ima=im.align("translational",ref0,{"nozero":1,"maxshift":ref0["nx"]/4.0},"ccc",{})
+		ima=im.align("translational",ref0,{"nozero":1,"maxshift":ref0["nx"]//4.0},"ccc",{})
 		ima.write_image("seq.hdf",-1)
 		print(fsp,ima["xform.align2d"],ima.cmp("ccc",ref0))
 		ima.process_inplace("normalize.toimage",{"to":ref0,"ignore_zero":1})

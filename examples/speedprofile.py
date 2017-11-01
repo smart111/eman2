@@ -50,7 +50,7 @@ def init(SIZE=96,NTT=100):
 		data[i].transform(Transform({"type":"2d","alpha":random.uniform(0,360.0),"tx":random.uniform(-5.0,5.0),"ty":random.uniform(-5.0,5.0)}))
 		data[i].add(test_image(1,size=(SIZE,SIZE)))
 		data[i].process_inplace('normalize.circlemean')
-		data[i].process_inplace('mask.sharp', {'outer_radius':data[i].get_xsize()/2})
+		data[i].process_inplace('mask.sharp', {'outer_radius':data[i].get_xsize()//2})
 
 	return data
 
@@ -64,7 +64,7 @@ def catime(SIZE=96,NTT=100):
 		x=x.align("refine",ref,{"maxshift":6.0},"dot",{"normalize":0})
 #		y=x.cmp("phase",ref)
 
-	return (time.time()-start)/NTT
+	return (time.time()-start)//NTT
 
 print("establishing baseline")
 base=catime(SIZE=32,NTT=10000)
@@ -72,8 +72,8 @@ base=catime(SIZE=32,NTT=10000)
 print("testing")
 out=open("profile.txt","w")
 for i in range(32,1024):
-	t=catime(i,16000/i)
-	print("%d\t%1.2f\t%1.3f"%(i,t/base,t))
-	out.write("%d\t%1.3f\n"%(i,t/base))
+	t=catime(i,16000//i)
+	print("%d\t%1.2f\t%1.3f"%(i,t//base,t))
+	out.write("%d\t%1.3f\n"%(i,t//base))
 	out.flush()
 

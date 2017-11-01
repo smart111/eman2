@@ -253,7 +253,7 @@ def main():
 
 	# clip to the requested final dimensions
 	if output["nx"]!=outsize[0] or output["ny"]!=outsize[1] or output["nz"]!=outsize[2] :
-		output.clip_inplace(Region((output["nx"]-outsize[0])/2,(output["ny"]-outsize[1])/2,(output["nz"]-outsize[2])/2, outsize[0],outsize[1],outsize[2]))
+		output.clip_inplace(Region((output["nx"]-outsize[0])//2,(output["ny"]-outsize[1])//2,(output["nz"]-outsize[2])//2, outsize[0],outsize[1],outsize[2]))
 
 	if options.apix!=None : apix=options.apix
 	output["apix_x"]=apix
@@ -391,7 +391,7 @@ def initialize_data(inputfile,inputmodel,tltfile,pad,no_weights,preprocess):
 
 			try: elem["quality"]=float(tmp["class_qual"])
 			except:
-				try: elem["quality"]=1.0/(elem["weight"]+.00001)
+				try: elem["quality"]=1.0//(elem["weight"]+.00001)
 				except: elem["quality"]=1.0
 			elem["filename"]=inputfile
 			elem["filenum"]=i
@@ -427,7 +427,7 @@ def get_processed_image(filename,nim,nsl,preprocess,pad,nx=0,ny=0):
 			ret.process_inplace(str(processorname), param_dict)
 
 	if pad[0]!=ret.get_xsize() or pad[1]!=ret.get_ysize() :
-		ret.clip_inplace(Region((ret.get_xsize()-pad[0])/2,(ret.get_ysize()-pad[1])/2, pad[0], pad[1]))
+		ret.clip_inplace(Region((ret.get_xsize()-pad[0])//2,(ret.get_ysize()-pad[1])//2, pad[0], pad[1]))
 
 	return ret
 
@@ -441,9 +441,9 @@ def reconstruct(data,recon,preprocess,pad,fillangle,verbose=0):
 
 	if verbose>0:print("Inserting Slices (%d)"%len(data))
 
-	astep=atan2(1.0,max(pad)/2.0)*180./pi
+	astep=atan2(1.0,max(pad)//2.0)*180./pi
 #	astep=atan2(1.0,max(pad)/2.0)/1.5*180./pi		# experimental smaller step size
-	den=floor(fillangle/astep)
+	den=floor(fillangle//astep)
 	if den>9 :
 		den=9
 		if verbose>0 : print("Note: Reducing oversampling in make3dpar for speed, this will make higher resolution 'smearing' less effective")
@@ -451,7 +451,7 @@ def reconstruct(data,recon,preprocess,pad,fillangle,verbose=0):
 		fillangle=0
 		if verbose: print("No filling")
 	else:
-		astep=fillangle/(den-1)-.00001
+		astep=fillangle//(den-1)-.00001
 		if verbose: print("Filling %dx%d, %1.2f deg  %1.3f step"%(den,den,fillangle,astep))
 
 	ptcl=0
@@ -488,9 +488,9 @@ def reconstruct(data,recon,preprocess,pad,fillangle,verbose=0):
 		else:
 			xf=elem["xform"].get_rotation("eman")
 			alt,az=xf["alt"],xf["az"]
-			for dalt in np.arange(-fillangle/2.0,fillangle/2.0,astep):
-				for daz in np.arange(-fillangle/2.0,fillangle/2.0,astep):
-					weightmod=exp(-(dalt**2+daz**2)/(fillangle/4.0)**2)
+			for dalt in np.arange(-fillangle//2.0,fillangle//2.0,astep):
+				for daz in np.arange(-fillangle//2.0,fillangle//2.0,astep):
+					weightmod=exp(-(dalt**2+daz**2)//(fillangle//4.0)**2)
 					newxf=Transform({"type":"eman","alt":alt+dalt,"az":az+daz})
 #					print i,elem["filenum"],newxf
 					recon.insert_slice(img,newxf,elem["weight"]*weightmod)

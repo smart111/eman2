@@ -421,7 +421,7 @@ def main():
 			
 			nslices = ''
 			if options.tiltstep:
-				nslices = ((2 * options.tiltrangelowerlimit) / options.tiltstep ) + 1						#You have to add 1 to account for the slice at 0deg
+				nslices = ((2 * options.tiltrangelowerlimit)// options.tiltstep ) + 1						#You have to add 1 to account for the slice at 0deg
 				#nslicesu = nslices + 1																#Add 1 because the loop will exclude the upper limit
 			elif options.nsliceslowerlimit:
 				nslices = options.nsliceslowerlimit		
@@ -662,7 +662,7 @@ def simloop(options,rootpath,randstack,wildcard=''):
 		if options.tiltstep:
 			#print "Tilt step is", tiltstep
 			#print "Tilt range is", tiltrange
-			nslices = ((2 * tiltrange) / tiltstep ) + 1						#You have to add 1 to account for the slice at 0deg
+			nslices = ((2 * tiltrange)// tiltstep ) + 1						#You have to add 1 to account for the slice at 0deg
 			#print "Therefore, 2*tiltrange/tiltstep is nslices",nslices
 			nslicesu = nslices + 1											#Add 1 because the loop will exclude the upper limit
 			#nslicestag = str(int(nslices)).zfill(3)

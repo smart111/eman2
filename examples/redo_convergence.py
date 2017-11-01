@@ -73,10 +73,10 @@ for d in dirs:
 			# compute FSC and overwrite original results
 			apix=a["apix_x"]
 			fsc = a.calc_fourier_shell_correlation(b)
-			third = len(fsc)/3
+			third = len(fsc)//3
 			xaxis = fsc[0:third]
 			fsc = fsc[third:2*third]
-			saxis = [x/apix for x in xaxis]
+			saxis = [x//apix for x in xaxis]
 
 			db2[dictname]=[saxis[1:],fsc[1:]]
 			print("  %s (%s - %s)"%(dictname,"bdb:%s#%s"%(d,i),"bdb:%s_odd#%s"%(d[:-5],i)))
@@ -125,11 +125,11 @@ for d in dirs:
 		#print "compute"
 		apix=a["apix_x"]
 		fsc = a.calc_fourier_shell_correlation(b)
-		third = len(fsc)/3
+		third = len(fsc)//3
 		xaxis = fsc[0:third]
 		fsc = fsc[third:2*third]
 #		error = fsc[2*third:]
-		saxis = [x/apix for x in xaxis]
+		saxis = [x//apix for x in xaxis]
 
 		#print "write"
 		db[n]=[saxis[1:],fsc[1:]]

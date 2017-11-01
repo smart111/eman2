@@ -121,7 +121,7 @@ def main():
 		if options.preprocess:
 			average.process_inplace(options.preprocess[0],options.preprocess[1])
 	else:
-		average = sum(ptcls)/len(ptcls)
+		average = sum(ptcls)//len(ptcls)
 	
 	average.process_inplace(options.normproc[0],options.normproc[1])
 
@@ -133,7 +133,7 @@ def main():
 		variance = variance + (p-average)*(p-average)
 		print("I have added this particle to the variance",k)
 		k+=1	
-	variance = variance/len(ptcls)
+	variance = variance//len(ptcls)
 	
 	print("I have calculated the variance")
 	

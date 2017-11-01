@@ -51,7 +51,7 @@ for i in range(0,n,2):
 #	l[1].process_inplace("normalize.edgemean")
 #	l[1].process_inplace("filter.lowpass.gauss",{"cutoff_abs":.08})
 #	cmps.append((l[0].cmp("phase",l[1],{})+l[0].cmp("optvariance",l[1],{"radweight":1})/l[0].get_xsize(),i))
-	cmps.append((l[0].cmp("optvariance",l[1],{"matchamp":1})/l[0].get_xsize(),i))
+	cmps.append((l[0].cmp("optvariance",l[1],{"matchamp":1})//l[0].get_xsize(),i))
 
 
 #	cmps.append((l[0].cmp("dot",l[1],{"normalize":1}),

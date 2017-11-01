@@ -1036,11 +1036,11 @@ def flipstripbystrip(options,imgsdict,ctfs,angles):
 			#padsize = maxsize + options.tilesize
 			#img_padded = clip2d( img, padsize, padsize )
 			
-			nstripsx = int(nx/options.tilesize)
-			nstripsy = int(ny/options.tilesize)
+			nstripsx = int(nx//options.tilesize)
+			nstripsy = int(ny//options.tilesize)
 
 			if options.correctionwidth:
-				nstripsx = int(nx/options.correctionwidth)
+				nstripsx = int(nx//options.correctionwidth)
 
 			
 			finalimage = EMData( nx, ny )
@@ -1064,7 +1064,7 @@ def flipstripbystrip(options,imgsdict,ctfs,angles):
 					xpixels = nx-startx
 				
 				#stripcenterXpixels = int( ( startx + (startx + xpixels) )/ 2 )
-				stripcenterXpixels = int( ( 2*startx + xpixels )/ 2 )
+				stripcenterXpixels = int( ( 2*startx + xpixels )// 2 )
 
 				stripcenterXmicrons = stripcenterXpixels * apix/10000 #this is in micrometers
 				
@@ -1074,7 +1074,7 @@ def flipstripbystrip(options,imgsdict,ctfs,angles):
 				For negative tilt angles (clockwise) the defocuses increases (the particle is more defocused)for px right of the tilt axis while
 				defocus decreases (more overfocused, less defocused) for particles left of the tilt axis.
 				'''
-				px = ( stripcenterXpixels - nx/2.0 ) * apix/10000	#this is the position of the strip center relative to the tilt axis
+				px = ( stripcenterXpixels - nx//2.0 ) * apix/10000	#this is the position of the strip center relative to the tilt axis
 				if px < 0:
 					print("\npx (in microns) is left of the tilt axis", px)
 				elif px > 0:
@@ -1095,7 +1095,7 @@ def flipstripbystrip(options,imgsdict,ctfs,angles):
 				stripctf = EMAN2Ctf()
 				stripctf.from_dict({ 'defocus':newdefocus, 'bfactor':ctf.bfactor, 'ampcont':ctf.ampcont, 'apix':ctf.apix, 'voltage':ctf.voltage, 'cs':ctf.cs })			
 				
-				pad = options.tilesize/2
+				pad = options.tilesize//2
 				
 				
 				for j in range(nstripsy):
@@ -1112,7 +1112,7 @@ def flipstripbystrip(options,imgsdict,ctfs,angles):
 					#r = Region(startx - pad, starty - pad, options.tilesize + pad, options.tilesize + pad)
 					#r = Region(startx - pad, starty - pad, options.tilesize + pad, options.tilesize + pad)
 					
-					stripcenterYpixels = int( (2*starty + ypixels) / 2 )
+					stripcenterYpixels = int( (2*starty + ypixels)// 2 )
 
 					r = Region( stripcenterXpixels - options.tilesize, stripcenterYpixels - options.tilesize, 2*options.tilesize, 2*options.tilesize )
 					
@@ -1270,7 +1270,7 @@ def tilerfft(options, angle, imgf, currentstrip, nstrips, start, end):
 		
 	step=options.tilesize
 	if options.overlaptiles:
-		step = int(options.tilesize/2)
+		step = int(options.tilesize//2)
 		print("\n(e2spt_ctf)(tilerfft) --overlaptiles is on, therefore step is", step)
 	
 	#for x in range( micrographstarts[m], micrographstarts[m] + micrographwidth - options.tilesize + 1, options.stripfitstep ):
@@ -1331,7 +1331,7 @@ def tilerfft(options, angle, imgf, currentstrip, nstrips, start, end):
 	if nbx > options.mintiles:
 	
 		if fftcumulative:
-			fftcumulative.mult(1.0/(nbx*options.tilesize**2))
+			fftcumulative.mult(1.0//(nbx*options.tilesize**2))
 			fftcumulative.process_inplace("math.sqrt")
 			fftcumulative["is_intensity"]=0				# These 2 steps are done so the 2-D display of the FFT looks better. Things would still work properly in 1-D without it
 	
@@ -1387,7 +1387,7 @@ def fitdefocus( ffta, angle, apix, options, nsubmicros, currentsubmicro, defocus
 
 	ctfi = EMAN2Ctf()
 	#ds=0.0
-	ds = 1.0/( options.apix * options.tilesize )
+	ds = 1.0//( options.apix * options.tilesize )
 
 	bg_1d=[]
 	stripdefocus = 0.0
@@ -1399,7 +1399,7 @@ def fitdefocus( ffta, angle, apix, options, nsubmicros, currentsubmicro, defocus
 		f.close()
 	
 	fftbg = ffta.process("math.nonconvex")
-	fft1d = ffta.calc_radial_dist(ffta.get_ysize()/2,0.0,1.0,1)	# note that this handles the ri2inten averages properly
+	fft1d = ffta.calc_radial_dist(ffta.get_ysize()//2,0.0,1.0,1)	# note that this handles the ri2inten averages properly
 		
 	signtag = 'p'
 	if angle < 0.0:
@@ -1483,7 +1483,7 @@ def calcglobaldefocus(options, apix, imagefilenames, angles):
 		defocusmax = options.targetdefocus + 3.0
 	else:
 		
-		lowesttiltangleindx = len(angles)/2.0 	#c:by default, the lowest tilt angle should be in the middle of the tiltseries
+		lowesttiltangleindx = len(angles)//2.0 	#c:by default, the lowest tilt angle should be in the middle of the tiltseries
 		
 		lowesttiltangle = min([ math.fabs(ang) for ang in list(angles.values()) ])	#c:find the actual smallest tiltangle, then its index
 		try:
@@ -1716,7 +1716,7 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 	#sys.exit()
 	
 	nx=EMData(imagefilenames[0][0],0,True)['nx']
-	globalmiddle = ( nx/2.0 ) * apix / 10000	#convert to micrometers, so x and y axis are in the same units
+	globalmiddle = ( nx//2.0 ) * apix / 10000	#convert to micrometers, so x and y axis are in the same units
 	
 	'''
 	calculate the maximum allowable depth of focus or variation in defocus across the specimen to achieve 2/3 Nyquist resolution
@@ -1732,8 +1732,8 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 		lambd = 0.037
 
 	allowabledz = twothirdsnyquist*twothirdsnyquist/(2.0*lambd)
-	allowabledzmicrons = allowabledz/10000
-	allowabledzpixels = allowabledz/apix
+	allowabledzmicrons = allowabledz//10000
+	allowabledzpixels = allowabledz//apix
 
 	print("\n(e2spt_ctf)(fitdefocusgradient) the theoretical allowable depth of focus or defocus variation limit in angstroms is %.2f to reach 2/3 nyquist resolution %.2f" %( allowabledz, twothirdsnyquist ))
 
@@ -1741,8 +1741,8 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 		allowabledz = options.depthfocus
 		print("however, the allowable depth of focus in micrometers has been set via --depthfocus and is", allowabledz)
 		#print "which in angstroms is", allowabledz*10000
-		allowabledzmicrons = allowabledz/10000
-		allowabledzpixels = allowabledz/apix
+		allowabledzmicrons = allowabledz//10000
+		allowabledzpixels = allowabledz//apix
 	
 	'''
 	iterate through images to fit the defocus gradient of each
@@ -1771,7 +1771,7 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 		
 		xs = []
 		imgdefocuses = []
-		imagemiddle = imghdr['nx']/2
+		imagemiddle = imghdr['nx']//2
 		m=0
 		b=0
 		defocuscalc = 0	
@@ -1785,7 +1785,7 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 			'''#
 			#Position of the tilt axis in micrometers
 			#'''
-			pxta = ( nx/2.0 ) * apix/10000
+			pxta = ( nx//2.0 ) * apix/10000
 		
 			'''#
 			#Find the distance dx100dz away from the tilt axis, across which the vertical distance 
@@ -1800,20 +1800,20 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 				print("\nOOOOOOOO for angle %f old strip width in pixels with no thickness was %f" %(angle, stripwidthold))
 				
 				if options.thickness:
-					depthdefocus = math.fabs( options.thickness / numpy.cos( math.radians( angle ) ) )	#icethickness, in pixels, will contribute to defocus variation with tilt, in addition to the tilting itself
+					depthdefocus = math.fabs( options.thickness// numpy.cos( math.radians( angle ) ) )	#icethickness, in pixels, will contribute to defocus variation with tilt, in addition to the tilting itself
 				
 					stripwidthold += depthdefocus				
 				
 				stripwidthold*=2 #this factor of two accounts for the fact that the old method only calculated things for half of the micrograph (from the tilt axis)
 
 				
-				print("old depthfocus was", math.fabs( options.thickness / numpy.cos( math.radians( angle ) ) ))
+				print("old depthfocus was", math.fabs( options.thickness// numpy.cos( math.radians( angle ) ) ))
 				print("using this thickness", options.thickness)
 				print("old strip width in pixels was", stripwidthold)
 				
 				
 				#cos/sin is cot, but the function does not exist in numpy
-				stripwidth = allowabledzpixels * (numpy.cos( math.radians (angle) ) / numpy.sin( math.radians (angle) ) )  #this is in pixels
+				stripwidth = allowabledzpixels * (numpy.cos( math.radians (angle) )// numpy.sin( math.radians (angle) ) )  #this is in pixels
 				
 				#print "however, new strip width is", stripwidth
 				depthfocusnew = -1* options.thickness / numpy.sin( math.radians( angle ))
@@ -1845,7 +1845,7 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 			largest odd number of micrographs that fit in the whole image and treat the rest 
 			as excedent. 
 			#'''
-			nmicros = nx/micrographwidth
+			nmicros = nx//micrographwidth
 			nmicrosint = int( math.floor( nmicros ) )	
 			if not nmicrosint % 2:
 				nmicrosint -= 1
@@ -1888,10 +1888,10 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 						elif iz == nmicrosint + 1:				#last submicrograph starting point; range goes from 0 to microsint + 2 at most, without including the upper bound
 							start = nx - micrographwidth
 						else:
-							start = (iz-1)*micrographwidth + excedent/2
+							start = (iz-1)*micrographwidth + excedent//2
 						
 					else:
-						start = (iz)*micrographwidth + excedent/2		#Don't bother with edge micrographs if aux is 0
+						start = (iz)*micrographwidth + excedent//2		#Don't bother with edge micrographs if aux is 0
 					
 					#print "withOUT adjuststart, start to append is", start
 				
@@ -1901,7 +1901,7 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 					micrographstarts.append( int(start) )
 				
 			elif adjuststart:
-				nmicrosint = int( math.floor( ( nx - options.tilesize ) / stripfitstep ) )
+				nmicrosint = int( math.floor( ( nx - options.tilesize )// stripfitstep ) )
 			
 				excedentnew = nx - options.tilesize * nmicrosint
 			
@@ -1935,8 +1935,8 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 				
 				fftc, ntiles = tilerfft( options, angle, imgfile, m, len(micrographstarts), micrographstarts[m], endstartm )
 				
-				micrographmiddle = float( list(micrographstarts)[m] + micrographwidth/2.0 )
-				micrographmiddlemicrometers =  ( list(micrographstarts)[m] + micrographwidth/2.0 ) * apix / 10000.00 #xaxis in micrometers too
+				micrographmiddle = float( list(micrographstarts)[m] + micrographwidth//2.0 )
+				micrographmiddlemicrometers =  ( list(micrographstarts)[m] + micrographwidth//2.0 ) * apix / 10000.00 #xaxis in micrometers too
 				
 				if options.verbose > 8:
 					print("\n(e2tomo_ctf)(fitgradient) micrograph start is %f, micrograph width is %f, therefore micrograph middle is %f" %(micrographstarts[m],micrographwidth,micrographmiddle))
@@ -1957,11 +1957,11 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 					if options.thickness and options.coords:
 						icethicknessm = options.thickness * imghdr['apix_x']/10000
 					
-						defocuswiggley = math.fabs( icethicknessm / math.cos( math.radians(angle) ))
+						defocuswiggley = math.fabs( icethicknessm// math.cos( math.radians(angle) ))
 						if defocuserror:
 							defocuswiggley += defocuserror
 						
-						defocuswigglex = 2*math.fabs( -1*(micrographmiddlemicrometers - imghdr['nx']/2.0)*math.sin( math.radians(angle) ) * imghdr['apix_x']/10000)
+						defocuswigglex = 2*math.fabs( -1*(micrographmiddlemicrometers - imghdr['nx']//2.0)*math.sin( math.radians(angle) ) * imghdr['apix_x']/10000)
 						
 						defocuswiggle = defocuswigglex + defocuswiggley
 						
@@ -1996,7 +1996,7 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 					print("\nappended (good) micrographmiddle is", micrographmiddlemicrometers)	
 				else:
 					print("\nappending to failed results, for which the number of good tiles ntiles was", ntiles)
-					faileddefs.append( (defocusmin+defocusmax)/2 )
+					faileddefs.append( (defocusmin+defocusmax)//2 )
 					failedmids.append( micrographmiddlemicrometers )
 			
 			#xs = numpy.array( [i*options.stripfitstep + options.tilesize/2.0 for i in range(len(imgdefocuses))] )
@@ -2092,7 +2092,7 @@ def fitdefocusgradient( options, apix, imagefilenames, angles, globaldefocuses, 
 	angerrors = collections.OrderedDict(sorted(angerrors.items()))
 	if angerrors:
 	
-		avgangerror = sum( [  math.sqrt(angerrors[a]*angerrors[a]) for a in list(angerrors.keys()) ] ) /len( angerrors )
+		avgangerror = sum( [  math.sqrt(angerrors[a]*angerrors[a]) for a in list(angerrors.keys()) ] )//len( angerrors )
 		
 		a=open(options.path + '/angular_error_avg.txt','w')
 		a.writelines([str(avgangerror)+'\n'])
@@ -2246,7 +2246,7 @@ def sptctfplotter( options, nx, xdata, ydata, maxangle, angle, angleindx, nangle
 	'''
 	
 	
-	yavg = sum( ydata )/len(ydata)
+	yavg = sum( ydata )//len(ydata)
 	miny = min(ydata)
 	maxy = max(ydata)
 	
@@ -2347,11 +2347,11 @@ def generalplotter( options, xaxis, yaxis, xlabel, ylabel, plotname, title, flip
 	sizeploty=15.0
 	
 	if sizerangex > sizerangey:
-		proportionfactor = sizerangey/sizerangex
+		proportionfactor = sizerangey//sizerangex
 		sizeploty =  int( round( sizeploty*proportionfactor ) )
 		
 	elif sizerangey > sizerangex:
-		proportionfactor = sizerangex/sizerangey
+		proportionfactor = sizerangex//sizerangey
 		sizeplotx = int( round( sizeplotx*proportionfactor ) )
 	print("\nsizerangex=%f, sizerangey=%f, proportionfactor=%f therefore sizeplotx=%d, sizeploty=%d" %(sizerangex,sizerangey,proportionfactor,sizeplotx,sizeploty))
 		
@@ -2387,7 +2387,7 @@ def generalplotter( options, xaxis, yaxis, xlabel, ylabel, plotname, title, flip
 	maxy = max(yaxis)
 	miny = min(yaxis)
 	yrange = maxy - miny
-	extray = yrange/20
+	extray = yrange//20
 	
 	#if options.yrange:
 	#	ylim1 = int( options.yrange.split(',')[0] )
@@ -2399,14 +2399,14 @@ def generalplotter( options, xaxis, yaxis, xlabel, ylabel, plotname, title, flip
 	maxx = max(xaxis)
 	minx = min(xaxis)
 	xrange = maxx - minx
-	extrax = xrange/20
+	extrax = xrange//20
 	
 	
 	if 'pixels' in xlabel or 'pixels' in ylabel:
 		if options.radius:
 			extray = extrax = options.radius * 2
 		elif ptclnx:
-			extray = extrax = int(ptclnx/2)
+			extray = extrax = int(ptclnx//2)
 		
 			
 	print("\nmax y is", maxy)
@@ -2475,7 +2475,7 @@ def bgAdj(ctf,fg_1d):
 
 	# Find the minimum value near the origin, which we'll use as a zero (though it likely should not be)
 	mv=(fg_1d[1],1)
-	fz=int(ctf.zero(0)/(ds*2))
+	fz=int(ctf.zero(0)//(ds*2))
 	
 	for lz in range(1,fz):
 		mv=min(mv,(fg_1d[lz],lz))
@@ -2484,7 +2484,7 @@ def bgAdj(ctf,fg_1d):
 
 	# now we add all of the zero locations to our XYData object
 	for i in range(100):
-		z=int(ctf.zero(i)/ds)
+		z=int(ctf.zero(i)//ds)
 		if z>=len(bg_1d)-1: break
 		if fg_1d[z-1]<fg_1d[z] and fg_1d[z-1]<fg_1d[z+1]: mv=(z-1,fg_1d[z-1])
 		elif fg_1d[z]<fg_1d[z+1] : mv=(z,fg_1d[z])
@@ -2519,15 +2519,15 @@ def clip2d( img, nx, ny=0, imgycc=None, imgxcc=None ):
 	if ny:
 		sizey = ny
 		
-	imgxc = img['nx']/2
+	imgxc = img['nx']//2
 	if imgxcc != None:
 		imgxc=imgxcc
 
-	imgyc = img['ny']/2
+	imgyc = img['ny']//2
 	if imgycc != None:
 		imgyc=imgycc
 
-	Rimg =  Region( (2*imgxc - sizex)/2, (2*imgyc - sizey)/2, sizex , sizey )
+	Rimg =  Region( (2*imgxc - sizex)//2, (2*imgyc - sizey)//2, sizex , sizey )
 	img.clip_inplace( Rimg )
 	
 	return img

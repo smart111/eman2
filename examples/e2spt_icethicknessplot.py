@@ -610,7 +610,7 @@ def plotter(options,xaxis,yaxis,xaxislabel,yaxislabel,title,pad=0,squareplot=Fal
 		
 	if options.plotparticleradii:
 		if options.radius:
-			rad = pad/2		#this should be at the proper scale already from main function
+			rad = pad//2		#this should be at the proper scale already from main function
 			
 			axes = pylab.axes()
 			

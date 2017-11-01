@@ -27,7 +27,7 @@ a.mult(asq)
 a.mult(bsq)
 
 # masking, to eliminate spurious artifacts at the edges where there is almost no density
-b.process_inplace("threshold.binary",{"value":b["mean"]+b["sigma"]/4})
+b.process_inplace("threshold.binary",{"value":b["mean"]+b["sigma"]//4})
 a.mult(b)	# this is a mask of sorts
 
 a.write_image("loc_cor.hdf")

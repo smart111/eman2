@@ -77,7 +77,7 @@ def main():
 	print(len(cnts))
 	box=[]
 	for i in range(0,len(cnts),2):
-		box.append([cnts[i]/1,cnts[i+1]/1,"manual"])
+		box.append([cnts[i]//1,cnts[i+1]//1,"manual"])
 	jn={}
 	jn["boxes"]=box
 	#print jn

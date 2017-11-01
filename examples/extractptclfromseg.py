@@ -40,7 +40,7 @@ def main():
 		if options.shrink>0:
 			shrink=options.shrink
 		else:
-			shrink=tomo["apix_x"]/raw["apix_x"]
+			shrink=tomo["apix_x"]//raw["apix_x"]
 		
 		if options.apix<=0:
 			options.apix=tomo["apix_x"]
@@ -65,7 +65,7 @@ def main():
 					return
 			pks=np.array(pks)*shrink
 			if np.min(pks)<0:
-				pks+=np.array([raw["nx"]/2, raw["ny"]/2, raw["nz"]/2])
+				pks+=np.array([raw["nx"]//2, raw["ny"]//2, raw["nz"]//2])
 			pks=pks.astype(int)
 			
 		else:
@@ -75,7 +75,7 @@ def main():
 			js=None
 		
 		bxsz=int(options.boxsz*shrink)
-		b2=bxsz/2
+		b2=bxsz//2
 		
 		if options.zthick>0:
 			print("Making projection of {} pixel thickness".format(options.zthick))
@@ -93,12 +93,12 @@ def main():
 
 			for p in pks:
 				
-				pj=EMData(rawname, 0, False,Region(p[0]-b2,p[1]-b2,p[2]-zthick/2, bxsz, bxsz, zthick))
+				pj=EMData(rawname, 0, False,Region(p[0]-b2,p[1]-b2,p[2]-zthick//2, bxsz, bxsz, zthick))
 				
 				
 				pj.process_inplace("normalize")
 				pj.mult(-1)
-				pj["apix_x"]=pj["apix_y"]=pj["apix_z"]=options.apix/shrink
+				pj["apix_x"]=pj["apix_y"]=pj["apix_z"]=options.apix//shrink
 				if options.zthick>0:
 					pj=pj.project("standard", Transform())
 				
@@ -136,8 +136,8 @@ def main():
 		
 		if options.shrink==0:
 			tm=EMData(tomoname,0,True)
-			shrinkz=float(tm["nz"])/e["nz"]
-			shrinkxy=tm["nx"]/e["nx"]
+			shrinkz=float(tm["nz"])//e["nz"]
+			shrinkxy=tm["nx"]//e["nx"]
 			print("Shrink by {} in x-y plane, and shrink {} in z axis".format(shrinkxy, shrinkz))
 		else:
 			shrinkz=shrinkxy=options.shrink
@@ -164,7 +164,7 @@ def main():
 			pkscore=[]
 			pk_new=[[-100,-100,-100]]
 			for ip,p in enumerate(pks):
-				nb=np.sum(np.sum(np.array(pk_new-p)**2,axis=1)<(options.boxsz/4)**2)
+				nb=np.sum(np.sum(np.array(pk_new-p)**2,axis=1)<(options.boxsz//4)**2)
 				#print p, nb
 				if nb<1:
 					pk_new.append(p)

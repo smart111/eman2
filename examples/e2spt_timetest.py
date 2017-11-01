@@ -231,7 +231,7 @@ def main():
 						cnums = numpy.array(retcpuC[1])
 						
 						sizes = retgpuC[0]
-						difs = cnums/gnums
+						difs = cnums//gnums
 						difs = list(difs)
 						
 						data=[sizes,difs]
@@ -851,9 +851,9 @@ def doit(corg,options,originaldir):
 							if finestep:
 							
 								if 'fourier' not in aidee:
-									cmd += ''' --falign=refine_3d_grid:delta=''' + str( finestep ) + ''':range=''' + str(int(round(float(options.coarsestep)/2.0)))
+									cmd += ''' --falign=refine_3d_grid:delta=''' + str( finestep ) + ''':range=''' + str(int(round(float(options.coarsestep)//2.0)))
 								elif 'fourier' in aidee:
-									cmd += ''' --falign=fft_tag=yes:refine_3d_grid:delta=''' + str( finestep ) + ''':range=''' + str(int(round(float(options.coarsestep)/2.0)))
+									cmd += ''' --falign=fft_tag=yes:refine_3d_grid:delta=''' + str( finestep ) + ''':range=''' + str(int(round(float(options.coarsestep)//2.0)))
 										
 							cmd += ' ' + profilecmd2  + ' && rm -r ' + aidee
 							
@@ -885,7 +885,7 @@ def doit(corg,options,originaldir):
 						if options.finestep:
 							for bc in bestcoarse:
 								#classoptions["falign"][1]["xform.align3d"] = bc["xform.align3d"]
-								ran=int(round(float(options.coarsestep)/2.0))
+								ran=int(round(float(options.coarsestep)//2.0))
 								a.align('refine_3d_grid',b,{'delta':int(options.finestep),'range':ran,'search':3,'xform.align3d':bc['xform.align3d'],'verbose':options.verbose},'ccc.tomo')
 						tb = time()
 					else:
@@ -1004,12 +1004,12 @@ def calcratio( options, x1, x2, sizes, corg, ID1, ID2 ):
 	sumx1 = sum(x1)
 	sumx2 = sum(x2)
 	
-	difs = x1/x2
+	difs = x1//x2
 	difs = list(difs)
 	title= ID1 + '/' + ID2
 	
 	if sumx2 > sumx1:
-		difs = x2/x1
+		difs = x2//x1
 		difs = list(difs)
 		title= ID2 + '/' + ID1
 	

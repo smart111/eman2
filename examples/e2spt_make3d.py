@@ -18,7 +18,7 @@ def make3d(ii, options, ptcls):
 	#print "{} started. {} particles".format(ii, len(ptcls))
 	kk=0
 	for p in ptcls:
-		p2=p.get_clip(Region(-(pad-boxsize)/2,-(pad-boxsize)/2,pad,pad))
+		p2=p.get_clip(Region(-(pad-boxsize)//2,-(pad-boxsize)//2,pad,pad))
 		p3=recon.preprocess_slice(p2,p["xform.projection"])
 		recon.insert_slice(p3,p["xform.projection"],1.0)
 		kk+=1
@@ -26,7 +26,7 @@ def make3d(ii, options, ptcls):
 	threed=recon.finish(True)
 	if options.clip>0:
 		boxsize=options.clip
-		threed.clip_inplace(Region((pad-boxsize)/2, (pad-boxsize)/2, (pad-boxsize)/2, boxsize, boxsize,boxsize))
+		threed.clip_inplace(Region((pad-boxsize)//2, (pad-boxsize)//2, (pad-boxsize)//2, boxsize, boxsize,boxsize))
 	#threed.write_image(options.ptclout, mid)
 	threed["apix_x"]=ptcls[0]["apix_x"]
 	threed["apix_y"]=ptcls[0]["apix_x"]

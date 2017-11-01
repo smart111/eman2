@@ -38,7 +38,7 @@ def main():
 		if options.prepend: options.output = options.prepend + "_" + options.output
 		if options.append: options.output = options.output.split('.')[0] + "_" + options.append + ".box"
 		
-	bs = int(options.boxsize/2)
+	bs = int(options.boxsize//2)
 	
 	logger = E2init(sys.argv)
 	
@@ -97,7 +97,7 @@ def main():
 	if nmgs == 1:
 		with open(options.output,'w+') as boxf:
 			for x,y in zip(starf[xk],starf[yk]):
-				boxf.write("{}\t{}\t{}\t{}\n".format(int(x-bs/2),int(y-bs/2),2*bs,2*bs))
+				boxf.write("{}\t{}\t{}\t{}\n".format(int(x-bs//2),int(y-bs//2),2*bs,2*bs))
 	# case 2: multiple micrographs in file
 	elif nmgs > 1:
 		newpth = options.path + "/" + os.path.basename(options.input).split('.')[0]
@@ -115,7 +115,7 @@ def main():
 				for ptcl in ptcls:
 					x = starf[xk][ptcl]
 					y = starf[yk][ptcl]
-					boxf.write("{}\t{}\t{}\t{}\n".format(int(x-bs/2),int(y-bs/2),2*bs,2*bs))
+					boxf.write("{}\t{}\t{}\t{}\n".format(int(x-bs//2),int(y-bs//2),2*bs,2*bs))
 	
 	E2end(logger)
 

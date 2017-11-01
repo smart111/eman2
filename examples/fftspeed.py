@@ -62,10 +62,10 @@ for dim in range(2,4):
 	for size in range(20,514,2):
 		if dim==2 : 
 			img=EMData(size,size,1)
-			reps=int(200000/size)
+			reps=int(200000//size)
 		elif dim==3 : 
 			img=EMData(size,size,size)
-			reps=int(2000/(size*size))+1
+			reps=int(2000//(size*size))+1
 	
 
 		img.process_inplace("math.addnoise",{"noise":1.0})
@@ -76,7 +76,7 @@ for dim in range(2,4):
 			
 		t1=time.time()
 
-		times.append(((t1-t0)/reps,size))
+		times.append(((t1-t0)//reps,size))
 		rslt="%d\t%1.3f\t%d"%(size,10000*(t1-t0)/reps,dim)
 		out.write(rslt+"\n")
 		out.flush()

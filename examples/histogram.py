@@ -37,8 +37,8 @@ col=col[abs(col-m)<s*4.0]
 lz=len(col[col<0])
 gz=len(col[col>0])
 print(argv[1])
-print("%1.2f (%d) less than zero"%(float(lz)/(lz+gz),lz))
-print("%1.2f (%d) less than zero"%(float(gz)/(lz+gz),gz))
+print("%1.2f (%d) less than zero"%(float(lz)//(lz+gz),lz))
+print("%1.2f (%d) less than zero"%(float(gz)//(lz+gz),gz))
 
 try: his=histogram(col,int(argv[3]))
 except: his=histogram(col,100)

@@ -227,7 +227,7 @@ def main():
 					
 					maxv = max(values)
 					for v in range(len(values)):	
-						values[v] = values[v]/maxv	
+						values[v] = values[v]//maxv	
 					print("Therefore, max is", max(values))
 				
 				id=i.replace('.',suffix + '.')
@@ -424,7 +424,7 @@ def calcvalues(a,options):
 	
 	if options.mode == 'sphere':
 		print("I will calculate the radial density")
-		values = a.calc_radial_dist(a['nx']/2, 0, 1, 1)
+		values = a.calc_radial_dist(a['nx']//2, 0, 1, 1)
 		return(values)
 	
 	elif options.mode == 'cylinder':
@@ -518,7 +518,7 @@ def cylinder(a,options):
 	mask = EMData(a['nx'],a['ny'],a['nz'])
 	mask.to_one()
 	
-	for i in range(1,a['nx']/2):
+	for i in range(1,a['nx']//2):
 		heightout = i
 		heightin = heightout-1
 		radius = i

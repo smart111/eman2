@@ -410,9 +410,9 @@ def main():
 	
 	
 	
-	tiltaxisloc = tomox/2.0 
+	tiltaxisloc = tomox//2.0 
 	if options.tiltaxislocation > -1:
-		tiltaxisloc = options.tiltaxislocation/2.0 
+		tiltaxisloc = options.tiltaxislocation//2.0 
 	
 	xclowerthresh = 0
 	xcupperthresh = tomox
@@ -432,7 +432,7 @@ def main():
 	Figure out which side has the most angles too.
 	'''
 	nimgsOriginal = EMData( options.tiltseries, 0, True )['nz']
-	middleIndx = nimgsOriginal/2
+	middleIndx = nimgsOriginal//2
 	
 	absangles = []	#absolute value of all angles
 	
@@ -581,7 +581,7 @@ def main():
 			
 			if options.centerzerotilt:					
 				box = middleslice['nx']
-				radius = box / 4.0
+				radius = box// 4.0
 				
 				if options.radius:
 					radius = options.radius
@@ -600,8 +600,8 @@ def main():
 				ccftC = ccft.process('xform.phaseorigin.tocorner')
 				maxccftC = ccftC.calc_max_location()
 			
-				midsxt = -1 * ( middleslice['nx'] /2.0 - maxccftC[0])			
-				midsyt = -1 * ( middleslice['nx'] /2.0 - maxccftC[1])
+				midsxt = -1 * ( middleslice['nx']//2.0 - maxccftC[0])			
+				midsyt = -1 * ( middleslice['nx']//2.0 - maxccftC[1])
 				print("Autocentering translations for tilt 0 are", midsxt, midsyt)
 				#cumulativeLdx += midsxt
 				#cumulativeLdy += midsyt
@@ -623,8 +623,8 @@ def main():
 			middleslice['spt_tiltaxis'] = 'y'
 			middleslice['spt_subtilt_x'] = midscoordx
 			middleslice['spt_subtilt_y'] = midscoordy
-			middleslice['origin_x'] = middleslice['nx']/2.0
-			middleslice['origin_y'] = middleslice['ny']/2.0
+			middleslice['origin_x'] = middleslice['nx']//2.0
+			middleslice['origin_y'] = middleslice['ny']//2.0
 			middleslice['origin_z'] = 0
 
 			middleslice['apix_x'] = apix
@@ -898,8 +898,8 @@ def write2D( options, angle, icethickness, tomox, tomoy, xc, yc, zc, cumulatived
 		finalimg['spt_tiltaxis'] = 'y'
 		finalimg['spt_subtilt_x'] = fx
 		finalimg['spt_subtilt_y'] = fy
-		finalimg['origin_x'] = finalimg['nx']/2.0
-		finalimg['origin_y'] = finalimg['ny']/2.0
+		finalimg['origin_x'] = finalimg['nx']//2.0
+		finalimg['origin_y'] = finalimg['ny']//2.0
 		finalimg['origin_z'] = 0
 
 		finalimg['apix_x'] = apix
@@ -954,7 +954,7 @@ def extract2D( options, angle, icethickness, tomox, xc, yc, zc, cumulativedx, cu
 	if options.invertangles:
 		angle *= -1
 	
-	tAxisShift = tomox/2.0
+	tAxisShift = tomox//2.0
 	xcToAxis = xc - tAxisShift
 	oldx = xcToAxis
 	
@@ -1002,13 +1002,13 @@ def extract2D( options, angle, icethickness, tomox, xc, yc, zc, cumulativedx, cu
 	then retrieve the new xc2d and yc2d coordinates
 	'''
 	
-	vect = numpy.array([xc - tAxisShift,0,zc-icethickness/2.0,0])
+	vect = numpy.array([xc - tAxisShift,0,zc-icethickness//2.0,0])
 	newvector = yrotate( vect,angle )
 	
 	xc2d = int(newvector[0]) + tAxisShift
 	#yc2d = int(newvector[1])
 	yc2d = yt
-	zc2d = int(newvector[2]) + icethickness/2.0
+	zc2d = int(newvector[2]) + icethickness//2.0
 	
 	
 	
@@ -1032,7 +1032,7 @@ def extract2D( options, angle, icethickness, tomox, xc, yc, zc, cumulativedx, cu
 
 	if float(xt) < 0.0:
 		print("Something went awfully wrong; you have a negative X coordinate",xt)
-		print("tomox and tomox/2.0 are", tomox, tomox/2.0)
+		print("tomox and tomox/2.0 are", tomox, tomox//2.0)
 
 	#if float(yt) < 0.0:
 	#	print "Something went awfully wrong; you have a negative Y coordinate",yt
@@ -1042,10 +1042,10 @@ def extract2D( options, angle, icethickness, tomox, xc, yc, zc, cumulativedx, cu
 	#	print "Either X or Y are negative, see", xt, yt
 	#	sys.exit()
 
-	if float(xt) < float(options.boxsize)/2.0: #or float(yt) < float(options.boxsize)/2.0:
+	if float(xt) < float(options.boxsize)//2.0: #or float(yt) < float(options.boxsize)/2.0:
 		print("Pick a smaller boxsize; otherwise, some of your particles will contain empty regions outside the image")
 		print("Particle is centered at", xt, yc)
-		print("And boxsize/2 is", options.boxsize/2.0)
+		print("And boxsize/2 is", options.boxsize//2.0)
 		sys.exit()
 
 	xt += cumulativedx
@@ -1058,7 +1058,7 @@ def extract2D( options, angle, icethickness, tomox, xc, yc, zc, cumulativedx, cu
 	#r = Region( (2*xc2d-options.boxsize)/2, (2*yc2d-options.boxsize)/2, sliceindx, options.boxsize, options.boxsize, 1)
 	
 	##OLD
-	r = Region( (2*xt-options.boxsize)/2, (2*yt-options.boxsize)/2, sliceindx, options.boxsize, options.boxsize, 1)
+	r = Region( (2*xt-options.boxsize)//2, (2*yt-options.boxsize)//2, sliceindx, options.boxsize, options.boxsize, 1)
 	
 	#print "\n\n\nRRRRRRRRRR\nThe region to extract is", r
 
@@ -1115,8 +1115,8 @@ def align2D( options, ref, img ):
 	
 	locmax = ccf.calc_max_location()
 							
-	drecenterX = refp['nx']/2.0 - locmax[0]
-	drecenterY = refp['ny']/2.0 - locmax[1]
+	drecenterX = refp['nx']//2.0 - locmax[0]
+	drecenterY = refp['ny']//2.0 - locmax[1]
 	
 	if options.shrink:
 		print("(e2spt_subtilt)(align2D) on shrunk images, translation to recenter are", drecenterX, drecenterY)
@@ -1200,7 +1200,7 @@ def subtractBackground():
 	'''
 	if k == 0:			
 		#ret = unbinned_extractor(options,bgboxsize,xc,yc,zc,options.cshrink,invert,center,options.tomogram)
-		rw =  Region( (2*xc-bgboxsize)/2, (2*yc-bgboxsize)/2, (2*zc-bgboxsize)/2, bgboxsize, bgboxsize, bgboxsize)
+		rw =  Region( (2*xc-bgboxsize)//2, (2*yc-bgboxsize)//2, (2*zc-bgboxsize)//2, bgboxsize, bgboxsize, bgboxsize)
 	
 		wholebox = EMData()
 		wholebox.to_zero()
@@ -1244,10 +1244,10 @@ def subtractBackground():
 		finalbox = options.boxsize
 		finalbgbox = bgboxsize
 		if int( options.shrink ) > 1:
-			finalbox = options.boxsize / options.shrink
-			finalbgbox = bgboxsize / options.shrink
+			finalbox = options.boxsize// options.shrink
+			finalbgbox = bgboxsize// options.shrink
 						
-		rbgprism =  Region( (wholebox['nx'] - finalbox)/2, (wholebox['ny'] - finalbox)/2, (wholebox['nz'] - finalbgbox)/2, finalbox, finalbox, finalbgbox)
+		rbgprism =  Region( (wholebox['nx'] - finalbox)//2, (wholebox['ny'] - finalbox)//2, (wholebox['nz'] - finalbgbox)//2, finalbox, finalbox, finalbgbox)
 		wholeboxRot.clip_inplace( rbgprism )
 		print("\nSizes of prism are", wholeboxRot['nx'],wholeboxRot['ny'],wholeboxRot['nz'])
 	
@@ -1278,7 +1278,7 @@ def subtractBackground():
 		'''
 		Generate projections of the background density by masking out the particle
 		'''
-		maskrad = finalbox/3.0
+		maskrad = finalbox//3.0
 	
 		bgbox = wholeboxRot.process('mask.sharp',{'inner_radius':maskrad})
 							

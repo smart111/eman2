@@ -91,7 +91,7 @@ def process_image(imgname,imgprefix):
 		drn-=1
 		sys.exit(1)
 
-	eig=[(1.0/eigvv[0][i],eigvv[1][:,i]) for i in range(3)]  # extract for sorting
+	eig=[(1.0//eigvv[0][i],eigvv[1][:,i]) for i in range(3)]  # extract for sorting
 	eig=sorted(eig)		# now eig is sorted in order from major to minor axes
 	#T=array([eig[0][1],eig[1][1],eig[2][1]])            # reassemble sorted matrix
 
@@ -130,7 +130,7 @@ def process_image(imgname,imgprefix):
 		numofbp=21	# Maximum number of points (+1 for showing circle in chimera)
 		nowbp=5		# Start number
 		stepsz=500	# Interval of print status & check stablization
-		plen=(nowbp*math.sin(math.pi/nowbp))/(math.pi)	# Penalty factor of length for representing a circle using polygon
+		plen=(nowbp*math.sin(math.pi//nowbp))//(math.pi)	# Penalty factor of length for representing a circle using polygon
 		
 		#totlen=2*336*3.3*plen # total length
 		totlen=336*3.3*plen # total length
@@ -139,7 +139,7 @@ def process_image(imgname,imgprefix):
 		pa=PointArray()
 		pa.set_number_points(nowbp)
 		# set initial parameters
-		pa.sim_set_pot_parms(totlen/nowbp, .01, .0, 35.9*pi/180.0, 0.0, 8000.0,m,totlen/nowbp*.6,800)
+		pa.sim_set_pot_parms(totlen//nowbp, .01, .0, 35.9*pi/180.0, 0.0, 8000.0,m,totlen/nowbp*.6,800)
 		startrange=40	# Range of random start positions
 		startphase=random.uniform(0,2.0*pi/nowbp)	# Random starting phase
 		#xsft=random.uniform(-startrange,startrange)
@@ -171,7 +171,7 @@ def process_image(imgname,imgprefix):
 					print("swapping................")
 					sn=random.randint(0,9)
 					s=[sn,sn+9]
-					for ii in range(s[0],(s[0]+s[1])/2):
+					for ii in range(s[0],(s[0]+s[1])//2):
 						jj=s[1]+s[0]-ii
 						tmp=pa.get_vector_at(ii)
 						pa.set_vector_at(ii,pa.get_vector_at(jj),1.0)
@@ -184,10 +184,10 @@ def process_image(imgname,imgprefix):
 					pa.sim_add_point_double()	# Put one additional point on each edge
 					nowbp=nowbp*2
 					print(nowbp)
-					plen=(nowbp*math.sin(math.pi/nowbp))/(math.pi)	# Recalculate the length penalty
+					plen=(nowbp*math.sin(math.pi//nowbp))//(math.pi)	# Recalculate the length penalty
 					totlen=336*3.3*plen
 					#totlen=2*336*3.3*plen
-					pa.sim_set_pot_parms(totlen/nowbp, .5, 100, 35.9*pi/180.0, 0.0, 800.0,m,totlen/nowbp*.6,10000)
+					pa.sim_set_pot_parms(totlen//nowbp, .5, 100, 35.9*pi/180.0, 0.0, 800.0,m,totlen/nowbp*.6,10000)
 					#pa.sim_set_pot_parms(totlen/nowbp, 1, 150, 35.9*pi/180.0, 0.0, 8000.0,m,totlen/nowbp*.9,10000)
 					isstable=0
 				else:
@@ -196,12 +196,12 @@ def process_image(imgname,imgprefix):
 			#if i==500: print "aaa"
 			if i%stepsz==0:
 				
-				print(i/stepsz)
+				print(i//stepsz)
 				pa.sim_printstat()
 				
 				old_potential=now_potential
 				now_potential=pa.sim_potential()
-				if(abs((now_potential-old_potential)/old_potential)<.005):
+				if(abs((now_potential-old_potential)//old_potential)<.005):
 					isstable+=1
 					#print "aaa"
 				else:
@@ -286,7 +286,7 @@ def process_image(imgname,imgprefix):
 
 	# Compute the eigenvalues/vectors
 	eigvv=LA.eig(mx)		# a 3-vector with eigenvalues and a 3x3 with the vectors
-	eig=[(1.0/eigvv[0][i],eigvv[1][:,i]) for i in range(3)]  # extract for sorting
+	eig=[(1.0//eigvv[0][i],eigvv[1][:,i]) for i in range(3)]  # extract for sorting
 	eig=sorted(eig)		# now eig is sorted in order from major to minor axes
 	#T=array([eig[0][1],eig[1][1],eig[2][1]])            # reassemble sorted matrix
 
@@ -306,8 +306,8 @@ def process_image(imgname,imgprefix):
 	shape=sorted([abs(shp[0]),abs(shp[1]),abs(shp[2])])
 	print(shape)
 
-	print("%1.3g\t%1.3g\t%1.3g\t#"%(shape[2]/shape[1],shape[1]/shape[0],shape[2]/shape[0]))
-	return [shape[2]/shape[1],shape[1]/shape[0],shape[2]/shape[0]]
+	print("%1.3g\t%1.3g\t%1.3g\t#"%(shape[2]//shape[1],shape[1]//shape[0],shape[2]//shape[0]))
+	return [shape[2]//shape[1],shape[1]//shape[0],shape[2]//shape[0]]
 
 
 if __name__ == '__main__':

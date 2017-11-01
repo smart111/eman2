@@ -38,13 +38,13 @@ def main():
 	pad=good_boxsize(int(sz*1.5))
 	recon=Reconstructors.get("fourier", {"sym":'c1',"size":[pad,pad,pad], "mode":"gauss_2"})
 	recon.setup()
-	epad=eali.get_clip(Region(sz/2-pad/2, sz/2-pad/2, pad, pad))
+	epad=eali.get_clip(Region(sz//2-pad//2, sz//2-pad//2, pad, pad))
 	xfs=[{}, {"type":"eman", "alt":90}, {"type":"eman", "alt":90, "az":90}]
 	for xf in xfs:
 		recon.preprocess_slice(epad, Transform(xf))
 		recon.insert_slice(epad, Transform(xf), 1)
 	threed=recon.finish(True)
-	threed.clip_inplace(Region((pad-sz)/2, (pad-sz)/2, (pad-sz)/2, sz,sz,sz))
+	threed.clip_inplace(Region((pad-sz)//2, (pad-sz)//2, (pad-sz)//2, sz,sz,sz))
 	tdnpy=threed.numpy().copy()
 	tosave.append(tdnpy.flatten())
 	

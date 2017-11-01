@@ -28,7 +28,7 @@ class Microscope(QtOpenGL.QGLWidget):
 		d1=.25
 		f0=.085
 		#f0=(d0*d1-d0*f1)/(d1-f1+d0)
-		f1=(d0*d1-f0*d1-f0*d0)/(d0-f0)
+		f1=(d0*d1-f0*d1-f0*d0)//(d0-f0)
 		self.lens=[
 			[s-d0, f0], ### condenser lens 1
 			[s-d0-d1, f1], ### condenser lens 2
@@ -58,15 +58,15 @@ class Microscope(QtOpenGL.QGLWidget):
 		
 		elif mode==2:
 			self.lens.extend([
-				[-0.09, 1./15], ### objective lens
-				[-0.09-1./15, -5], #### phase plate
+				[-0.09, 1.//15], ### objective lens
+				[-0.09-1.//15, -5], #### phase plate
 				[-.347, -2], ### f==-2 : detector 
 			])
 			
 		#### imaging mode with a single lens
 		else:# mode==2:
 			self.lens.extend([
-				[-0.1, 1./15], ### objective lens
+				[-0.1, 1.//15], ### objective lens
 				[-.3, -2], ### f==-2 : detector 
 			])
 			
@@ -164,7 +164,7 @@ class Microscope(QtOpenGL.QGLWidget):
 		gsig=sz*gs
 		raw[:clip]=0
 		raw[-clip:]=0
-		gaus=np.exp(-np.arange(gwidth, dtype=float)**2/gsig**2)
+		gaus=np.exp(-np.arange(gwidth, dtype=float)**2//gsig**2)
 		raw[clip-gwidth:clip]=gaus[::-1]
 		raw[-clip:-clip+gwidth]=gaus
 		return raw
@@ -174,7 +174,7 @@ class Microscope(QtOpenGL.QGLWidget):
 		sz=512-1 ### length of x-axis
 		xdivz=2e-3 ### x/z scale ratio
 		mpix=4e-8 ### pixel to meter
-		wavelen=2e-12/mpix ### wave length
+		wavelen=2e-12//mpix ### wave length
 		wid=8 ### width of the slits
 		w2=4 ### position of the slits
 		
@@ -183,10 +183,10 @@ class Microscope(QtOpenGL.QGLWidget):
 		#raw[sz/2-wid+w2:sz/2+wid+w2]=1
 		
 		#raw[sz/2-wid+1:sz/2+wid]=1
-		raw0=np.exp(-(np.arange(sz, dtype=float)-sz/2+5)**2/5)
-		raw0+=np.exp(-(np.arange(sz, dtype=float)-sz/2-5)**2/5)
-		raw0+=np.exp(-(np.arange(sz, dtype=float)-sz/2-15)**2/5)
-		raw0+=np.exp(-(np.arange(sz, dtype=float)-sz/2+15)**2/5)
+		raw0=np.exp(-(np.arange(sz, dtype=float)-sz//2+5)**2//5)
+		raw0+=np.exp(-(np.arange(sz, dtype=float)-sz//2-5)**2//5)
+		raw0+=np.exp(-(np.arange(sz, dtype=float)-sz//2-15)**2//5)
+		raw0+=np.exp(-(np.arange(sz, dtype=float)-sz//2+15)**2//5)
 		#raw0+=np.exp(-(np.arange(sz, dtype=float)-sz/2-7.5)**2/5)
 		#raw0+=np.exp(-(np.arange(sz, dtype=float)-sz/2+7.5)**2/5)
 		#raw=np.exp(-1j*raw0*1)#*(np.exp(-raw0*.1))
@@ -207,7 +207,7 @@ class Microscope(QtOpenGL.QGLWidget):
 		#lens[:,0]=np.round(lens[:,0]) ### round z position
 		#lens[-1][0]+=10
 		
-		ix=(np.arange(sz, dtype=float)-sz/2)*xdivz ## indices along x direction
+		ix=(np.arange(sz, dtype=float)-sz//2)*xdivz ## indices along x direction
 		ix_mat=(ix-ix[:,None])**2
 		cs=self.cs * mult ## spherical abberation
 		alldata=[]
@@ -225,9 +225,9 @@ class Microscope(QtOpenGL.QGLWidget):
 			#print ix.shape, iz.shape, dst.shape, raw.shape, (ix-ix[:,None]).shape
 			#pmult=1e-3
 			if parallel:
-				cpx=np.exp(-1j*2*np.pi*(iz+np.zeros((sz, sz)))/wavelen)*np.mean(raw)*(1/iz**2)
+				cpx=np.exp(-1j*2*np.pi*(iz+np.zeros((sz, sz)))/wavelen)*np.mean(raw)*(1//iz**2)
 			else:
-				cpx=raw[:,None]*np.exp(-1j*2*np.pi*dst/wavelen)*(1/dst**2)
+				cpx=raw[:,None]*np.exp(-1j*2*np.pi*dst/wavelen)*(1//dst**2)
 			
 			
 			img=np.sum(cpx, axis=1)
@@ -243,14 +243,14 @@ class Microscope(QtOpenGL.QGLWidget):
 				
 				if (fv<-3 and fv>-4): ### aperture
 					ap=fv+4
-					clip=int((1-ap)*sz)/2
-					msk=self.gauss_edge(sz, cl=(1-ap)/2.)
+					clip=int((1-ap)*sz)//2
+					msk=self.gauss_edge(sz, cl=(1-ap)//2.)
 					proj_ps=proj.copy()*msk
 					shapes.append(EMShape(("rect",.5, .5, 1, 0, vz-2, clip, vz+2, 2)))
 					shapes.append(EMShape(("rect",.5, .5, 1, sz-clip, vz-2, sz, vz+2, 2)))
 					
 				elif fv==-5: ### phase plate
-					msk=self.gauss_edge(sz, cl=.1/2.)
+					msk=self.gauss_edge(sz, cl=.1//2.)
 					phaseplate=self.gauss_edge(sz, cl=.49, gw=.1, gs=.01)
 					phaseplate=-phaseplate*np.pi/2.
 					proj_ps=proj.copy()*msk*np.exp(-1j*phaseplate)
@@ -267,7 +267,7 @@ class Microscope(QtOpenGL.QGLWidget):
 				#iz=np.arange(1,zmax, dtype=float)[:,None,None] ## indices along z direction
 				iz=(np.arange(1, int(zmax)+1, dtype=float)/int(zmax)*zmax)[:,None,None]
 				dst=np.sqrt(ix_mat +iz**2)
-				cpx1=proj_ps[:,None]*np.exp(-1j*2*np.pi*dst/wavelen)*(1/dst**2)
+				cpx1=proj_ps[:,None]*np.exp(-1j*2*np.pi*dst/wavelen)*(1//dst**2)
 
 				img=np.sum(cpx1, axis=1)
 				imgs.append(img)
@@ -292,9 +292,9 @@ class Microscope(QtOpenGL.QGLWidget):
 			
 			a0=alldata[0][0,:]
 			#a1=alldata[1][0,:]
-			r0=(np.arange(sz)-sz/2)*abs(self.mag)
+			r0=(np.arange(sz)-sz//2)*abs(self.mag)
 			if self.wavesign<0: r0=r0[::-1]
-			clip=np.where(abs(r0)<sz/2)[0]
+			clip=np.where(abs(r0)<sz//2)[0]
 			if len(clip)>0:
 				c=clip[0]
 				rawplot=[r0[c:-c], raw0[c:-c]]
@@ -302,7 +302,7 @@ class Microscope(QtOpenGL.QGLWidget):
 				rawplot=[r0, raw0]
 			
 			#rawplot=[np.arange(sz)-sz/2, raw0]
-			self.pltwindow.set_data([np.arange(sz)-sz/2, abs(a0)/np.max(abs(a0))], "scatter", linetype=0)
+			self.pltwindow.set_data([np.arange(sz)-sz//2, abs(a0)//np.max(abs(a0))], "scatter", linetype=0)
 			self.pltwindow.set_data(rawplot, "raw", linetype=0)
 			#self.pltwindow.set_data([np.arange(sz)-sz/2, abs(alldata[1][0,:])], "parallel", linetype=0)
 			#self.pltwindow.set_data([np.arange(sz)-sz/2, 
@@ -317,12 +317,12 @@ class Microscope(QtOpenGL.QGLWidget):
 			bd=[bd[0], bd[-1]]
 			pad=int((bd[1]-bd[0])*1.)
 			bd=[bd[0]-pad, bd[1]+pad]
-			bd=[int((b-sz/2)*abs(self.mag)+sz/2) for b in bd]
+			bd=[int((b-sz//2)*abs(self.mag)+sz//2) for b in bd]
 			
 			bd[0]=max(0,bd[0])
 			bd[1]=min(sz-1, bd[1])
 			#print bd
-			aa-=(aa[bd[0]]+aa[bd[1]])/2.
+			aa-=(aa[bd[0]]+aa[bd[1]])//2.
 			#print bd
 			aa[:bd[0]]=0
 			aa[bd[1]-1:]=0
@@ -335,7 +335,7 @@ class Microscope(QtOpenGL.QGLWidget):
 			rawft/=np.max(rawft)
 			rf=rawft.copy()
 			rf[abs(rf)<1e-3]=1
-			ctf=a0ft/rf
+			ctf=a0ft//rf
 			ctf[abs(rawft)<1e-3]=0
 			
 			ftidx=np.fft.fftfreq(len(a0))
@@ -353,10 +353,10 @@ class Microscope(QtOpenGL.QGLWidget):
 		sz = self.sz
 		xydivz=2e-3 ### xy/z scale ratio
 		mpix=3e-8 ### pixel to meter
-		wavelen=2e-12/mpix ### wave length
+		wavelen=2e-12//mpix ### wave length
 		mult=floor(sz*0.5) ### size multiplier from GL lens diagram to wave image
 
-		yap,xap = np.ogrid[-sz/2:sz/2, -sz/2:sz/2]
+		yap,xap = np.ogrid[-sz//2:sz//2, -sz//2:sz//2]
 
 		#### from top to bottom of specimen
 		spec = []
@@ -371,7 +371,7 @@ class Microscope(QtOpenGL.QGLWidget):
 
 		raw1 = np.zeros((sz,sz))
 
-		ix2d, iy2d=(np.array(np.indices((sz,sz)), dtype=np.float32)-sz/2)*xydivz
+		ix2d, iy2d=(np.array(np.indices((sz,sz)), dtype=np.float32)-sz//2)*xydivz
 		rr=ix2d**2+iy2d**2
 		ixy = (ix2d[:,:,None,None]-ix2d[None,None,:])**2+ (iy2d[:,:,None,None]-iy2d[None,None,:])**2
 		for t0,coords in enumerate(layers):
@@ -381,14 +381,14 @@ class Microscope(QtOpenGL.QGLWidget):
 				s = float(s)
 				sigx = float(sigx)
 				sigy = float(sigy)
-				raw1 += s*np.exp(-((xap-x0)**2/sigx+(yap-y0)**2/sigy),dtype=np.float32)
+				raw1 += s*np.exp(-((xap-x0)**2//sigx+(yap-y0)**2//sigy),dtype=np.float32)
 			raw1 /= len(coords)
 			raw1 /= np.max(raw1)
 			phaseobj = np.exp(-1j*raw1*2*np.pi)
 
 			z = t0*scale
 			dst = np.sqrt(ixy+(t-z)**2)
-			cpx=phaseobj[:,:,None,None]*np.exp(-1j*2.*np.pi*dst/wavelen)*(1/dst**2)
+			cpx=phaseobj[:,:,None,None]*np.exp(-1j*2.*np.pi*dst/wavelen)*(1//dst**2)
 			img = np.sum(cpx, axis=(1,0))
 			img/=np.max(abs(img))
 			spec.append(img)
@@ -401,7 +401,7 @@ class Microscope(QtOpenGL.QGLWidget):
 
 		xydivz=2e-3 ### xy/z scale ratio
 		mpix=3e-8 ### pixel to meter
-		wavelen=2e-12/mpix ### wave length
+		wavelen=2e-12//mpix ### wave length
 		mult=floor(sz*0.78) ### size multiplier from GL lens diagram to wave image
 
 		#### load lens info
@@ -417,13 +417,13 @@ class Microscope(QtOpenGL.QGLWidget):
 		imgs.append(raw)
 		
 		#### from exiting specimen to the first lens
-		yap,xap = np.ogrid[-sz/2:sz/2, -sz/2:sz/2]
+		yap,xap = np.ogrid[-sz//2:sz//2, -sz//2:sz//2]
 		iz=np.round((self.lens[2][0]-l[0,0])*mult) ### z position of the first lens
-		ix2d, iy2d=(np.array(np.indices((sz,sz)), dtype=np.float32)-sz/2)*xydivz
+		ix2d, iy2d=(np.array(np.indices((sz,sz)), dtype=np.float32)-sz//2)*xydivz
 		rr=ix2d**2+iy2d**2
 		ixy = (ix2d[:,:,None,None]-ix2d[None,None,:])**2+ (iy2d[:,:,None,None]-iy2d[None,None,:])**2
 		dst = np.sqrt(ixy+iz**2)
-		cpx=raw[:,:,None,None]*np.exp(-1j*2.*np.pi*dst/wavelen)*(1/dst**2)
+		cpx=raw[:,:,None,None]*np.exp(-1j*2.*np.pi*dst/wavelen)*(1//dst**2)
 		img = np.sum(cpx, axis=(1,0))
 		img/=np.max(abs(img))
 		imgs.append(img)
@@ -435,14 +435,14 @@ class Microscope(QtOpenGL.QGLWidget):
 			if f<0: ### aperture
 				proj_ps=proj.copy()
 				ap=lens_gl[il][1]+4
-				clip=int((1-ap)*sz)/2
+				clip=int((1-ap)*sz)//2
 				proj_ps *= (xap*xap+yap*yap<clip**2)
 			else: ### lens
 				ps=rr/(f*2)*(2*np.pi/wavelen)  ### phase shift
 				ps+=self.cs*(rr**4)/4.
 				proj_ps=proj*np.exp(-1j*(-ps)) ### projection after phase shift
 			dst = np.sqrt(ixy+zmax**2)
-			cpx1=proj_ps[:,:,None,None]*np.exp(-1j*2*np.pi*dst/wavelen)*(1/dst**2)
+			cpx1=proj_ps[:,:,None,None]*np.exp(-1j*2*np.pi*dst/wavelen)*(1//dst**2)
 			img=np.sum(cpx1,axis=(1,0))
 			img/=np.max(abs(img))
 			imgs.append(img)
@@ -465,7 +465,7 @@ class Microscope(QtOpenGL.QGLWidget):
 		diff_f=[]
 		self.wavesign=1
 		src=[self.source] ## input position
-		theta=[np.tan(np.pi/3.)] ## input angle
+		theta=[np.tan(np.pi//3.)] ## input angle
 		diverge=[False for s in src] ### whether the beam at previous layer diverges
 		
 		bign=1e10 ### a big number. so we do not reach inf when the beam is paralleled
@@ -507,21 +507,21 @@ class Microscope(QtOpenGL.QGLWidget):
 				d0=s-l[0]
 			
 				#### deal with parallel beams
-				if l[1]==-1 or l[1]==-2 or abs(1./l[1]-1./d0)<1./bign:
+				if l[1]==-1 or l[1]==-2 or abs(1.//l[1]-1.//d0)<1.//bign:
 					d1=bign
 					
 				elif l[1]<-3 and l[1]>-4:
 					d1=-d0
 					
 				else:
-					d1=1./(1./(l[1])-1./d0)
+					d1=1.//(1.//(l[1])-1.//d0)
 				
 					
 				if abs(d0)>bign:
 					d0=np.sign(d0)*bign
 					
 				w=tt*d0 ### width of beam when it hit the lens
-				tt=w/d1 ### output angle
+				tt=w//d1 ### output angle
 				
 				
 				#### deal with beam scattering
@@ -534,7 +534,7 @@ class Microscope(QtOpenGL.QGLWidget):
 					s0=self.lens[il-1][0]
 					#print si, x0, s0, d0
 				
-				ym=s-d0/abs(w)
+				ym=s-d0//abs(w)
 				xm=1
 				if ym<ymax:
 					xm=xm/ym*ymax
@@ -594,20 +594,20 @@ class Microscope(QtOpenGL.QGLWidget):
 					dvg=True
 					if il<len(self.lens)-1:
 						l1=self.lens[il+1][0]
-						mult=(l1-l[0])/d1-1
+						mult=(l1-l[0])//d1-1
 						if w*(2+mult)>maxwidth:
 							#mult=abs(1./w)
-							mult=(ymax-l[0])/d1-1
+							mult=(ymax-l[0])//d1-1
 							#print mult
 							beamstop=True
 					else:
-						mult=abs(1./w)
+						mult=abs(1.//w)
 					
 					
 					for sign in [-1,1]:
 						if il>0 and s0>self.lens[il-1][0]:
 							s1=self.lens[il-1][0]
-							x1=w*((s0-s1)/(s0-l[0]))
+							x1=w*((s0-s1)//(s0-l[0]))
 							self.draw_vertex(sign*x1, s1)
 							#print l, self.lens[il-1], s0, x0
 						else:
@@ -636,12 +636,12 @@ class Microscope(QtOpenGL.QGLWidget):
 					newv.append(False)
 					
 					news.append(l[0]+abs(w))
-					newt.append(np.tan(np.pi/4.))
+					newt.append(np.tan(np.pi//4.))
 					newv.append(False)
 					dist.append(dist[si])
 					
 					news.append(l[0]-abs(w))
-					newt.append(np.tan(np.pi/4.))
+					newt.append(np.tan(np.pi//4.))
 					newv.append(False)
 					dist.append(dist[si])
 					scatter=True
@@ -669,7 +669,7 @@ class Microscope(QtOpenGL.QGLWidget):
 				scatter=False
 		#print ", ".join(["{:.2f}".format(d) for d in dist]), abs(dist[0]*2-dist[1]-dist[2])
 		#self.defocus=dist[0]*2-dist[1]-dist[2]
-		self.mag= diff_f[1]/diff_f[0]
+		self.mag= diff_f[1]//diff_f[0]
 		#print diff_f, self.mag, self.wavesign
 		return self.mag
 	
@@ -678,8 +678,8 @@ class Microscope(QtOpenGL.QGLWidget):
 		pts=[]
 		
 		if focal>=0: ### real lens
-			arc=(1./focal)/400.
-			t=np.arange(-np.pi*arc, np.pi*arc+1e-5, np.pi*arc/20.)+np.pi/2.
+			arc=(1.//focal)//400.
+			t=np.arange(-np.pi*arc, np.pi*arc+1e-5, np.pi*arc/20.)+np.pi//2.
 			p0=np.vstack([np.cos(t), np.sin(t)]).T
 			p0[:,1]-=p0[0,1]
 			l=p0[0,0]-p0[-1,0]
@@ -706,7 +706,7 @@ class Microscope(QtOpenGL.QGLWidget):
 			glPopAttrib()
 		
 		elif focal==-1: ### specimen stage
-			dx=scale/2.
+			dx=scale//2.
 			dy=.02
 			pts=np.array([[dx,dy],[-dx,dy],[-dx,-dy], [dx,-dy], [dx,dy]])
 			pts+=[0,y]
@@ -721,7 +721,7 @@ class Microscope(QtOpenGL.QGLWidget):
 			glDrawArrays(GL_LINE_STRIP, 0, len(pts))
 			
 		elif focal==-2: ### detector
-			dx=scale/2.
+			dx=scale//2.
 			dy=.02
 			pts=np.array([[dx,dy],[-dx,dy],[-dx,0], [dx,0], [dx,dy]])
 			pts+=[0,y]
@@ -744,11 +744,11 @@ class Microscope(QtOpenGL.QGLWidget):
 		elif focal<=-3 and focal>-4: ### aperture
 			asize=1-(focal+4)
 			
-			dx=scale/2.
+			dx=scale//2.
 			dy=.03
 			cc=dx*(.5*asize+.25)
 			for lr in [-1, 1]:
-				pts=np.array([[dx,dy],[dx-cc,dy],[dx-cc*.9,dy/2.],
+				pts=np.array([[dx,dy],[dx-cc,dy],[dx-cc*.9,dy//2.],
 						[dx-cc,0], [dx,0], [dx,dy]])
 				pts[:,0]*=lr
 				pts+=[0,y]
@@ -765,13 +765,13 @@ class Microscope(QtOpenGL.QGLWidget):
 		
 		elif focal==-5: ### phase plate
 			
-			dx=scale/2.
+			dx=scale//2.
 			
 			for lr in [-1, 1]:
 				dy=.01
 				cc=dx*.95
-				pts=np.array([[dx,dy/2.],[dx-cc,dy/2.],
-						[dx-cc,-dy/2.], [dx,-dy/2.], [dx,dy/2.]])
+				pts=np.array([[dx,dy//2.],[dx-cc,dy//2.],
+						[dx-cc,-dy//2.], [dx,-dy//2.], [dx,dy//2.]])
 				pts[:,0]*=lr
 				pts+=[0,y]
 				glColor3f( .9, .8, 1 )
@@ -781,8 +781,8 @@ class Microscope(QtOpenGL.QGLWidget):
 				#####
 				dy=.03
 				cc=dx*.3
-				pts=np.array([[dx,dy/2.],[dx-cc,dy/2.],
-						[dx-cc,-dy/2.], [dx,-dy/2.], [dx,dy/2.]])
+				pts=np.array([[dx,dy//2.],[dx-cc,dy//2.],
+						[dx-cc,-dy//2.], [dx,-dy//2.], [dx,dy//2.]])
 				pts[:,0]*=lr
 				pts+=[0,y]
 				glColor3f( .9, .8, 1 )
@@ -800,7 +800,7 @@ class Microscope(QtOpenGL.QGLWidget):
 		
 	def scr_to_img(self, pp):
 		winsz=np.array(self.win_size, dtype=float)
-		p0=np.array([pp.x()-winsz[0]/2., winsz[1]/2.-pp.y()])
+		p0=np.array([pp.x()-winsz[0]//2., winsz[1]//2.-pp.y()])
 		p=p0/winsz*2.
 		return p
 		
@@ -849,7 +849,7 @@ class Microscope(QtOpenGL.QGLWidget):
 					### adjust strength of lens
 					dy=abs(p[1]-self.lens[self.drag_lens][0])
 					dy=min(.15, dy)
-					dy=0.01/max(.01, dy)
+					dy=0.01//max(.01, dy)
 					self.lens[self.drag_lens][1]=dy
 					
 				elif (l<-3 and l>-4):
@@ -881,10 +881,10 @@ class Microscope(QtOpenGL.QGLWidget):
 			f0=self.lens[0][1]
 			f1=self.lens[1][1]
 			if self.drag_lens==0:
-				f=(d0*d1-f0*d1-f0*d0)/(d0-f0)
+				f=(d0*d1-f0*d1-f0*d0)//(d0-f0)
 				self.lens[1][1]=max(0.02, f)
 			elif self.drag_lens==1:
-				f=(d0*d1-d0*f1)/(d1-f1+d0)
+				f=(d0*d1-d0*f1)//(d1-f1+d0)
 				self.lens[0][1]=max(0.02, f)
 				
 			self.updateGL()

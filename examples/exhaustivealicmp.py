@@ -63,8 +63,8 @@ def main():
 	(options, args) = parser.parse_args()
 
 	cmpopt=parsemodopt(options.cmp)
-	nxy=int(options.xy0/options.dxy)*2+1
-	nz=int(360.0/options.dalpha)-1
+	nxy=int(options.xy0//options.dxy)*2+1
+	nz=int(360.0//options.dalpha)-1
 
 	im1=EMData(args[0],int(args[1]))
 	im2=EMData(args[2],int(args[3]))

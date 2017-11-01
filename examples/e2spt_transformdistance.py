@@ -196,8 +196,8 @@ def main():
 			print("The translational distance is", trans)
 			translations.append(trans)	
 	
-		avgA = sum(angularDistances)/len(angularDistances)
-		avgT = sum(translations)/len(translations)
+		avgA = sum(angularDistances)//len(angularDistances)
+		avgT = sum(translations)//len(translations)
 		print("The average angular and translational distances are", avgA, avgT)
 		resultsfile = options.input.replace('.hdf', '_RESULTS.txt')
 		if options.output:

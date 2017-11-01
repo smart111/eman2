@@ -85,7 +85,7 @@ def main():
 
 	hlx=atoms.fit_helix(mrc,options.lenthr,options.denthr,eg,options.dirs)
 	
-	for i in range(len(hlx)/8):
+	for i in range(len(hlx)//8):
 		print(hlx[i*8],hlx[i*8+1])
 	
 	

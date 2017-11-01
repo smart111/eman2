@@ -58,7 +58,7 @@ def main():
 		imft=np.abs(get_fft(np.sum(img,axis=1)))
 		tltsum= np.mean(imft[rotpts[:,:,1], rotpts[:,:,0]], axis=1)
 		# tltsum[1:-1]=tltsum[
-		thr= tltsum[len(tltsum)/2]/2
+		thr= tltsum[len(tltsum)//2]//2
 		pp=np.array(find_peaks(tltsum,3,thr))
 		ph=tltsum[pp]
 		pks=deg[pp]

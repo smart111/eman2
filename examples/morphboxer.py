@@ -279,12 +279,12 @@ class MorphBoxingTool(EMBoxingTool):
 		"""
 		global BigImageCache
 		image = BigImageCache.get_image_directly(image_name)
-		xc = box[0]-box_size/2
-		yc = box[1]-box_size/2
+		xc = box[0]-box_size//2
+		yc = box[1]-box_size//2
 		r = Region(xc,yc,box_size,box_size)
 		particle = image.get_clip(r)
 		ccf  = particle.calc_ccf(template)
-		trans = ccf.calc_max_location_wrap(particle.get_xsize()/2,particle.get_ysize()/2,0)
+		trans = ccf.calc_max_location_wrap(particle.get_xsize()//2,particle.get_ysize()//2,0)
 		dx = trans[0]
 		dy = trans[1]
 		return dx,dy

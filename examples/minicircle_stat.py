@@ -58,7 +58,7 @@ for pf in sorted(sys.argv[1:]):
 		continue
 	#print eigvv[0]
 	#print eigvv[1]
-	eig=[(1.0/eigvv[0][i],eigvv[1][:,i]) for i in range(3)]  # extract for sorting
+	eig=[(1.0//eigvv[0][i],eigvv[1][:,i]) for i in range(3)]  # extract for sorting
 	#eig=sorted(eig,reverse=True)		# now eig is sorted in order from major to minor axes
 	eig=sorted(eig)		# now eig is sorted in order from major to minor axes
 	T=array([eig[0][1],eig[1][1],eig[2][1]])            # reassemble sorted matrix
@@ -83,7 +83,7 @@ for pf in sorted(sys.argv[1:]):
 	p2.process_inplace("normalize.edgemean")
 	p2.transform(comxf)		# center
 	p2.transform(T)			# reorient
-	p2.process_inplace("mask.sharp",{"outer_radius":p2["nx"]/2-1})
+	p2.process_inplace("mask.sharp",{"outer_radius":p2["nx"]//2-1})
 	p2.write_image("xf/orig_"+dr+".hdf",drn)
 
 	# now the shape is aligned to Z/Y/X so the greatest axial extent should be along Z
@@ -92,6 +92,6 @@ for pf in sorted(sys.argv[1:]):
 	shp=an.analyze()[0]
 	
 	# Z/Y - should always be >1, Y/X, Z/X
-	out.write("%1.3g\t%1.3g\t%1.3g\t# %s\n"%(shp[2]/shp[1],shp[1]/shp[0],shp[2]/shp[0],pf.split("/")[-1]))
-	print("%1.3g\t%1.3g\t%1.3g\t# %s"%(shp[2]/shp[1],shp[1]/shp[0],shp[2]/shp[0],pf))
+	out.write("%1.3g\t%1.3g\t%1.3g\t# %s\n"%(shp[2]//shp[1],shp[1]//shp[0],shp[2]//shp[0],pf.split("/")[-1]))
+	print("%1.3g\t%1.3g\t%1.3g\t# %s"%(shp[2]//shp[1],shp[1]//shp[0],shp[2]//shp[0],pf))
 	

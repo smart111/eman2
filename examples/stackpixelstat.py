@@ -16,7 +16,7 @@ y=int(sys.argv[3])
 outl=open("ccp.txt","w")
 
 rsum=sum(a)
-rsum.mult(1.0/len(a))
+rsum.mult(1.0//len(a))
 
 #	i.process_inplace("filter.highpass.gauss",{"cutoff_freq":0.1})
 #	out.write("{}\n".format(i[x,y]))
@@ -37,7 +37,7 @@ for n,i in enumerate(a):
 #		rsumc.mult(ic)
 		frc=icm.calc_fourier_shell_correlation(rsum,16.0)
 		fout=open("frc_{:03d}.txt".format(n),"w")
-		for j in range(len(frc)/3):
+		for j in range(len(frc)//3):
 			fout.write("{}\t{}\n".format(frc[j],frc[j+len(frc)//3]))
 			
 		icm.write_image("cmcmp.hdf",n*2)
