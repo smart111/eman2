@@ -122,7 +122,7 @@ class TestTypeConverter(unittest.TestCase):
         testfile = "test_emobject_to_py_xydata.txt"
         out = open(testfile, "wb")
         for f in farray2:
-            out.write(str(f) + " " + str(f) + "\n")
+            out.write(str(f).encode() + b" " + str(f).encode() + b"\n")
         out.close()
         xyd = XYData()
         xyd.read_file(testfile)
@@ -161,7 +161,7 @@ class TestTypeConverter(unittest.TestCase):
         testfile = "xydata.txt"
         out = open(testfile, "wb")
         for f in fl:
-                out.write(str(f) + " " + str(f) + "\n")
+                out.write(str(f).encode() + b" " + str(f).encode() + b"\n")
         out.close()
 
         xyd.read_file(testfile)
