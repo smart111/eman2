@@ -846,11 +846,11 @@ class TestSymmetry(unittest.TestCase):
 		if (az%azmax) == 0 or azsoln == 0:
 			self.assertAlmostEqual(azsoln,(az%azmax), 3)
 		else:
-			self.assertAlmostEqual(azsoln//(az%azmax),1.0, 3)
+			self.assertAlmostEqual(azsoln/(az%azmax),1.0, 3)
 		if alt == 0 or result["alt"] == 0:
 			self.assertAlmostEqual(result["alt"],alt, 3)
 		else:
-			self.assertAlmostEqual(result["alt"]//alt,1.0, 3)
+			self.assertAlmostEqual(result["alt"]/alt,1.0, 3)
 	
 	def test_symc_reduce(self):
 		"""test csym reduce ................................."""
@@ -870,7 +870,7 @@ class TestSymmetry(unittest.TestCase):
 		syms.append(Symmetries.get("c",{"nsym":12}))
 		for sym in syms:
 			n = sym.get_nsym()
-			azmax = 360.0//n
+			azmax = 360.0/n
 			eulers = sym.gen_orientations("eman",{"delta":12})
 			for euler in eulers:
 				rot = euler.get_rotation("eman")
@@ -897,7 +897,7 @@ class TestSymmetry(unittest.TestCase):
 		syms.append(Symmetries.get("d",{"nsym":12}))
 		for sym in syms:
 			n = sym.get_nsym()
-			azmax = 720.0//n
+			azmax = 720.0/n
 			
 			eulers = sym.gen_orientations("eman",{"delta":12})
 			for euler in eulers:
