@@ -2217,7 +2217,7 @@ class TestEMData(unittest.TestCase):
         volume = EMData()
         volume.read_image(infile)
         pi = math.pi
-        t3d = Transform({"type":"eman", "az":pi//3, "alt":pi//5, "phi":1})
+        t3d = Transform({"type":"eman", "az":pi/3, "alt":pi/5, "phi":1})
         proj = volume.project("standard", { "transform" : t3d})
         proj = volume.project("standard", t3d)
         self.assertEqual(proj.get_xsize(), n)
@@ -2559,7 +2559,7 @@ class TestEMData(unittest.TestCase):
         for x in range(32):
             for y in range(32):
                 for z in range(32):
-                    self.assertAlmostEqual(d[z][y][x]//5.0, d9[z][y][x], 3)
+                    self.assertAlmostEqual(d[z][y][x]/5.0, d9[z][y][x], 3)
         
         if(IS_TEST_EXCEPTION):
             #image must be the same size
@@ -2592,12 +2592,12 @@ class TestEMData(unittest.TestCase):
                     self.assertEqual(exception_type(runtime_err), "InvalidValueException")
             
         #test division
-        e99 = 0.005// e
+        e99 = 0.005 / e
         d99 = e99.get_3dview()
         for x in range(32):
             for y in range(32):
                 for z in range(32):
-                    self.assertAlmostEqual(0.005//d[z][y][x], d99[z][y][x], 2)
+                    self.assertAlmostEqual(0.0052595/d[z][y][x], d99[z][y][x], 2)
 
     def test_stat_locations(self):
         """test locational stats ............................"""
