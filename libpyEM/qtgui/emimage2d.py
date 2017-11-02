@@ -843,10 +843,12 @@ class EMImage2DWidget(EMGLWidget):
 			and the raw data string, with optional histogram data appended
 			(1024 bytes)."""
 
+		aa=0
+		bb=255
 		if self.invert :
-			pixden = (255, 0)
+			pixden = (bb, aa)
 		else :
-			pixden = (0, 255)
+			pixden = (aa, bb)
 
 		use_fft = (self.curfft in (1,2,3))
 
@@ -938,11 +940,13 @@ class EMImage2DWidget(EMGLWidget):
 		else :
 			# get grey scale data:
 
+			
+			ddd = GLUtil.render_amp8 (values, x0, y0, wdt, hgt, wid, self.scale, pixden[0], pixden[1], min_val, max_val, gam_val, flags)
+			
+			print(type(ddd))
+			
 			return_data = (value_size, wid, hgt,
-								GLUtil.render_amp8 (values,
-								x0, y0, wdt, hgt, wid,
-								self.scale, pixden[0], pixden[1],
-								min_val, max_val, gam_val, flags))
+								ddd)
 
 		return return_data
 
@@ -1025,12 +1029,16 @@ class EMImage2DWidget(EMGLWidget):
 
 		if render:
 			(bpp,w,h,a)=self.render_bitmap()
+			# a = a.encode()
 			if bpp==3 : gl_render_type = GL_RGB
 			elif bpp==4 : gl_render_type = GL_RGBA
 			else : gl_render_type = GL_LUMINANCE
 
 			if not self.glflags.npt_textures_unsupported():
 
+				# a = a.encode()
+				# a = bytesarray(a)
+				# print(type(a))
 				# self.hist=struct.unpack('256i',a[-1024:])
 
 				if self.tex_name != 0: glDeleteTextures(self.tex_name)
