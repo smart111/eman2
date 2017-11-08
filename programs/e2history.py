@@ -61,8 +61,9 @@ def main():
 		from emapplication import EMApp
 		app = EMApp()
 		hist = HistoryForm(app,os.getcwd())
-		app.show()
-		app.execute()
+		hist.form.show()
+		hist.form.raise_()
+		app.exec_()
 		
 	else: print_to_std_out(options.all)
 
