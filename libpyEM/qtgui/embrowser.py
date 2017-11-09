@@ -3690,6 +3690,7 @@ if __name__ == '__main__' :
 	QtCore.QObject.connect(window, QtCore.SIGNAL("cancel"), test_result)
 
 	window.show()
+	window.raise_()
 	ret = em_app.exec_()
 	try : window.updthreadexit = True
 	except : pass
