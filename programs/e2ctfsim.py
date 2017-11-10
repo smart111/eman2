@@ -278,14 +278,18 @@ class GUIctfsim(QtGui.QWidget):
 	def show_guis(self):
 		if self.guiim != None:
 			self.app().show_specific(self.guiim)
+			self.guiim.raise_()
 		if self.applyim != None:
 			self.app().show_specific(self.applyim)
+			self.applyim.raise_()
 		if self.guiplot != None:
 			self.app().show_specific(self.guiplot)
+			self.guiplot.raise_()
 		#if self.guirealim != None:
 			#self.app().show_specific(self.guirealim)
 
 		self.show()
+		self.raise_()
 
 	def closeEvent(self,event):
 #		QtGui.QWidget.closeEvent(self,event)
