@@ -21,3 +21,7 @@ def get_main_form(module_name, args=[]):
     main_form = module.main(args)
     
     return main_form
+
+@pytest.fixture
+def main_form():
+    return get_main_form
