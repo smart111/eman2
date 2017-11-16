@@ -172,3 +172,4 @@ CVS/
 # Gradle:
 # .idea/gradle.xml
 # .idea/libraries
+.cache
