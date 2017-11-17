@@ -173,3 +173,4 @@ CVS/
 # .idea/gradle.xml
 # .idea/libraries
 .cache
+.eman2settings
