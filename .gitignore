@@ -174,3 +174,4 @@ CVS/
 # .idea/libraries
 .cache
 .eman2settings
+.browsercache.json
