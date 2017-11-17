@@ -175,3 +175,5 @@ CVS/
 .cache
 .eman2settings
 .browsercache.json
+info
+.eman2log.txt
