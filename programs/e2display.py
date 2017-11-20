@@ -67,7 +67,6 @@ def main():
 	parser.add_argument("--plot",action="store_true",default=False,help="Data file(s) should be plotted rather than displayed in 2-D")
 	parser.add_argument("--hist",action="store_true",default=False,help="Data file(s) should be plotted as a histogram rather than displayed in 2-D.")
 	parser.add_argument("--plot3d",action="store_true",default=False,help="Data file(s) should be plotted rather than displayed in 3-D")
-	parser.add_argument("--newwidget",action="store_true",default=False,help="Use the new 3D widgetD. Highly recommended!!!!")
 	parser.add_argument("--ppid", type=int, help="Set the PID of the parent process, used for cross platform PPID",default=-2)
 	parser.add_argument("--verbose", "-v", dest="verbose", action="store", metavar="n", type=int, default=0, help="verbose level [0-9], higner number means higher level of verboseness")
 
@@ -124,7 +123,7 @@ def main():
 			if not file_exists(i):
 				print("%s doesn't exist" %i)
 				sys.exit(1)
-			display_file(i,app,options.singleimage,usescenegraph=options.newwidget)
+			display_file(i,app,options.singleimage)
 	
 
 	app.exec_()
@@ -176,7 +175,7 @@ def getmxim(fsp,fsp2,clsnum):
 	imgs=[i[0] for i in imgs]
 	return imgs
 
-def display_file(filename,app,force_2d=False,usescenegraph=False):
+def display_file(filename,app,force_2d=False):
 	w = EMWidgetFromFile(filename,application=app,force_2d=force_2d)
 	w.setWindowTitle(base_name(filename))
 	app.show_specific(w)
