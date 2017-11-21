@@ -207,25 +207,8 @@ get_application = em_app_instance.get_instance
 
 class EMApp(QtGui.QApplication):
 	def __init__(self):
-		# Stuff for display synchronization in e2.py
-		self.timer_function = None
-		self.tmr = None
 		
 		QtGui.QApplication.__init__(self, sys.argv)
-		
-		style=QtGui.QStyleFactory.create("Plastique")
-		
-		if style==None:
-			print("Note: standard Plastique style not available, controls may be distorted. Using ", end=' ')
-			
-			# the first one should work, but we have the loop, just in case
-			for s in list(QtGui.QStyleFactory.keys()):
-				style=QtGui.QStyleFactory.create(s)
-				if style!=None: 
-					print(s)
-					break
-
-		if style!=None and get_platform()!="Darwin": self.setStyle(style)
 		
 		if em_app_instance.get_instance() == None:
 			em_app_instance.set_instance(self)
