@@ -108,11 +108,11 @@ class EMPlot2DWidget(EMGLWidget):
 	"""A QT widget for drawing 2-D plots using matplotlib
 	"""
 
-	def __init__(self,application=None,winid=None,parent=None):
+	def __init__(self,application=None,parent=None):
 
 		fmt=QtOpenGL.QGLFormat()
 		fmt.setDoubleBuffer(True);
-		EMGLWidget.__init__(self, parent=parent, winid=winid)
+		EMGLWidget.__init__(self, parent=parent)
 		self.setFormat(fmt)
 		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"plot.png"))
 
@@ -993,10 +993,10 @@ class EMPolarPlot2DWidget(EMGLWidget):
 	"""
 	A QT widget for plotting ploar plots:
 	"""
-	def __init__(self,application=None,winid=None):
+	def __init__(self,application=None):
 		fmt=QtOpenGL.QGLFormat()
 		fmt.setDoubleBuffer(True);
-		EMGLWidget.__init__(self, winid=winid)
+		EMGLWidget.__init__(self)
 		self.setFormat(fmt)
 		self.resize(640,480)
 		self.setWindowIcon(QtGui.QIcon(QtGui.QPixmap(ploticon)))
@@ -3036,8 +3036,8 @@ class EMPlot2DInspector(QtGui.QWidget):
 		except: pass
 
 class EMPlot2DModule(EMPlot2DWidget):
-	def __init__(self, application=None,winid=None):
-		EMPlot2DWidget.__init__(self, application, winid)
+	def __init__(self, application=None):
+		EMPlot2DWidget.__init__(self, application)
 		import warnings
 		warnings.warn("convert EMPlot2DModule to EMPlot2DWidget", DeprecationWarning)
 

@@ -139,11 +139,11 @@ class TrackerControl(QtGui.QWidget):
 		QtCore.QObject.connect(self.vslpfilt,QtCore.SIGNAL("valueChanged"),self.do_filter)
 
 		# the single image display widget
-		self.im2d =    EMImage2DWidget(application=app,winid="tomotrackbox.big")
-		self.imboxed = EMImage2DWidget(application=app,winid="tomotrackbox.small")
-		self.improj =  EMImage2DWidget(application=app,winid="tomotrackbox.proj")
-		self.imslice = EMImage2DWidget(application=app,winid="tomotrackbox.3dslice")
-		self.imvol =   EMImage3DModule(application=app,winid="tomotrackbox.3d")
+		self.im2d =    EMImage2DWidget(application=app)
+		self.imboxed = EMImage2DWidget(application=app)
+		self.improj =  EMImage2DWidget(application=app)
+		self.imslice = EMImage2DWidget(application=app)
+		self.imvol =   EMImage3DModule(application=app)
 	
 		# get some signals from the window. 
 		QtCore.QObject.connect(self.im2d,QtCore.SIGNAL("mousedown"),self.down)

@@ -79,7 +79,7 @@ class EMImage3DWidget(EMGLWidget, EMLightsDrawer, EMGLProjectionViewMatrices):
 		self.currentselection = len(self.viewables)-1
 		self.updateGL()
 		
-	def __init__(self, parent=None, image=None,application=None,winid=None):
+	def __init__(self, parent=None, image=None,application=None):
 		EMImage3DWidget.allim[self] = 0
 		EMGLWidget.__init__(self,parent)
 		EMLightsDrawer.__init__(self)
@@ -837,10 +837,10 @@ class EM3DAdvancedInspector(QtGui.QWidget,EMLightsInspectorBase):
 
 
 class EMImage3DModule(EMImage3DWidget):
-	def __init__(self, parent=None, image=None,application=None,winid=None):
+	def __init__(self, parent=None, image=None,application=None):
 		import warnings	
 		warnings.warn("convert EMImage3DModule to EMImage3DWidget", DeprecationWarning)
-		EMImage3DWidget.__init__(self, parent, image, application, winid)
+		EMImage3DWidget.__init__(self, parent, image, application)
 	
 if __name__ == '__main__':
 	from emapplication import EMApp

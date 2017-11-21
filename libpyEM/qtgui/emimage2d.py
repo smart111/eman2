@@ -71,7 +71,7 @@ class EMImage2DWidget(EMGLWidget):
 
 	allim=WeakKeyDictionary()
 
-	def __init__(self, image=None, application=get_application(),winid=None, parent=None):
+	def __init__(self, image=None, application=get_application(), parent=None):
 
 		self.inspector = None # this should be a qt widget, otherwise referred to as an inspector in eman
 
@@ -2551,8 +2551,8 @@ class EMImageInspector2D(QtGui.QWidget):
 		#print "leave set limits", self.conts.getValue(), self.conts.getValue()
 
 class EMImage2DModule(EMImage2DWidget):
-	def __init__(self, image=None, application=get_application(),winid=None, parent=None):
-		EMImage2DWidget.__init__(self, image, application, winid, parent)
+	def __init__(self, image=None, application=get_application(), parent=None):
+		EMImage2DWidget.__init__(self, image, application, parent)
 		import warnings
 		warnings.warn("convert EMImage2DModule to EMImage2DWidget", DeprecationWarning)
 

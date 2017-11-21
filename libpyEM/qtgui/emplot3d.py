@@ -109,11 +109,11 @@ class EMPlot3DWidget(EMGLWidget):
 	"""A QT widget for drawing 3-D plots using matplotlib
 	"""
 
-	def __init__(self,application=None,winid=None,parent=None):
+	def __init__(self,application=None,parent=None):
 
 		fmt=QtOpenGL.QGLFormat()
 		fmt.setDoubleBuffer(True);
-		EMGLWidget.__init__(self, parent=parent, winid=winid)
+		EMGLWidget.__init__(self, parent=parent)
 		self.setFormat(fmt)
 		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"plot.png"))
 
@@ -2555,8 +2555,8 @@ class EMPlot3DInspector(QtGui.QWidget):
 		except: pass
 
 class EMPlot3DModule(EMPlot3DWidget):
-	def __init__(self, application=None,winid=None):
-		EMPlot3DWidget.__init__(self, application, winid)
+	def __init__(self, application=None):
+		EMPlot3DWidget.__init__(self, application)
 		import warnings
 		warnings.warn("convert EMPlot3DModule to EMPlot3DWidget", DeprecationWarning)
 

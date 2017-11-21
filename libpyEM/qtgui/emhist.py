@@ -111,10 +111,10 @@ class EMHistogramWidget(EMGLWidget):
 	"""A QT widget for drawing 2-D plots using matplotlib
 	"""
 
-	def __init__(self,application=None,winid=None,parent=None):
+	def __init__(self,application=None,parent=None):
 		fmt=QtOpenGL.QGLFormat()
 		fmt.setDoubleBuffer(True);
-		EMGLWidget.__init__(self, parent=parent, winid=winid)
+		EMGLWidget.__init__(self, parent=parent)
 		self.setFormat(fmt)
 		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"plot.png"))
 		self.axes={}

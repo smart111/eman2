@@ -121,7 +121,7 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 		else:
 			self.setWindowTitle(title)
 			
-	def __init__(self, parent=None, application_control=True,winid=None):
+	def __init__(self, parent=None, application_control=True):
 		if parent==None : 
 			self.qt_parent = EMParentWin()
 			self.myparent=True			# we allocated the parent, responsible for cleaning it up
@@ -133,7 +133,6 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 		if self.myparent : self.qt_parent.setup(self)
 		
 		self.inspector = None # a Qt Widget for changing display parameters, setting the data, accessing metadata, etc.
-		self.winid=winid # a 'unique' identifier for the window used to restore locations on the screen
 		
 		self.image_change_count =  0# this is important when the user has more than one display instance of the same image, for instance in e2.py if 
 		app = get_application()

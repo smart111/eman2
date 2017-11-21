@@ -201,20 +201,20 @@ class EMMatrixPanel:
 #		print self.height,self.xsep,self.visiblecols
 
 class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
-	def __init__(self, data=None,application=None,winid=None, parent=None, title=""):
+	def __init__(self, data=None,application=None, parent=None, title=""):
 		self.emit_events = False
 
 		fmt=QtOpenGL.QGLFormat()
 		fmt.setDoubleBuffer(True)
 		#fmt.setSampleBuffers(True)
 #		QtOpenGL.QGLWidget.__init__(self,fmt, parent)
-		EMGLWidget.__init__(self,winid=winid)
+		EMGLWidget.__init__(self)
 		EMGLProjectionViewMatrices.__init__(self)
 
 
 		self.init_size_flag = True
 		self.data=None
-#		EMGLWidget.__init__(self,ensure_gl_context=True,winid=winid)
+#		EMGLWidget.__init__(self,ensure_gl_context=True)
 		EMImageMXWidget.allim[self] = 0
 		self.wintitle=title
 		self.file_name = ''					# file the images are from
@@ -3394,8 +3394,8 @@ class EM3DDataListCache(EMMXDataCache):
 	def is_3d(self): return True
 
 class EMImageMXModule(EMImageMXWidget):
-	def __init__(self, data=None,application=None,winid=None, parent=None):
-		EMImageMXWidget.__init__(self, data, application, winid, parent)
+	def __init__(self, data=None,application=None, parent=None):
+		EMImageMXWidget.__init__(self, data, application, parent)
 		import warnings
 		warnings.warn("convert EMImageMXModule to EMImageMXWidget", DeprecationWarning)
 
