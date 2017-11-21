@@ -41,8 +41,6 @@ import EMAN2db
 import weakref
 from libpyGLUtils2 import *
 
-try: from PyQt4 import QtWebKit
-except: pass
 
 class ModuleEventsManager: 
 	'''
