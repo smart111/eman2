@@ -39,7 +39,7 @@ from OpenGL.GLU import *
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from PyQt4.QtCore import QTimer, Qt
 from e2eulerxplor import EMEulerExplorer
-from emglobjects import Camera, Camera2, EMGLWidget, EMViewportDepthTools, EMGLProjectionViewMatrices, EMOpenGLFlagsAndTools
+from emglobjects import Camera, Camera2, EMViewportDepthTools, EMGLProjectionViewMatrices, EMOpenGLFlagsAndTools
 from emimage3diso import EMIsosurfaceModel
 from emimage3dslice import EM3DSliceModel
 from emimage3dsym import EM3DSymModel

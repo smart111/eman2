@@ -54,7 +54,7 @@ from pickle import dumps,loads
 from libpyGLUtils2 import *
 
 from emglobjects import EMOpenGLFlagsAndTools
-from emapplication import get_application, EMGLWidget
+from emapplication import get_application
 from emimageutil import EMMetaDataTable
 
 from emanimationutil import SingleValueIncrementAnimation, LineAnimation

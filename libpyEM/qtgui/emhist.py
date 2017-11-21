@@ -81,7 +81,7 @@ from matplotlib.figure import Figure
 
 import numpy as np
 
-from emapplication import EMApp, EMGLWidget
+from emapplication import EMApp
 from emglobjects import EMOpenGLFlagsAndTools
 
 import traceback

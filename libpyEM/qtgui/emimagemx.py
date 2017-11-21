@@ -55,7 +55,7 @@ from PyQt4.QtCore import QTimer
 from libpyGLUtils2 import *
 
 from emglobjects import EMOpenGLFlagsAndTools,EMGLProjectionViewMatrices,EMBasicOpenGLObjects,init_glut
-from emapplication import EMGLWidget, get_application, EMApp
+from emapplication import get_application, EMApp
 from emanimationutil import LineAnimation
 import weakref
 
