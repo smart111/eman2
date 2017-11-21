@@ -55,7 +55,7 @@ import weakref
 
 MAG_INCREMENT_FACTOR = 1.1
 
-class EMImage3DWidget(QGLWidget, EMLightsDrawer, EMGLProjectionViewMatrices):
+class EMImage3DWidget(QtOpenGL.QGLWidget, EMLightsDrawer, EMGLProjectionViewMatrices):
 	""" 
 	A QT widget for rendering 3D EMData objects
 	"""
@@ -81,7 +81,7 @@ class EMImage3DWidget(QGLWidget, EMLightsDrawer, EMGLProjectionViewMatrices):
 		
 	def __init__(self, parent=None, image=None,application=None):
 		EMImage3DWidget.allim[self] = 0
-		QGLWidget.__init__(self,parent)
+		QtOpenGL.QGLWidget.__init__(self,parent)
 		EMLightsDrawer.__init__(self)
 		EMGLProjectionViewMatrices.__init__(self)
 		
@@ -390,7 +390,7 @@ class EMImage3DWidget(QGLWidget, EMLightsDrawer, EMGLProjectionViewMatrices):
 			glMatrixMode(GL_MODELVIEW)
 	def resizeEvent(self, event):
 		self.vdtools.set_update_P_inv()
-		QGLWidget.resizeEvent(self, event)
+		QtOpenGL.QGLWidget.resizeEvent(self, event)
 	def resizeGL(self, width, height):
 		# just use the whole window for rendering
 		

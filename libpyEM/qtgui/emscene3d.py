@@ -34,7 +34,6 @@ from __future__ import print_function
 
 from EMAN2 import *
 import copy
-from emapplication import EMGLWidget
 from emdataitem3d import *
 from emglobjects import get_default_gl_colors
 from emitem3d import EMItem3D, EMItem3DInspector
@@ -723,7 +722,7 @@ rulericon = [
     'ccccccccccccccccc'
 ] 
 
-class EMScene3D(EMItem3D, QGLWidget):
+class EMScene3D(EMItem3D, QtOpenGL.QGLWidget):
 	"""
 	Widget for rendering 3D objects. Uses a scne graph for rendering
 	"""
@@ -736,7 +735,7 @@ class EMScene3D(EMItem3D, QGLWidget):
 		@param scalestep: The step to increment the object scaling
 		"""
 		EMItem3D.__init__(self, parent=None, transform=Transform())
-		QGLWidget.__init__(self,parentwidget)
+		QtOpenGL.QGLWidget.__init__(self,parentwidget)
 		QtOpenGL.QGLFormat().setDoubleBuffer(True)
 		QtOpenGL.QGLFormat().setDepth(True)
 		self.setSelectedItem(True)			# The root is selected by default
@@ -1662,7 +1661,7 @@ class EMScene3D(EMItem3D, QGLWidget):
 		Close the main inspector
 		"""
 		if self.main_3d_inspector: self.main_3d_inspector.close()
-		QGLWidget.closeEvent(self,event)
+		QtOpenGL.QGLWidget.closeEvent(self,event)
 	
 	def showEvent(self, event):
 		QtGui.QWidget.showEvent(self, event)

@@ -200,7 +200,7 @@ class EMMatrixPanel:
 
 #		print self.height,self.xsep,self.visiblecols
 
-class EMImageMXWidget(QGLWidget, EMGLProjectionViewMatrices):
+class EMImageMXWidget(QtOpenGL.QGLWidget, EMGLProjectionViewMatrices):
 	def __init__(self, data=None,application=None, parent=None, title=""):
 		self.emit_events = False
 
@@ -208,13 +208,13 @@ class EMImageMXWidget(QGLWidget, EMGLProjectionViewMatrices):
 		fmt.setDoubleBuffer(True)
 		#fmt.setSampleBuffers(True)
 #		QtOpenGL.QGLWidget.__init__(self,fmt, parent)
-		QGLWidget.__init__(self)
+		QtOpenGL.QGLWidget.__init__(self)
 		EMGLProjectionViewMatrices.__init__(self)
 
 
 		self.init_size_flag = True
 		self.data=None
-#		QGLWidget.__init__(self,ensure_gl_context=True)
+#		QtOpenGL.QGLWidget.__init__(self,ensure_gl_context=True)
 		EMImageMXWidget.allim[self] = 0
 		self.wintitle=title
 		self.file_name = ''					# file the images are from
@@ -348,7 +348,7 @@ class EMImageMXWidget(QGLWidget, EMGLProjectionViewMatrices):
 
 	def closeEvent(self,event):
 		self.clear_gl_memory()
-		QGLWidget.closeEvent(self, event)
+		QtOpenGL.QGLWidget.closeEvent(self, event)
 
 	def set_current_set(self,name):
 		"""Makes the named set the target of any mouse interactions"""
@@ -701,10 +701,10 @@ class EMImageMXWidget(QGLWidget, EMGLProjectionViewMatrices):
 		"""This function will set a base title for the window, which will automatically be modified with the current filename
 		when there is one, the next time the file changes (so you should use this before loading data)."""
 		self.wintitle=title
-		QGLWidget.setWindowTitle(self, title)
+		QtOpenGL.QGLWidget.setWindowTitle(self, title)
 
 	def setWindowTitle(self,filename):
-		QGLWidget.setWindowTitle(self, "{} ({})".format(self.wintitle,base_name(filename)))
+		QtOpenGL.QGLWidget.setWindowTitle(self, "{} ({})".format(self.wintitle,base_name(filename)))
 
 	def xyz_changed(self,xyz):
 		if self.data.set_xyz(str(xyz)):
@@ -1036,7 +1036,7 @@ class EMImageMXWidget(QGLWidget, EMGLProjectionViewMatrices):
 
 
 	def view_width(self):
-		return QGLWidget.width(self) - self.draw_scroll*self.scroll_bar.width
+		return QtOpenGL.QGLWidget.width(self) - self.draw_scroll*self.scroll_bar.width
 
 	def render(self):
 		if not self.data : return

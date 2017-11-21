@@ -2241,9 +2241,9 @@ class EM3DModel(QtCore.QObject):
 		if self.cam.wheelEvent(event): self.update_inspector_texture()
 		if self.inspector != None :
 			self.inspector.set_scale(self.cam.scale)
-class EM3DGLWidget(QGLWidget, EMGLProjectionViewMatrices):
+class EM3DGLWidget(QtOpenGL.QGLWidget, EMGLProjectionViewMatrices):
 	def __init__(self, model=None): #Usually model will be None, because a GL context must be created before a EM3DGLWidget
-		QGLWidget.__init__(self)
+		QtOpenGL.QGLWidget.__init__(self)
 		EMGLProjectionViewMatrices.__init__(self)
 		
 		fmt=QtOpenGL.QGLFormat()
