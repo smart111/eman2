@@ -72,10 +72,6 @@ def main():
 
 	(options, args) = parser.parse_args()
 
-#	logid=E2init(sys.argv)
-
-	#gapp = app
-	#QtGui.QApplication(sys.argv)
 	win=[]
 	
 	if len(args) < 1:
@@ -122,8 +118,6 @@ def main():
 	
 
 	app.exec_()
-
-#	E2end(logid)
 
 def on_browser_done():
 	pass
