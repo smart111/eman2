@@ -1620,9 +1620,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 	def keyPressEvent(self,event):
 		if self.data == None: return
 
-		if event.key() == Qt.Key_F1:
-			self.display_web_help("http://blake.bcm.edu/emanwiki/EMAN2/Programs/emimagemx")
-		elif event.key()==Qt.Key_I :
+		if event.key()==Qt.Key_I :
 			if self.data==None or len(self.data)==0: return
 
 			for j,i in enumerate(self.data):

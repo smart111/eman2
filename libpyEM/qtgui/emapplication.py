@@ -159,23 +159,6 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 		self.emit(QtCore.SIGNAL("module_closed")) # this could be a useful signal, especially for something like the selector module, which can potentially show a lot of images but might want to close them all when it is closed
 		event.accept()
 		
-	def display_web_help(self,url="http://blake.bcm.edu/emanwiki/e2display"):
-		try:
-			try:
-				import webbrowser
-				webbrowser.open(url)
-			except:
-				try:
-					test = self.browser
-				except: 
-					self.browser = QtWebKit.QWebView()
-					self.browser.load(QtCore.QUrl())
-					self.browser.resize(800,800)
-				
-				if not self.browser.isVisible(): self.browser.show(url)
-		except:
-			pass
-
 	def enable_inspector(self,val=True): 
 		self.disable_inspector = not val
 		

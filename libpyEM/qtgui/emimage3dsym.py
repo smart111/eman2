@@ -397,9 +397,7 @@ class EM3DSymModel(EM3DModel,Orientations,ColumnGraphics):
 	
 	def keyPressEvent(self,event):
 		
-		if event.key() == Qt.Key_F1:
-			self.display_web_help("http://blake.bcm.edu/emanwiki/EMAN2/Programs/e2eulerxplor")
-		elif event.key() == Qt.Key_F :
+		if event.key() == Qt.Key_F :
 			if self.flatten>0 : self.flatten=0.0
 			else: self.flatten=1.0
 			self.generate_current_display_list(True)

@@ -2109,9 +2109,7 @@ class EM3DModel(QtCore.QObject):
 		return [xscale,yscale]
 	def keyPressEvent(self,event):
 		
-		if event.key() == Qt.Key_F1:
-			self.display_web_help("http://blake.bcm.edu/emanwiki/EMAN2/Programs/emimage3d")
-		elif event.key() == Qt.Key_Up:
+		if event.key() == Qt.Key_Up:
 			if event.modifiers()&Qt.ShiftModifier: self.cam.explicit_translate(0,0,-1)
 			else: self.cam.explicit_translate(0,1,0)
 			if self.inspector: self.inspector.set_xyz_trans(self.cam.cam_x,self.cam.cam_y,self.cam.cam_z)

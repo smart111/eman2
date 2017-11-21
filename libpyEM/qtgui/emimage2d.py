@@ -1781,10 +1781,7 @@ class EMImage2DWidget(EMGLWidget):
 			self.key_mvt_animation.set_end(new_origin)
 
 	def keyPressEvent(self,event):
-		if event.key() == Qt.Key_F1:
-			self.display_web_help("http://blake.bcm.edu/emanwiki/EMAN2/Programs/emimage2d")
-
-		elif event.key() == Qt.Key_Up:
+		if event.key() == Qt.Key_Up:
 			if self.list_data != None:
 				self.increment_list_data(1)
 				self.updateGL()
