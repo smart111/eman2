@@ -1115,8 +1115,6 @@ class EMFormWidget(QtGui.QWidget):
 		self.incorporate_params(self.params,vbl)
 		if not disable_ok_cancel: self.__add_ok_cancel_buttons(vbl)
 		self.setLayout(vbl)
-		
-		get_application().attach_child(self)
 
 #	def __del__(self):
 #		# this stops the QOBject : do not delete message

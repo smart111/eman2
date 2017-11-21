@@ -2221,8 +2221,6 @@ class EM3DModel(QtCore.QObject):
 		if not self.inspector : 
 			self.inspector = self.get_inspector()
 			if self.inspector == None: return # sometimes this happens
-		if not app.child_is_attached(self.inspector):
-			app.attach_child(self.inspector)
 		app.show_specific(self.inspector)
 	def toggle_cube(self):
 		self.cube = not self.cube

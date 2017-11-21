@@ -136,8 +136,6 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 		
 		self.image_change_count =  0# this is important when the user has more than one display instance of the same image, for instance in e2.py if 
 		app = get_application()
-		if app != None and application_control:
-			app.attach_child(self)
 		
 		self.application_control = application_control
 		self.file_name = ""
@@ -197,8 +195,6 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 			self.inspector = self.get_inspector()
 			if self.inspector == None: 
 				return # sometimes this happens
-		if not app.child_is_attached(self.inspector):
-			app.attach_child(self.inspector)
 		app.show_specific(self.inspector)
 		
 	def update_inspector_texture(self):
@@ -232,8 +228,6 @@ get_application = em_app_instance.get_instance
 
 class EMApp(QtGui.QApplication):
 	def __init__(self):
-		self.children = []
-		
 		# Stuff for display synchronization in e2.py
 		self.timer_function = None
 		self.tmr = None
@@ -258,24 +252,6 @@ class EMApp(QtGui.QApplication):
 			em_app_instance.set_instance(self)
 	
 
-	def child_is_attached(self,query_child):
-		return (query_child in self.children)
-
-	def detach_child(self,child):
-		if child not in self.children:
-			print("EMApp.detach_child() error, EMApp instance doesn't contain this child:", child)
-			return
-		
-		while child in self.children:
-			self.children.remove(child)
-			
-	def attach_child(self,child):
-		if child in self.children:
-			print("error, can't attach the same child twice:", child)
-			return
-			
-		self.children.append(child)
-		
 	def isVisible(self,child):
 		if child != None:
 			return child.isVisible()
@@ -283,22 +259,15 @@ class EMApp(QtGui.QApplication):
 	
 	def show(self):
 		for child in self.children:
-			if child.isVisible() == False:
-				child.show()
+			child.show()
 				
 	def close_specific(self,child,inspector_too=True):
-		for i,child_ in enumerate(self.children):
-			if child == child_:
-				self.children.pop(i) # need to double check that this is the correct behavior
-				if child != None: 
-					child.close()
-#					widget.deleteLater() #TODO: see if this is still needed
-				if inspector_too and child.inspector != None:
-					inspector = child.get_inspector()
-					inspector.close()
-				return
-			
-		#print "couldn't close",child
+		if child != None: 
+			child.close()
+		if inspector_too and child.inspector != None:
+			inspector = child.get_inspector()
+			inspector.close()
+		return
 		
 	def execute(self, logid=None):
 		self.exec_()
@@ -306,33 +275,12 @@ class EMApp(QtGui.QApplication):
 		if logid: E2end(logid) # We need to log the end of the process, don't we....
 		return sys.exit()
 		
-	def hide_specific(self,child,inspector_too=True):
-		for child_ in self.children:
-			if child == child_:
-				child.hide()
-				inspector = child.get_inspector()
-				if inspector != None:
-					inspector.hide()
-				return
-			
-		print("couldn't hide",child)
-		
-
 	def show_specific(self,child):
-		for child_ in self.children:
-			if child == child_:
-#				print "show",child
-				if child.isVisible() == False:
-					child.show()
-					child.setFocus()
-				child.raise_()
-				return
-	
-		# if we make it here than we automatically attach the child
-		self.attach_child(child)
-		if child.isVisible() == False:
-			child.show()
-			child.setFocus()
+		child.show()
+		child.setFocus()
+		child.raise_()
+		child.activateWindow()
+		return
 
 	def start_timer(self,interval,function):
 		print("START APP TIMER")

@@ -337,8 +337,6 @@ def EMSelectorBaseTemplate(Type):
 			
 			self.selected_files = []
 			
-			get_application().attach_child(self)
-			
 		def __init_buttons(self):
 			self.ok_button = QtGui.QPushButton("Ok")
 			self.ok_button.adjustSize()

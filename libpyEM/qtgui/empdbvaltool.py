@@ -58,8 +58,6 @@ class EMPDBValWidget(QtGui.QWidget):
 		self.volume_browse_button.clicked.connect(self.browse_iso)
 		self.volume_line_edit.textChanged.connect(self.update_iso_file)
 		
-		get_application().attach_child(self)
-		
 	def __init_gui(self):
 		self.data_groupbox = QtGui.QGroupBox(self.tr("Data"))
 		
@@ -141,7 +139,6 @@ class EMPDBValWidget(QtGui.QWidget):
 	def browse_iso(self):
 		em_selector = EMSelectorDialog()
 		file_path = em_selector.exec_()
-		get_application().detach_child(em_selector)
 		self.volume_line_edit.setText(file_path)
 		
 	def browse_pdb(self):

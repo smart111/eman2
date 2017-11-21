@@ -2013,9 +2013,9 @@ class EMBoxerModule(EMBoxerModuleVitals, PyQt4.QtCore.QObject):
 
 		print(self.thumbs_window,"now")
 		if bool:
-			get_application().show_specific(self.thumbs_window)
+			self.thumbs_window.show()
 		else:
-			get_application().hide_specific(self.thumbs_window)
+			self.thumbs_window.hide()
 
 	def show_2d_window(self,bool):
 		resize = False
@@ -2025,9 +2025,9 @@ class EMBoxerModule(EMBoxerModuleVitals, PyQt4.QtCore.QObject):
 			self.__update_2d_window(self.current_file())
 			self.main_2d_window.set_shapes(self.box_list.get_box_shapes(self.box_size))
 		if bool:
-			get_application().show_specific(self.main_2d_window)
+			self.main_2d_window.show()
 		else:
-			get_application().hide_specific(self.main_2d_window)
+			self.main_2d_window.hide()
 
 		if resize:
 			self.main_2d_window.optimally_resize()
@@ -2039,9 +2039,9 @@ class EMBoxerModule(EMBoxerModuleVitals, PyQt4.QtCore.QObject):
 			self.__init_particles_window()
 			self.particles_window.set_data(self.box_list.get_particle_images(self.current_file(), self.box_size))
 		if bool:
-			get_application().show_specific(self.particles_window)
+			self.particles_window.show()
 		else:
-			get_application().hide_specific(self.particles_window)
+			self.particles_window.hide()
 
 		if resize: self.particles_window.optimally_resize()
 
