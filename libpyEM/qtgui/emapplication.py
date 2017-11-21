@@ -135,7 +135,6 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 		
 		self.application_control = application_control
 		self.file_name = ""
-		self.disable_inspector = False
 		
 		self.makeCurrent()
 		self.font_renderer = get_3d_font_renderer()
@@ -154,27 +153,6 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 		if self.myparent : self.qt_parent.close()
 		self.emit(QtCore.SIGNAL("module_closed")) # this could be a useful signal, especially for something like the selector module, which can potentially show a lot of images but might want to close them all when it is closed
 		event.accept()
-		
-	def enable_inspector(self,val=True): 
-		self.disable_inspector = not val
-		
-			
-	def show_inspector(self,force=0):
-		if self.disable_inspector: 
-			return
-		
-		self.emit(QtCore.SIGNAL("inspector_shown")) # debug only
-		app = get_application()
-		if app == None:
-			print("can't show an inspector with having an associated application")
-		
-		if not force and self.inspector==None : 
-			return
-		if not self.inspector : 
-			self.inspector = self.get_inspector()
-			if self.inspector == None: 
-				return # sometimes this happens
-		app.show_specific(self.inspector)
 		
 	def update_inspector_texture(self):
 		if self.inspector != None:
