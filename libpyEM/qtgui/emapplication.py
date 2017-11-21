@@ -121,9 +121,9 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 		else:
 			self.setWindowTitle(title)
 			
-	def __init__(self, parent=None,enable_timer=False, application_control=True,winid=None):
+	def __init__(self, parent=None, application_control=True,winid=None):
 		if parent==None : 
-			self.qt_parent = EMParentWin(enable_timer)
+			self.qt_parent = EMParentWin()
 			self.myparent=True			# we allocated the parent, responsible for cleaning it up
 		else: 
 			self.qt_parent=parent

@@ -281,7 +281,7 @@ class EMParentWin(QtGui.QWidget,Animator):
 	class hides the fact that this workaround is required.
 	"""
 	
-	def __init__(self,enable_timer=False):
+	def __init__(self):
 		"""
 		@param child: the central GL display widget
 		@type child: EMGLWidget
