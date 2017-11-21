@@ -322,10 +322,11 @@ class EMApp(QtGui.QApplication):
 		for child_ in self.children:
 			if child == child_:
 #				print "show",child
-				if child.isVisible() == False:
+				if not child.isVisible():
 					child.show()
 					child.setFocus()
 				child.raise_()
+				child.activateWindow()
 				return
 	
 		# if we make it here than we automatically attach the child

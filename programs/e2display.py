@@ -83,7 +83,10 @@ def main():
 		load_pdb(args,app)
 	
 	elif options.plot:
-		plot(args,app)
+		pl=plot(args,app)
+		pl.show()
+		pl.raise_()
+		pl.activateWindow()
 		
 	elif options.hist:
 		hist(args,app)
@@ -187,7 +190,10 @@ def plot(files,app):
 	for f in files:
 		plotw.set_data_from_file(f,quiet=True)
 	plotw.setWindowTitle("2D Plot")
-	app.show_specific(plotw)
+	plotw.show()
+	plotw.raise_()
+	plotw.activateWindow()
+	# app.show_specific(plotw)
 	return plotw
 
 def hist(files,app):
