@@ -144,6 +144,28 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 			
 		self.busy = False #updateGL() does nothing when self.busy == True
 		
+	def closeEvent(self, event):
+		if self.inspector:
+			self.inspector.close()
+		QtOpenGL.QGLWidget.closeEvent(self, event)
+		if self.myparent : self.qt_parent.close()
+		self.emit(QtCore.SIGNAL("module_closed")) # this could be a useful signal, especially for something like the selector module, which can potentially show a lot of images but might want to close them all when it is closed
+		event.accept()
+		
+	def show_inspector(self,force=0):
+		self.emit(QtCore.SIGNAL("inspector_shown")) # debug only
+		app = get_application()
+		if app == None:
+			print("can't show an inspector with having an associated application")
+		
+		if not force and self.inspector==None : 
+			return
+		if not self.inspector : 
+			self.inspector = self.get_inspector()
+			if self.inspector == None: 
+				return # sometimes this happens
+		app.show_specific(self.inspector)
+		
 	def update_inspector_texture(self):
 		if self.inspector != None:
 			self.inspector.update()
