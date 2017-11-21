@@ -240,10 +240,10 @@ class EMApp(QtGui.QApplication):
 		for child in self.children:
 			child.show()
 				
-	def close_specific(self,child,inspector_too=True):
+	def close_specific(self,child):
 		if child != None: 
 			child.close()
-		if inspector_too and child.inspector != None:
+		if child.inspector != None:
 			inspector = child.get_inspector()
 			inspector.close()
 		return
