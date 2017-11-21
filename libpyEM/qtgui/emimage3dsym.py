@@ -1146,7 +1146,7 @@ class EM3DSymModel(EM3DModel,Orientations,ColumnGraphics):
 	def reducetog(self,bool):
 		self.reduce = bool
 
-class EMSymViewerWidget(EMGLWidget, EMGLProjectionViewMatrices):
+class EMSymViewerWidget(QGLWidget, EMGLProjectionViewMatrices):
 	allim=WeakKeyDictionary()
 	def __init__(self, sym="c1", filename=None):
 		EMSymViewerWidget.allim[self]=0
@@ -1155,7 +1155,7 @@ class EMSymViewerWidget(EMGLWidget, EMGLProjectionViewMatrices):
 		fmt.setDepth(1)
 		fmt.setSampleBuffers(True)
 		
-		EMGLWidget.__init__(self)
+		QGLWidget.__init__(self)
 		self.setFormat(fmt)
 		EMGLProjectionViewMatrices.__init__(self)
 

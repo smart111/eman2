@@ -277,14 +277,14 @@ class EMParentWin(QtGui.QWidget,Animator):
 	"""
 	This class adds a status bar with a size grip to QGLWidgets on Mac OS X, 
 	to provide a visual cue that the window can be resized. This is accomplished
-	by placing a QGLWidget and a QStatusBar onto a QWidget. The EMGLWidget 
+	by placing a QGLWidget and a QStatusBar onto a QWidget. The QGLWidget 
 	class hides the fact that this workaround is required.
 	"""
 	
 	def __init__(self):
 		"""
 		@param child: the central GL display widget
-		@type child: EMGLWidget
+		@type child: QGLWidget
 		@param enable_timer: not used... historical purposes???
 		"""
 		#TODO: figure out why the enable_timer parameter isn't being used
@@ -313,7 +313,7 @@ class EMParentWin(QtGui.QWidget,Animator):
 		"""__init__ has to be called before the widget is fully ready for display, so this completes the setup process"""
 
 		self.resize(640,640)
-		self.child = weakref.ref(child) # Either EMGLWidget.parent_widget or EMParentWin.child must be a weakref for garbage collection purposes.
+		self.child = weakref.ref(child) # Either QGLWidget.parent_widget or EMParentWin.child must be a weakref for garbage collection purposes.
 		self.hbl.addWidget(self.child(),100)
 #		self.resize(self.child().width(),self.child().height())
 	

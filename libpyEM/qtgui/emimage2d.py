@@ -65,7 +65,7 @@ MAG_INC = 1.1
 
 from emglobjects import EMOpenGLFlagsAndTools
 
-class EMImage2DWidget(EMGLWidget):
+class EMImage2DWidget(QGLWidget):
 	"""
 	"""
 
@@ -79,7 +79,7 @@ class EMImage2DWidget(EMGLWidget):
 		fmt.setDoubleBuffer(True)
 		#fmt.setSampleBuffers(True)
 		fmt.setDepth(1)
-		EMGLWidget.__init__(self,parent)
+		QGLWidget.__init__(self,parent)
 		self.setFormat(fmt)
 		self.setFocusPolicy(Qt.StrongFocus)
 		self.setMouseTracking(True)
@@ -1561,7 +1561,7 @@ class EMImage2DWidget(EMGLWidget):
 
 	def closeEvent(self,event) :
 		self.__write_display_settings_to_db()
-		EMGLWidget.closeEvent(self,event)
+		QGLWidget.closeEvent(self,event)
 
 	def dragEnterEvent(self,event):
 #		f=event.mimeData().formats()

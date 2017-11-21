@@ -104,7 +104,7 @@ qt_color_map["c"] = QtGui.QColor(0,255,255)
 qt_color_map["m"] = QtGui.QColor(255,0,255)
 qt_color_map["gray"] = QtGui.QColor(127,127,127)
 
-class EMPlot2DWidget(EMGLWidget):
+class EMPlot2DWidget(QGLWidget):
 	"""A QT widget for drawing 2-D plots using matplotlib
 	"""
 
@@ -112,7 +112,7 @@ class EMPlot2DWidget(EMGLWidget):
 
 		fmt=QtOpenGL.QGLFormat()
 		fmt.setDoubleBuffer(True);
-		EMGLWidget.__init__(self, parent=parent)
+		QGLWidget.__init__(self, parent=parent)
 		self.setFormat(fmt)
 		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"plot.png"))
 
@@ -193,7 +193,7 @@ class EMPlot2DWidget(EMGLWidget):
 			self.particle_viewer5.close()
 
 		self.clear_gl_memory()
-		EMGLWidget.closeEvent(self, event)
+		QGLWidget.closeEvent(self, event)
 
 		if self.inspector :
 			self.inspector.closeEvent(self, event)
@@ -216,7 +216,7 @@ class EMPlot2DWidget(EMGLWidget):
 			except: pass
 
 	def setWindowTitle(self,filename):
-		EMGLWidget.setWindowTitle(self, remove_directories_from_name(filename,1))
+		QGLWidget.setWindowTitle(self, remove_directories_from_name(filename,1))
 
 	def clear_gl_memory(self):
 		if self.tex_name != 0:
@@ -989,14 +989,14 @@ lc is the cursor selection point in plot coords"""
 	def leaveEvent(self,event):
 		pass
 
-class EMPolarPlot2DWidget(EMGLWidget):
+class EMPolarPlot2DWidget(QGLWidget):
 	"""
 	A QT widget for plotting ploar plots:
 	"""
 	def __init__(self,application=None):
 		fmt=QtOpenGL.QGLFormat()
 		fmt.setDoubleBuffer(True);
-		EMGLWidget.__init__(self)
+		QGLWidget.__init__(self)
 		self.setFormat(fmt)
 		self.resize(640,480)
 		self.setWindowIcon(QtGui.QIcon(QtGui.QPixmap(ploticon)))
@@ -1064,7 +1064,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 
 	def closeEvent(self,event):
 		self.clear_gl_memory()
-		EMGLWidget.closeEvent(self, event)
+		QGLWidget.closeEvent(self, event)
 
 
 	def keyPressEvent(self,event):
@@ -1085,7 +1085,7 @@ class EMPolarPlot2DWidget(EMGLWidget):
 			except: pass
 
 	def setWindowTitle(self,filename):
-		EMGLWidget.setWindowTitle(self, remove_directories_from_name(filename,1))
+		QGLWidget.setWindowTitle(self, remove_directories_from_name(filename,1))
 
 	def clear_gl_memory(self):
 		if self.tex_name != 0:
@@ -1907,10 +1907,10 @@ class EMPlot2DClassInsp(QtGui.QWidget):
 		self.imgwin=None
 
 	#def disableValue(self,event):
-	#	EMGLWidget.closeEvent(self, event)
+	#	QGLWidget.closeEvent(self, event)
 
 	#def enableValue(self,event):
-	#	EMGLWidget.closeEvent(self, event)
+	#	QGLWidget.closeEvent(self, event)
 
 	def doMakeSet(self):
 		"""Saves selected plots as new .lst files in sets/ if 'comment' field contains image specifiers"""

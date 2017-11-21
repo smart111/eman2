@@ -200,7 +200,7 @@ class EMMatrixPanel:
 
 #		print self.height,self.xsep,self.visiblecols
 
-class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
+class EMImageMXWidget(QGLWidget, EMGLProjectionViewMatrices):
 	def __init__(self, data=None,application=None, parent=None, title=""):
 		self.emit_events = False
 
@@ -208,13 +208,13 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 		fmt.setDoubleBuffer(True)
 		#fmt.setSampleBuffers(True)
 #		QtOpenGL.QGLWidget.__init__(self,fmt, parent)
-		EMGLWidget.__init__(self)
+		QGLWidget.__init__(self)
 		EMGLProjectionViewMatrices.__init__(self)
 
 
 		self.init_size_flag = True
 		self.data=None
-#		EMGLWidget.__init__(self,ensure_gl_context=True)
+#		QGLWidget.__init__(self,ensure_gl_context=True)
 		EMImageMXWidget.allim[self] = 0
 		self.wintitle=title
 		self.file_name = ''					# file the images are from
@@ -348,7 +348,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 
 	def closeEvent(self,event):
 		self.clear_gl_memory()
-		EMGLWidget.closeEvent(self, event)
+		QGLWidget.closeEvent(self, event)
 
 	def set_current_set(self,name):
 		"""Makes the named set the target of any mouse interactions"""
@@ -701,10 +701,10 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 		"""This function will set a base title for the window, which will automatically be modified with the current filename
 		when there is one, the next time the file changes (so you should use this before loading data)."""
 		self.wintitle=title
-		EMGLWidget.setWindowTitle(self, title)
+		QGLWidget.setWindowTitle(self, title)
 
 	def setWindowTitle(self,filename):
-		EMGLWidget.setWindowTitle(self, "{} ({})".format(self.wintitle,base_name(filename)))
+		QGLWidget.setWindowTitle(self, "{} ({})".format(self.wintitle,base_name(filename)))
 
 	def xyz_changed(self,xyz):
 		if self.data.set_xyz(str(xyz)):
@@ -1036,7 +1036,7 @@ class EMImageMXWidget(EMGLWidget, EMGLProjectionViewMatrices):
 
 
 	def view_width(self):
-		return EMGLWidget.width(self) - self.draw_scroll*self.scroll_bar.width
+		return QGLWidget.width(self) - self.draw_scroll*self.scroll_bar.width
 
 	def render(self):
 		if not self.data : return

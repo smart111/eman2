@@ -105,7 +105,7 @@ qt_color_map["c"] = QtGui.QColor(0,255,255)
 qt_color_map["m"] = QtGui.QColor(255,0,255)
 qt_color_map["gray"] = QtGui.QColor(127,127,127)
 
-class EMPlot3DWidget(EMGLWidget):
+class EMPlot3DWidget(QGLWidget):
 	"""A QT widget for drawing 3-D plots using matplotlib
 	"""
 
@@ -113,7 +113,7 @@ class EMPlot3DWidget(EMGLWidget):
 
 		fmt=QtOpenGL.QGLFormat()
 		fmt.setDoubleBuffer(True);
-		EMGLWidget.__init__(self, parent=parent)
+		QGLWidget.__init__(self, parent=parent)
 		self.setFormat(fmt)
 		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"plot.png"))
 
@@ -198,7 +198,7 @@ class EMPlot3DWidget(EMGLWidget):
 			self.particle_viewer5.close()
 
 		self.clear_gl_memory()
-		EMGLWidget.closeEvent(self, event)
+		QGLWidget.closeEvent(self, event)
 
 		if self.inspector :
 			self.inspector.closeEvent(event)
@@ -221,7 +221,7 @@ class EMPlot3DWidget(EMGLWidget):
 			except: pass
 
 	def setWindowTitle(self,filename):
-		EMGLWidget.setWindowTitle(self, remove_directories_from_name(filename,1))
+		QGLWidget.setWindowTitle(self, remove_directories_from_name(filename,1))
 
 	def clear_gl_memory(self):
 		if self.tex_name != 0:
@@ -1397,10 +1397,10 @@ class EMPlot3DClassInsp(QtGui.QWidget):
 		self.imgwin=None
 
 	#def disableValue(self,event):
-	#	EMGLWidget.closeEvent(self, event)
+	#	QGLWidget.closeEvent(self, event)
 
 	#def enableValue(self,event):
-	#	EMGLWidget.closeEvent(self, event)
+	#	QGLWidget.closeEvent(self, event)
 
 	def doMakeSet(self):
 		"""Saves selected plots as new .lst files in sets/ if 'comment' field contains image specifiers"""

@@ -107,14 +107,14 @@ qt_color_map["c"] = QtGui.QColor(0,255,255)
 qt_color_map["m"] = QtGui.QColor(255,0,255)
 qt_color_map["gray"] = QtGui.QColor(127,127,127)
 
-class EMHistogramWidget(EMGLWidget):
+class EMHistogramWidget(QGLWidget):
 	"""A QT widget for drawing 2-D plots using matplotlib
 	"""
 
 	def __init__(self,application=None,parent=None):
 		fmt=QtOpenGL.QGLFormat()
 		fmt.setDoubleBuffer(True);
-		EMGLWidget.__init__(self, parent=parent)
+		QGLWidget.__init__(self, parent=parent)
 		self.setFormat(fmt)
 		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"plot.png"))
 		self.axes={}
@@ -172,7 +172,7 @@ class EMHistogramWidget(EMGLWidget):
 
 	def closeEvent(self,event):
 		self.clear_gl_memory()
-		EMGLWidget.closeEvent(self, event)
+		QGLWidget.closeEvent(self, event)
 		if self.inspector : self.inspector.closeEvent(self, event)
 
 	def keyPressEvent(self,event):
@@ -191,7 +191,7 @@ class EMHistogramWidget(EMGLWidget):
 			except: pass
 
 	def setWindowTitle(self,filename):
-		EMGLWidget.setWindowTitle(self, remove_directories_from_name(filename,1))
+		QGLWidget.setWindowTitle(self, remove_directories_from_name(filename,1))
 
 	def clear_gl_memory(self):
 		if self.tex_name != 0:

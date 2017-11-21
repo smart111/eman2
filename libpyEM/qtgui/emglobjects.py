@@ -2210,7 +2210,7 @@ class EM3DModel(QtCore.QObject):
 		self.cam.scale = val
 		self.updateGL()
 	def show(self): self.gl_widget().show()
-	def show_inspector(self,force=0): #Copied from EMGLWidget
+	def show_inspector(self,force=0): #Copied from QGLWidget
 		if self.disable_inspector: return
 		self.emit(QtCore.SIGNAL("inspector_shown")) # debug only
 		app = get_application()
@@ -2241,9 +2241,9 @@ class EM3DModel(QtCore.QObject):
 		if self.cam.wheelEvent(event): self.update_inspector_texture()
 		if self.inspector != None :
 			self.inspector.set_scale(self.cam.scale)
-class EM3DGLWidget(EMGLWidget, EMGLProjectionViewMatrices):
+class EM3DGLWidget(QGLWidget, EMGLProjectionViewMatrices):
 	def __init__(self, model=None): #Usually model will be None, because a GL context must be created before a EM3DGLWidget
-		EMGLWidget.__init__(self)
+		QGLWidget.__init__(self)
 		EMGLProjectionViewMatrices.__init__(self)
 		
 		fmt=QtOpenGL.QGLFormat()

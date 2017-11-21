@@ -457,7 +457,7 @@ class SXGuiCter(QtGui.QWidget):
 		
 		#
 		# NOTE: 2016/03/09 Toshio Moriya
-		# To set window flags of EMGLWidget (SXPlot2DWidget and EMImage2DWidget) window,
+		# To set window flags of QGLWidget (SXPlot2DWidget and EMImage2DWidget) window,
 		# we have to go through its qt_parent attribute to call setWindowTitle()...
 		# 
 #		self.wfft=EMImage2DWidget()
@@ -2216,7 +2216,7 @@ class SXGuiCter(QtGui.QWidget):
 			# print "MRK_DEBUG: sxgui main window has gained focus (beome active)"
 			# 
 			# NOTE: 2016/03/08 Toshio Moriya
-			# To raise EMGLWidget (SXPlot2DWidget and EMImage2DWidget) window,
+			# To raise QGLWidget (SXPlot2DWidget and EMImage2DWidget) window,
 			# we have to go through its qt_parent attribute to call raise_()...
 			# 
 			if self.cter_entry_list != None:

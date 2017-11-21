@@ -723,7 +723,7 @@ rulericon = [
     'ccccccccccccccccc'
 ] 
 
-class EMScene3D(EMItem3D, EMGLWidget):
+class EMScene3D(EMItem3D, QGLWidget):
 	"""
 	Widget for rendering 3D objects. Uses a scne graph for rendering
 	"""
@@ -736,7 +736,7 @@ class EMScene3D(EMItem3D, EMGLWidget):
 		@param scalestep: The step to increment the object scaling
 		"""
 		EMItem3D.__init__(self, parent=None, transform=Transform())
-		EMGLWidget.__init__(self,parentwidget)
+		QGLWidget.__init__(self,parentwidget)
 		QtOpenGL.QGLFormat().setDoubleBuffer(True)
 		QtOpenGL.QGLFormat().setDepth(True)
 		self.setSelectedItem(True)			# The root is selected by default
@@ -1662,7 +1662,7 @@ class EMScene3D(EMItem3D, EMGLWidget):
 		Close the main inspector
 		"""
 		if self.main_3d_inspector: self.main_3d_inspector.close()
-		EMGLWidget.closeEvent(self,event)
+		QGLWidget.closeEvent(self,event)
 	
 	def showEvent(self, event):
 		QtGui.QWidget.showEvent(self, event)
