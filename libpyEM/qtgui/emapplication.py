@@ -131,10 +131,8 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 		self.inspector = None # a Qt Widget for changing display parameters, setting the data, accessing metadata, etc.
 		
 		self.image_change_count =  0# this is important when the user has more than one display instance of the same image, for instance in e2.py if 
-		app = get_application()
 		
 		self.application_control = application_control
-		self.file_name = ""
 		
 		self.makeCurrent()
 		self.font_renderer = get_3d_font_renderer()
