@@ -260,32 +260,6 @@ class EMApp(QtGui.QApplication):
 		child.raise_()
 		child.activateWindow()
 		return
-
-	def start_timer(self,interval,function):
-		print("START APP TIMER")
-	
-		if self.tmr != None:
-			print("can't start a timer, already have one running. Call stop_timer first")
-			#FIXME, add support for mutliple timers
-			return
-	
-		self.tmr=QtCore.QTimer()
-		self.tmr.setInterval(interval)
-		QtCore.QObject.connect(self.tmr,QtCore.SIGNAL("timeout()"), function)
-		self.tmr.start()
-		
-		self.timer_function = function
-		
-	
-	def stop_timer(self):
-		print("STOP APP TIMER")
-		if self.tmr != None:
-			QtCore.QObject.disconnect(self.tmr, QtCore.SIGNAL("timeout()"), self.timer_function)
-			self.tmr = None
-			self.timer_function = None
-		else:
-			print("warning, can't stop a timer when there is none")
-
 		
 	
 class EMProgressDialog(QtGui.QProgressDialog):
