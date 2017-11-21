@@ -81,8 +81,7 @@ def main():
 	if len(args) < 1:
 		dialog = embrowser.EMBrowserWidget(withmodal=False,multiselect=False)
 		dialog.show()
-		try: dialog.raise_()
-		except: pass
+		dialog.raise_()
 	
 	elif options.pdb:
 		load_pdb(args,app)
