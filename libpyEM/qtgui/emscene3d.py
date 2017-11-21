@@ -728,15 +728,15 @@ class EMScene3D(EMItem3D, EMGLWidget):
 	Widget for rendering 3D objects. Uses a scne graph for rendering
 	"""
 	name = "SG"
-	def __init__(self, parentwidget=None, SGactivenodeset=set(), scalestep=0.5):
+	def __init__(self, SGactivenodeset=set(), scalestep=0.5):
 		"""
 		@param parent: The parent of the widget
 		@param SGnodelist: a list enumerating all the SGnodes
 		@param SGactivenodeset: a set enumerating the list of active nodes
 		@param scalestep: The step to increment the object scaling
 		"""
-		EMItem3D.__init__(self, parent=None, transform=Transform())
-		EMGLWidget.__init__(self,parentwidget)
+		EMItem3D.__init__(self, transform=Transform())
+		EMGLWidget.__init__(self)
 		QtOpenGL.QGLFormat().setDoubleBuffer(True)
 		QtOpenGL.QGLFormat().setDepth(True)
 		self.setSelectedItem(True)			# The root is selected by default

@@ -71,7 +71,7 @@ class EMImage2DWidget(EMGLWidget):
 
 	allim=WeakKeyDictionary()
 
-	def __init__(self, image=None, application=get_application(), parent=None):
+	def __init__(self, image=None, application=get_application()):
 
 		self.inspector = None # this should be a qt widget, otherwise referred to as an inspector in eman
 
@@ -79,7 +79,7 @@ class EMImage2DWidget(EMGLWidget):
 		fmt.setDoubleBuffer(True)
 		#fmt.setSampleBuffers(True)
 		fmt.setDepth(1)
-		EMGLWidget.__init__(self,parent)
+		EMGLWidget.__init__(self)
 		self.setFormat(fmt)
 		self.setFocusPolicy(Qt.StrongFocus)
 		self.setMouseTracking(True)

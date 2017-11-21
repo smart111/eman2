@@ -79,9 +79,9 @@ class EMImage3DWidget(EMGLWidget, EMLightsDrawer, EMGLProjectionViewMatrices):
 		self.currentselection = len(self.viewables)-1
 		self.updateGL()
 		
-	def __init__(self, parent=None, image=None,application=None):
+	def __init__(self, image=None,application=None):
 		EMImage3DWidget.allim[self] = 0
-		EMGLWidget.__init__(self,parent)
+		EMGLWidget.__init__(self)
 		EMLightsDrawer.__init__(self)
 		EMGLProjectionViewMatrices.__init__(self)
 		

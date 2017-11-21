@@ -109,11 +109,11 @@ class EMPlot3DWidget(EMGLWidget):
 	"""A QT widget for drawing 3-D plots using matplotlib
 	"""
 
-	def __init__(self,application=None,parent=None):
+	def __init__(self,application=None):
 
 		fmt=QtOpenGL.QGLFormat()
 		fmt.setDoubleBuffer(True);
-		EMGLWidget.__init__(self, parent=parent)
+		EMGLWidget.__init__(self)
 		self.setFormat(fmt)
 		self.setWindowIcon(QtGui.QIcon(get_image_directory() +"plot.png"))
 
@@ -2586,7 +2586,7 @@ class EMDataFnPlotter(QtGui.QWidget):
 		self.resize(780, 580)
 		self.gbl = QtGui.QGridLayout(self)
 
-		self.plot = EMPlot3DWidget(parent=self)
+		self.plot = EMPlot3DWidget()
 		self.gbl.addWidget(self.plot,0,0,1,1)
 
 		self.lplot = QtGui.QLabel("Plot")
