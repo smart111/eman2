@@ -79,8 +79,6 @@ def main():
 	win=[]
 	
 	if len(args) < 1:
-		global dialog
-		file_list = []
 		dialog = embrowser.EMBrowserWidget(withmodal=False,multiselect=False)
 		dialog.show()
 		try: dialog.raise_()
