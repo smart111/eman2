@@ -119,9 +119,6 @@ def main():
 
 	app.exec_()
 
-def on_browser_done():
-	pass
-
 def selectclass(rawfsp,mxfsp,event,lc):
 	"""Used in 'classes' mode when the user selects a particular class-average"""
 	global win
