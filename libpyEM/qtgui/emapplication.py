@@ -100,26 +100,6 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 	It also handles much of the inspector behavior, displays help in a web browser, and provides 
 	a self.busy attribute to prevent updateGL() from redrawing before all changes to display parameters are in place. 
 	"""
-	
-	def hide(self):
-		if self.qt_parent:
-			self.qt_parent.hide()
-			
-	def resize(self, w, h):
-		if self.qt_parent:
-			QtOpenGL.QGLWidget.resize(self, w, h)
-			if get_platform()=="Darwin" : self.qt_parent.resize(w, h+22)
-			else : self.qt_parent.resize(w+4, h+4)
-			
-	def show(self):
-		if self.qt_parent:
-			self.qt_parent.show()
-			
-	def setWindowTitle(self, title):
-		if self.qt_parent:
-			self.qt_parent.setWindowTitle(title)
-		else:
-			self.setWindowTitle(title)
 			
 	def __init__(self, parent=None, application_control=True):
 		if parent==None : 
@@ -153,6 +133,26 @@ class EMGLWidget(QtOpenGL.QGLWidget):
 			
 		self.busy = False #updateGL() does nothing when self.busy == True
 		
+	def hide(self):
+		if self.qt_parent:
+			self.qt_parent.hide()
+			
+	def resize(self, w, h):
+		if self.qt_parent:
+			QtOpenGL.QGLWidget.resize(self, w, h)
+			if get_platform()=="Darwin" : self.qt_parent.resize(w, h+22)
+			else : self.qt_parent.resize(w+4, h+4)
+			
+	def show(self):
+		if self.qt_parent:
+			self.qt_parent.show()
+			
+	def setWindowTitle(self, title):
+		if self.qt_parent:
+			self.qt_parent.setWindowTitle(title)
+		else:
+			self.setWindowTitle(title)
+			
 	def closeEvent(self, event):
 		if self.inspector:
 			self.inspector.close()
