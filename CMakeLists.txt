@@ -350,7 +350,7 @@ if(NOT WIN32)
 endif()
 
 add_custom_target(test-verbose-pytest
-	COMMAND pytest -vs ${CMAKE_SOURCE_DIR}/tests/gui/ --cov=/Users/shadow_walker/anaconda/envs/eman-env/bin/ --cov=/Users/shadow_walker/anaconda/envs/eman-env/lib/python2.7/site-packages/ --cov-report html:cov_html
+	COMMAND pytest -vs ${CMAKE_SOURCE_DIR}/tests/gui/ ${CMAKE_SOURCE_DIR}/rt/pyem/ --cov=/Users/shadow_walker/anaconda/envs/eman-env/bin/ --cov=/Users/shadow_walker/anaconda/envs/eman-env/lib/python2.7/site-packages/ --cov-report html:cov_html1
 #	COMMAND pytest -vs ${CMAKE_SOURCE_DIR}/tests/gui/test_e2boxer.py
 #	COMMAND pytest -vs ${CMAKE_SOURCE_DIR}/tests/gui/test_e2display.py
 #	COMMAND pytest -vs ${CMAKE_SOURCE_DIR}/tests/gui/test_e2filtertool.py
