@@ -1,6 +1,6 @@
-FILE(GLOB e2programs "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
+FILE(GLOB e2programs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
 
-FILE(GLOB exclusion_list
+FILE(GLOB exclusion_list RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
 			e2plotFSC.py
 			e2refine_evenodd.py
 			e2refine_evenodd.py
@@ -31,11 +31,16 @@ add_custom_target(Programs
 				  )
 
 LIST(REMOVE_ITEM e2programs ${exclusion_list})
-INSTALL(PROGRAMS ${e2programs}
-		DESTINATION    bin 
-		COMPONENT Programs
-)
-
+foreach(p ${e2programs})
+#	message_var(p)
+#		message("${CMAKE_SOURCE_DIR}/programs/${p} ${CMAKE_INSTALL_PREFIX}/bin/${p}")
+	INSTALL(CODE "execute_process(
+					COMMAND ${CMAKE_COMMAND} -E create_symlink
+					${CMAKE_SOURCE_DIR}/programs/${p} ${CMAKE_INSTALL_PREFIX}/bin/${p}
+		)"
+			COMPONENT Programs
+	)
+endforeach()
 IF(WIN32)
 	INSTALL(FILES e2boxer.py
 		DESTINATION bin
