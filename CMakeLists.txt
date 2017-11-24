@@ -348,3 +348,12 @@ if(NOT WIN32)
 			 COMMAND bash ${CMAKE_SOURCE_DIR}/tests/run_prog_tests.sh
 			 )
 endif()
+
+add_custom_target(test-verbose-pytest
+	COMMAND pytest -vs ${CMAKE_SOURCE_DIR}/tests/gui/
+#	COMMAND pytest -vs ${CMAKE_SOURCE_DIR}/tests/gui/test_e2boxer.py
+#	COMMAND pytest -vs ${CMAKE_SOURCE_DIR}/tests/gui/test_e2display.py
+#	COMMAND pytest -vs ${CMAKE_SOURCE_DIR}/tests/gui/test_e2filtertool.py
+#	COMMAND pytest -vs ${CMAKE_SOURCE_DIR}/tests/gui/test_e2ctfsim.py
+#	COMMAND pytest -vs ${CMAKE_SOURCE_DIR}/tests/gui/test_e2history.py
+)
