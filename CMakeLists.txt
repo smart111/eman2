@@ -363,3 +363,5 @@ if(NOT WIN32)
 			 COMMAND bash ${CMAKE_SOURCE_DIR}/tests/run_prog_tests.sh
 			 )
 endif()
+
+find_package(Pytest)
