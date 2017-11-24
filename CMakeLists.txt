@@ -365,3 +365,23 @@ if(NOT WIN32)
 endif()
 
 find_package(Pytest)
+
+if(PYTEST_EXECUTABLE AND PYTEST_COV AND PYTEST_QT)
+	add_custom_target(test-gui
+			COMMAND ${PYTEST_EXECUTABLE} -vs ${CMAKE_SOURCE_DIR}/tests/gui/
+			DEPENDS PythonFiles
+	)
+	
+	add_custom_target(test-gui-cov
+			COMMAND ${PYTEST_EXECUTABLE} -vs ${CMAKE_SOURCE_DIR}/tests/gui/
+				--cov=${CMAKE_INSTALL_PREFIX}/bin/
+				--cov=${SP_DIR}/EMAN2
+				--cov=${SP_DIR}/EMAN2_cppwrap
+				--cov=${SP_DIR}/EMAN2_meta
+				--cov=${SP_DIR}/EMAN2db
+				--cov=${SP_DIR}/EMAN2jsondb
+				--cov=${SP_DIR}/pyemtbx
+				--cov-report html:cov_pytest_html
+			DEPENDS PythonFiles
+	)
+endif()
