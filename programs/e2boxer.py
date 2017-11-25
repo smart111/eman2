@@ -39,6 +39,9 @@ import threading
 import Queue
 import os,sys
 
+from emapplication import EMApp
+app=EMApp()
+
 apix=0
 
 class nothing:
@@ -88,7 +91,7 @@ def load_micrograph(filename):
 	img["apix_z"]=apix
 	return img
 
-def main():
+def main(sys_argv=None):
 	progname = os.path.basename(sys.argv[0])
 	usage = """prog [options] <image> <image2>....
 
@@ -121,7 +124,7 @@ def main():
 	parser.add_argument("--ppid", type=int, help="Set the PID of the parent process, used for cross platform PPID",default=-1)
 	parser.add_argument("--verbose", "-v", dest="verbose", action="store", metavar="n", type=int, default=0, help="verbose level [0-9], higner number means higher level of verboseness")
 
-	(options, args) = parser.parse_args()
+	(options, args) = parser.parse_args(sys_argv)
 	
 	global invert_on_read
 	if options.invert : invert_on_read = True
@@ -276,11 +279,8 @@ def main():
 			print("=====================================")
 			print("ERROR: GUI mode unavailable without PyQt4")
 			sys.exit(1)
-		from emapplication import EMApp
-		app=EMApp()
-		gui=GUIBoxer(args,options.voltage,options.apix,options.cs,options.ac,options.boxsize,options.ptclsize,options.threads)
-		gui.show()
-		gui.raise_()
+		gui=main_loop(args,options.voltage,options.apix,options.cs,options.ac,options.boxsize,options.ptclsize,options.threads)
+
 		app.exec_()
 
 	if options.write_dbbox:
@@ -292,6 +292,13 @@ def main():
 		print("Particles written to particles/*_ptcls.hdf")
 
 	E2end(logid)
+
+def main_loop(imagenames,voltage=None,apix=None,cs=None,ac=10.0,box=256,ptcl=200,threads=4):
+	gui=GUIBoxer(imagenames,voltage,apix,cs,ac,box,ptcl,threads)
+	gui.show()
+	gui.raise_()
+	
+	return gui
 
 def write_boxfiles(files,boxsize):
 	"""This function will write a boxfiles/*.box file for each provided micrograph filename based on box locations
@@ -1318,7 +1325,7 @@ class GUIBoxer(QtGui.QWidget):
 		"""The 'new' e2boxer interface.
 		"""
 
-		QtGui.QWidget.__init__(self,None)
+		QtGui.QWidget.__init__(self)
 #		self.setWindowIcon(QtGui.QIcon(get_image_directory() + "ctf.png"))
 
 		self.boxcolors=boxcolors
@@ -1346,10 +1353,15 @@ class GUIBoxer(QtGui.QWidget):
 		self.wimage=EMImage2DWidget()
 		self.wimage.setWindowTitle("Micrograph")
 
-		self.wparticles=EMImageMXWidget()
+		self.wparticles=EMImageMXWidget(parent=self)
 		self.wparticles.setWindowTitle("Particles")
 		self.wparticles.set_mouse_mode("App")
 		
+		self.wparticles.show()
+		self.wimage.show()
+		self.wparticles.raise_()
+		self.wimage.raise_()
+
 		self.wrefs=EMImageMXWidget()
 		self.wrefs.setWindowTitle("Box Refs")
 		self.wrefs.set_mouse_mode("App")
@@ -1547,8 +1559,10 @@ class GUIBoxer(QtGui.QWidget):
 		self.setWindowTitle("e2boxer21 - Control Panel")
 
 		self.wimage.show()
+		self.wimage.raise_()
 		self.wparticles.set_data(self.particles)
 		self.wparticles.show()
+		self.wparticles.raise_()
 		
 		if os.path.exists("info/boxrefs.hdf"):
 			self.goodrefs=EMData.read_images("info/boxrefs.hdf")

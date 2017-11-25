@@ -40,10 +40,14 @@ import shelve
 import sys,os,time
 from EMAN2 import base_name, EMArgumentParser, get_image_directory
 import EMAN2db
+from PyQt4 import QtGui
 
 # also defined in EMAN2, but we don't want to have to import it
 
-def main():
+from emapplication import EMApp
+app = EMApp()
+
+def main(sys_argv=None):
 	progname = os.path.basename(sys.argv[0])
 	usage = progname + """ [options]
 	A tool for displaying EMAN2 command history
@@ -55,17 +59,21 @@ def main():
 	parser.add_argument("--ppid", type=int, help="Set the PID of the parent process, used for cross platform PPID",default=-1)
 	parser.add_argument("--verbose", "-v", dest="verbose", action="store", metavar="n", type=int, default=0, help="verbose level [0-9], higner number means higher level of verboseness")
 	
-	(options, args) = parser.parse_args()
+	(options, args) = parser.parse_args(sys_argv)
 	
 	if options.gui:
-		from emapplication import EMApp
-		app = EMApp()
-		hist = HistoryForm(app,os.getcwd())
-		hist.form.show()
-		hist.form.raise_()
+		hist = main_loop()
+
 		app.exec_()
 		
 	else: print_to_std_out(options.all)
+
+def main_loop():
+	hist = HistoryForm(app,os.getcwd())
+	hist.form.show()
+	hist.form.raise_()
+	
+	return hist
 
 class HistoryForm:
 	def __init__(self,application,wd):

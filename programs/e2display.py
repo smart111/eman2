@@ -34,6 +34,7 @@ from __future__ import print_function
 
 from EMAN2 import EMANVERSION, E2init, E2end, EMData, base_name, file_exists, EMArgumentParser
 import EMAN2db
+import EMAN2
 from emapplication import EMApp
 import embrowser
 from emimage import EMImageWidget, EMWidgetFromFile
@@ -45,7 +46,10 @@ from OpenGL import GL, GLU, GLUT
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from PyQt4.QtCore import Qt
 
-def main():
+app = EMApp()
+
+
+def main(sys_argv=None):
 	progname = os.path.basename(sys.argv[0])
 	usage = """prog [options] <image file> ...
 
@@ -69,11 +73,10 @@ def main():
 	parser.add_argument("--ppid", type=int, help="Set the PID of the parent process, used for cross platform PPID",default=-2)
 	parser.add_argument("--verbose", "-v", dest="verbose", action="store", metavar="n", type=int, default=0, help="verbose level [0-9], higner number means higher level of verboseness")
 
-	(options, args) = parser.parse_args()
+	(options, args) = parser.parse_args(sys_argv)
 
 #	logid=E2init(sys.argv)
 
-	app = EMApp()
 	#gapp = app
 	#QtGui.QApplication(sys.argv)
 	win=[]
@@ -105,7 +108,7 @@ def main():
 	elif options.classes:
 		options.classes=options.classes.split(",")
 		imgs=EMData.read_images(args[0])
-		display(imgs,app,args[0])
+		dialog = display(imgs,app,args[0])
 
 		QtCore.QObject.connect(win[0].child,QtCore.SIGNAL("mousedown"),lambda a,b:selectclass(options.classes[0],options.classes[1],a,b))
 		try:
@@ -118,19 +121,25 @@ def main():
 		options.classmx=options.classmx.split(",")
 		clsnum=int(options.classmx[1])
 		imgs=getmxim(args[0],options.classmx[0],clsnum)
-		display(imgs,app,args[0])
+		dialog = display(imgs,app,args[0])
 	
 	else:
 		for i in args:
 			if not file_exists(i):
 				print("%s doesn't exist" %i)
 				sys.exit(1)
-			display_file(i,app,options.singleimage,usescenegraph=options.newwidget)
+			dialog = display_file(i,app,options.singleimage,usescenegraph=options.newwidget)
 	
 	if options.fullrange:
 		revert_full_range(fullrangeparms)
 
-	app.exec_()
+	dialog.show()
+	dialog.raise_()
+	
+	if hasattr(EMAN2, '_called_from_test'):
+		return dialog
+	else:
+		app.exec_()
 
 #	E2end(logid)
 
@@ -229,11 +238,10 @@ def getmxim(fsp,fsp2,clsnum):
 def display_file(filename,app,force_2d=False,usescenegraph=False):
 	w = EMWidgetFromFile(filename,application=app,force_2d=force_2d)
 	w.setWindowTitle(base_name(filename))
-	app.show_specific(w)
-	try: w.optimally_resize()
-	except: pass
-	try: w.raise_()
-	except: pass
+	w.optimally_resize()
+	w.show()
+	w.raise_()
+	
 	return w
 
 def display(img,app,title="EMAN2 image"):
@@ -244,9 +252,9 @@ def display(img,app,title="EMAN2 image"):
 		if file_exists(title):
 			w.set_file_name(title)
 	except: pass
-	app.show_specific(w)
-	try: w.optimally_resize()
-	except: pass
+	w.optimally_resize()
+	w.show()
+	w.raise_()
 	return w
 
 def plot(files,app):

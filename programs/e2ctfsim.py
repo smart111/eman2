@@ -45,9 +45,16 @@ import sys
 import weakref
 import traceback
 from numpy import array,arange
+from PyQt4 import QtGui
 
+from emapplication import EMApp
+app=EMApp()
 
-def main():
+def main(sys_argv=None):
+	gui = main_loop(sys_argv)
+	app.exec_()
+
+def main_loop(sys_argv):
 	progname = os.path.basename(sys.argv[0])
 
 	usage = """prog [options]
@@ -64,13 +71,12 @@ A simple CTF simulation program.
 	parser.add_argument("--apply",type=str,default=None,help="A 2-D image file which the CTF will be applied to in real-time")
 	parser.add_argument("--verbose", "-v", dest="verbose", action="store", metavar="n", type=int, default=0, help="verbose level [0-9], higner number means higher level of verboseness")
 
-	(options, args) = parser.parse_args()
+	(options, args) = parser.parse_args(sys_argv)
 
-	from emapplication import EMApp
-	app=EMApp()
 	gui=GUIctfsim(app,options.apix,options.voltage,options.cs,options.ac,options.samples,options.apply)
 	gui.show_guis()
-	app.exec_()
+	
+	return gui
 
 #		print "done execution"
 

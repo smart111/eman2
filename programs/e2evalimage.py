@@ -56,6 +56,8 @@ except:
 
 from Simplex import Simplex
 
+from emapplication import EMApp
+app=EMApp()
 
 
 debug=False
@@ -65,7 +67,7 @@ sfcurve=None		# This will store a global structure factor curve if specified
 sfcurve2=None
 envelopes=[]		# simplex minimizer needs to use a global at the moment
 
-def main():
+def main(sys_argv=None):
 	global debug,logid
 	progname = os.path.basename(sys.argv[0])
 	usage = """prog [options] <single image file> ...
@@ -91,28 +93,28 @@ power spectrum in various ways."""
 	parser.add_argument("--ppid", type=int, help="Set the PID of the parent process, used for cross platform PPID",default=-1)
 	parser.add_argument("--verbose", "-v", dest="verbose", action="store", metavar="n", type=int, default=0, help="verbose level [0-9], higner number means higher level of verboseness")
 
-	(options, args) = parser.parse_args()
+	(options, args) = parser.parse_args(sys_argv)
 
 	logid=E2init(sys.argv,options.ppid)
 
-	from emapplication import EMApp
-	app=EMApp()
-	gui=GUIEvalImage(args,options.voltage,options.apix,options.cs,options.ac,options.box,options.usefoldername,options.constbfactor,options.astigmatism,options.phaseplate)
-	gui.show()
+	gui=main_loop(args,options.voltage,options.apix,options.cs,options.ac,options.box,options.usefoldername,options.constbfactor,options.astigmatism,options.phaseplate)
+	app.execute()
 
+	E2end(logid)
+
+
+def main_loop(images,voltage=None,apix=None,cs=None,ac=10.0,box=512,usefoldername=False,constbfactor=-1,fitastig=False,phaseplate=False):
+	gui=GUIEvalImage(images,voltage,apix,cs,ac,box,usefoldername,constbfactor,fitastig,phaseplate)
+	gui.show()
+	
 	try:
 		gui.wimage.raise_()
 		gui.wfft.raise_()
 		gui.wplot.raise_()
 		gui.raise_()
 	except: pass
-
-# 	try: gui.raise_()
-# 	except: pass
-	app.execute()
-
-	E2end(logid)
-
+	
+	return gui
 
 
 class GUIEvalImage(QtGui.QWidget):
