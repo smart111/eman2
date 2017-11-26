@@ -68,7 +68,7 @@ def main(sys_argv=None):
 		
 	else: print_to_std_out(options.all)
 
-def main_loop():
+def main_loop(sys_argv=None):
 	hist = HistoryForm(app,os.getcwd())
 	hist.form.show()
 	hist.form.raise_()
