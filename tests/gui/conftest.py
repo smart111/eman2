@@ -41,13 +41,13 @@ class Win(object):
         if clickButton:
             qtbot.mouseClick(form, clickButton)
         qtbot.waitForWindowShown(form)
-        qtbot.wait(1000)
+        qtbot.wait(100)
         fname = '%s.png'%os.path.join(self.dir,str(self.counter))
         qpxmap = QPixmap.grabWindow(form.winId())
-        qtbot.wait(1000)
+        qtbot.wait(100)
         qpxmap.save(fname,'png')
         print("Click!: %s"%fname)
-        qtbot.wait(800)
+        qtbot.wait(100)
         self.counter += 1
 
 @pytest.fixture
