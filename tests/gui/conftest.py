@@ -16,27 +16,33 @@ def pytest_unconfigure(config):
 def curdir(request):
     return request.fspath.dirname
 
-@pytest.fixture
-def main_form(module_name, args=[]):
+def get_main_form(module_name, args=[]):
     module = __import__(module_name)
     if not os.path.isdir(module_name):
         os.mkdir(module_name)
-    main_form = module.main(args)
-    yield main_form
-    main_form.close()
+    main_form = module.main_loop(args)
+    return main_form
+
+@pytest.fixture
+def main_form():
+    # main_form = common.get_main_form()
+    return get_main_form
+    # main_form.close()
 
 class Win(object):
-    def __init__(self):
+    def __init__(self, module_name, args=[]):
         self.counter = 0
+        self.dir = module_name
+        self.main_form = get_main_form(module_name, args)
     
-    def cycle(self, qtbot, form, dir, clickButton=None):
+    def cycle(self, qtbot, form, clickButton=None):
         form.raise_()
         form.activateWindow()
         if clickButton:
             qtbot.mouseClick(form, clickButton)
         qtbot.waitForWindowShown(form)
         qtbot.wait(1000)
-        fname = '%s.png'%os.path.join(dir,str(self.counter))
+        fname = '%s.png'%os.path.join(self.dir,str(self.counter))
         qpxmap = QPixmap.grabWindow(form.winId())
         qtbot.wait(1000)
         qpxmap.save(fname,'png')
@@ -46,4 +52,4 @@ class Win(object):
 
 @pytest.fixture
 def win():
-    return Win()
+    return Win
