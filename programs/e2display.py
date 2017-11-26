@@ -50,6 +50,13 @@ app = EMApp()
 
 
 def main(sys_argv=None):
+	dialog = main_loop(sys_argv)
+
+	app.exec_()
+
+#	E2end(logid)
+
+def main_loop(sys_argv=None):
 	progname = os.path.basename(sys.argv[0])
 	usage = """prog [options] <image file> ...
 
@@ -136,12 +143,7 @@ def main(sys_argv=None):
 	dialog.show()
 	dialog.raise_()
 	
-	if hasattr(EMAN2, '_called_from_test'):
-		return dialog
-	else:
-		app.exec_()
-
-#	E2end(logid)
+	return dialog
 
 def set_full_range():
 	'''
