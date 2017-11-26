@@ -1,6 +1,3 @@
-import pyautogui
-from PyQt4.QtGui import QPixmap, qApp
-from PyQt4.QtCore import Qt
 import os
 import e2ctfsim
 

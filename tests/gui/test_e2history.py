@@ -1,6 +1,5 @@
 import pytest
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import qApp
 import e2history
 
 @pytest.fixture

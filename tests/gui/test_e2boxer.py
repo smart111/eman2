@@ -1,7 +1,5 @@
-import pyautogui
-from PyQt4.QtGui import QPixmap
-from PyQt4.QtCore import Qt
 import os
+from PyQt4.QtCore import Qt
 import e2boxer
 
 import pytest

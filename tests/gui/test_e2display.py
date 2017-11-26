@@ -1,10 +1,4 @@
-import time
 import os
-import filecmp
-import unittest
-from PyQt4.QtTest import QTest
-from PyQt4.QtGui import QPixmap
-from PyQt4.QtCore import Qt
 import e2display
 import pytest
 
