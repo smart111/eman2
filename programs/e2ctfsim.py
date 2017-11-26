@@ -54,7 +54,7 @@ def main(sys_argv=None):
 	gui = main_loop(sys_argv)
 	app.exec_()
 
-def main_loop(sys_argv):
+def main_loop(sys_argv=[]):
 	progname = os.path.basename(sys.argv[0])
 
 	usage = """prog [options]

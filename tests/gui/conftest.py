@@ -16,11 +16,11 @@ def pytest_unconfigure(config):
 def curdir(request):
     return request.fspath.dirname
 
-def get_main_form(module_name, args=[]):
+def get_main_form(module_name, *args, **kwargs):
     module = __import__(module_name)
     if not os.path.isdir(module_name):
         os.mkdir(module_name)
-    main_form = module.main_loop(args)
+    main_form = module.main_loop(*args, **kwargs)
     return main_form
 
 @pytest.fixture
@@ -30,10 +30,10 @@ def main_form():
     # main_form.close()
 
 class Win(object):
-    def __init__(self, module_name, args=[]):
+    def __init__(self, module_name, *args, **kwargs):
         self.counter = 0
         self.dir = module_name
-        self.main_form = get_main_form(module_name, args)
+        self.main_form = get_main_form(module_name, *args, **kwargs)
     
     def cycle(self, qtbot, form, clickButton=None):
         form.raise_()
