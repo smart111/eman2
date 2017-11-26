@@ -16,6 +16,15 @@ def pytest_unconfigure(config):
 def curdir(request):
     return request.fspath.dirname
 
+@pytest.fixture
+def main_form(module_name, args=[]):
+    module = __import__(module_name)
+    if not os.path.isdir(module_name):
+        os.mkdir(module_name)
+    main_form = module.main(args)
+    yield main_form
+    main_form.close()
+
 class Win(object):
     def __init__(self):
         self.counter = 0
