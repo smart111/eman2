@@ -3,7 +3,7 @@ import os
 
 
 def test_mouseClick_altModifier(qtbot, win, curdir):
-    win = win('e2filtertool','%s'%os.path.join(curdir,'e2display/twod.hdf'))
+    win = win('e2filtertool',['%s'%os.path.join(curdir,'e2display/twod.hdf')])
     win.cycle(qtbot, win.main_form)
     win.cycle(qtbot, win.main_form.viewer[0])
     qtbot.mouseClick(win.main_form.viewer[0], Qt.LeftButton, Qt.AltModifier)
