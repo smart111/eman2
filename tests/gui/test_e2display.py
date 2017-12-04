@@ -1,4 +1,4 @@
-def test_display_file(qtbot, win):
+def test_display_initial_gui(main_form, win):
+    main_form = main_form('e2display', [])
     win = win('e2display')
-    qtbot.addWidget(win.main_form)
-    win.cycle(qtbot, win.main_form)
+    win(main_form)
