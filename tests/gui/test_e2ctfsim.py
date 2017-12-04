@@ -1,6 +1,7 @@
 def test_cli(qtbot, win):
+    main_form = main_form('e2ctfsim')
     win = win('e2ctfsim')
-    win.cycle(qtbot, win.main_form)
-    win.cycle(qtbot, win.main_form.guiim)
-    win.cycle(qtbot, win.main_form.guiplot)
+    win(main_form)
+    win(main_form.guiim)
+    win(main_form.guiplot)
 
