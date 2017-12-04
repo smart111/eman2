@@ -17,14 +17,27 @@ def curdir(request):
 
 # args default is [] rather than None,
 # otherwise command-line args passed to pytest are captured
-def get_main_form(module_name, args=[]):
-    module = __import__(module_name)
-    main_form = module.main(args)
-    
-    return main_form
+# def get_main_form(module_name, args=[]):
+#     module = __import__(module_name)
+#     main_form = module.main(args)
+#     
+#     return main_form
 
 @pytest.fixture
-def main_form():
+def main_form(request):
+    def get_main_form(module_name, args=[]):
+        module = __import__(module_name)
+        main_form = module.main(args)
+        
+        def fin():
+            if hasattr(main_form, "close"):
+                main_form.close()
+
+        request.addfinalizer(fin)
+
+        return main_form
+    
+    # def fin()
     return get_main_form
 
 
