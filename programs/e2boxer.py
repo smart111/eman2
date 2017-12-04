@@ -281,6 +281,7 @@ def main(sys_argv=None):
 			sys.exit(1)
 		gui=GUIBoxer(args,options.voltage,options.apix,options.cs,options.ac,options.boxsize,options.ptclsize,options.threads)
 		gui.show()
+		gui.raise_()
 		app.execute()
 		
 		return gui
