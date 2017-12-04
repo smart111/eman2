@@ -28,6 +28,32 @@ def main_form():
     return get_main_form
 
 @pytest.fixture
+def cycle(qtbot):
+    def get_cycle(form, clickButton=None):
+        form.raise_()
+        form.activateWindow()
+        qtbot.waitForWindowShown(form)
+        
+        if clickButton:
+            qtbot.mouseClick(form, clickButton)
+        qtbot.wait(100)
+    
+        # fname = '%s.png'%os.path.join(self.dir, str(self.counter))
+        # qpxmap = QPixmap.grabWindow(form.winId())
+        qtbot.wait(100)
+    
+        # qpxmap.save(fname,'png')
+        qtbot.wait(100)
+    
+        # self.counter += 1
+    
+        # print("Click!: %s"%fname)
+    return get_cycle
+
+# cycle = cycle(form, clickButton=None)
+
+
+@pytest.fixture
 def win(qtbot):
     class Win(object):
         def __init__(self, dir):
