@@ -1,4 +1,5 @@
 import pytest
+from PyQt4.QtGui import QPixmap
 import os
 
 
@@ -25,3 +26,34 @@ def get_main_form(module_name, args=[]):
 @pytest.fixture
 def main_form():
     return get_main_form
+
+@pytest.fixture
+def win(qtbot):
+    class Win(object):
+        def __init__(self, dir):
+            self.counter = 0
+            self.dir = dir
+            
+            if not os.path.isdir(self.dir):
+                os.mkdir(self.dir)
+        
+        def __call__(self, form, clickButton=None):
+            form.raise_()
+            form.activateWindow()
+            qtbot.waitForWindowShown(form)
+
+            if clickButton:
+                qtbot.mouseClick(form, clickButton)
+            qtbot.wait(100)
+
+            fname = '%s.png'%os.path.join(self.dir, str(self.counter))
+            qpxmap = QPixmap.grabWindow(form.winId())
+            qtbot.wait(100)
+
+            qpxmap.save(fname,'png')
+            qtbot.wait(100)
+
+            self.counter += 1
+
+            print("Click!: %s"%fname)
+    return Win
