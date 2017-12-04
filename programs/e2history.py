@@ -62,6 +62,9 @@ def main(sys_argv=None):
 	
 	if options.gui:
 		hist = HistoryForm(app,os.getcwd())
+		hist.form.show()
+		hist.form.raise_()
+
 		app.show()
 		app.execute()
 		
