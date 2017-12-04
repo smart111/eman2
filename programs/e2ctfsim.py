@@ -70,6 +70,7 @@ A simple CTF simulation program.
 
 	gui=GUIctfsim(app,options.apix,options.voltage,options.cs,options.ac,options.samples,options.apply)
 	gui.show_guis()
+	gui.raise_()
 	app.execute()
 	
 	return gui
