@@ -1,12 +1,10 @@
 import os
 
 
-def test_display_file(qtbot, win, curdir):
-    win = win('e2evalimage',[os.path.join(curdir,'e2evalimage/BGal_000232.hdf')])
-    main_form = win.main_form
-    qtbot.addWidget(main_form)
-
-    win.cycle(qtbot, main_form)
-    win.cycle(qtbot, main_form.wplot)
-    win.cycle(qtbot, main_form.wfft)
-    win.cycle(qtbot, main_form.wimage)
+def test_display_initial_gui(main_form, win, curdir):
+    main_form = main_form('e2evalimage',[os.path.join(curdir,'e2evalimage/BGal_000232.hdf')])
+    win = win('e2evalimage')
+    win(main_form)
+    win(main_form.wplot)
+    win(main_form.wfft)
+    win(main_form.wimage)
