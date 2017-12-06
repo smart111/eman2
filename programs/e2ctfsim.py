@@ -78,7 +78,7 @@ try:
 	from PyQt4 import QtCore, QtGui, QtOpenGL
 	from PyQt4.QtCore import Qt
 	from qtgui.emshape import *
-	from valslider import ValSlider
+	from qtgui.valslider import ValSlider
 	
 	from qtgui.emapplication import EMApp
 	app=EMApp()

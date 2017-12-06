@@ -46,7 +46,7 @@ from qtgui.emimage3d import EMImage3DWidget
 from qtgui.emscene3d import EMScene3D
 from qtgui.emdataitem3d import EMDataItem3D, EMIsosurface
 from qtgui.emshape import EMShape
-from valslider import ValSlider, ValBox
+from qtgui.valslider import ValSlider, ValBox
 
 from EMAN2_utils import runcmd
 
