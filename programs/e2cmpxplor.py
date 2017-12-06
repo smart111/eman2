@@ -32,12 +32,12 @@ from __future__ import print_function
 #
 #
 
-from qtgui.emapplication import EMApp, get_application
-from qtgui.emimage3dsym import EM3DSymModel,EMSymInspector
+from eman2_gui.emapplication import EMApp, get_application
+from eman2_gui.emimage3dsym import EM3DSymModel,EMSymInspector
 import os,sys
 from EMAN2 import *
 from PyQt4 import QtGui,QtCore
-from qtgui.emimagemx import EMImageMXModule
+from eman2_gui.emimagemx import EMImageMXModule
 
 	
 em_app = EMApp()

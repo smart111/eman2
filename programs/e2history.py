@@ -43,7 +43,7 @@ import EMAN2db
 
 # also defined in EMAN2, but we don't want to have to import it
 
-from qtgui.emapplication import EMApp
+from eman2_gui.emapplication import EMApp
 app = EMApp()
 
 def main(sys_argv=None):
@@ -76,7 +76,7 @@ class HistoryForm:
 		'''
 		self.wd = wd
 		
-		from qtgui.emform import EMFormWidget
+		from eman2_gui.emform import EMFormWidget
 		self.form = EMFormWidget(params=self.get_history_table())
 		self.form.setWindowTitle("EMAN2 history")
 		
@@ -88,7 +88,7 @@ class HistoryForm:
 		
 		
 	def get_history_table(self):
-		from qtgui.emdatastorage import ParamDef
+		from eman2_gui.emdatastorage import ParamDef
 		try:
 			import EMAN2db
 			db=EMAN2db.EMAN2DB.open_db()
@@ -106,7 +106,7 @@ class HistoryForm:
 		if db == None or n == 0:
 			params.append(ParamDef(name="blurb",vartype="text",desc_short="",desc_long="",property=None,defaultunits="There appears to be no history in this directory",choices=None))
 		else:
-			from qtgui.emform import EMParamTable
+			from eman2_gui.emform import EMParamTable
 			start = []
 			duration = []
 			prgargs = []

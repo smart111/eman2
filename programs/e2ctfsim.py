@@ -77,10 +77,10 @@ A simple CTF simulation program.
 try:
 	from PyQt4 import QtCore, QtGui, QtOpenGL
 	from PyQt4.QtCore import Qt
-	from qtgui.emshape import *
-	from qtgui.valslider import ValSlider
+	from eman2_gui.emshape import *
+	from eman2_gui.valslider import ValSlider
 	
-	from qtgui.emapplication import EMApp
+	from eman2_gui.emapplication import EMApp
 	app=EMApp()
 except:
 	print("Error: PyQt4 must be installed")
@@ -104,12 +104,12 @@ class GUIctfsim(QtGui.QWidget):
 		"""CTF simulation dialog
 		"""
 		try:
-			from qtgui.emimage2d import EMImage2DWidget
+			from eman2_gui.emimage2d import EMImage2DWidget
 		except:
 			print("Cannot import EMAN image GUI objects (EMImage2DWidget)")
 			sys.exit(1)
 		try:
-			from qtgui.emplot2d import EMPlot2DWidget
+			from eman2_gui.emplot2d import EMPlot2DWidget
 		except:
 			print("Cannot import EMAN plot GUI objects (is matplotlib installed?)")
 			sys.exit(1)
