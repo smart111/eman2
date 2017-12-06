@@ -48,13 +48,13 @@ class nothing:
 try: 
 	from PyQt4 import QtCore, QtGui
 	from PyQt4.QtCore import Qt
-	from emimage2d import EMImage2DWidget
-	from emplot2d import EMPlot2DWidget
-	from emimagemx import EMImageMXWidget
+	from qtgui.emimage2d import EMImage2DWidget
+	from qtgui.emplot2d import EMPlot2DWidget
+	from qtgui.emimagemx import EMImageMXWidget
 	from valslider import ValSlider,CheckBox,ValBox
-	from emshape import EMShape
+	from qtgui.emshape import EMShape
 	
-	from emapplication import EMApp
+	from qtgui.emapplication import EMApp
 	app=EMApp()
 except:
 	QtGui=nothing()

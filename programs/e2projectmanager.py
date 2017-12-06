@@ -37,9 +37,9 @@ from PyQt4.QtCore import Qt
 from pmicons import *
 import os, json, re, glob, signal
 import subprocess
-from empmwidgets import *
+from qtgui.empmwidgets import *
 from valslider import EMQTColorWidget
-from embrowser import EMBrowserWidget
+from qtgui.embrowser import EMBrowserWidget
 
 class EMProjectManager(QtGui.QMainWindow):
 	""" The EM Project Manager is a QT application to provide a GUI for EMAN2 job managment.
@@ -2084,7 +2084,7 @@ class ProjectDialog(QtGui.QDialog):
 	def _on_cancel(self):
 		self.done(1)
 
-from emapplication import EMApp
+from qtgui.emapplication import EMApp
 app = EMApp()
 
 def main(sys_argv=None):
