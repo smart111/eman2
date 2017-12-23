@@ -10,12 +10,12 @@ pipeline {
       parallel {
         stage('recipe') {
           steps {
-            echo 'bash ci_support/build_recipe.sh'
+            sh 'bash ci_support/build_recipe.sh'
           }
         }
         stage('no_recipe') {
           steps {
-            echo 'bash ci_support/build_no_recipe.sh'
+            sh 'bash ci_support/build_no_recipe.sh'
           }
         }
       }
