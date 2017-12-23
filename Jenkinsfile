@@ -10,7 +10,6 @@ pipeline {
   }
   
   stages {
-    parallel {
         stage('recipe') {
           steps {
             sh 'bash ci_support/build_recipe.sh'
@@ -21,6 +20,5 @@ pipeline {
             sh 'bash ci_support/build_no_recipe.sh'
           }
         }
-    }
   }
 }
