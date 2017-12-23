@@ -22,7 +22,7 @@ pipeline {
     }
     stage('status') {
       steps {
-        githubNotify(status: 'SUCCESS', description: 'Yay!')
+        githubNotify(status: 'SUCCESS', description: 'Yay!', context: '${JOB_NAME}')
         githubNotify(status: 'FAILURE', description: 'Oops!')
       }
     }
