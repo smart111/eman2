@@ -6,6 +6,17 @@ pipeline {
     
   }
   stages {
+    stage('pending') {
+      steps {
+        githubNotify(status: 'PENDING', description: 'Building...', context: "${JOB_NAME}")
+        sleep 10
+      }
+    }
+    stage('notify') {
+      steps {
+        emailext(subject: 'Building job', body: 'Blank')
+      }
+    }
     stage('parallel_stuff') {
       parallel {
         stage('recipe') {
@@ -18,17 +29,6 @@ pipeline {
             echo 'source ${HOME}/anaconda2/bin/activate eman-env && bash ci_support/build_no_recipe.sh'
           }
         }
-      }
-    }
-    stage('pending') {
-      steps {
-        githubNotify(status: 'PENDING', description: 'Building...', context: "${JOB_NAME}")
-        sleep 10
-      }
-    }
-    stage('notify') {
-      steps {
-        emailext(subject: 'Building job', body: 'Blank')
       }
     }
   }
