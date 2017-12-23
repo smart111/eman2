@@ -6,6 +6,11 @@ pipeline {
     
   }
   stages {
+    stage('pending') {
+      steps {
+        githubNotify(status: 'PENDING', description: 'Building...', context: "${JOB_NAME}")
+      }
+    }
     stage('parallel_stuff') {
       parallel {
         stage('recipe') {
@@ -23,5 +28,17 @@ pipeline {
   }
   environment {
     SKIP_UPLOAD = '1'
+  }
+  post {
+    success {
+      githubNotify(status: 'SUCCESS', description: 'Yay!', context: "${JOB_NAME}")
+      
+    }
+    
+    failure {
+      githubNotify(status: 'FAILURE', description: 'Oops!', context: "${JOB_NAME}")
+      
+    }
+    
   }
 }
