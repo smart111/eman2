@@ -23,6 +23,7 @@ pipeline {
     stage('pending') {
       steps {
         githubNotify(status: 'PENDING', description: 'Building...', context: "${JOB_NAME}")
+        sleep 10
       }
     }
     stage('notify') {
