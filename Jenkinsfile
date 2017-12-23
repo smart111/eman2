@@ -23,10 +23,10 @@ pipeline {
   }
 post {
     success {
-        githubNotify(status: 'SUCCESS', description: 'Yay!')
+        githubNotify(status: 'SUCCESS', description: 'Yay!', context: '${JOB_NAME}')
     }
     failure {
-        githubNotify(status: 'FAILURE', description: 'Oops!')
+        githubNotify(status: 'FAILURE', description: 'Oops!', context: '${JOB_NAME}')
     }
 }
   environment {
