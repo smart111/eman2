@@ -6,11 +6,6 @@ pipeline {
     
   }
   stages {
-    stage('pending') {
-      steps {
-        githubNotify(status: 'PENDING', description: 'Building...', context: "${JOB_NAME}")
-      }
-    }
     stage('parallel_stuff') {
       parallel {
         stage('recipe') {
