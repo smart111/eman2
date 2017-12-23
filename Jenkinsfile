@@ -22,7 +22,7 @@ pipeline {
     }
     stage('pending') {
       steps {
-        githubNotify(status: 'PENDING', description: 'Building...', context: '"${JOB_NAME}"')
+        githubNotify(status: 'PENDING', description: 'Building...', context: "${JOB_NAME}")
       }
     }
     stage('notify') {
