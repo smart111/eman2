@@ -20,16 +20,30 @@ pipeline {
         }
       }
     }
+    stage('pending') {
+      steps {
+        githubNotify(status: 'PENDING', description: 'Building...', context: '"${JOB_NAME}"')
+      }
+    }
+    stage('notify') {
+      steps {
+        emailext(subject: 'Building job', body: 'Blank')
+      }
+    }
   }
-post {
-    success {
-        githubNotify(status: 'SUCCESS', description: 'Yay!', context: "${JOB_NAME}")
-    }
-    failure {
-        githubNotify(status: 'FAILURE', description: 'Oops!', context: "${JOB_NAME}")
-    }
-}
   environment {
     SKIP_UPLOAD = '1'
+  }
+  post {
+    success {
+      githubNotify(status: 'SUCCESS', description: 'Yay!', context: "${JOB_NAME}")
+      
+    }
+    
+    failure {
+      githubNotify(status: 'FAILURE', description: 'Oops!', context: "${JOB_NAME}")
+      
+    }
+    
   }
 }
