@@ -6,11 +6,6 @@ pipeline {
     
   }
   stages {
-    stage('notify') {
-      steps {
-        emailext(subject: 'Building job', body: 'Blank')
-      }
-    }
     stage('parallel_stuff') {
       parallel {
         stage('recipe') {
