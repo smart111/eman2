@@ -21,14 +21,12 @@ pipeline {
       }
     }
     post {
-      steps {
         success {
             githubNotify(status: 'SUCCESS', description: 'Yay!')
         }
         failure {
             githubNotify(status: 'FAILURE', description: 'Oops!')
         }
-      }
     }
   }
   environment {
