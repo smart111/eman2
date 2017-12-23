@@ -20,15 +20,15 @@ pipeline {
         }
       }
     }
-    post {
-        success {
-            githubNotify(status: 'SUCCESS', description: 'Yay!')
-        }
-        failure {
-            githubNotify(status: 'FAILURE', description: 'Oops!')
-        }
-    }
   }
+post {
+    success {
+        githubNotify(status: 'SUCCESS', description: 'Yay!')
+    }
+    failure {
+        githubNotify(status: 'FAILURE', description: 'Oops!')
+    }
+}
   environment {
     SKIP_UPLOAD = '1'
   }
