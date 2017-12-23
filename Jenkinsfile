@@ -20,10 +20,14 @@ pipeline {
         }
       }
     }
-    stage('status') {
+    post {
       steps {
-        githubNotify(status: 'SUCCESS', description: 'Yay!', context: '${JOB_NAME}')
-        githubNotify(status: 'FAILURE', description: 'Oops!')
+        success {
+            githubNotify(status: 'SUCCESS', description: 'Yay!')
+        }
+        failure {
+            githubNotify(status: 'FAILURE', description: 'Oops!')
+        }
       }
     }
   }
