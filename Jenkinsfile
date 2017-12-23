@@ -20,6 +20,12 @@ pipeline {
         }
       }
     }
+    stage('status') {
+      steps {
+        githubNotify(status: 'SUCCESS', description: 'Yay!')
+        githubNotify(status: 'FAILURE', description: 'Oops!')
+      }
+    }
   }
   environment {
     SKIP_UPLOAD = '1'
