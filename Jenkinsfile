@@ -1,19 +1,3 @@
-#!/usr/bin/env groovy
-
-import groovy.json.JsonOutput
-// Add whichever params you think you'd most want to have
-// replace the slackURL below with the hook url provided by
-// slack when you configure the webhook
-def notifyGithub(state) {
-    def githubURL = 'https://api.github.com/repos/cryoem/eman2/statuses'
-    def payload = JsonOutput.toJson([state        : state,
-                                     target_url   : "${BUILD_URL}",
-                                     description  : "The build succeeded!",
-                                     context      : "${JOB_NAME}"
-                                     ])
-    sh "curl -u eman-bot -X POST --data-urlencode \'payload=${payload}\' ${githubURL}"
-}
-
 pipeline {
   agent {
     node {
@@ -49,11 +33,12 @@ pipeline {
     success {
       //githubNotify(status: 'SUCCESS', description: 'Yay!', context: "${JOB_NAME}")
      // notifyGithub('success')
-          step([$class: 'GitHubCommitStatusSetter', contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: 'ci/qa.nuxeo.com'], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Successfully built on Nuxeo CI', state: 'SUCCESS']]]])
+          step([$class: 'GitHubCommitStatusSetter', contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: "${JOB_NAME}"], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Build succeeded!', state: 'SUCCESS']]]])
     }
     
     failure {
-      githubNotify(status: 'FAILURE', description: 'Oops!', context: "${JOB_NAME}")
+      //githubNotify(status: 'FAILURE', description: 'Oops!', context: "${JOB_NAME}")
+      step([$class: 'GitHubCommitStatusSetter', contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: "${JOB_NAME}"], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Oops!', state: 'FAILURE']]]])
       
     }
     
