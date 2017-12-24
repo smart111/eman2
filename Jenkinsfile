@@ -20,27 +20,17 @@ pipeline {
         }
       }
     }
-    stage('s') {
-      steps {
-        echo 'Hmmm'
-      }
-    }
   }
   environment {
     SKIP_UPLOAD = '1'
   }
   post {
     success {
-      //githubNotify(status: 'SUCCESS', description: 'Yay!', context: "${JOB_NAME}")
-     // notifyGithub('success')
-          step([$class: 'GitHubCommitStatusSetter', contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: "${JOB_NAME}"], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Build succeeded!', state: 'SUCCESS']]]])
+      step([$class: 'GitHubCommitStatusSetter', contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: "${JOB_NAME}"], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Build succeeded!', state: 'SUCCESS']]]])
     }
     
     failure {
-      //githubNotify(status: 'FAILURE', description: 'Oops!', context: "${JOB_NAME}")
       step([$class: 'GitHubCommitStatusSetter', contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: "${JOB_NAME}"], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Oops!', state: 'FAILURE']]]])
-      
     }
-    
   }
 }
