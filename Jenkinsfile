@@ -48,8 +48,8 @@ pipeline {
   post {
     success {
       //githubNotify(status: 'SUCCESS', description: 'Yay!', context: "${JOB_NAME}")
-      notifyGithub('success')
-      
+     // notifyGithub('success')
+          step([$class: 'GitHubCommitStatusSetter', contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: 'ci/qa.nuxeo.com'], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Successfully built on Nuxeo CI', state: 'SUCCESS']]]])
     }
     
     failure {
