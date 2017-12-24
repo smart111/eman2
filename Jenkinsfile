@@ -9,19 +9,18 @@ pipeline {
     stage('pending') {
       steps {
         step([$class: 'GitHubCommitStatusSetter', contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: "${JOB_NAME}"], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Building...', state: 'PENDING']]]])
-        sleep 20
       }
     }
     stage('parallel_stuff') {
       parallel {
         stage('recipe') {
           steps {
-            echo 'bash ci_support/build_recipe.sh'
+            sh 'bash ci_support/build_recipe.sh'
           }
         }
         stage('no_recipe') {
           steps {
-            echo 'source /bin/activate eman-env && bash ci_support/build_no_recipe.sh'
+            sh 'source /bin/activate eman-env && bash ci_support/build_no_recipe.sh'
           }
         }
       }
