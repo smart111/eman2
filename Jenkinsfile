@@ -23,12 +23,12 @@ pipeline {
     stage('s') {
       steps {
         sh(curl -u "eman-bot" https://api.github.com/repos/cryoem/eman2/statuses/"${GIT_COMMIT}" \\
-         -d \'{
+         -d \'\{
            "state": "success",
            "target_url": "${BUILD_URL}",
            "description": "The build succeeded!",
            "context": "${JOB_NAME}"
-         }\')
+         \}\')
       }
     }
   }
