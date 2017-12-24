@@ -6,6 +6,11 @@ pipeline {
     
   }
   stages {
+    stage('pending') {
+      steps {
+        step([$class: 'GitHubCommitStatusSetter', contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: "${JOB_NAME}"], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Building...', state: 'PENDING']]]])
+      }
+    }
     stage('parallel_stuff') {
       parallel {
         stage('recipe') {
