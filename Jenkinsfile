@@ -9,6 +9,7 @@ pipeline {
     stage('pending') {
       steps {
         step([$class: 'GitHubCommitStatusSetter', contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: "${JOB_NAME}"], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'Building...', state: 'PENDING']]]])
+        sleep 20
       }
     }
     stage('parallel_stuff') {
