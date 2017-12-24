@@ -20,7 +20,7 @@ pipeline {
         }
         stage('no_recipe') {
           steps {
-            sh 'source /bin/activate eman-env && bash ci_support/build_no_recipe.sh'
+            sh 'source $(conda info --root)/bin/activate eman-env && bash ci_support/build_no_recipe.sh'
           }
         }
       }
