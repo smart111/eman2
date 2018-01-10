@@ -162,6 +162,9 @@ pipeline {
         }
         expression { SLAVE_OS == "mac" }
       }
+      environment {
+        EMAN_TEST_SKIP=1
+      }
       
       steps {
         runCronJob()
