@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -xe
+
 if [ ! -z ${CI} ];then
     source ci_support/setup_conda.sh
 
