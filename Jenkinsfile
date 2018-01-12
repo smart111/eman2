@@ -38,6 +38,7 @@ def runCronJob() {
     sh "bash ${HOME}/workspace/build-scripts-cron/cronjob.sh $STAGE_NAME $GIT_BRANCH_SHORT $NUMPY_VERSION"
     if(isRelease())
       sh "rsync -avzh --stats ${INSTALLERS_DIR}/eman2.${STAGE_NAME}.unstable.sh ${DEPLOY_DEST}"
+    sh "rsync -n -avzh --stats ${INSTALLERS_DIR}/eman2.${STAGE_NAME}.numpy.${NUMPY_VERSION}.sh ${DEPLOY_DEST}"
 }
 
 def setUploadFlag() {
