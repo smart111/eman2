@@ -14,7 +14,7 @@ for f in ${@};do
     echo "... $fbase ..."
     
     bash $f -b -p ${conda_loc}
-    source ${conda_loc}/bin/activate
+    source ${conda_loc}/bin/activate root
     bash ${MYDIR}/run_tests_from_binary.sh || true
     source deactivate
 done
