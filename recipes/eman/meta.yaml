@@ -19,7 +19,6 @@ requirements:
             "jpeg",
             "libtiff",
             "libpng",
-            "icu 56.*",  # [linux]
             "zlib",
             "matplotlib",
             "ipython",

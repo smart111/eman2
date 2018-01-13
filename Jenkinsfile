@@ -72,7 +72,7 @@ pipeline {
     GIT_COMMIT_SHORT = sh(returnStdout: true, script: 'echo ${GIT_COMMIT:0:7}').trim()
     INSTALLERS_DIR = '${HOME}/workspace/${STAGE_NAME}-installers'
     DEPLOY_DEST    = 'zope@ncmi.grid.bcm.edu:/home/zope/zope-server/extdata/reposit/ncmi/software/counter_222/software_137/'
-    NUMPY_VERSION='1.12'
+    NUMPY_VERSION='1.14'
   }
   
   stages {
@@ -156,7 +156,7 @@ pipeline {
           expression { JOB_TYPE == "cron" }
           expression { isRelease() }
         }
-        expression { SLAVE_OS == "" }
+        expression { SLAVE_OS == "mac" }
       }
       environment {
         EMAN_TEST_SKIP=1
