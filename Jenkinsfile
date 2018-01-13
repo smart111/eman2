@@ -128,7 +128,7 @@ pipeline {
           expression { JOB_TYPE == "cron" }
           expression { isRelease() }
         }
-        expression { SLAVE_OS == "" }
+        expression { SLAVE_OS == "linux" }
       }
       
       steps {
