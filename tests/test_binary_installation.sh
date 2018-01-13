@@ -8,9 +8,10 @@ for f in ${@};do
     dir=$(dirname $f)
     fbase=$(basename $f)
     fbase=${fbase%\.*}
+    fbase=${fbase//\./-}
     conda_loc=${dir}/${fbase}
     
-    echo ... $fbase ...
+    echo "... $fbase ..."
     
     bash $f -b -p ${conda_loc}
     source ${conda_loc}/bin/activate
