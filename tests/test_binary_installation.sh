@@ -13,7 +13,7 @@ for f in ${@};do
     
     echo "... $fbase ..."
     
-    bash $f -b -p ${conda_loc}
+    bash $f -bf -p ${conda_loc}
     source ${conda_loc}/bin/activate root
     bash "${MYDIR}/run_tests_from_binary.sh"
     source deactivate
