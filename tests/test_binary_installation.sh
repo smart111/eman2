@@ -15,6 +15,6 @@ for f in ${@};do
     
     bash $f -b -p ${conda_loc}
     source ${conda_loc}/bin/activate root
-    bash ${MYDIR}/run_tests_from_binary.sh || true
+    bash ${MYDIR}/run_tests_from_binary.sh
     source deactivate
 done
