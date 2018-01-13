@@ -128,7 +128,7 @@ pipeline {
           expression { JOB_TYPE == "cron" }
           expression { isRelease() }
         }
-        expression { SLAVE_OS == "linux" }
+        expression { SLAVE_OS == "" }
       }
       
       steps {
@@ -156,7 +156,7 @@ pipeline {
           expression { JOB_TYPE == "cron" }
           expression { isRelease() }
         }
-        expression { SLAVE_OS == "mac" }
+        expression { SLAVE_OS == "" }
       }
       environment {
         EMAN_TEST_SKIP=1
