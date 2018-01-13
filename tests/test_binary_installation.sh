@@ -2,10 +2,10 @@
 
 set -xe
 
-MYDIR=$(cd $(dirname $0) && pwd -P)
+MYDIR="$(cd "$(dirname "$0")" && pwd -P)"
 
 for f in ${@};do
-    dir=$(dirname $f)
+    dir=$(cd $(dirname $f) && pwd -P)
     fbase=$(basename $f)
     fbase=${fbase%\.*}
     fbase=${fbase//\./-}
@@ -15,6 +15,6 @@ for f in ${@};do
     
     bash $f -b -p ${conda_loc}
     source ${conda_loc}/bin/activate root
-    bash ${MYDIR}/run_tests_from_binary.sh
+    bash "${MYDIR}/run_tests_from_binary.sh"
     source deactivate
 done
