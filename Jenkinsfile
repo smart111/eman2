@@ -61,6 +61,10 @@ def resetBuildScripts() {
         sh 'cd ${HOME}/workspace/build-scripts-cron/ && git checkout -f master'
 }
 
+def repoConfig() {
+    checkout([$class: 'GitSCM', branches: [[name: '*/*']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'PruneStaleBranch'], [$class: 'CleanBeforeCheckout'], [$class: 'MessageExclusion', excludedMessage: '(?s).*\\[skip jenkins\\].*']], submoduleCfg: [], userRemoteConfigs: [[url: 'repo']]])
+}
+
 pipeline {
   agent {
     node { label 'jenkins-slave-1' }
