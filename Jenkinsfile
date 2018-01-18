@@ -78,8 +78,10 @@ node {
     checkout scm
     def git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
     println git_commit_message
-    if(git_commit_message ==~ /.*\[ci *skip\].*/)
-        return 
+    if(git_commit_message ==~ /.*\[jenkins *skip\].*/)
+        return
+        
+     echo "PASSED parsing"
     
 }
 
