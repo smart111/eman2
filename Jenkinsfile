@@ -79,7 +79,9 @@ pipeline {
     //if()
     stage('notify-pending') {
       steps {
-        def scm_vars = checkout scm
+        script {
+            def scm_vars = checkout scm
+        }
         echo getJobType()
         sh 'env' 
       }
