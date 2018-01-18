@@ -56,6 +56,12 @@ def setUploadFlag() {
     }
 }
 
+def skipBuild() {
+    git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
+    
+    return git_commit_message ==~ /.*\[jenkins skip\].*/
+}
+
 def resetBuildScripts() {
     if(JOB_TYPE == "cron" || isRelease())
         sh 'cd ${HOME}/workspace/build-scripts-cron/ && git checkout -f master'
