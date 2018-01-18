@@ -93,7 +93,12 @@ pipeline {
         echo '$git_commit_message'
         //echo isSkip()
         echo getJobType()
-        sh 'env' 
+        sh 'env'
+        script {
+            println currentBuild
+        }
+        echo '$currentBuild'
+        echo "$currentBuild"
       }
     }
   }
