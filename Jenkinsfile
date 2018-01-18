@@ -80,7 +80,7 @@ pipeline {
     stage('notify-pending') {
       steps {
         script {
-            def scm_vars = checkout scm
+            def git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
             println scm_vars
         }
         echo "$scm_vars.GIT_COMMIT"
