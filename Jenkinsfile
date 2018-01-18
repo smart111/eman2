@@ -91,7 +91,7 @@ pipeline {
 //            println scm_vars
 //        }
         echo '$git_commit_message'
-        echo isSkip()
+        echo 'isSkip()'
         echo getJobType()
         sh 'env' 
       }
