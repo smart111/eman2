@@ -88,7 +88,7 @@ pipeline {
       steps {
         script {
             if(isSkip())
-                sh 'exit 0'
+                error 'exit 0'
         }
         echo '$git_commit_message'
         //echo isSkip()
