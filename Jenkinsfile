@@ -47,7 +47,7 @@ def isRelease() {
 }
 
 def isSkip() {
-    return git_commit_message ==~ /.*\[jenkins *skip\].*/
+    return git_commit_message ==~ /.*\[ci *skip\].*/
 }
 
 def runCronJob() {
@@ -73,15 +73,28 @@ def repoConfig() {
     checkout([$class: 'GitSCM', branches: [[name: '*/*']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'PruneStaleBranch'], [$class: 'CleanBeforeCheckout'], [$class: 'MessageExclusion', excludedMessage: '(?s).*\\[skip jenkins\\].*']], submoduleCfg: [], userRemoteConfigs: [[url: 'repo']]])
 }
 
-node {
+pipeline {
+  agent {
+    node { label 'jenkins-slave-1' }
+  }
+  
+  environment {
+    git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
+  }
 
-    checkout scm
-    def git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
-    println git_commit_message
-    if(git_commit_message ==~ /.*\[jenkins *skip\].*/)
-        return
-        
-     echo "PASSED parsing"
-    
+  stages {
+    //if()
+    stage('notify-pending') {
+      steps {
+//        script {
+//            def git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
+//            println scm_vars
+//        }
+        echo '$git_commit_message'
+        echo isSkip()
+        echo getJobType()
+        sh 'env' 
+      }
+    }
+  }
 }
-
