@@ -86,12 +86,11 @@ pipeline {
     //if()
     stage('notify-pending') {
       steps {
-//        script {
-//            def git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
-//            println scm_vars
-//        }
+        script {
+            println isSkip()
+        }
         echo '$git_commit_message'
-        echo 'isSkip()'
+        //echo isSkip()
         echo getJobType()
         sh 'env' 
       }
