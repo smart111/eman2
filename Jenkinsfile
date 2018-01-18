@@ -73,6 +73,15 @@ def repoConfig() {
     checkout([$class: 'GitSCM', branches: [[name: '*/*']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'PruneStaleBranch'], [$class: 'CleanBeforeCheckout'], [$class: 'MessageExclusion', excludedMessage: '(?s).*\\[skip jenkins\\].*']], submoduleCfg: [], userRemoteConfigs: [[url: 'repo']]])
 }
 
+node {
+
+    checkout scm
+    def git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
+    if(git_commit_message ==~ /.*\[jenkins *skip\].*/)
+        return 
+    
+}
+
 pipeline {
   agent {
     node { label 'jenkins-slave-1' }
