@@ -82,7 +82,6 @@ pipeline {
         script {
             def scm_vars = checkout scm
             println scm_vars
-            println $scm_vars
         }
         ech '$scm_vars.GIT_COMMIT'
         echo getJobType()
