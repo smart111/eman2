@@ -77,38 +77,9 @@ node {
 
     checkout scm
     def git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
+    println git_commit_message
     if(git_commit_message ==~ /.*\[ci *skip\].*/)
         return 
     
 }
 
-pipeline {
-  agent {
-    node { label 'jenkins-slave-1' }
-  }
-  
-  environment {
-    git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
-  }
-
-  stages {
-    //if()
-    stage('notify-pending') {
-      steps {
-        script {
-            if(isSkip())
-                error 'exit 0'
-        }
-        echo '$git_commit_message'
-        //echo isSkip()
-        echo getJobType()
-        sh 'env'
-        script {
-            println currentBuild
-        }
-        echo '$currentBuild'
-        echo "$currentBuild"
-      }
-    }
-  }
-}
