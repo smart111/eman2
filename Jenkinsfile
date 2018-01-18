@@ -47,7 +47,7 @@ def isRelease() {
 }
 
 def isSkip() {
-    return git_commit_message ==~ /.*\[ci *skip\].*/
+    return git_commit_message ==~ /.*\[jenkins *skip\].*/
 }
 
 def runCronJob() {
