@@ -83,8 +83,10 @@ pipeline {
   }
 
   stages {
+script {
             if(isSkip())
                 return
+}
     //if()
     stage('notify-pending') {
       steps {
