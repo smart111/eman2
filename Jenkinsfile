@@ -74,16 +74,19 @@ pipeline {
     node { label 'jenkins-slave-1' }
   }
   
+  environment {
+    git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
+  }
 
   stages {
     //if()
     stage('notify-pending') {
       steps {
-        script {
-            def git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
-            println scm_vars
-        }
-        echo "$scm_vars.GIT_COMMIT"
+//        script {
+//            def git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
+//            println scm_vars
+//        }
+        echo '$git_commit_message'
         echo getJobType()
         sh 'env' 
       }
