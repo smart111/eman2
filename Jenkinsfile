@@ -81,6 +81,8 @@ pipeline {
   environment {
     git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
   }
+            if(isSkip())
+                return
 
   stages {
     //if()
