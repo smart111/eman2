@@ -77,7 +77,7 @@ node {
 
     checkout scm
     def git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
-    if(git_commit_message ==~ /.*\[jenkins *skip\].*/)
+    if(git_commit_message ==~ /.*\[ci *skip\].*/)
         return 
     
 }
