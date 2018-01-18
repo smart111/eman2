@@ -48,6 +48,9 @@ def runCronJob() {
         if(isRelease())
           sh "rsync -avzh --stats ${INSTALLERS_DIR}/eman2.${STAGE_NAME}.unstable.sh ${DEPLOY_DEST}"
     }
+    else {
+        echo "Skipping build..."
+    }
 }
 
 def setUploadFlag() {
