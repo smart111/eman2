@@ -83,7 +83,7 @@ pipeline {
             def scm_vars = checkout scm
             println scm_vars
         }
-        echo '$scm_vars.GIT_COMMIT'
+        echo "$scm_vars.GIT_COMMIT"
         echo getJobType()
         sh 'env' 
       }
