@@ -81,10 +81,10 @@ pipeline {
   environment {
     git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
   }
-            if(isSkip())
-                return
 
   stages {
+            if(isSkip())
+                return
     //if()
     stage('notify-pending') {
       steps {
