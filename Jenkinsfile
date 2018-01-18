@@ -46,6 +46,10 @@ def isRelease() {
     return (GIT_BRANCH ==~ /.*\/release.*/) && (JOB_TYPE == "push")
 }
 
+def isSkip() {
+    return git_commit_message ==~ /.*\[ci *skip\].*/
+}
+
 def runCronJob() {
     sh "bash ${HOME}/workspace/build-scripts-cron/cronjob.sh $STAGE_NAME"
     if(isRelease())
@@ -87,6 +91,7 @@ pipeline {
 //            println scm_vars
 //        }
         echo '$git_commit_message'
+        echo isSkip()
         echo getJobType()
         sh 'env' 
       }
