@@ -87,7 +87,8 @@ pipeline {
     stage('notify-pending') {
       steps {
         script {
-            println isSkip()
+            if(isSkip())
+                return
         }
         echo '$git_commit_message'
         //echo isSkip()
