@@ -82,17 +82,13 @@ pipeline {
     git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
   }
 
-script {
-            if(isSkip())
-                return
-}
   stages {
     //if()
     stage('notify-pending') {
       steps {
         script {
             if(isSkip())
-                return
+                exit 0
         }
         echo '$git_commit_message'
         //echo isSkip()
