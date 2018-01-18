@@ -7,10 +7,6 @@ def getJobType() {
     if(causes ==~ /.*UserIdCause.*/)     { job_type = "manual" }
     if(causes ==~ /.*ReplayCause.*/)     { job_type = "manual" }
     
-    //SCMTriggerCause
-    //[job/github-triggers/375[com.cloudbees.jenkins.GitHubPushCause@3]]
-    //[job/github-triggers/376[hudson.triggers.SCMTrigger$SCMTriggerCause@3]]
-    
     return causes
 }
 
@@ -46,10 +42,6 @@ def isRelease() {
     return (GIT_BRANCH ==~ /.*\/release.*/) && (JOB_TYPE == "push")
 }
 
-def isSkip() {
-    return git_commit_message ==~ /.*\[ci *skip\].*/
-}
-
 def runCronJob() {
     sh "bash ${HOME}/workspace/build-scripts-cron/cronjob.sh $STAGE_NAME"
     if(isRelease())
@@ -78,22 +70,11 @@ pipeline {
     node { label 'jenkins-slave-1' }
   }
   
-  environment {
-    git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
-  }
 
   stages {
-    //if()
     stage('notify-pending') {
       steps {
-//        script {
-//            def git_commit_message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
-//            println scm_vars
-//        }
-        echo '$git_commit_message'
-        echo isSkip()
         echo getJobType()
-        sh 'env' 
       }
     }
   }
