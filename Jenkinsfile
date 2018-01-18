@@ -6,9 +6,11 @@ def getJobType() {
     if(causes ==~ /.*GitHubPushCause.*/) { job_type = "push" }
     if(causes ==~ /.*UserIdCause.*/)     { job_type = "manual" }
     if(causes ==~ /.*ReplayCause.*/)     { job_type = "manual" }
-    SCMTriggerCause
-    [job/github-triggers/375[com.cloudbees.jenkins.GitHubPushCause@3]]
-    [job/github-triggers/376[hudson.triggers.SCMTrigger$SCMTriggerCause@3]]
+    
+    //SCMTriggerCause
+    //[job/github-triggers/375[com.cloudbees.jenkins.GitHubPushCause@3]]
+    //[job/github-triggers/376[hudson.triggers.SCMTrigger$SCMTriggerCause@3]]
+    
     return causes
 }
 
@@ -74,9 +76,11 @@ pipeline {
   
 
   stages {
+    //if()
     stage('notify-pending') {
       steps {
         echo getJobType()
+        sh 'env' 
       }
     }
   }
