@@ -11,7 +11,7 @@
         "ICON": "single_image",
         "MODE": "align",
         "PROGRAM": "e2ddd_movie.py",
-        "NAME": "Movie alignment",
+        "NAME": "Correct and Align Movies",
         "CHILDREN": []
       },
       {
