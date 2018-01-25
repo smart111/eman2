@@ -374,7 +374,7 @@ with the same name, you should specify only the .hed files (no renaming is neces
 
 	# Import tomograms
 	if options.import_serialem:
-		
+		pass
 
 	if options.import_tiltangles:
 		pass
