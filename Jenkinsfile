@@ -70,7 +70,10 @@ pipeline {
     node { label 'jenkins-slave-1' }
   }
   
-  options { disableConcurrentBuilds() }
+  options {
+    disableConcurrentBuilds()
+    timestamps()
+  }
   
   triggers {
     cron('0 3 * * *')
