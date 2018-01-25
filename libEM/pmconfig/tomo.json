@@ -33,14 +33,14 @@
             "CHILDREN": []
           },
           {
-            "ICON": "multiple_images",
+            "ICON": "green_boxes",
             "PROGRAM": "e2import.py", 
             "MODE": "serialem",
             "NAME": "Import SerialEM Metadata",
             "CHILDREN": []
           },
           {
-            "ICON": "multiple_images",
+            "ICON": "green_boxes",
             "PROGRAM": "e2import.py", 
             "MODE": "angles",
             "NAME": "Import Tilt Angles",

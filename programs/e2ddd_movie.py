@@ -71,11 +71,11 @@ def main():
 
 	#parser.add_header(name="orblock2", help='Just a visual separation', title="- CHOOSE FROM -", row=3, col=0, rowspan=1, colspan=3, mode="align,tomo")
 
-	parser.add_argument("--dark",type=str,default=None,help="Perform dark image correction using the specified image file",guitype='filebox',browser="EMMovieDataTable(withmodal=True,multiselect=False)", row=4, col=0, rowspan=1, colspan=3, mode="align,tomo")
+	parser.add_argument("--dark",type=str,default="",help="Perform dark image correction using the specified image file",guitype='filebox',browser="EMMovieDataTable(withmodal=True,multiselect=False)", row=4, col=0, rowspan=1, colspan=3, mode="align,tomo")
 	parser.add_argument("--rotate_dark",  default = "0", type=str, choices=["0","90","180","270"], help="Rotate dark reference by 0, 90, 180, or 270 degrees. Default is 0. Transformation order is rotate then reverse.",guitype='combobox', choicelist='["0","90","180","270"]', row=5, col=0, rowspan=1, colspan=1, mode="align,tomo")
 	parser.add_argument("--reverse_dark", default=False, help="Flip dark reference along y axis. Default is False. Transformation order is rotate then reverse.",action="store_true",guitype='boolbox', row=5, col=1, rowspan=1, colspan=1, mode="align,tomo")
 
-	parser.add_argument("--gain",type=str,default=None,help="Perform gain image correction using the specified image file",guitype='filebox',browser="EMMovieDataTable(withmodal=True,multiselect=False)", row=6, col=0, rowspan=1, colspan=3, mode="align,tomo")
+	parser.add_argument("--gain",type=str,default="",help="Perform gain image correction using the specified image file",guitype='filebox',browser="EMMovieDataTable(withmodal=True,multiselect=False)", row=6, col=0, rowspan=1, colspan=3, mode="align,tomo")
 	parser.add_argument("--k2", default=False, help="Perform gain image correction on gain images from a Gatan K2. Note, these are the reciprocal of typical DDD gain images.",action="store_true",guitype='boolbox', row=7, col=0, rowspan=1, colspan=1, mode="align,tomo")
 	parser.add_argument("--rotate_gain", default = 0, type=str, choices=["0","90","180","270"], help="Rotate gain reference by 0, 90, 180, or 270 degrees. Default is 0. Transformation order is rotate then reverse.",guitype='combobox', choicelist='["0","90","180","270"]', row=7, col=1, rowspan=1, colspan=1, mode="align,tomo")
 	parser.add_argument("--reverse_gain", default=False, help="Flip gain reference along y axis (about x axis). Default is False. Transformation order is rotate then reverse.",action="store_true",guitype='boolbox', row=7, col=2, rowspan=1, colspan=1, mode="align,tomo")
@@ -161,8 +161,8 @@ def main():
 
 	pid=E2init(sys.argv)
 
-	if options.dark :
-		if options.verbose: print("Loading Dark Reference")
+	if options.dark != "":
+		print("Loading Dark Reference")
 		if "e2ddd_darkref" in options.dark:
 			dark = EMData(options.dark,-1)
 		else:
@@ -175,11 +175,13 @@ def main():
 			else:
 				nd=EMUtil.get_image_count(options.dark)
 				dark = EMData(options.dark,0)
+				nx = dark["nx"]
+				ny = dark["ny"]
 			if nd>1:
 				sigd=dark.copy()
 				sigd.to_zero()
 				a=Averagers.get("mean",{"sigma":sigd,"ignore0":1})
-				print("Summing dark")
+				print("Summing Dark Frames")
 				for i in xrange(0,nd):
 					if options.verbose:
 						sys.stdout.write("({}/{})   \r".format(i+1,nd))
@@ -191,18 +193,18 @@ def main():
 					t.process_inplace("threshold.clampminmax",{"minval":0,"maxval":t["mean"]+t["sigma"]*3.5,"tozero":1})
 					a.add_image(t)
 				dark=a.finish()
-				sigd.write_image(options.dark.rsplit(".",1)[0]+"_sig.hdf")
+				if options.debug: sigd.write_image(options.dark.rsplit(".",1)[0]+"_sig.hdf")
 				if options.fixbadpixels:
 					sigd.process_inplace("threshold.binary",{"value":sigd["sigma"]/10.0}) # Theoretically a "perfect" pixel would have zero sigma, but in reality, the opposite is true
 					dark.mult(sigd)
-				dark.write_image(options.dark.rsplit(".",1)[0]+"_sum.hdf")
+				if options.debug: dark.write_image(options.dark.rsplit(".",1)[0]+"_sum.hdf")
 			#else: dark.mult(1.0/99.0)
 			dark.process_inplace("threshold.clampminmax.nsigma",{"nsigma":3.0})
 			dark2=dark.process("normalize.unitlen")
 	else : dark=None
 
-	if options.gain :
-		if options.verbose: print("Loading Gain Reference")
+	if options.gain != "":
+		print("Loading Gain Reference")
 		if "e2ddd_gainref" in options.gain:
 			gain = EMData(options.gain,-1)
 		else:
@@ -215,18 +217,21 @@ def main():
 					nd = gain_hdr["nz"]
 					gain=EMData(options.gain,0,False,Region(0,0,0,nx,ny,1))
 				else:
+
 					nd=EMUtil.get_image_count(options.gain)
 					gain = EMData(options.gain,0)
+					nx = gain["nx"]
+					ny = gain["ny"]
 				if nd>1:
 					sigg=gain.copy()
 					sigg.to_zero()
 					a=Averagers.get("mean",{"sigma":sigg,"ignore0":1})
-					print("Summing gain")
+					print("Summing Gain Frames")
 					for i in xrange(0,nd):
 						if options.verbose:
 							sys.stdout.write("({}/{})   \r".format(i+1,nd))
 							sys.stdout.flush()
-						if options.dark[-4:].lower() in (".mrc") :
+						if options.dark != "" and options.dark[-4:].lower() in (".mrc") :
 							t=EMData(options.gain,0,False,Region(0,0,i,nx,ny,1))
 						else:
 							t=EMData(options.gain,i)
@@ -234,12 +239,16 @@ def main():
 						t.process_inplace("threshold.clampminmax",{"minval":0,"maxval":t["mean"]+t["sigma"]*3.5,"tozero":1})
 						a.add_image(t)
 					gain=a.finish()
-					sigg.write_image(options.gain.rsplit(".",1)[0]+"_sig.hdf")
+					if options.debug: sigg.write_image(options.gain.rsplit(".",1)[0]+"_sig.hdf")
 					if options.fixbadpixels:
 						sigg.process_inplace("threshold.binary",{"value":sigg["sigma"]/10.0}) # Theoretically a "perfect" pixel would have zero sigma, but in reality, the opposite is true
-						if dark!=None : sigg.mult(sigd)
+						if dark!=None : 
+							try:
+								sigg.mult(sigd)
+							except:
+								pass
 						gain.mult(sigg)
-					gain.write_image(options.gain.rsplit(".",1)[0]+"_sum.hdf")
+					if options.debug: gain.write_image(options.gain.rsplit(".",1)[0]+"_sum.hdf")
 				if options.de64:
 					gain.process_inplace( "threshold.clampminmax", { "minval" : gain[ 'mean' ] - 8.0 * gain[ 'sigma' ], "maxval" : gain[ 'mean' ] + 8.0 * gain[ 'sigma' ], "tomean" : True } )
 				else:
@@ -247,7 +256,7 @@ def main():
 					#gain.mult(1.0/99.0)
 					#gain.process_inplace("threshold.clampminmax.nsigma",{"nsigma":3.0})
 
-			if dark!=None and options.gain_darkcorrected == False: gain.sub(dark) # dark correct the gain-reference
+			if dark!="" and options.gain != "" and options.gain_darkcorrected == False: gain.sub(dark) # dark correct the gain-reference
 
 			if options.de64:
 				mean_val = gain["mean"]
@@ -303,7 +312,7 @@ def main():
 
 	# the user may provide multiple movies to process at once
 	for fsp in args:
-		if options.verbose : print("Processing {}".format(fsp))
+		print("Processing {}".format(base_name(fsp)))
 
 		n = EMUtil.get_image_count(fsp)
 
@@ -347,7 +356,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 			sys.stdout.write(" {}/{}   \r".format(ii-first+1,flast-first+1))
 			sys.stdout.flush()
 
-		if fsp[-4:].lower() in (".mrc","mrcs") :
+		if fsp[-4:].lower() in (".mrc") :
 		#if fsp[-4:].lower() in (".mrc") :
 			im=EMData(fsp,0,False,Region(0,0,ii,nx,ny,1))
 		else: im=EMData(fsp,ii)
@@ -373,7 +382,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 
 	if options.noali:
 		if options.tomo:
-			mgdirname = "tilts_noali"
+			mgdirname = "rawtilts_noali"
 		else:
 			mgdirname = "micrographs_noali"
 		try: os.mkdir(mgdirname)
@@ -584,7 +593,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 				f.process_inplace("filter.xyaxes0",{"neighbor":1})
 
 		if options.allali:
-			if options.tomo: mgdirname = "tilts_allali"
+			if options.tomo: mgdirname = "rawtilts_allali"
 			else: mgdirname = "micrographs_allali"
 			try: os.mkdir(mgdirname)
 			except: pass
@@ -620,7 +629,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 			out.write("{}\t{}\t{}\t{}\t{}\t{}\n".format(i,dx,dy,dr,reldr,quals[i]))
 
 		if options.goodali:	
-			if options.tomo: mgdirname = "tilts_goodali"
+			if options.tomo: mgdirname = "rawtilts_goodali"
 			else: mgdirname = "micrographs_goodali"
 			try: os.mkdir(mgdirname)
 			except: pass
@@ -632,7 +641,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 			out.write_image(alioutname,0)
 
 		if options.bestali:
-			if options.tomo: mgdirname = "tilts_bestali"
+			if options.tomo: mgdirname = "rawtilts_bestali"
 			else: mgdirname = "micrographs_bestali"
 			try: os.mkdir(mgdirname)
 			except: pass
@@ -644,7 +653,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 			out.write_image(alioutname,0)
 
 		if options.ali4to14:
-			if options.tomo: mgdirname = "tilts_4-14"
+			if options.tomo: mgdirname = "rawtilts_4-14"
 			else: mgdirname = "micrographs_4-14"
 			try: os.mkdir(mgdirname)
 			except: pass
