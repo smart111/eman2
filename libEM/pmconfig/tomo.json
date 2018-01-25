@@ -14,38 +14,51 @@
             "ICON": "multiple_images",
             "MODE": "tomo",
             "PROGRAM": "e2ddd_movie.py",
-            "NAME": "Movie Correction and Alignment",
+            "NAME": "Process movie data",
+            "CHILDREN": []
+          },
+          {
+            "ICON": "multiple_images",
+            "PROGRAM": "e2buildstacks.py", 
+            "MODE": "tomo",
+            "NAME": "Combine tilts",
             "CHILDREN": []
           },
           {
             "ICON": "multiple_images",
             "WIZARD":"/lib/pmconfig/tomoimport.json",
             "PROGRAM": "e2import.py", 
-            "MODE": "rawtilts", 
+            "MODE": "tilts", 
             "NAME": "Import Tilt Series",
             "CHILDREN": []
           },
           {
             "ICON": "multiple_images",
-            "PROGRAM": "e2proclst.py", 
+            "PROGRAM": "e2import.py", 
             "MODE": "serialem",
-            "NAME": "Combine raw tilts",
+            "NAME": "Import SerialEM Metadata",
             "CHILDREN": []
           },
           {
             "ICON": "multiple_images",
-            "PROGRAM": "e2proclst.py", 
-            "MODE": "serialem",
-            "NAME": "Generate/Import Metadata",
+            "PROGRAM": "e2import.py", 
+            "MODE": "angles",
+            "NAME": "Import Tilt Angles",
+            "CHILDREN": []
+          },
+          {
+            "ICON": "multiple_images",
+            "PROGRAM": "e2import.py", 
+            "MODE": "tomos",
+            "NAME": "Import Tomograms",
             "CHILDREN": []
           }
-
       ]
   },
   {
       "ICON": "multiple_images",
       "TABLE": "EMRawDataTable(withmodal=False,multiselect=True)",
-      "NAME": "Tomogram Reconstruction",
+      "NAME": "3D Reconstruction",
       "CHILDREN": [
           {
             "ICON": "multiple_images",

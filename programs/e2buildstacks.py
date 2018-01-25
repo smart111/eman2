@@ -54,8 +54,10 @@ def main():
 	
 	parser = EMArgumentParser(usage=usage,version=EMANVERSION)
 	
-	parser.add_pos_argument(name="stack_files",help="List building material (sets) here.", default="", guitype='filebox', browser="EMParticlesEditTable(withmodal=True,multiselect=True)",  row=0, col=0,rowspan=1, colspan=2, nosharedb=True)
-	parser.add_argument("--stackname",type=str,help="Name of the stack to build", default=None, guitype='strbox',row=2, col=0, rowspan=1, colspan=1)
+	parser.add_pos_argument(name="stack_files",help="List of images to be stacked", default="", guitype='filebox', browser="EMParticlesEditTable(withmodal=True,multiselect=True)",  row=0, col=0,rowspan=1, colspan=3, nosharedb=True,mode="tomo,default")
+	parser.add_argument("--output",type=str,help="Name of the output stack to build", default=None, guitype='strbox',row=2, col=0, rowspan=1, colspan=1, mode="default,tomo")
+	parser.add_argument("--tomo",action="store_true",default=False,help="Write results to 'tiltseries' directory in current project.", guitype='boolbox',row=2, col=2, rowspan=1, colspan=1,mode="tomo[True]")
+
 	parser.add_argument("--ppid", type=int, help="Set the PID of the parent process, used for cross platform PPID",default=-1)
 	parser.add_argument("--verbose", "-v", dest="verbose", action="store", metavar="n", type=int, help="verbose level [0-9], higner number means higher level of verboseness",default=1)
 	
@@ -71,7 +73,9 @@ def main():
 		except:
 			print("ERROR: Unable to remove ",options.stackname,". Cannot proceed")
 			sys.exit(1)
-			
+	
+	if options.tomo: options.stackname = "tiltseries/{}".format(options.stackname)
+
 	# if output is LSX format, we handle it differently, with a specific object for these files
 	if options.stackname[-4:].lower()==".lst" :
 		outfile=LSXFile(options.stackname)

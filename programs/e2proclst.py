@@ -45,6 +45,8 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 	####################
 #	parser.add_argument("--average", action="store_true", help="Averages all input images (without alignment) and writes a single output image")
 	
+	parser.add_pos_argument(name="tilts",help="List of tilts to be combined", default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=True)",  row=0, col=0,rowspan=1, colspan=3, mode="tilts")
+
 	parser.add_argument("--create", type=str, default=None, help="to use this option, the input files should be image files. Specify an .lst or .lsx file to create here (e.g., --create mylst.lst) with references to all of the images in the inputs.")
 	parser.add_argument("--eosplit", action="store_true", help="Will generate _even and _odd .lst files for each specified input .lst file")
 
@@ -72,6 +74,8 @@ sort of virtual stack represented by .lst files, use e2proc2d.py or e2proc3d.py 
 
 	parser.add_argument("--range", type=str, default=None, help="Range of particles to use. Works only with --create option. Input of 0,10,2 means range(0,10, step=2).")
 	parser.add_argument("--retype", type=str, default=None, help="If a lst file is referencing a set of particles from particles/imgname__oldtype.hdf, this will change oldtype to the specified string in-place (modifies input files)")
+
+	parser.add_argument("--create_tiltseries", action="store_true", default=False, help="If checked, input images will be treated as tilts and combined into a single tilt series and placed in a directory called 'tiltseries'.",guitype='boolbox', row=2, col=0, rowspan=1, colspan=3,mode="tilts[True]")
 
 	parser.add_argument("--verbose", "-v", dest="verbose", action="store", metavar="n", type=int, help="verbose level [0-9], higner number means higher level of verboseness",default=1)
 

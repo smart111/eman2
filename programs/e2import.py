@@ -43,31 +43,38 @@ def main():
 
 	import_particles - will simply copy a set of per-micrograph particle files into EMAN2.1's preferred HDF format in particles/
 	import_boxes - will read EMAN1 '.box' files (text files containing coordinates) into appropriate info/*json files (see --box_type)
-	import_tomos - imports subtomogams for a SPT project (see also --importation)
-	
-	import_serialem - imports subtomogams for a SPT project (see also --importation)
-
-	import_rawtilts - imports tilt series for a tomography project (--importation copy recommended)
 	import_eman1 - will convert a typical EMAN1 phase-flipped start.hed/img file into an EMAN2 project (converting files, fixing CTF, splitting, ...)
+
+	import_tomos - imports subtomogams for a SPT project (see also --importation)
+	import_serialem - imports subtomogams for a SPT project (see also --importation)
+	import_tiltseries - imports tilt series for a tomography project (--importation copy recommended)
+	import_tiltangles - imports tilt ang.es for corresponding tilt series (--importation copy recommended)
+
 	"""
 
 	parser = EMArgumentParser(usage=usage,version=EMANVERSION)
 
-	parser.add_pos_argument(name="import_files",help="List the files to import here.", default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=True)",  row=0, col=0, rowspan=1, colspan=2, nosharedb=True, mode='coords,parts,tomos,eman1')
-	parser.add_pos_argument(name="import_mdocs",help="List the files to import here.", default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=True)",  row=1, col=0, rowspan=1, colspan=2, nosharedb=True, mode='tomos')
+	parser.add_pos_argument(name="import_files",help="List the files to import here.", default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=True)",  row=0, col=0, rowspan=1, colspan=2, nosharedb=True, mode='coords,parts,tomos,eman1,serialem,tilts,angles')
 
-	parser.add_header(name="filterheader", help='Options below this label are specific to e2import', title="### e2import options ###", row=2, col=0, rowspan=1, colspan=2, mode='coords,parts,tomos')
+	parser.add_header(name="filterheader", help='Options below this label are specific to e2import', title="### e2import options ###", row=2, col=0, rowspan=1, colspan=2, mode='coords,parts,tomos,angles,serialem,tilts')
+
+	# SPR Data
 	parser.add_argument("--import_particles",action="store_true",help="Import particles",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='parts[True]')
 	parser.add_argument("--import_eman1",action="store_true",help="This will import a phase-flipped particle stack from EMAN1",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='eman1[True]')
-	parser.add_argument("--import_tomos",action="store_true",help="Import tomograms",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='tomos[True]')
-	parser.add_argument("--import_rawtilts",action="store_true",help="Import tilt series",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='tomos[True]')
-	parser.add_argument("--import_serialem",action="store_true",help="Import tilt series",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='tomos[True]')
 
-	parser.add_argument("--shrink",type=int,help="Shrink tomograms before importing. Dose not work while not copying.",default=1, guitype='intbox', row=4, col=0, rowspan=1, colspan=1, mode='tomos')
-	parser.add_argument("--invert",action="store_true",help="Invert the contrast before importing tomograms",default=False, guitype='boolbox', row=4, col=1, rowspan=1, colspan=1, mode='tomos')
-	parser.add_argument("--tomoseg_auto",action="store_true",help="Default process for tomogram segmentation, including lowpass, highpass, normalize, clampminmax.",default=True, guitype='boolbox', row=4, col=2, rowspan=1, colspan=1, mode='tomos')
-	parser.add_argument("--importation",help="Specify mode move, copy or link, for importing tomograms only",default='copy',guitype='combobox',choicelist='["move","copy","link"]',row=3,col=1,rowspan=1,colspan=1, mode='tomos')
-	parser.add_argument("--preprocess",type=str,help="Other pre-processing operation before importing tomograms. Dose not work while not copying.",default="", guitype='strbox', row=5, col=0, rowspan=1, colspan=2, mode='tomos')
+	# Tomo Data
+	parser.add_argument("--import_tomos",action="store_true",help="Import tomograms for segmentation and/or subtomogram averaging",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='tomos[True]')
+	parser.add_argument("--import_tiltseries",action="store_true",help="Import tiltseries",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='tilts[True]')
+
+	# Tomo Metadata
+	parser.add_argument("--import_tiltangles",action="store_true",help="Import tilt series",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='angles[True]')
+	parser.add_argument("--import_serialem",action="store_true",help="Import MDoc files produced by SerialEM",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='serialem[True]')
+
+	parser.add_argument("--shrink",type=int,help="Shrink tomograms before importing. Dose not work while not copying.",default=1, guitype='intbox', row=4, col=0, rowspan=1, colspan=1, mode='tomos,tilts')
+	parser.add_argument("--invert",action="store_true",help="Invert the contrast before importing tomograms",default=False, guitype='boolbox', row=4, col=1, rowspan=1, colspan=1, mode='tomos,tilts')
+	parser.add_argument("--tomoseg_auto",action="store_true",help="Default process for tomogram segmentation, including lowpass, highpass, normalize, clampminmax.",default=True, guitype='boolbox', row=4, col=2, rowspan=1, colspan=1, mode='tomos,tilts')
+	parser.add_argument("--importation",help="Specify mode move, copy or link, for importing tomograms only",default='copy',guitype='combobox',choicelist='["move","copy","link"]',row=3,col=1,rowspan=1,colspan=1, mode='tomos,tilts')
+	parser.add_argument("--preprocess",type=str,help="Other pre-processing operation before importing tomograms. Dose not work while not copying.",default="", guitype='strbox', row=5, col=0, rowspan=1, colspan=2, mode='tomos,tilts')
 	parser.add_argument("--import_boxes",action="store_true",help="Import boxes",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='coords[True]')
 	parser.add_argument("--extension",type=str,help="Extension of the micrographs that the boxes match", default='dm3')
 	parser.add_argument("--box_type",help="Type of boxes to import, normally boxes, but for tilted data use tiltedboxes, and untiltedboxes for the tilted  particle partner",default="boxes",guitype='combobox',choicelist='["boxes","coords","relion_star","tiltedboxes","untiltedboxes"]',row=3,col=1,rowspan=1,colspan=1, mode="coords['boxes']")
@@ -295,54 +302,14 @@ with the same name, you should specify only the .hed files (no renaming is neces
 				run("e2proc2d.py {} particles/{}.hdf --threed2twod --inplace".format(fsp,base_name(fsp)))
 			else: run("e2proc2d.py {} particles/{}.hdf --inplace".format(fsp,base_name(fsp)))
 
-	# # Import tomograms
-	# if options.import_tomos:
-	# 	tomosdir = os.path.join(".","tomograms")
-	# 	if not os.access(tomosdir, os.R_OK):
-	# 		os.mkdir("rawtomograms")
-	# 	for filename in args:
-	# 		if options.importation == "move":
-	# 			os.rename(filename,os.path.join(tomosdir,os.path.basename(filename)))
-	# 		if options.importation == "copy":
-	# 			### use hdf file as output
-				
-	# 			if options.shrink>1:
-	# 				shrinkstr="_bin{:d}".format(options.shrink)
-	# 			else:
-	# 				shrinkstr=""
-					
-	# 			tpos=filename.rfind('.')
-	# 			if tpos>0:
-	# 				newname=os.path.join(tomosdir,os.path.basename(filename[:tpos]+shrinkstr+'.hdf'))
-	# 			else:
-	# 				newname=os.path.join(tomosdir,os.path.basename(filename))
-	# 			cmd="e2proc3d.py {} {} ".format(filename, newname)
-	# 			if options.shrink>1:
-	# 				cmd+=" --meanshrink {:d} ".format(options.shrink)
-	# 			if options.invert:
-	# 				cmd+=" --mult -1 --process normalize "
-	# 			if options.tomoseg_auto:
-	# 				cmd+=" --process filter.lowpass.gauss:cutoff_abs=.25 --process filter.highpass.gauss:cutoff_pixels=5 --process normalize --process threshold.clampminmax.nsigma:nsigma=3 "
-	# 			cmd+=options.preprocess
-	# 			run(cmd)
-	# 			print("Done.")
-	# 			#shutil.copy(filename,os.path.join(tomosdir,os.path.basename(filename)))
-	# 		if options.importation == "link":
-	# 			os.symlink(filename,os.path.join(tomosdir,os.path.basename(filename)))
-
-
-	# Import tilt series
-	if options.import_tilts:
-
-		if not os.access("info", os.R_OK):
-			os.mkdir("info")
-
-		tiltsdir = os.path.join(".","tiltseries")
-		if not os.access(tiltsdir, os.R_OK):
-			os.mkdir("tiltseries")
+	# Import tomograms
+	if options.import_tomos:
+		tomosdir = os.path.join(".","tomograms")
+		if not os.access(tomosdir, os.R_OK):
+			os.mkdir("tomograms")
 		for filename in args:
 			if options.importation == "move":
-				os.rename(filename,os.path.join(tiltsdir,os.path.basename(filename)))
+				os.rename(filename,os.path.join(tomosdir,os.path.basename(filename)))
 			if options.importation == "copy":
 				### use hdf file as output
 				
@@ -353,9 +320,9 @@ with the same name, you should specify only the .hed files (no renaming is neces
 					
 				tpos=filename.rfind('.')
 				if tpos>0:
-					newname=os.path.join(tiltsdir,os.path.basename(filename[:tpos]+shrinkstr+'.hdf'))
+					newname=os.path.join(tomosdir,os.path.basename(filename[:tpos]+shrinkstr+'.hdf'))
 				else:
-					newname=os.path.join(tiltsdir,os.path.basename(filename))
+					newname=os.path.join(tomosdir,os.path.basename(filename))
 				cmd="e2proc3d.py {} {} ".format(filename, newname)
 				if options.shrink>1:
 					cmd+=" --meanshrink {:d} ".format(options.shrink)
@@ -368,10 +335,48 @@ with the same name, you should specify only the .hed files (no renaming is neces
 				print("Done.")
 				#shutil.copy(filename,os.path.join(tomosdir,os.path.basename(filename)))
 			if options.importation == "link":
-				os.symlink(filename,os.path.join(tiltsdir,os.path.basename(filename)))
-			
-			js=js_open_dict(info_name(filename,nodir=True))
-			js.close()
+				os.symlink(filename,os.path.join(tomosdir,os.path.basename(filename)))
+
+	# Import tilt series
+	if options.import_tiltseries:
+		tomosdir = os.path.join(".","tiltseries")
+		if not os.access(tomosdir, os.R_OK):
+			os.mkdir("tiltseries")
+		for filename in args:
+			if options.importation == "move":
+				os.rename(filename,os.path.join(tomosdir,os.path.basename(filename)))
+			if options.importation == "copy":
+				### use hdf file as output
+				
+				if options.shrink>1:
+					shrinkstr="_bin{:d}".format(options.shrink)
+				else:
+					shrinkstr=""
+					
+				tpos=filename.rfind('.')
+				if tpos>0:
+					newname=os.path.join(tomosdir,os.path.basename(filename[:tpos]+shrinkstr+'.hdf'))
+				else:
+					newname=os.path.join(tomosdir,os.path.basename(filename))
+				cmd="e2proc3d.py {} {} ".format(filename, newname)
+				if options.shrink>1:
+					cmd+=" --meanshrink {:d} ".format(options.shrink)
+				if options.invert:
+					cmd+=" --mult -1 --process normalize "
+				if options.tomoseg_auto:
+					cmd+=" --process filter.lowpass.gauss:cutoff_abs=.25 --process filter.highpass.gauss:cutoff_pixels=5 --process normalize --process threshold.clampminmax.nsigma:nsigma=3 "
+				cmd+=options.preprocess
+				run(cmd)
+				print("Done.")
+				#shutil.copy(filename,os.path.join(tomosdir,os.path.basename(filename)))
+			if options.importation == "link":
+				os.symlink(filename,os.path.join(tomosdir,os.path.basename(filename)))
+
+	# Import tomograms
+	if options.import_serialem:
+
+	if options.import_tiltangles
+
 
 	E2end(logid)
 

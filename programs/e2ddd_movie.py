@@ -83,9 +83,6 @@ def main():
 	parser.add_argument("--gain_darkcorrected", default=False, help="Do not dark correct gain image. False by default.",action="store_true",guitype='boolbox', row=8, col=1, rowspan=1, colspan=1, mode="align,tomo")
 	parser.add_argument("--invert_gain", default=False, help="Use reciprocal of input gain image",action="store_true",guitype='boolbox', row=8, col=2, rowspan=1, colspan=1, mode="align,tomo")
 
-	parser.add_argument("--bad_columns", type=str, help="Comma separated list of camera defect columns",default="")
-	parser.add_argument("--bad_rows", type=str, help="Comma separated list of camera defect rows",default="")
-
 	#parser.add_header(name="orblock3", help='Just a visual separation', title="- OR -", row=6, col=0, rowspan=1, colspan=3, mode="align,tomo")
 
 	parser.add_header(name="orblock4", help='Just a visual separation', title="Output: ", row=10, col=0, rowspan=2, colspan=1, mode="align,tomo")
@@ -117,11 +114,14 @@ def main():
 	parser.add_argument("--tomo", default=False, help="Use this flag when processing tomograms to treat input movies as individual tilts",action="store_true",guitype='boolbox', row=20, col=2, rowspan=1, colspan=1,mode='tomo[True]')
 
 
-	parser.add_header(name="orblock6", help='Just a visual separation', title="Alignment optimization: ", row=22, col=0, rowspan=2, colspan=3, mode="align,tomo")
+	parser.add_argument("--bad_columns", type=str, help="Comma separated list of camera defect columns",default="", guitype='strbox', row=21, col=0, rowspan=1, colspan=3, mode="align,tomo")
+	parser.add_argument("--bad_rows", type=str, help="Comma separated list of camera defect rows",default="", guitype='strbox', row=22, col=0, rowspan=1, colspan=3, mode="align,tomo")
 
-	parser.add_argument("--optbox", type=int,help="Box size to use during alignment optimization. Default is 256.",default=256, guitype='intbox', row=24, col=0, rowspan=1, colspan=1, mode="align,tomo")
-	parser.add_argument("--optstep", type=int,help="Step size to use during alignment optimization. Default is 224.",default=224,  guitype='intbox', row=24, col=1, rowspan=1, colspan=1, mode="align,tomo")
-	parser.add_argument("--optalpha", type=float,help="Penalization to apply during robust regression. Default is 0.1. If 0.0, unpenalized least squares will be performed (i.e., no trajectory smoothing).",default=0.1, guitype='floatbox', row=24, col=2, rowspan=1, colspan=1, mode="align,tomo")
+	parser.add_header(name="orblock6", help='Just a visual separation', title="Alignment optimization: ", row=24, col=0, rowspan=2, colspan=3, mode="align,tomo")
+
+	parser.add_argument("--optbox", type=int,help="Box size to use during alignment optimization. Default is 256.",default=256, guitype='intbox', row=26, col=0, rowspan=1, colspan=1, mode="align,tomo")
+	parser.add_argument("--optstep", type=int,help="Step size to use during alignment optimization. Default is 224.",default=224,  guitype='intbox', row=26, col=1, rowspan=1, colspan=1, mode="align,tomo")
+	parser.add_argument("--optalpha", type=float,help="Penalization to apply during robust regression. Default is 0.1. If 0.0, unpenalized least squares will be performed (i.e., no trajectory smoothing).",default=0.1, guitype='floatbox', row=26, col=2, rowspan=1, colspan=1, mode="align,tomo")
 
 	parser.add_argument("--verbose", "-v", dest="verbose", action="store", metavar="n", type=int, default=0, help="verbose level [0-9], higner number means higher level of verboseness")
 	parser.add_argument("--debug", default=False, action="store_true", help="run with debugging output")
