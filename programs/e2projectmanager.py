@@ -100,6 +100,7 @@ class EMProjectManager(QtGui.QMainWindow):
 		vsplitter.setSizes([1000,100])
 
 		self.setCentralWidget(vsplitter)
+		E2loadprojtype("e2projectmanager","main",self)
 		E2loadappwin("e2projectmanager","main",self)
 		#Update the project are construction
 		self.updateProject()
@@ -107,6 +108,7 @@ class EMProjectManager(QtGui.QMainWindow):
 	def closeEvent(self, event):
 		""" Upon PM close, close the taskmanager and the logbook """
 		E2saveappwin("e2projectmanager","main",self)
+		E2saveprojtype("e2projectmanager","main",self)
 		if self.notebook: self.notebook.close()
 		if self.taskmanager: self.taskmanager.close()
 		if self.thehelp: self.thehelp.close()
@@ -213,6 +215,12 @@ class EMProjectManager(QtGui.QMainWindow):
 
 	def _onModeChange(self, idx):
 		self.tree_stacked_widget.setCurrentIndex(idx)
+		if idx == 1: self.pm_icon = get_image_directory() + "tomoseg.png"
+		else: self.pm_icon = get_image_directory() + "EMAN2Icon.png"
+
+		self.pm_projects_db["project_icon"] = self.pm_icon
+
+		self.updateProject()
 		self._on_cmd_cancel()
 
 	def _on_openproject(self):
@@ -275,17 +283,7 @@ class EMProjectManager(QtGui.QMainWindow):
 		self.tree_stacked_widget = QtGui.QStackedWidget()
 		self.tree_stacked_widget.setMinimumWidth(300)
 		self.tree_stacked_widget.addWidget(self.makeTreeWidget(os.getenv("EMAN2DIR")+'/lib/pmconfig/spr.json', 'Single Particle Refinement'))
-		
-		try:
-			self.tree_stacked_widget.addWidget(self.makeTreeWidget(os.getenv("EMAN2DIR")+'/lib/pmconfig/tomo.json', 'Tomogram Reconstruction'))
-		except: self.modeCB.removeItem("Tomo")
-
-		#try:
-		#	self.tree_stacked_widget.addWidget(self.makeTreeWidget(os.getenv("EMAN2DIR")+'/lib/pmconfig/spt.json', 'Single Particle Tomography'))
-		#except: self.modeCB.removeItem("SPT")
-
-		#self.tree_stacked_widget.addWidget(self.makeTreeWidget(os.getenv("EMAN2DIR")+'/lib/pmconfig/tomosegpanel.json', 'Tomogram Segmentation'))
-		
+		self.tree_stacked_widget.addWidget(self.makeTreeWidget(os.getenv("EMAN2DIR")+'/lib/pmconfig/tomo.json', 'Tomography'))
 		return self.tree_stacked_widget
 
 	def makeStackedGUIwidget(self):

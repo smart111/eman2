@@ -3,45 +3,61 @@
 /* The available keys can be found by browsing the JSON files of looking at e2 projectmanager.py */ 
 
 [
- {
-    "ICON": "multiple_images",
-    "MODE": "align",
-    "PROGRAM": "e2ddd_movie.py",
-    "NAME": "Movie Correction and Alignment",
-    "CHILDREN": []
+
+  {
+      "ICON": "multiple_images",
+      "TABLE": "EMRawDataTable(withmodal=False,multiselect=True)",
+      "NAME": "Raw Data",
+      "CHILDREN": [
+
+         {
+            "ICON": "multiple_images",
+            "MODE": "align",
+            "PROGRAM": "e2ddd_movie.py",
+            "NAME": "Movie Correction and Alignment",
+            "CHILDREN": []
+          },
+          {
+            "ICON": "multiple_images",
+            "WIZARD":"/lib/pmconfig/tomoimport.json",
+            "PROGRAM": "e2import.py", 
+            "MODE": "tomos", 
+            "NAME": "Import Tilt Series",
+            "CHILDREN": []
+          }
+      ]
   },
   {
-    "ICON": "multiple_images",
-    "WIZARD":"/lib/pmconfig/tomoimport.json",
-    "PROGRAM": "e2import.py", 
-    "MODE": "tomos", 
-    "NAME": "Import Tilt Series",
-    "CHILDREN": []
-  },
-  {
-    "ICON": "multiple_images",
-    "PROGRAM": "e2tomogram.py", 
-    "MODE": "recon", 
-    "NAME": "3D Reconstruction",
-    "CHILDREN": [] 
-  },
-  {
-    "ICON": "single_image",
-    "PROGRAM": "e2erasefiducials.py",
-    "MODE": "tiltseries",
-    "WIKIPAGE": "http://blake.bcm.tmc.edu/emanwiki/EMAN2/Programs/e2ctf_auto",
-    "NAME": "Fiducial Subtraction",
-    "NOTELEVEL": "1",
-    "CHILDREN": []
-  },
-  {
-    "ICON": "ctf",
-    "PROGRAM": "e2spt_ctf_old.py",
-    "MODE": "tomo",
-    "WIKIPAGE": "http://blake.bcm.tmc.edu/emanwiki/EMAN2/Programs/e2ctf_auto",
-    "NAME": "CTF Correction",
-    "NOTELEVEL": "1",
-    "CHILDREN": []
+      "ICON": "multiple_images",
+      "TABLE": "EMRawDataTable(withmodal=False,multiselect=True)",
+      "NAME": "Tomogram Reconstruction",
+      "CHILDREN": [
+          {
+            "ICON": "multiple_images",
+            "PROGRAM": "e2tomogram.py", 
+            "MODE": "recon", 
+            "NAME": "3D Reconstruction",
+            "CHILDREN": [] 
+          },
+          {
+            "ICON": "single_image",
+            "PROGRAM": "e2erasefiducials.py",
+            "MODE": "tiltseries",
+            "WIKIPAGE": "http://blake.bcm.tmc.edu/emanwiki/EMAN2/Programs/e2ctf_auto",
+            "NAME": "Fiducial Subtraction",
+            "NOTELEVEL": "1",
+            "CHILDREN": []
+          },
+          {
+            "ICON": "ctf",
+            "PROGRAM": "e2spt_ctf_old.py",
+            "MODE": "tomo",
+            "WIKIPAGE": "http://blake.bcm.tmc.edu/emanwiki/EMAN2/Programs/e2ctf_auto",
+            "NAME": "CTF Correction",
+            "NOTELEVEL": "1",
+            "CHILDREN": []
+          }
+      ]
   },
   {
       "ICON": "single_image",
@@ -86,7 +102,7 @@
       ]
   },
   {
-      "ICON": "single_image",
+      "ICON": "green_boxes",
       "TABLE": "EMRawDataTable(withmodal=False,multiselect=True)",
       "NAME": "Subtomogram Averaging",
       "CHILDREN": [
@@ -102,14 +118,7 @@
             "ICON": "tomo_hunter",
             "PROGRAM": "",
             "MODE": "alignment", 
-            "NAME": "Tomogram Alignment and Averaging", 
-            "NOTELEVEL": "1",
-            "CHILDREN": [] 
-          },
-          {
-            "ICON": "tomo_hunter",
-            "PROGRAM": "",
-            "NAME": "Tomogram Alignment, Using Symmetry", 
+            "NAME": "Alignment and Averaging", 
             "NOTELEVEL": "1",
             "CHILDREN": [] 
           },
@@ -118,6 +127,13 @@
             "MODE":"align",
             "PROGRAM": "",
             "NAME": "Align to Symmetry Axis",
+            "NOTELEVEL": "1",
+            "CHILDREN": [] 
+          },
+          {
+            "ICON": "tomo_hunter",
+            "PROGRAM": "",
+            "NAME": "Alignment with Symmetry", 
             "NOTELEVEL": "1",
             "CHILDREN": [] 
           },
