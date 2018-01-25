@@ -159,6 +159,10 @@ def main():
 	# try: os.mkdir("micrographs")
 	# except: pass
 
+	if options.tomo:
+		try: os.mkdir("rawtilts")
+		except: pass
+
 	pid=E2init(sys.argv)
 
 	if options.dark != "":
@@ -242,11 +246,9 @@ def main():
 					if options.debug: sigg.write_image(options.gain.rsplit(".",1)[0]+"_sig.hdf")
 					if options.fixbadpixels:
 						sigg.process_inplace("threshold.binary",{"value":sigg["sigma"]/10.0}) # Theoretically a "perfect" pixel would have zero sigma, but in reality, the opposite is true
-						if dark!=None : 
-							try:
-								sigg.mult(sigd)
-							except:
-								pass
+						if dark!="" : 
+							try: sigg.mult(sigd)
+							except: pass
 						gain.mult(sigg)
 					if options.debug: gain.write_image(options.gain.rsplit(".",1)[0]+"_sum.hdf")
 				if options.de64:
