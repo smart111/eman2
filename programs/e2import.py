@@ -372,12 +372,12 @@ with the same name, you should specify only the .hed files (no renaming is neces
 			if options.importation == "link":
 				os.symlink(filename,os.path.join(tomosdir,os.path.basename(filename)))
 
-	# Import tomograms
-	if options.import_serialem:
-		pass
+	# # Import tomograms
+	# if options.import_serialem:
+	# 	pass
 
-	if options.import_tiltangles:
-		pass
+	# if options.import_tiltangles:
+	# 	pass
 
 
 	E2end(logid)
