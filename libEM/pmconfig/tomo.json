@@ -34,23 +34,16 @@
           },
           {
             "ICON": "green_boxes",
-            "PROGRAM": "e2import.py", 
-            "MODE": "serialem",
-            "NAME": "Import SerialEM Metadata",
-            "CHILDREN": []
-          },
-          {
-            "ICON": "green_boxes",
-            "PROGRAM": "e2import.py", 
-            "MODE": "angles",
-            "NAME": "Import Tilt Angles",
+            "PROGRAM": "e2tlt.py", 
+            "MODE": "",
+            "NAME": "Generate Tilt Angle File",
             "CHILDREN": []
           },
           {
             "ICON": "multiple_images",
             "PROGRAM": "e2import.py", 
             "MODE": "tomos",
-            "NAME": "Import Tomograms",
+            "NAME": "Import Tomograms (3D)",
             "CHILDREN": []
           }
       ]
