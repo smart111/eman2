@@ -54,9 +54,9 @@ def main():
 
 	parser = EMArgumentParser(usage=usage,version=EMANVERSION)
 
-	parser.add_pos_argument(name="import_files",help="List the files to import here.", default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=True)",  row=0, col=0, rowspan=1, colspan=2, nosharedb=True, mode='coords,parts,tomos,eman1,serialem,tilts,angles')
+	parser.add_pos_argument(name="import_files",help="List the files to import here.", default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=True)",  row=0, col=0, rowspan=1, colspan=2, nosharedb=True, mode='coords,parts,tomos,eman1,tilts')
 
-	parser.add_header(name="filterheader", help='Options below this label are specific to e2import', title="### e2import options ###", row=2, col=0, rowspan=1, colspan=2, mode='coords,parts,tomos,angles,serialem,tilts')
+	parser.add_header(name="filterheader", help='Options below this label are specific to e2import', title="### e2import options ###", row=2, col=0, rowspan=1, colspan=2, mode='coords,parts,tomos,tilts')
 
 	# SPR Data
 	parser.add_argument("--import_particles",action="store_true",help="Import particles",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='parts[True]')
@@ -65,10 +65,6 @@ def main():
 	# Tomo Data
 	parser.add_argument("--import_tomos",action="store_true",help="Import tomograms for segmentation and/or subtomogram averaging",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='tomos[True]')
 	parser.add_argument("--import_tiltseries",action="store_true",help="Import .st tiltseries files.",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='tilts[True]')
-
-	# Tomo Metadata
-	parser.add_argument("--import_tiltangles",action="store_true",help="Import tilt series",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='angles[True]')
-	parser.add_argument("--import_serialem",action="store_true",help="Import MDoc files produced by SerialEM",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='serialem[True]')
 
 	parser.add_argument("--shrink",type=int,help="Shrink tomograms before importing. Dose not work while not copying.",default=1, guitype='intbox', row=4, col=0, rowspan=1, colspan=1, mode='tomos,tilts')
 	parser.add_argument("--invert",action="store_true",help="Invert the contrast before importing tomograms",default=False, guitype='boolbox', row=4, col=1, rowspan=1, colspan=1, mode='tomos,tilts')
@@ -339,9 +335,9 @@ with the same name, you should specify only the .hed files (no renaming is neces
 
 	# Import tilt series
 	if options.import_tiltseries: 	# TILT ANGLES CONTAINED IN ST FILE HEADER...SHOULD PARSE HERE
-		tomosdir = os.path.join(".","tiltseries")
+		tomosdir = os.path.join(".","orig_tiltseries")
 		if not os.access(tomosdir, os.R_OK):
-			os.mkdir("tiltseries")
+			os.mkdir("orig_tiltseries")
 		for filename in args:
 			if options.importation == "move":
 				os.rename(filename,os.path.join(tomosdir,os.path.basename(filename)))
@@ -371,13 +367,6 @@ with the same name, you should specify only the .hed files (no renaming is neces
 				#shutil.copy(filename,os.path.join(tomosdir,os.path.basename(filename)))
 			if options.importation == "link":
 				os.symlink(filename,os.path.join(tomosdir,os.path.basename(filename)))
-
-	# # Import tomograms
-	# if options.import_serialem:
-	# 	pass
-
-	# if options.import_tiltangles:
-	# 	pass
 
 
 	E2end(logid)
