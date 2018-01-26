@@ -35,7 +35,7 @@
             "ICON": "resolution",
             "PROGRAM": "e2tlt.py", 
             "MODE": "",
-            "NAME": "Generate Tilt Angle File",
+            "NAME": "Extract Tilt Angles",
             "CHILDREN": []
           },
           {

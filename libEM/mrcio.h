@@ -123,16 +123,37 @@ namespace EMAN
 
 			int nsymbt;			/* 23 - Number of chars used for storing symmetry operators. */
 
-			int user1[15];			// 24 - 38
-			int imod_flags;			/* 39 - bit flags used by IMOD - >= 16 for 8 bit packed */
-			int user2[9];
+			//int user1[14];	// 24 - 37 - extra dat=a
+			int user1[2]; 		// 24-25
 
-			float xorigin;		/* 40 - X origin. */
-			float yorigin;		/* Y origin. */
-			float zorigin;		/* Z origin. */
+			char ext_type[4];	/* 26 - Type of extended header, includes 'SERI' for SerialEM, 'FEI1' for FEI, 'AGAR' for Agard */
+			int nversion; 		/* 27 - MRC version that file conforms to, otherwise 0 */
 
-			char map[4];		/* constant string "MAP "  */
-			int machinestamp;	/* machine stamp in CCP4 convention:
+			int user2[2]; //28-29
+
+			short nint; //30
+			short nreal; //31
+
+			int user3[7]; //32-37
+
+			int imod_stamp;		/* 38 - 1146047817 indicates that file was created by IMOD or other software that uses bit flags in the following field */
+			int imod_flags;		/* 39 - bit flags used by IMOD - >= 16 for 8 bit packed */
+			
+			//int user4[9];		/* 40 - 42 shorts used by IMOD */
+			short idtype;
+			short lens;
+			short nd1;
+			short nd2;
+			short vd1;
+			short vd2;
+			float tiltangles[6]; /* 43 - 48 - IMOD tilt angles */
+
+			float xorigin;		/* 49 - X origin. */
+			float yorigin;		/* 50 - Y origin. */
+			float zorigin;		/* 51 - Z origin. */
+
+			char map[4];		/* 52 - constant string "MAP "  */
+			int machinestamp;	/* 53 - machine stamp in CCP4 convention:
 								   big endian=0x11110000 little endian=0x44440000 */
 						/* There is an ambiguity in the specification, using 0x11111111 & 4 instead */
 
@@ -141,6 +162,41 @@ namespace EMAN
 			int nlabels;		/* Number of labels being used. */
 			char labels[MRC_NUM_LABELS][MRC_LABEL_SIZE];
 		};
+
+		/** The extended header used by SerialEM MRC image. It contains the information about a maximum of 1024 images.
+		 * Each section is 128 bytes long. The extended header is thus 1024*128 bytes (always the same length,
+		 * reagrdless of how many images are present.)
+		 * Not always 1024*128 bytes, but at least 128*nz. the length of extended header is defined in the regular header field "next" */
+		struct SerialEMMrcExtHeader
+		{
+			float a_tilt;		/* Alpha tilt, in degrees */
+			float b_tilt;		/* beta tilt, in degrees */
+
+			float x_stage;		/* Stage x position. Normally in SI units (meters), but some older files may be
+			 	 	 	 	 	 in micrometers. Check by looking at values for x,y,z. If one of these exceeds 1,
+			 	 	 	 	 	 it will be micrometers. */
+			float y_stage;		/* Stage y position. For testing of units see x_stage */
+			float z_stage;		/* Stage z position. For testing of units see x_stage */
+
+			float x_shift;		/* Image shift x. For testing of units see x_stage */
+			float y_shift;		/* Image shift y. For testing of units see x_stage */
+
+			float defocus;		/* Defocus as read from microscope. For testing of units see x_stage */
+			float exp_time;		/* Exposure time in seconds */
+			float mean_int;		/* Mean value of image */
+
+			float tilt_axis;	/* The orientation of the tilt axis in the image in degrees.
+			 	 	 	 	 	 Vertical to the top is 0=B0, the direction of positive rotation is anti-clockwise */
+			float pixel_size;	/* The pixel size of the images in SI units (meters) */
+			float magnification;	/*The magnification used in SI units (volts) */
+			float ht;			/* Value of the high tension in SI units (volts) */
+			float binning;		/* The binning of the CCD or STEM acquisition */
+			float appliedDefocus;	/* The intended application defocus in SI units (meters),
+			 	 	 	 	 	 as defined for example in the tomography parameters view. */
+
+			float remainder[16];	/* not used */
+		};
+
 
 		/** Extended MRC format for tomography
 		 * As used by Fei; original definition of extended header by Dave Agard and Bram Koster
