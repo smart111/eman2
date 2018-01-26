@@ -182,6 +182,20 @@ pipeline {
         runCronJob()
       }
     }
+    
+    stage('win') {
+      when {
+        anyOf {
+          expression { JOB_TYPE == "cron" }
+          expression { isRelease() }
+        }
+        expression { SLAVE_OS == "win" }
+      }
+      
+      steps {
+        runCronJob()
+      }
+    }
   }
   
   post {
