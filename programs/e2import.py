@@ -64,7 +64,7 @@ def main():
 
 	# Tomo Data
 	parser.add_argument("--import_tomos",action="store_true",help="Import tomograms for segmentation and/or subtomogram averaging",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='tomos[True]')
-	parser.add_argument("--import_tiltseries",action="store_true",help="Import tiltseries",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='tilts[True]')
+	parser.add_argument("--import_tiltseries",action="store_true",help="Import .st tiltseries files.",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='tilts[True]')
 
 	# Tomo Metadata
 	parser.add_argument("--import_tiltangles",action="store_true",help="Import tilt series",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='angles[True]')
@@ -338,7 +338,7 @@ with the same name, you should specify only the .hed files (no renaming is neces
 				os.symlink(filename,os.path.join(tomosdir,os.path.basename(filename)))
 
 	# Import tilt series
-	if options.import_tiltseries:
+	if options.import_tiltseries: 	# TILT ANGLES CONTAINED IN ST FILE HEADER...SHOULD PARSE HERE
 		tomosdir = os.path.join(".","tiltseries")
 		if not os.access(tomosdir, os.R_OK):
 			os.mkdir("tiltseries")

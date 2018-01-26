@@ -9,19 +9,18 @@
       "TABLE": "EMRawDataTable(withmodal=False,multiselect=True)",
       "NAME": "Raw Data",
       "CHILDREN": [
-
          {
             "ICON": "multiple_images",
             "MODE": "tomo",
             "PROGRAM": "e2ddd_movie.py",
-            "NAME": "Process movie data",
+            "NAME": "Process Movie Data",
             "CHILDREN": []
           },
           {
             "ICON": "multiple_images",
             "PROGRAM": "e2buildstacks.py", 
             "MODE": "tomo",
-            "NAME": "Combine tilts",
+            "NAME": "Combine Aligned Tilts",
             "CHILDREN": []
           },
           {
@@ -33,17 +32,24 @@
             "CHILDREN": []
           },
           {
-            "ICON": "green_boxes",
+            "ICON": "resolution",
             "PROGRAM": "e2tlt.py", 
             "MODE": "",
             "NAME": "Generate Tilt Angle File",
             "CHILDREN": []
           },
           {
-            "ICON": "multiple_images",
+            "ICON": "green_boxes",
             "PROGRAM": "e2import.py", 
             "MODE": "tomos",
-            "NAME": "Import Tomograms (3D)",
+            "NAME": "Import 3D Tomograms",
+            "CHILDREN": []
+          },
+          {
+            "ICON": "green_boxes",
+            "PROGRAM": "e2import.py", 
+            "MODE": "tomos",
+            "NAME": "Import Subtomogram Boxes",
             "CHILDREN": []
           }
       ]
