@@ -106,6 +106,7 @@ pipeline {
       when {
         not { expression { JOB_TYPE == "cron" } }
         not { expression { isRelease() } }
+        not { expression { SLAVE_OS == "win" } }
       }
       
       parallel {
