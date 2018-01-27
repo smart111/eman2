@@ -183,7 +183,9 @@ namespace EMAN
 
 			short magnification;	/* Magnification / 100 (2 bytes) */
 			short intensity;		/* Intensity * 25000  (2 bytes) */
-			float exposure;			/* Exposure dose in e-/A2 (4 byte float) */
+			short s1;
+			short s2;
+//			float exposure;			/* Exposure dose in e-/A2 (4 byte float) */
 
 			//float remainder2[27];	/* not used */
 		};

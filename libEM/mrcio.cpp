@@ -605,7 +605,9 @@ int MrcIO::read_mrc_header(Dict & dict, int image_index, const Region * area, bo
 		dict["SerialEM.stagey"] = serialemexth.stagex / 25.;
 		dict["SerialEM.magnification"] = serialemexth.magnification * 100.;
 		dict["SerialEM.intensity"] = serialemexth.intensity / 25000.;
-		dict["SerialEM.exposure"] = serialemexth.exposure;
+		int s1 = (int)serialemexth.s1;
+		int s2 = (int)serialemexth.s2;
+		dict["SerialEM.exposure"] = pow(Util::eman_copysign(1,s1)*(abs(s1)*256.+(abs(s2)%256))*2,Util::eman_copysign(1,s2)*abs(s2)/256.);
 	}
 
 	EMAN1Ctf ctf_;
