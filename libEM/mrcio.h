@@ -122,9 +122,12 @@ namespace EMAN
 			int ispg;			/* 22 - Space group number (0 for images). */
 
 			int nsymbt;			/* 23 - Number of chars used for storing symmetry operators. */
+			int	next;			/* This value gives the offset (in bytes) from the end
+								of the file header to the first dataset (image).
+								Thus you will find the first image at 1024 + next bytes. */
 
 			//int user1[14];	// 24 - 37 - extra dat=a
-			int user1[2]; 		// 24-25
+			int user1[1]; 		// 24-25
 
 			char ext_type[4];	/* 26 - Type of extended header, includes 'SERI' for SerialEM, 'FEI1' for FEI, 'AGAR' for Agard */
 			//int nversion; 		/* 27 - MRC version that file conforms to, otherwise 0 */
@@ -182,7 +185,7 @@ namespace EMAN
 			short intensity;		/* Intensity * 25000  (2 bytes) */
 			float exposure;			/* Exposure dose in e-/A2 (4 byte float) */
 
-			float remainder2[27];	/* not used */
+			//float remainder2[27];	/* not used */
 		};
 
 

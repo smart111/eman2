@@ -1084,15 +1084,15 @@ int MrcIO::read_data(float *rdata, int image_index, const Region * area, bool)
 
 		size = (size_t)xlen * ylen * zlen;
 	}
-	else if (isSEM) {	// SerialEM extended MRC
+	else if (string(mrch.ext_type,4) == "SERI") {	// SerialEM extended MRC
 		check_region(area, FloatSize(mrch.nx, mrch.ny, mrch.nz), is_new_file, false);
-		portable_fseek(mrcfile, sizeof(MrcHeader)+feimrch.next, SEEK_SET);
+		portable_fseek(mrcfile, sizeof(MrcHeader)+mrch.next, SEEK_SET);
 
 		EMUtil::process_region_io(cdata, mrcfile, READ_ONLY,
 								  image_index, mode_size,
-								  feimrch.nx, feimrch.ny, feimrch.nz, area);
+								  mrch.nx, mrch.ny, mrch.nz, area);
 
-		EMUtil::get_region_dims(area, feimrch.nx, &xlen, feimrch.ny, &ylen, feimrch.nz, &zlen);
+		EMUtil::get_region_dims(area, mrch.nx, &xlen, mrch.ny, &ylen, mrch.nz, &zlen);
 
 		size = (size_t)xlen * ylen * zlen;
 	}
