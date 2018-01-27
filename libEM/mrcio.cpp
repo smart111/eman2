@@ -54,7 +54,7 @@ const char *MrcIO::SHORT_CTF_MAGIC = "!$";
 
 MrcIO::MrcIO(const string & mrc_filename, IOMode rw)
 :	filename(mrc_filename), rw_mode(rw), mrcfile(0), mode_size(0),
-		isFEI(false), is_ri(0), is_new_file(false), initialized(false),
+		isFEI(false),isSEM(false), is_ri(0), is_new_file(false), initialized(false),
 		is_transpose(false), is_stack(false), stack_size(1),
 		is_8_bit_packed(false), use_given_dimensions(true),
 		rendermin(0.0), rendermax(0.0)
@@ -174,6 +174,9 @@ void MrcIO::init()
 		if (mrch.nlabels > 0) {
 			if (string(mrch.labels[0],3) == "Fei") {
 				isFEI = true;
+			}
+			else if (string(mrch.labels[0],8) == "SerialEM"){
+				isSEM = true;
 			}
 		}
 
@@ -493,35 +496,34 @@ int MrcIO::read_mrc_header(Dict & dict, int image_index, const Region * area, bo
 	dict["MRC.ispg"] = mrch.ispg;
 	dict["MRC.nsymbt"] = mrch.nsymbt;
 	
-	if (mrch.imod_stamp == IMOD_MAGIC_STAMP) {
+	// if (mrch.imod_stamp == IMOD_MAGIC_STAMP) {
+		// dict["MRC.ext_type"] = string(mrch.ext_type,4);
+		// dict["MRC.nversion"] = mrch.nversion;
+		// dict["MRC.nint"] = mrch.nint;
+		// dict["MRC.nreal"] = mrch.nreal;
 
-		dict["MRC.ext_type"] = string(mrch.ext_type,4);
-		dict["MRC.nversion"] = mrch.nversion;
-		dict["MRC.nint"] = mrch.nint;
-		dict["MRC.nreal"] = mrch.nreal;
+		// dict["MRC.imod_stamp"] = mrch.imod_stamp;
+		// dict["MRC.imod_flags"] = mrch.imod_flags;
 
-		dict["MRC.imod_stamp"] = mrch.imod_stamp;
-		dict["MRC.imod_flags"] = mrch.imod_flags;
+		// dict["MRC.idtype"] = mrch.idtype;
+		// dict["MRC.lens"] = mrch.lens;
+		// dict["MRC.nd1"] = mrch.nd1;
+		// dict["MRC.nd2"] = mrch.nd2;
+		// dict["MRC.vd1"] = mrch.vd1;
+		// dict["MRC.vd2"] = mrch.vd2;
 
-		dict["MRC.idtype"] = mrch.idtype;
-		dict["MRC.lens"] = mrch.lens;
-		dict["MRC.nd1"] = mrch.nd1;
-		dict["MRC.nd2"] = mrch.nd2;
-		dict["MRC.vd1"] = mrch.vd1;
-		dict["MRC.vd2"] = mrch.vd2;
-
-		char tiltangle[32];
-		for (int i = 0; i < 6; i++) {
-			if (i == 0) sprintf(tiltangle, "MRC.tiltXoriginal");
-			else if (i == 1) sprintf(tiltangle, "MRC.tiltYoriginal");
-			else if (i == 2) sprintf(tiltangle, "MRC.tiltZoriginal");
-			else if (i == 3) sprintf(tiltangle, "MRC.tiltXcurrent");
-			else if (i == 4) sprintf(tiltangle, "MRC.tiltYcurrent");
-			else sprintf(tiltangle, "MRC.tiltZcurrent");
-			dict[string(tiltangle)] = mrch.tiltangles[i];
-		}
+		// char tiltangle[32];
+		// for (int i = 0; i < 6; i++) {
+		// 	if (i == 0) sprintf(tiltangle, "MRC.tiltXoriginal");
+		// 	else if (i == 1) sprintf(tiltangle, "MRC.tiltYoriginal");
+		// 	else if (i == 2) sprintf(tiltangle, "MRC.tiltZoriginal");
+		// 	else if (i == 3) sprintf(tiltangle, "MRC.tiltXcurrent");
+		// 	else if (i == 4) sprintf(tiltangle, "MRC.tiltYcurrent");
+		// 	else sprintf(tiltangle, "MRC.tiltZcurrent");
+		// 	dict[string(tiltangle)] = mrch.tiltangles[i];
+		// }
 		
-	}
+	// }
 
 	float apx = mrch.xlen / mrch.mx;
 	float apy = mrch.ylen / mrch.my;
@@ -595,59 +597,16 @@ int MrcIO::read_mrc_header(Dict & dict, int image_index, const Region * area, bo
 			throw ImageReadException(filename, "SerialEM extended header");
 		}
 
-		// dict["MRC.a_tilt"] = serialemexth.a_tilt;
-		// dict["MRC.b_tilt"] = serialemexth.b_tilt;
-
-		// dict["MRC.x_stage"] = serialemexth.x_stage;
-		// dict["MRC.y_stage"] = serialemexth.y_stage;
-		// dict["MRC.z_stage"] = serialemexth.z_stage;
-
-		// dict["MRC.x_shift"] = serialemexth.x_shift;
-		// dict["MRC.y_shift"] = serialemexth.y_shift;
-
-		// dict["MRC.defocus"] = serialemexth.defocus;
-		// dict["MRC.exp_time"] = serialemexth.exp_time;
-		// dict["MRC.mean_int"] = serialemexth.mean_int;
-		// dict["MRC.tilt_axis"] = serialemexth.tilt_axis;
-
-		// dict["MRC.pixel_size"] = serialemexth.pixel_size;
-		// dict["MRC.magnification"] = serialemexth.magnification;
-		// dict["MRC.ht"] = serialemexth.ht;
-		// dict["MRC.binning"] = serialemexth.binning;
-		// dict["MRC.appliedDefocus"] = serialemexth.appliedDefocus;
-
+		dict["SerialEM.tilt_angle"] = serialemexth.tilt_angle / 100.;
+		dict["SerialEM.xpiece"] = serialemexth.xpiece;
+		dict["SerialEM.ypiece"] = serialemexth.ypiece;
+		dict["SerialEM.zpiece"] = serialemexth.zpiece;
+		dict["SerialEM.stagex"] = serialemexth.stagex / 25.;
+		dict["SerialEM.stagey"] = serialemexth.stagex / 25.;
+		dict["SerialEM.magnification"] = serialemexth.magnification * 100.;
+		dict["SerialEM.intensity"] = serialemexth.intensity / 25000.;
+		dict["SerialEM.exposure"] = serialemexth.exposure;
 	}
-
-/*
-
-
-                                 These two values specify the structure of data in the
-                                 extended header; their meaning depend on whether the
-                                 extended header has the FEI/Agard format, a series of
-                                 4-byte integers then real numbers, or has data 
-                                 produced by SerialEM, a series of short integers.  
-                                 The short integers are signed, except for
-                                 piece coordinates.
-                                 SerialEM stores a float as two shorts, s1 and s2, by:
-                                   value = (sign of s1)*(|s1|*256 + (|s2| modulo 256))
-                                      * 2**((sign of s2) * (|s2|/256))
-128 200  2   short   nint;       Number of integers per section (FEI/Agard format) or
-                                 number of bytes per section (SerialEM format)
-130 202  2   short   nreal;      Number of reals per section (FEI/Agard format) or bit
-                                 flags for which types of short data (SerialEM format):
-                                 1 = Tilt angle in degrees * 100  (2 bytes)
-                                 2 = X, Y, Z piece coordinates for montage (6 bytes)
-                                 4 = X, Y stage position in microns * 25   (4 bytes)
-                                 8 = Magnification / 100 (2 bytes)
-                                 16 = Intensity * 25000  (2 bytes)
-                                 32 = Exposure dose in e-/A2, a float in 4 bytes
-                                 128, 512: Reserved for 4-byte items
-                                 64, 256, 1024: Reserved for 2-byte items
-                                 If the number of bytes implied by these flags does
-                                 not add up to the value in nint, then nint and nreal
-                                 are interpreted as ints and reals per section
-
-*/
 
 	EMAN1Ctf ctf_;
 
@@ -1125,7 +1084,20 @@ int MrcIO::read_data(float *rdata, int image_index, const Region * area, bool)
 
 		size = (size_t)xlen * ylen * zlen;
 	}
+	else if (isSEM) {	// SerialEM extended MRC
+		check_region(area, FloatSize(mrch.nx, mrch.ny, mrch.nz), is_new_file, false);
+		portable_fseek(mrcfile, sizeof(MrcHeader)+feimrch.next, SEEK_SET);
+
+		EMUtil::process_region_io(cdata, mrcfile, READ_ONLY,
+								  image_index, mode_size,
+								  feimrch.nx, feimrch.ny, feimrch.nz, area);
+
+		EMUtil::get_region_dims(area, feimrch.nx, &xlen, feimrch.ny, &ylen, feimrch.nz, &zlen);
+
+		size = (size_t)xlen * ylen * zlen;
+	}
 	else {	// regular MRC
+
 		check_region(area, FloatSize(mrch.nx, mrch.ny, mrch.nz), is_new_file, false);
 		portable_fseek(mrcfile, sizeof(MrcHeader)+mrch.nsymbt, SEEK_SET);
 

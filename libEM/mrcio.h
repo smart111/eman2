@@ -127,26 +127,26 @@ namespace EMAN
 			int user1[2]; 		// 24-25
 
 			char ext_type[4];	/* 26 - Type of extended header, includes 'SERI' for SerialEM, 'FEI1' for FEI, 'AGAR' for Agard */
-			int nversion; 		/* 27 - MRC version that file conforms to, otherwise 0 */
+			//int nversion; 		/* 27 - MRC version that file conforms to, otherwise 0 */
 
-			int user2[2]; //28-29
+			int user2[3]; //27-29
 
-			short nint; //30
-			short nreal; //31
+			short numintegers; //30
+			short numfloats; //31
 
 			int user3[7]; //32-37
 
 			int imod_stamp;		/* 38 - 1146047817 indicates that file was created by IMOD or other software that uses bit flags in the following field */
 			int imod_flags;		/* 39 - bit flags used by IMOD - >= 16 for 8 bit packed */
 			
-			//int user4[9];		/* 40 - 42 shorts used by IMOD */
-			short idtype;
-			short lens;
-			short nd1;
-			short nd2;
-			short vd1;
-			short vd2;
-			float tiltangles[6]; /* 43 - 48 - IMOD tilt angles */
+			int user4[9];		/* 40 - 42 shorts used by IMOD */
+			// short idtype;
+			// short lens;
+			// short nd1;
+			// short nd2;
+			// short vd1;
+			// short vd2;
+			// float tiltangles[6]; /* 43 - 48 - IMOD tilt angles */
 
 			float xorigin;		/* 49 - X origin. */
 			float yorigin;		/* 50 - Y origin. */
@@ -169,32 +169,20 @@ namespace EMAN
 		 * Not always 1024*128 bytes, but at least 128*nz. the length of extended header is defined in the regular header field "next" */
 		struct SerialEMMrcExtHeader
 		{
-			float a_tilt;		/* Alpha tilt, in degrees */
-			float b_tilt;		/* beta tilt, in degrees */
+			short tilt_angle;		/* Tilt angle (in degrees) * 100 (2bytes) */
+			
+			short xpiece;			/* X, Y, Z piece coordinates for montage (6 bytes) */
+			short ypiece;			
+			short zpiece;
 
-			float x_stage;		/* Stage x position. Normally in SI units (meters), but some older files may be
-			 	 	 	 	 	 in micrometers. Check by looking at values for x,y,z. If one of these exceeds 1,
-			 	 	 	 	 	 it will be micrometers. */
-			float y_stage;		/* Stage y position. For testing of units see x_stage */
-			float z_stage;		/* Stage z position. For testing of units see x_stage */
+			short stagex;			/* X, Y stage position in microns * 25   (4 bytes) */
+			short stagey;
 
-			float x_shift;		/* Image shift x. For testing of units see x_stage */
-			float y_shift;		/* Image shift y. For testing of units see x_stage */
+			short magnification;	/* Magnification / 100 (2 bytes) */
+			short intensity;		/* Intensity * 25000  (2 bytes) */
+			float exposure;			/* Exposure dose in e-/A2 (4 byte float) */
 
-			float defocus;		/* Defocus as read from microscope. For testing of units see x_stage */
-			float exp_time;		/* Exposure time in seconds */
-			float mean_int;		/* Mean value of image */
-
-			float tilt_axis;	/* The orientation of the tilt axis in the image in degrees.
-			 	 	 	 	 	 Vertical to the top is 0=B0, the direction of positive rotation is anti-clockwise */
-			float pixel_size;	/* The pixel size of the images in SI units (meters) */
-			float magnification;	/*The magnification used in SI units (volts) */
-			float ht;			/* Value of the high tension in SI units (volts) */
-			float binning;		/* The binning of the CCD or STEM acquisition */
-			float appliedDefocus;	/* The intended application defocus in SI units (meters),
-			 	 	 	 	 	 as defined for example in the tomography parameters view. */
-
-			float remainder[16];	/* not used */
+			float remainder2[27];	/* not used */
 		};
 
 
@@ -333,6 +321,8 @@ namespace EMAN
 
 		/* the extended MRC format for tomography, used by FEI */
 		bool isFEI;
+		/* the extended MRC format for tomography, used by SerialEM */
+		bool isSEM;
 
 		/* for MRCS (MRC stack) format */
 		bool is_stack;
