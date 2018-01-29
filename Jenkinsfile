@@ -47,7 +47,7 @@ def isCurrentRelease() {
 }
 
 def runCronJob() {
-    sh 'bash ${HOME_DIR}/workspace/build-scripts-cron/cronjob.sh $STAGE_NAME $GIT_BRANCH_SHORT'
+    sh 'bash ${BUILD_SCRIPTS_DIR}/cronjob.sh $STAGE_NAME $GIT_BRANCH_SHORT'
     if(isCurrentRelease())
       sh "rsync -avzh --stats ${INSTALLERS_DIR}/eman2.${STAGE_NAME}.unstable.sh ${DEPLOY_DEST}"
 }
@@ -62,7 +62,7 @@ def setUploadFlag() {
 
 def resetBuildScripts() {
     if(JOB_TYPE == "cron" || isRelease())
-        sh 'cd ${HOME_DIR}/workspace/build-scripts-cron/ && git checkout -f master'
+        sh 'cd ${BUILD_SCRIPTS_DIR} && git checkout -f master'
 }
 
 def getHomeDir() {
@@ -97,6 +97,7 @@ pipeline {
     GIT_BRANCH_SHORT = sh(returnStdout: true, script: 'echo ${GIT_BRANCH##origin/}').trim()
     GIT_COMMIT_SHORT = sh(returnStdout: true, script: 'echo ${GIT_COMMIT:0:7}').trim()
     HOME_DIR = getHomeDir()
+    BUILD_SCRIPTS_DIR = "${HOME_DIR}/workspace/build-scripts-cron/"
     INSTALLERS_DIR = '${HOME_DIR}/workspace/${STAGE_NAME}-installers'
     DEPLOY_DEST    = 'zope@ncmi.grid.bcm.edu:/home/zope/zope-server/extdata/reposit/ncmi/software/counter_222/software_136/'
     NUMPY_VERSION='1.9'
@@ -147,7 +148,7 @@ pipeline {
       }
       
       steps {
-        sh 'cd ${HOME_DIR}/workspace/build-scripts-cron/ && git fetch --prune && (git checkout -f $BUILD_SCRIPTS_BRANCH || git checkout -t origin/$BUILD_SCRIPTS_BRANCH) && git pull --rebase'
+        sh 'cd ${BUILD_SCRIPTS_DIR} && git fetch --prune && (git checkout -f $BUILD_SCRIPTS_BRANCH || git checkout -t origin/$BUILD_SCRIPTS_BRANCH) && git pull --rebase'
       }
     }
     
