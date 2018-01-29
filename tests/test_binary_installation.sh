@@ -8,7 +8,6 @@ for f in ${@};do
     dir=$(cd $(dirname $f) && pwd -P)
     fbase=$(basename $f)
     fbase=${fbase%\.*}
-    fbase=${fbase//\./-}
     conda_loc=${dir}/${fbase}
     
     echo "... $fbase ..."
