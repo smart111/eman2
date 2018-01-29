@@ -75,6 +75,7 @@ def main():
 	parser.add_argument("-a", "--all", action="store_true",help="Show info for all images in file",default=False)
 	parser.add_argument("-C", "--check", action="store_true",help="Checks to make sure all image numbers are populated with images, and that all images have valid CTF parameters",default=False)
 	parser.add_argument("-c", "--count", action="store_true",help="Just show a count of the number of particles in each file",default=False)
+	parser.add_argument("-T", "--rawtlt", action="store_true",help="Print tilt angles from a SerialEM tilt series stack",default=False)
 	parser.add_argument("--ppid", type=int, help="Set the PID of the parent process, used for cross platform PPID",default=-2)
 	parser.add_argument("--verbose", "-v", dest="verbose", action="store", metavar="n", type=int, default=0, help="verbose level [0-9], higner number means higher level of verboseness")
 	
@@ -121,8 +122,9 @@ def main():
 				print("Image read error (%s)"%imagefile)
 				continue
 			if options.count : print("%d\t"%(nimg), end=' ')
-			if d["nz"]==1 : print("%s\t %d images in %s format\t%d x %d"%(imagefile,nimg,imgtypename,d["nx"],d["ny"]))
-			else : print("%s\t %d images in %s format\t%d x %d x %d"%(imagefile,nimg,imgtypename,d["nx"],d["ny"],d["nz"]))
+			if options.rawtlt == False:
+				if d["nz"]==1 : print("%s\t %d images in %s format\t%d x %d"%(imagefile,nimg,imgtypename,d["nx"],d["ny"]))
+				else : print("%s\t %d images in %s format\t%d x %d x %d"%(imagefile,nimg,imgtypename,d["nx"],d["ny"],d["nz"]))
 			
 			
 		else :
@@ -134,6 +136,16 @@ def main():
 			d=EMData(imagefile, max(options.number,0), True)
 			if d["nz"]==1 : print("%s\t %d images in BDB format\t%d x %d"%(imagefile,len(dct),d["nx"],d["ny"]))
 			else : print("%s\t %d images in BDB format\t%d x %d x %d"%(imagefile,len(dct),d["nx"],d["ny"],d["nz"]))
+
+		if options.rawtlt:
+			keys=d.get_attr_dict().keys()
+			if 'SerialEM.tiltangles' in keys:
+				for t in d['SerialEM.tiltangles']:
+					print(round(t,2))
+				sys.exit()
+			else:
+				print("Unable to locate tiltangle parameters in file header.")
+				print("======================")
 
 		if options.all or options.check:
 			imgn = xrange(nimg)
@@ -152,6 +164,7 @@ def main():
 			else : 
 				try: d.read_image(imagefile,i,True) #Jesus
 				except: print("Error reading image ",imagefile,i)
+
 			if options.check:
 				try: 
 					ctf=d["ctf"]	
@@ -187,7 +200,6 @@ def main():
 				for k in keys:
 					print("\t%s: %s"%(k,str(d[k])))
 				print("======================")
-			
 	
 	if nimgs>1 : print("%d total images"%nimgs)
 	try : print("representing %d particles"%nptcl)
