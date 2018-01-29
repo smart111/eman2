@@ -489,41 +489,9 @@ int MrcIO::read_mrc_header(Dict & dict, int image_index, const Region * area, bo
 	dict["MRC.minimum"] = mrch.amin;
 	dict["MRC.maximum"] = mrch.amax;
 	dict["MRC.mean"] = mrch.amean;
-//	dict["minimum"] = mrch.amin;
-//	dict["maximum"] = mrch.amax;
-//	dict["mean"] = mrch.amean;
 
 	dict["MRC.ispg"] = mrch.ispg;
 	dict["MRC.nsymbt"] = mrch.nsymbt;
-	
-	// if (mrch.imod_stamp == IMOD_MAGIC_STAMP) {
-		// dict["MRC.ext_type"] = string(mrch.ext_type,4);
-		// dict["MRC.nversion"] = mrch.nversion;
-		// dict["MRC.nint"] = mrch.nint;
-		// dict["MRC.nreal"] = mrch.nreal;
-
-		// dict["MRC.imod_stamp"] = mrch.imod_stamp;
-		// dict["MRC.imod_flags"] = mrch.imod_flags;
-
-		// dict["MRC.idtype"] = mrch.idtype;
-		// dict["MRC.lens"] = mrch.lens;
-		// dict["MRC.nd1"] = mrch.nd1;
-		// dict["MRC.nd2"] = mrch.nd2;
-		// dict["MRC.vd1"] = mrch.vd1;
-		// dict["MRC.vd2"] = mrch.vd2;
-
-		// char tiltangle[32];
-		// for (int i = 0; i < 6; i++) {
-		// 	if (i == 0) sprintf(tiltangle, "MRC.tiltXoriginal");
-		// 	else if (i == 1) sprintf(tiltangle, "MRC.tiltYoriginal");
-		// 	else if (i == 2) sprintf(tiltangle, "MRC.tiltZoriginal");
-		// 	else if (i == 3) sprintf(tiltangle, "MRC.tiltXcurrent");
-		// 	else if (i == 4) sprintf(tiltangle, "MRC.tiltYcurrent");
-		// 	else sprintf(tiltangle, "MRC.tiltZcurrent");
-		// 	dict[string(tiltangle)] = mrch.tiltangles[i];
-		// }
-		
-	// }
 
 	float apx = mrch.xlen / mrch.mx;
 	float apy = mrch.ylen / mrch.my;
@@ -587,27 +555,51 @@ int MrcIO::read_mrc_header(Dict & dict, int image_index, const Region * area, bo
 
 	if (string(mrch.ext_type,4) == "SERI") {
 		
-		/* Read extended image header by specified image index */
-		
-		SerialEMMrcExtHeader serialemexth;
+		if (mrch.nz > 1) {
+			std::vector <float> tiltangles(mrch.nz);
+			std::vector <int> xpieces(mrch.nz);
+			std::vector <int> ypieces(mrch.nz);
+			std::vector <int> zpieces(mrch.nz);
+			std::vector <float> stagexs(mrch.nz);
+			std::vector <float> stageys(mrch.nz);
+			std::vector <float> magnifications(mrch.nz);
+			std::vector <float> intensities(mrch.nz);
+			std::vector <float> exposures(mrch.nz);
+			int s1, s2;
 
-		portable_fseek(mrcfile, sizeof(SerialEMMrcExtHeader)+sizeof(SerialEMMrcExtHeader)*image_index, SEEK_SET);
+			for (int i = 0; i < mrch.nz; i++){
 
-		if (fread(&serialemexth, sizeof(SerialEMMrcExtHeader), 1, mrcfile) != 1) {
-			throw ImageReadException(filename, "SerialEM extended header");
+				SerialEMMrcExtHeader exth;
+
+				portable_fseek(mrcfile, sizeof(MrcHeader)+(sizeof(SerialEMMrcExtHeader)/2)*i, SEEK_SET);
+
+				if (fread(&exth, sizeof(SerialEMMrcExtHeader), 1, mrcfile) != 1) {
+					throw ImageReadException(filename, "SerialEM extended header");
+				}
+
+				tiltangles[i] = exth.tilt_angle / 100.;
+				xpieces[i] = exth.xpiece;
+				ypieces[i] = exth.ypiece;
+				zpieces[i] = exth.zpiece;
+				stagexs[i] = exth.stagex / 25.;
+				stageys[i] = exth.stagey / 25.;
+				magnifications[i] = exth.magnification * 100.;
+				intensities[i] = exth.intensity / 25000.;
+				s1 = (int) exth.s1;
+				s2 = (int) exth.s2;
+				exposures[i] = pow(Util::eman_copysign(1,s1)*(abs(s1)*256.+(abs(s2)%256))*2.,Util::eman_copysign(1,s2)*abs(s2)/256.);
+
+				dict["SerialEM.tiltangles"] = tiltangles;
+				//dict["SerialEM.xpieces"] = xpieces;
+				//dict["SerialEM.ypieces"] = ypieces;
+				//dict["SerialEM.zpieces"] = zpieces;
+				//dict["SerialEM.stagexs"] = stagexs;
+				//dict["SerialEM.stageys"] = stageys;
+				//dict["SerialEM.magnifications"] = magnifications;
+				dict["SerialEM.intensities"] = intensities;
+				dict["SerialEM.exposures"] = exposures;
+			}
 		}
-
-		dict["SerialEM.tilt_angle"] = serialemexth.tilt_angle / 100.;
-		dict["SerialEM.xpiece"] = serialemexth.xpiece;
-		dict["SerialEM.ypiece"] = serialemexth.ypiece;
-		dict["SerialEM.zpiece"] = serialemexth.zpiece;
-		dict["SerialEM.stagex"] = serialemexth.stagex / 25.;
-		dict["SerialEM.stagey"] = serialemexth.stagex / 25.;
-		dict["SerialEM.magnification"] = serialemexth.magnification * 100.;
-		dict["SerialEM.intensity"] = serialemexth.intensity / 25000.;
-		int s1 = (int)serialemexth.s1;
-		int s2 = (int)serialemexth.s2;
-		dict["SerialEM.exposure"] = pow(Util::eman_copysign(1,s1)*(abs(s1)*256.+(abs(s2)%256))*2,Util::eman_copysign(1,s2)*abs(s2)/256.);
 	}
 
 	EMAN1Ctf ctf_;

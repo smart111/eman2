@@ -130,9 +130,9 @@ namespace EMAN
 			int user1[1]; 		// 24-25
 
 			char ext_type[4];	/* 26 - Type of extended header, includes 'SERI' for SerialEM, 'FEI1' for FEI, 'AGAR' for Agard */
-			//int nversion; 		/* 27 - MRC version that file conforms to, otherwise 0 */
 
 			int user2[3]; //27-29
+			//int nversion; 		/* 27 - MRC version that file conforms to, otherwise 0 */
 
 			short numintegers; //30
 			short numfloats; //31
@@ -183,11 +183,8 @@ namespace EMAN
 
 			short magnification;	/* Magnification / 100 (2 bytes) */
 			short intensity;		/* Intensity * 25000  (2 bytes) */
-			short s1;
+			short s1;				/* Numbers used to calculate exposure dose in e-/A2 (4 byte float) */
 			short s2;
-//			float exposure;			/* Exposure dose in e-/A2 (4 byte float) */
-
-			//float remainder2[27];	/* not used */
 		};
 
 
