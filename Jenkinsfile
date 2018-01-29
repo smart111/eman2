@@ -47,7 +47,7 @@ def isCurrentRelease() {
 }
 
 def runCronJob() {
-    sh "bash ${HOME_DIR}/workspace/build-scripts-cron/cronjob.sh $STAGE_NAME $GIT_BRANCH_SHORT"
+    sh 'bash ${HOME_DIR}/workspace/build-scripts-cron/cronjob.sh $STAGE_NAME $GIT_BRANCH_SHORT'
     if(isCurrentRelease())
       sh "rsync -avzh --stats ${INSTALLERS_DIR}/eman2.${STAGE_NAME}.unstable.sh ${DEPLOY_DEST}"
 }
