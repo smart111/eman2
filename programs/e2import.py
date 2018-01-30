@@ -392,31 +392,31 @@ with the same name, you should specify only the .hed files (no renaming is neces
 			if options.importation == "link":
 				os.symlink(filename,os.path.join(tomosdir,os.path.basename(filename)))
 
+	# Import metadata
+	if options.import_mdoc:
+		mdoc = read_mdoc(options.import_mdoc)
+		
+		# check and correct project parameters from MDOC file contents
+		d = js_open_dict("info/project.json")
+		try: d.setval("global.apix",mdoc["PixelSpacing"],deferupdate=True)
+		except: pass
+		try: d.setval("global.microscope_voltage",mdoc["Voltage"],deferupdate=True)
+		except: pass
+		d.close()
+
+		raw = [t for t in os.listdir("rawtilts")]
+		raw.sort()
+		for j,tlt in enumerate(raw):
+			for z in range(mdoc["zval"]+1):
+				if mdoc[z]["SubFramePath"] in base_name(tlt):
+					d = js_open_dict(info_name(tlt))
+					for k in mdoc[z].keys():
+						d.setval(k,mdoc[z][k],deferupdate=True)
+					d.close()
+					break
+
 	# Import tilt series
 	if options.serialem:
-		if options.import_mdoc:
-			mdoc = read_mdoc(options.import_mdoc)
-
-			# check and correct project parameters from MDOC file contents
-			d = js_open_dict("info/project.json")
-			try: d.setval("global.apix",mdoc["PixelSpacing"],deferupdate=True)
-			except: pass
-			try: d.setval("global.microscope_voltage",mdoc["Voltage"],deferupdate=True)
-			except: pass
-			d.close()
-
-			raw = [t for t in os.listdir("rawtilts")]
-			raw.sort()
-			for j,tlt in enumerate(raw):
-				for z in range(mdoc["zval"]+1):
-					#print(j, info_name(tlt),mdoc[z]["SubFramePath"] )
-					if mdoc[z]["SubFramePath"] in base_name(tlt):
-						# write corresponding metadata to image info files
-						d = js_open_dict(info_name(tlt))
-						for k in mdoc[z].keys():
-							d.setval(k,mdoc[z][k],deferupdate=True)
-						d.close()
-						break
 
 		tomosdir = os.path.join(".","orig")
 		if not os.access(tomosdir, os.R_OK):
