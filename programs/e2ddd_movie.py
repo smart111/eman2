@@ -644,7 +644,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 
 		# write translations and qualities
 		db=js_open_dict(info_name(fsp))
-		db["movieali_trans"]=locs
+		db["movieali_trans"]=[i for i in locs]
 		db["movieali_qual"]=quals
 		db["runtime"]=runtime
 		db["precision"]=options.round
