@@ -5,6 +5,7 @@
 set -e
 
 # Gather programs from CONDA_PREFIX
+env
 progs=$(find "${CONDA_PREFIX}"/bin -name 'e2*.py' | xargs -n 1 basename)
 # Remove programs listed in "programs_no_test.txt"
 MYDIR="$(cd "$(dirname "$0")"; pwd -P)"
