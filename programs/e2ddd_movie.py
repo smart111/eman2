@@ -71,11 +71,11 @@ def main():
 
 	#parser.add_header(name="orblock2", help='Just a visual separation', title="- CHOOSE FROM -", row=3, col=0, rowspan=1, colspan=3, mode="align,tomo")
 
-	parser.add_argument("--dark",type=str,default="",help="Perform dark image correction using the specified image file",guitype='filebox',browser="EMMovieDataTable(withmodal=True,multiselect=False)", row=4, col=0, rowspan=1, colspan=3, mode="align,tomo")
+	parser.add_argument("--dark",type=str,default="",help="Perform dark image correction using the specified image file",guitype='filebox',browser="EMDarkGainTable(withmodal=True,multiselect=True)", row=4, col=0, rowspan=1, colspan=3, mode="align,tomo")
 	parser.add_argument("--rotate_dark",  default = "0", type=str, choices=["0","90","180","270"], help="Rotate dark reference by 0, 90, 180, or 270 degrees. Default is 0. Transformation order is rotate then reverse.",guitype='combobox', choicelist='["0","90","180","270"]', row=5, col=0, rowspan=1, colspan=1, mode="align,tomo")
 	parser.add_argument("--reverse_dark", default=False, help="Flip dark reference along y axis. Default is False. Transformation order is rotate then reverse.",action="store_true",guitype='boolbox', row=5, col=1, rowspan=1, colspan=1, mode="align,tomo")
 
-	parser.add_argument("--gain",type=str,default="",help="Perform gain image correction using the specified image file",guitype='filebox',browser="EMMovieDataTable(withmodal=True,multiselect=False)", row=6, col=0, rowspan=1, colspan=3, mode="align,tomo")
+	parser.add_argument("--gain",type=str,default="",help="Perform gain image correction using the specified image file",guitype='filebox',browser="EMDarkGainTable(withmodal=True,multiselect=True)", row=6, col=0, rowspan=1, colspan=3, mode="align,tomo")
 	parser.add_argument("--k2", default=False, help="Perform gain image correction on gain images from a Gatan K2. Note, these are the reciprocal of typical DDD gain images.",action="store_true",guitype='boolbox', row=7, col=0, rowspan=1, colspan=1, mode="align,tomo")
 	parser.add_argument("--rotate_gain", default = 0, type=str, choices=["0","90","180","270"], help="Rotate gain reference by 0, 90, 180, or 270 degrees. Default is 0. Transformation order is rotate then reverse.",guitype='combobox', choicelist='["0","90","180","270"]', row=7, col=1, rowspan=1, colspan=1, mode="align,tomo")
 	parser.add_argument("--reverse_gain", default=False, help="Flip gain reference along y axis (about x axis). Default is False. Transformation order is rotate then reverse.",action="store_true",guitype='boolbox', row=7, col=2, rowspan=1, colspan=1, mode="align,tomo")
@@ -110,8 +110,7 @@ def main():
 
 	parser.add_argument("--round", choices=["float","int"],help="If float (default), apply subpixel frame shifts. If integer, use integer shifts.",default="float",guitype='combobox', choicelist='["float","integer"]', row=18, col=2, rowspan=1, colspan=1, mode="align,tomo")
 	parser.add_argument("--threads", default=4,type=int,help="Number of threads to run in parallel on a single computer when multi-computer parallelism isn't useful", guitype='intbox', row=20, col=0, rowspan=1, colspan=2, mode="align,tomo")
-	parser.add_argument("--tomo", default=False, help="Use this flag when processing tomograms to treat input movies as individual tilts",action="store_true",guitype='boolbox', row=20, col=2, rowspan=1, colspan=1,mode='tomo[True]')
-
+	parser.add_argument("--tomo", default=False, help="Use this flag when processing tomograms to handle input movies as parts of a tilt series.",action="store_true",guitype='boolbox', row=20, col=2, rowspan=1, colspan=1,mode='tomo[True]')
 
 	parser.add_argument("--bad_columns", type=str, help="Comma separated list of camera defect columns",default="", guitype='strbox', row=21, col=0, rowspan=1, colspan=3, mode="align,tomo")
 	parser.add_argument("--bad_rows", type=str, help="Comma separated list of camera defect rows",default="", guitype='strbox', row=22, col=0, rowspan=1, colspan=3, mode="align,tomo")
@@ -155,12 +154,20 @@ def main():
 			print("Error: --bad_rows contains nonnumeric input.")
 			sys.exit(1)
 
-	# try: os.mkdir("micrographs")
-	# except: pass
+	moviesdir = os.path.join(".","movies")
+	if not os.access(moviesdir, os.R_OK):
+		print("Error: Could not locate movie data. Please import movie stacks using e2import.py.")
+		sys.exit(1)
+	else:
+		for f in os.listdir(moviesdir):
+			if not os.path.isfile(info_name(f,nodir=True)):
+				db=js_open_dict(info_name(f,nodir=True)) # ensure that corresponding json metadata files are present
+				db.close()
 
-	if options.tomo:
-		try: os.mkdir("rawtilts")
-		except: pass
+	if options.tomo: aliavgdir = os.path.join(".","rawtilts")
+	else: aliavgdir = os.path.join(".","micrographs")
+	if not os.access(aliavgdir, os.R_OK):
+		os.mkdir(aliavgdir)
 
 	pid=E2init(sys.argv)
 
@@ -283,39 +290,21 @@ def main():
 
 	if options.reverse_dark: dark.process_inplace("xform.reverse",{"axis":"y"})
 
-	if gain or dark:
-		if options.debug:
-			try: os.mkdir("movies")
-			except: pass
-
 	if gain:
-		gainname="movies/e2ddd_gainref.hdf"
+		gainname="{}/e2ddd_gainref.hdf".format(moviesdir)
 		gain.write_image(gainname,-1)
 		gainid=EMUtil.get_image_count(gainname)-1
 		gain["filename"]=gainname
 		gain["fileid"]=gainid
-		gain["source"]=options.gain
+		gain["raw"]=options.gain
 
 	if dark:
-		darkname="movies/e2ddd_darkref.hdf"
+		darkname="{}/e2ddd_darkref.hdf".format(moviesdir)
 		dark.write_image(darkname,-1)
 		darkid=EMUtil.get_image_count(darkname)-1
 		dark["filename"]=darkname
 		dark["fileid"]=darkid
-		dark["source"] = options.dark
-
-	# write movie and preprocessing info
-	db=js_open_dict(info_name(fsp))
-	db["movie_name"]=fsp
-	if gain:
-		db["gain_name"]=gain["filename"]
-		db["gain_id"]=gain["fileid"]
-		db["gain_source"]=gain["source"]
-	if dark:
-		db["dark_name"]=dark["filename"]
-		db["dark_id"]=dark["fileid"]
-		db["dark_source"]=dark["source"]
-	db.close()
+		dark["raw"] = options.dark
 
 	step = options.step.split(",")
 
@@ -330,6 +319,41 @@ def main():
 	# the user may provide multiple movies to process at once
 	for fsp in args:
 		print("Processing {}".format(base_name(fsp)))
+
+		# write movie and preprocessing info
+		db=js_open_dict(info_name(fsp))
+		#db["movie_name"]=fsp
+		if gain:
+			db["gain_name"]=gainname
+			db["gain_id"]=gainid
+			db["gain_raw"]=options.gain
+			if options.rotate_gain:
+				db["rotate_gain"] = options.rotate_gain
+			if options.reverse_gain:
+				db["reverse_gain"] = options.reverse_gain
+			if options.invert_gain:
+				db["invert_gain"] = options.invert_gain
+			if options.gain_darkcorrected:
+				db["gain_darkcorrected"] = options.gain_darkcorrected
+		if dark:
+			db["dark_name"]=darkname
+			db["dark_id"]=darkid
+			db["dark_raw"]=options.dark
+			if options.rotate_dark:
+				db["rotate_dark"]=options.rotate_dark
+			if options.reverse_dark:
+				db["reverse_dark"]=options.reverse_dark
+		if options.de64:
+			db["de64"] = options.de64
+		if options.k2:
+			db["k2"] = options.k2
+		if options.bad_rows:
+			db["bad_rows"] = options.bad_rows
+		if options.bad_columns:
+			db["bad_columns"] = options.bad_columns
+		if options.fixbadpixels:
+			db["fixbadpixels"] = options.fixbadpixels
+		db.close()
 
 		n = EMUtil.get_image_count(fsp)
 
@@ -622,15 +646,6 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 		db=js_open_dict(info_name(fsp))
 		db["movieali_trans"]=locs
 		db["movieali_qual"]=quals
-		# db["movie_name"]=fsp
-		# if gain:
-		# 	db["gain_name"]=gain["filename"]
-		# 	db["gain_id"]=gain["fileid"]
-		# 	db["gain_source"]=gain["source"]
-		# if dark:
-		# 	db["dark_name"]=dark["filename"]
-		# 	db["dark_id"]=dark["fileid"]
-		# 	db["dark_source"]=dark["source"]
 		db["runtime"]=runtime
 		db["precision"]=options.round
 		db["optbox"]=options.optbox
