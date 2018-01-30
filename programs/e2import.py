@@ -54,9 +54,10 @@ def main():
 
 	parser = EMArgumentParser(usage=usage,version=EMANVERSION)
 
-	parser.add_pos_argument(name="import_files",help="List the files to import here.", default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=True)",  row=0, col=0, rowspan=1, colspan=2, nosharedb=True, mode='coords,parts,tomos,eman1,tilts')
+	parser.add_pos_argument(name="import_files",help="List the files to import here.", default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=True)",  row=0, col=0, rowspan=1, colspan=2, nosharedb=True, mode='coords,parts,tomos,eman1')
+	parser.add_pos_argument(name="import_tiltseries",help="Specify a raw tilt series to be imported.", default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=True)",  row=0, col=0, rowspan=1, colspan=3, nosharedb=True, mode='tilts')
 
-	parser.add_header(name="filterheader", help='Options below this label are specific to e2import', title="### e2import options ###", row=2, col=0, rowspan=1, colspan=2, mode='coords,parts,tomos,tilts')
+	parser.add_header(name="filterheader", help='Options below this label are specific to e2import', title="### e2import options ###", row=2, col=0, rowspan=1, colspan=2, mode='coords,parts,tomos')
 
 	# SPR Data
 	parser.add_argument("--import_particles",action="store_true",help="Import particles",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='parts[True]')
@@ -64,9 +65,13 @@ def main():
 
 	# Tomo Data
 	parser.add_argument("--import_tomos",action="store_true",help="Import tomograms for segmentation and/or subtomogram averaging",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='tomos[True]')
-	parser.add_argument("--import_tiltseries",action="store_true",help="Import .st tiltseries files.",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='tilts[True]')
 
-	parser.add_argument("--shrink",type=int,help="Shrink tomograms before importing. Dose not work while not copying.",default=1, guitype='intbox', row=4, col=0, rowspan=1, colspan=1, mode='tomos,tilts')
+	# Tiltseries
+	parser.add_argument("--import_mdoc",type=str,help="Import metadata from a corresponding DE '.mdoc' file. This will ensure the correct tilt series order when reconstructing a motion corrected, bidrectional tilt series.",default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=True)", row=1, col=0, rowspan=1, colspan=3, mode='tilts')
+
+	parser.add_argument("--serialem",action="store_true",help="Import a .st/.mrc tiltseries file.",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='tilts[True]')
+
+	parser.add_argument("--shrink",type=int,help="Shrink tomograms before importing. Dose not work while not copying.",default=1, guitype='intbox', row=4, col=0, rowspan=1, colspan=1, mode='tomos')
 	parser.add_argument("--invert",action="store_true",help="Invert the contrast before importing tomograms",default=False, guitype='boolbox', row=4, col=1, rowspan=1, colspan=1, mode='tomos,tilts')
 	parser.add_argument("--tomoseg_auto",action="store_true",help="Default process for tomogram segmentation, including lowpass, highpass, normalize, clampminmax.",default=True, guitype='boolbox', row=4, col=2, rowspan=1, colspan=1, mode='tomos,tilts')
 	parser.add_argument("--importation",help="Specify mode move, copy or link, for importing tomograms only",default='copy',guitype='combobox',choicelist='["move","copy","link"]',row=3,col=1,rowspan=1,colspan=1, mode='tomos,tilts')
@@ -308,12 +313,12 @@ with the same name, you should specify only the .hed files (no renaming is neces
 				os.rename(filename,os.path.join(tomosdir,os.path.basename(filename)))
 			if options.importation == "copy":
 				### use hdf file as output
-				
+
 				if options.shrink>1:
 					shrinkstr="_bin{:d}".format(options.shrink)
 				else:
 					shrinkstr=""
-					
+
 				tpos=filename.rfind('.')
 				if tpos>0:
 					newname=os.path.join(tomosdir,os.path.basename(filename[:tpos]+shrinkstr+'.hdf'))
@@ -334,21 +339,43 @@ with the same name, you should specify only the .hed files (no renaming is neces
 				os.symlink(filename,os.path.join(tomosdir,os.path.basename(filename)))
 
 	# Import tilt series
-	if options.import_tiltseries: 	# TILT ANGLES CONTAINED IN ST FILE HEADER...SHOULD PARSE HERE
-		tomosdir = os.path.join(".","orig_tiltseries")
+	if options.serialem:
+		if options.import_mdoc:
+			mdoc = read_mdoc(options.import_mdoc)
+
+			# check and correct project parameters from MDOC file contents
+			d = js_open_dict("info/project.json")
+			try: d.setval("global.apix",mdoc["PixelSpacing"],deferupdate=True)
+			except: pass
+			try: d.setval("global.microscope_voltage",mdoc["Voltage"],deferupdate=True)
+			except: pass
+			d.close()
+
+			raw = [t for t in os.listdir("rawtilts")]
+			raw.sort()
+			for j,tlt in enumerate(raw):
+				for z in range(mdoc["zval"]+1):
+					#print(j, info_name(tlt),mdoc[z]["SubFramePath"] )
+					if mdoc[z]["SubFramePath"] in base_name(tlt):
+						# write corresponding metadata to image info files
+						d = js_open_dict(info_name(tlt))
+						for k in mdoc[z].keys():
+							d.setval(k,mdoc[z][k],deferupdate=True)
+						d.close()
+						break
+
+		tomosdir = os.path.join(".","orig")
 		if not os.access(tomosdir, os.R_OK):
-			os.mkdir("orig_tiltseries")
+			os.mkdir("orig")
 		for filename in args:
 			if options.importation == "move":
 				os.rename(filename,os.path.join(tomosdir,os.path.basename(filename)))
 			if options.importation == "copy":
 				### use hdf file as output
-				
 				if options.shrink>1:
 					shrinkstr="_bin{:d}".format(options.shrink)
 				else:
 					shrinkstr=""
-					
 				tpos=filename.rfind('.')
 				if tpos>0:
 					newname=os.path.join(tomosdir,os.path.basename(filename[:tpos]+shrinkstr+'.hdf'))
@@ -370,6 +397,67 @@ with the same name, you should specify only the .hed files (no renaming is neces
 
 
 	E2end(logid)
+
+def read_mdoc(mdoc):
+	movie = {}
+	frames = {}
+	zval = -1
+	frames[zval] = {}
+	frames["Misc"] = []
+	frames["Labels"] = []
+	with open(mdoc) as mdocf:
+		for l in mdocf.readlines():
+			p = l.strip()
+			if "ZValue" in p:
+				zval+=1
+				frames[zval] = {}
+			elif p != "":
+				x,y = p.split("=")[:2]
+				x = x.strip()
+				if x == "TiltAngle": frames[zval]["TiltAngle"]=y
+				elif x == "Magnification": frames[zval]["Magnification"] = y
+				elif x == "Intensity": frames[zval]["Intensity"]=y
+				elif x == "SpotSize": frames[zval]["SpotSize"]=y
+				elif x == "Defocus": frames[zval]["Defocus"]=y
+				elif x == "ExposureTime": frames[zval]["ExposureTime"]=y
+				elif x == "Binning": frames[zval]["Binning"]=y
+				elif x == "ExposureDose": frames[zval]["ExposureDose"]=y
+				elif x == "RotationAngle": frames[zval]["RotationAngle"]=y
+				elif x == "StageZ": frames[zval]["StageZ"]=y
+				elif x == "CameraIndex": frames[zval]["CameraIndex"]=y
+				elif x == "DividedBy2": frames[zval]["DividedBy2"]=y
+				elif x == "MagIndex": frames[zval]["MagIndex"]=y
+				elif x == "TargetDefocus": frames[zval]["TargetDefocus"]=y
+				elif x == "NumSubFrames": frames[zval]["NumSubFrames"]=y
+				elif x == "ImageShift": frames[zval]["ImageShift"]=y
+				elif x == "StagePosition": frames[zval]["StagePosition"]=y
+				elif x == "MinMaxMean": frames[zval]["MinMaxMean"]=y
+				elif x == "SubFramePath":
+					sfp = base_name(y).split("-")[-1]
+					frames[zval]["SubFramePath"]=sfp
+				elif x == "DateTime": frames[zval]["DateTime"]=y
+				elif x == "PixelSpacing": frames["PixelSpacing"] = float(y)
+				elif x == "Voltage": frames["Voltage"] = float(y)
+				elif x == "ImageFile": frames["ImageFile"] = str(y)
+				elif x == "ImageSize": frames["ImageSize"] = y.split()
+				elif x == "DataMode": frames["DataMode"] = y
+				elif x == "PriorRecordDose": frames["PriorRecordDose"] = y
+				elif x == "FrameDosesAndNumber": frames["FrameDosesAndNumber"] = y
+				elif x == "[T": frames["Labels"].append(y.replace("]",""))
+				elif "PreexposureTime" in x: frames[zval]["PreexposureTime(s)"] = y
+				elif "TotalNumberOfFrames" in x: frames[zval]["TotalNumberOfFrames"] = y
+				elif "FramesPerSecond" in x: frames[zval]["FramesPerSecond"] = y
+				elif "ProtectionCoverMode" in x: frames[zval]["ProtectionCoverMode"] = y
+				elif "ProtectionCoverOpenDelay" in x: frames[zval]["ProtectionCoverOpenDelay(ms)"] = y
+				elif "TemperatureDetector" in x: frames[zval]["TemperatureDetector(C)"] = y
+				elif "FaradayPlatePeakReading" in x: frames[zval]["FaradayPlatePeakReading(pA/cm2)"] = y
+				elif "SensorModuleSerialNumber" in x: frames[zval]["SensorModuleSerialNumber"] = y
+				elif "ServerSoftwareVersion" in x: frames[zval]["ServerSoftwareVersion"] = y
+				elif "SensorReadoutDelay" in x: frames[zval]["SensorReadoutDelay(ms)"] = y
+				else: frames["Misc"].append(y) # catches any missed parameters
+
+	frames["zval"] = zval
+	return frames
 
 def run(command):
 	"Mostly here for debugging, allows you to control how commands are executed (os.system is normal)"

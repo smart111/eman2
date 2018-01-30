@@ -1,13 +1,12 @@
 /* JSON file to configure the project manager SPR mode */
 /* The ICON string needs to correspond to a dict key listed in the PM */
-/* The available keys can be found by browsing the JSON files of looking at e2 projectmanager.py */ 
+/* The available keys can be found by browsing the JSON files of looking at e2 projectmanager.py */
 
 [
 
   {
       "ICON": "multiple_images",
-      "TABLE": "EMRawDataTable(withmodal=False,multiselect=True)",
-      "NAME": "Raw Data",
+      "NAME": "Raw Datas",
       "CHILDREN": [
          {
             "ICON": "multiple_images",
@@ -18,7 +17,7 @@
           },
           {
             "ICON": "multiple_images",
-            "PROGRAM": "e2buildstacks.py", 
+            "PROGRAM": "e2buildstacks.py",
             "MODE": "tomo",
             "NAME": "Combine Aligned Tilts",
             "CHILDREN": []
@@ -26,45 +25,43 @@
           {
             "ICON": "multiple_images",
             "WIZARD":"/lib/pmconfig/tomoimport.json",
-            "PROGRAM": "e2import.py", 
-            "MODE": "tilts", 
-            "NAME": "Import Tilt Series",
-            "CHILDREN": []
-          },
-          {
-            "ICON": "resolution",
-            "PROGRAM": "e2tlt.py", 
-            "MODE": "",
-            "NAME": "Extract Tilt Angles",
+            "PROGRAM": "e2import.py",
+            "MODE": "tilts",
+            "NAME": "Import Tilts Series",
             "CHILDREN": []
           },
           {
             "ICON": "green_boxes",
-            "PROGRAM": "e2import.py", 
-            "MODE": "tomos",
-            "NAME": "Import 3D Tomograms",
-            "CHILDREN": []
-          },
-          {
-            "ICON": "green_boxes",
-            "PROGRAM": "e2import.py", 
-            "MODE": "tomos",
-            "NAME": "Import Subtomogram Boxes",
-            "CHILDREN": []
+            "NAME": "Import Tools",
+            "CHILDREN": [
+              {
+                "ICON": "green_boxes",
+                "PROGRAM": "e2import.py",
+                "MODE": "tomos",
+                "NAME": "Import 3D Tomograms",
+                "CHILDREN": []
+              },
+              {
+                "ICON": "green_boxes",
+                "PROGRAM": "e2import.py",
+                "MODE": "tomos",
+                "NAME": "Import Subtomogram Boxes",
+                "CHILDREN": []
+              }
+            ]
           }
-      ]
+        ]
   },
   {
       "ICON": "multiple_images",
-      "TABLE": "EMRawDataTable(withmodal=False,multiselect=True)",
       "NAME": "3D Reconstruction",
       "CHILDREN": [
           {
             "ICON": "multiple_images",
-            "PROGRAM": "e2tomogram.py", 
-            "MODE": "recon", 
+            "PROGRAM": "e2tomogram.py",
+            "MODE": "recon",
             "NAME": "3D Reconstruction",
-            "CHILDREN": [] 
+            "CHILDREN": []
           },
           {
             "ICON": "single_image",
@@ -88,66 +85,64 @@
   },
   {
       "ICON": "single_image",
-      "TABLE": "EMRawDataTable(withmodal=False,multiselect=True)",
       "NAME": "Segmentation",
       "CHILDREN": [
           {
             "ICON": "green_boxes",
-            "PROGRAM": "e2tomoseg_buildtrainset.py", 
-            "MODE": "box", 
+            "PROGRAM": "e2tomoseg_buildtrainset.py",
+            "MODE": "box",
             "NAME": "Box training references",
-            "CHILDREN": [] 
+            "CHILDREN": []
           },
           {
             "ICON": "single_image_3d",
-            "PROGRAM": "e2tomoseg_buildtrainset.py", 
-            "MODE": "seg", 
+            "PROGRAM": "e2tomoseg_buildtrainset.py",
+            "MODE": "seg",
             "NAME": "Segment training references",
-            "CHILDREN": [] 
+            "CHILDREN": []
           },
           {
             "ICON": "green_boxes",
-            "PROGRAM": "e2tomoseg_buildtrainset.py", 
-            "MODE": "set", 
+            "PROGRAM": "e2tomoseg_buildtrainset.py",
+            "MODE": "set",
             "NAME": "Build training set",
-            "CHILDREN": [] 
+            "CHILDREN": []
           },
           {
             "ICON": "web",
-            "PROGRAM": "e2tomoseg_convnet.py", 
-            "MODE": "train", 
+            "PROGRAM": "e2tomoseg_convnet.py",
+            "MODE": "train",
             "NAME": "Train the neural network",
-            "CHILDREN": [] 
+            "CHILDREN": []
           },
           {
             "ICON": "web",
-            "PROGRAM": "e2tomoseg_convnet.py", 
-            "MODE": "test", 
+            "PROGRAM": "e2tomoseg_convnet.py",
+            "MODE": "test",
             "NAME": "Apply the neural network",
-            "CHILDREN": [] 
+            "CHILDREN": []
           }
       ]
   },
   {
       "ICON": "green_boxes",
-      "TABLE": "EMRawDataTable(withmodal=False,multiselect=True)",
       "NAME": "Subtomogram Averaging",
       "CHILDREN": [
           {
             "ICON": "tomo_hunter",
             "PROGRAM": "e2spt_boxer.py",
-            "MODE": "tomo", 
-            "NAME": "Box Subtomograms", 
+            "MODE": "tomo",
+            "NAME": "Box Subtomograms",
             "NOTELEVEL": "1",
-            "CHILDREN": [] 
+            "CHILDREN": []
           },
           {
             "ICON": "tomo_hunter",
             "PROGRAM": "",
-            "MODE": "alignment", 
-            "NAME": "Alignment and Averaging", 
+            "MODE": "alignment",
+            "NAME": "Alignment and Averaging",
             "NOTELEVEL": "1",
-            "CHILDREN": [] 
+            "CHILDREN": []
           },
           {
             "ICON": "tomo_hunter",
@@ -155,21 +150,21 @@
             "PROGRAM": "",
             "NAME": "Align to Symmetry Axis",
             "NOTELEVEL": "1",
-            "CHILDREN": [] 
+            "CHILDREN": []
           },
           {
             "ICON": "tomo_hunter",
             "PROGRAM": "",
-            "NAME": "Alignment with Symmetry", 
+            "NAME": "Alignment with Symmetry",
             "NOTELEVEL": "1",
-            "CHILDREN": [] 
+            "CHILDREN": []
           },
           {
             "ICON": "resolution",
             "PROGRAM": "",
             "NAME": "Measure Resolution via FSC",
             "NOTELEVEL": "1",
-            "CHILDREN": [] 
+            "CHILDREN": []
           }
       ]
   }

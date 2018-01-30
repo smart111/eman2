@@ -63,7 +63,9 @@ def main():
 	"""
 	
 	parser = EMArgumentParser(usage=usage,version=EMANVERSION)
-	
+
+	parser.add_pos_argument(name="tiltseries",help="Extract metadata/header information from these image files.", default="", guitype='filebox', browser="EMBrowserWidget(withmodal=True,multiselect=True)",row=0, col=0,rowspan=1, colspan=3, mode="rawtlt")
+
 	parser.add_argument("-H", "--header", action="store_true",help="Show all header information",default=False)
 	parser.add_argument("-N", "--number", type=int, help="Image number for single image info",default=-1)
 	parser.add_argument("-Q", "--quality", type=int, help="Include only images with a single quality value (integer 0-9)",default=-1)
@@ -75,7 +77,9 @@ def main():
 	parser.add_argument("-a", "--all", action="store_true",help="Show info for all images in file",default=False)
 	parser.add_argument("-C", "--check", action="store_true",help="Checks to make sure all image numbers are populated with images, and that all images have valid CTF parameters",default=False)
 	parser.add_argument("-c", "--count", action="store_true",help="Just show a count of the number of particles in each file",default=False)
-	parser.add_argument("-T", "--rawtlt", action="store_true",help="Print tilt angles from a SerialEM tilt series stack",default=False)
+	parser.add_argument("-t", "--tilts", action="store_true",help="Print tilt angles from a SerialEM tilt series. Output can be used to generate .tlt files for other programs and packages.")
+	parser.add_argument("--rawtlt", action="store_true",help="Write raw tilt file (.tlt).",default=False,guitype="boolbox",row=1, col=0,rowspan=1, colspan=1,mode="rawtlt[True]")
+
 	parser.add_argument("--ppid", type=int, help="Set the PID of the parent process, used for cross platform PPID",default=-2)
 	parser.add_argument("--verbose", "-v", dest="verbose", action="store", metavar="n", type=int, default=0, help="verbose level [0-9], higner number means higher level of verboseness")
 	
@@ -126,7 +130,6 @@ def main():
 				if d["nz"]==1 : print("%s\t %d images in %s format\t%d x %d"%(imagefile,nimg,imgtypename,d["nx"],d["ny"]))
 				else : print("%s\t %d images in %s format\t%d x %d x %d"%(imagefile,nimg,imgtypename,d["nx"],d["ny"],d["nz"]))
 			
-			
 		else :
 			dct=db_open_dict(imagefile,ro=True)
 			d=dct.get_header(0)
@@ -137,14 +140,23 @@ def main():
 			if d["nz"]==1 : print("%s\t %d images in BDB format\t%d x %d"%(imagefile,len(dct),d["nx"],d["ny"]))
 			else : print("%s\t %d images in BDB format\t%d x %d x %d"%(imagefile,len(dct),d["nx"],d["ny"],d["nz"]))
 
-		if options.rawtlt:
+		if options.tilts or options.rawtlt:
 			keys=d.get_attr_dict().keys()
 			if 'SerialEM.tiltangles' in keys:
-				for t in d['SerialEM.tiltangles']:
-					print(round(t,2))
-				sys.exit()
+				if options.rawtlt:
+					bn = base_name(imagefile).rsplit("-")
+					print(bn)
+					with open("{}/{}.tlt".format(bn[0],bn[1]),"w+") as tltf:
+						for t in d['SerialEM.tiltangles']:
+							tltf.write("{}\n".format(round(t,2)))
+					sys.exit(1)
+				else:
+					print("")
+					for t in d['SerialEM.tiltangles']:
+						print(round(t,2))
+					print("")
 			else:
-				print("Unable to locate tiltangle parameters in file header.")
+				print("Unable to locate tiltangles in file header.")
 				print("======================")
 
 		if options.all or options.check:

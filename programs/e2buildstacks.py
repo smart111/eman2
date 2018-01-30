@@ -73,30 +73,48 @@ def main():
 			print("ERROR: Unable to remove ",options.output,". Cannot proceed")
 			sys.exit(1)
 	
-	if options.tomo: options.output = "tiltseries/{}".format(options.output)
-	print(options.output)
+	if options.tomo:
 
-	# if output is LSX format, we handle it differently, with a specific object for these files
-	if options.output[-4:].lower()==".lst" :
-		outfile=LSXFile(options.output)
-	else: outfile=None
-	
-	n=0		# number of images in output file
-	for infile in args:
-		nimg = EMUtil.get_image_count(infile)		# number of images in each input file as it is processed
-		
-		if options.verbose : 
-			if nimg==1 : print(infile)
-			else : print(infile,nimg)
-
-		for i in xrange(nimg):
-			if outfile!=None:
-				outfile.write(n,i,infile)
-			else:
-				img=EMData(infile,i)
-				img.write_image(options.output,n)
-			n+=1
+		options.output = "tiltseries/{}".format(options.output)
+		n=0		# number of images in output file
+		for infile in args:
+			nimg = EMUtil.get_image_count(infile)		# number of images in each input file as it is processed
 			
+			if options.verbose : 
+				if nimg==1 : print(infile)
+				else : print(infile,nimg)
+
+			for i in xrange(nimg):
+				if outfile!=None:
+					outfile.write(n,i,infile)
+				else:
+					img=EMData(infile,i)
+					img.write_image(options.output,n)
+				n+=1
+
+	else:
+
+		# if output is LSX format, we handle it differently, with a specific object for these files
+		if options.output[-4:].lower()==".lst" :
+			outfile=LSXFile(options.output)
+		else: outfile=None
+
+		n=0		# number of images in output file
+		for infile in args:
+			nimg = EMUtil.get_image_count(infile)		# number of images in each input file as it is processed
+			
+			if options.verbose : 
+				if nimg==1 : print(infile)
+				else : print(infile,nimg)
+
+			for i in xrange(nimg):
+				if outfile!=None:
+					outfile.write(n,i,infile)
+				else:
+					img=EMData(infile,i)
+					img.write_image(options.output,n)
+				n+=1
+				
 	if options.verbose : print(n," total images written to ",options.output)
 			
 			

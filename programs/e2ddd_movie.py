@@ -87,7 +87,6 @@ def main():
 
 	parser.add_header(name="orblock4", help='Just a visual separation', title="Output: ", row=10, col=0, rowspan=2, colspan=1, mode="align,tomo")
 
-
 	parser.add_argument("--align_frames", action="store_true",help="Perform whole-frame alignment of the input stacks",default=False, guitype='boolbox', row=11, col=1, rowspan=1, colspan=1, mode='align[True],tomo[False]')
 
 	parser.add_argument("--allali", default=False, help="Average of all aligned frames.",action="store_true", guitype='boolbox', row=12, col=0, rowspan=1, colspan=1, mode='align[True],tomo[True]')
@@ -285,8 +284,9 @@ def main():
 	if options.reverse_dark: dark.process_inplace("xform.reverse",{"axis":"y"})
 
 	if gain or dark:
-		try: os.mkdir("movies")
-		except: pass
+		if options.debug:
+			try: os.mkdir("movies")
+			except: pass
 
 	if gain:
 		gainname="movies/e2ddd_gainref.hdf"
@@ -294,6 +294,7 @@ def main():
 		gainid=EMUtil.get_image_count(gainname)-1
 		gain["filename"]=gainname
 		gain["fileid"]=gainid
+		gain["source"]=options.gain
 
 	if dark:
 		darkname="movies/e2ddd_darkref.hdf"
@@ -301,6 +302,20 @@ def main():
 		darkid=EMUtil.get_image_count(darkname)-1
 		dark["filename"]=darkname
 		dark["fileid"]=darkid
+		dark["source"] = options.dark
+
+	# write movie and preprocessing info
+	db=js_open_dict(info_name(fsp))
+	db["movie_name"]=fsp
+	if gain:
+		db["gain_name"]=gain["filename"]
+		db["gain_id"]=gain["fileid"]
+		db["gain_source"]=gain["source"]
+	if dark:
+		db["dark_name"]=dark["filename"]
+		db["dark_id"]=dark["fileid"]
+		db["dark_source"]=dark["source"]
+	db.close()
 
 	step = options.step.split(",")
 
@@ -607,13 +622,15 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 		db=js_open_dict(info_name(fsp))
 		db["movieali_trans"]=locs
 		db["movieali_qual"]=quals
-		db["movie_name"]=fsp
-		if gain:
-			db["gain_name"]=gain["filename"]
-			db["gain_id"]=gain["fileid"]
-		if dark:
-			db["dark_name"]=dark["filename"]
-			db["dark_id"]=dark["fileid"]
+		# db["movie_name"]=fsp
+		# if gain:
+		# 	db["gain_name"]=gain["filename"]
+		# 	db["gain_id"]=gain["fileid"]
+		# 	db["gain_source"]=gain["source"]
+		# if dark:
+		# 	db["dark_name"]=dark["filename"]
+		# 	db["dark_id"]=dark["fileid"]
+		# 	db["dark_source"]=dark["source"]
 		db["runtime"]=runtime
 		db["precision"]=options.round
 		db["optbox"]=options.optbox
