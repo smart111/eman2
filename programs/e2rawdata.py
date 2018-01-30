@@ -51,11 +51,11 @@ def main():
 
 	parser.add_header(name="filterheader", help='Options below this label are specific to filtering', title="### filtering options ###", row=1, col=0, rowspan=1, colspan=2, mode='import,filter,movies')
 
-	parser.add_argument("--invert",action="store_true",help="Invert contrast",default=False, guitype='boolbox', row=2, col=0, rowspan=1, colspan=1, mode='filter[True],movies[True]')
-	parser.add_argument("--edgenorm",action="store_true",help="Edge normalize",default=False, guitype='boolbox', row=2, col=1, rowspan=1, colspan=1, mode='filter[True],movies[True]')
+	parser.add_argument("--invert",action="store_true",help="Invert contrast",default=False, guitype='boolbox', row=2, col=0, rowspan=1, colspan=1, mode='filter[True],movies[False]')
+	parser.add_argument("--edgenorm",action="store_true",help="Edge normalize",default=False, guitype='boolbox', row=2, col=1, rowspan=1, colspan=1, mode='filter[True],movies[False]')
 	parser.add_argument("--usefoldername",action="store_true",help="If you have the same image filename in multiple folders, and need to import into the same project, this will prepend the folder name on each image name", default=False, guitype='boolbox', row=2, col=2, rowspan=1, colspan=1, mode="import[False]")
-	parser.add_argument("--xraypixel",action="store_true",help="Filter X-ray pixels",default=False, guitype='boolbox', row=2, col=2, rowspan=1, colspan=1, mode='filter[True],movies[True]')
-	parser.add_argument("--ctfest",action="store_true",help="Perform CTF fitting on the (tiled) frame",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='filter[True],movies[True]')
+	parser.add_argument("--xraypixel",action="store_true",help="Filter X-ray pixels",default=False, guitype='boolbox', row=2, col=2, rowspan=1, colspan=1, mode='filter[True],movies[False]')
+	parser.add_argument("--ctfest",action="store_true",help="Perform CTF fitting on the (tiled) frame",default=False, guitype='boolbox', row=3, col=0, rowspan=1, colspan=1, mode='filter[True],movies[False]')
 	parser.add_argument("--phaseplate",action="store_true",help="Include phase/amplitude contrast in CTF estimation. For use with hole-less phase plates.",default=False, guitype='boolbox', row=3, col=2, rowspan=1, colspan=1, mode='filter[False],movies[False]')
 	parser.add_argument("--astigmatism",action="store_true",help="Includes astigmatism in automatic fitting",default=False, guitype='boolbox', row=3, col=1, rowspan=1, colspan=1, mode='filter[False],movies[False]')
 	parser.add_argument("--moverawdata",action="store_true",help="Move raw data to directory ./raw_micrographs after filtration",default=False)
@@ -65,7 +65,7 @@ def main():
 	parser.add_argument("--ac",type=float,help="Amplitude contrast (percentage, default=10)",default=10, guitype='floatbox', row=6, col=1, rowspan=1, colspan=1, mode="filter,movies")
 	parser.add_argument("--threads", default=1,type=int,help="Number of threads to run in parallel on a single computer when multi-computer parallelism isn't useful",guitype='intbox', row=10, col=0, rowspan=1, colspan=1, mode='filter[4],movies[4]')
 	parser.add_argument("--defocusmin",type=float,help="Minimum autofit defocus",default=0.6, guitype='floatbox', row=8, col=0, rowspan=1, colspan=1, mode="filter[0.6],movies[0.6]")
-	parser.add_argument("--defocusmax",type=float,help="Maximum autofit defocus",default=4, guitype='floatbox', row=8, col=1, rowspan=1, colspan=1, mode='filter[4.0],movies[0.6]')
+	parser.add_argument("--defocusmax",type=float,help="Maximum autofit defocus",default=4, guitype='floatbox', row=8, col=1, rowspan=1, colspan=1, mode='filter[4.0],movies[4.0]')
 
 	parser.add_argument("--link",action="store_true",help="Link aligned, averaged movies to micrographs directory for further processing. Note that this procedure can be repeated to manipulate uniquely pre-processed movies.",default=False,guitype='boolbox',row=10, col=1, rowspan=1, colspan=1, mode="movies[True]")
 

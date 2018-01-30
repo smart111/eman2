@@ -457,8 +457,8 @@ def read_mdoc(mdoc):
 	frames = {}
 	zval = -1
 	frames[zval] = {}
-	frames["Misc"] = []
-	frames["Labels"] = []
+	frames["misc"] = []
+	frames["labels"] = []
 	with open(mdoc) as mdocf:
 		for l in mdocf.readlines():
 			p = l.strip()
@@ -468,47 +468,47 @@ def read_mdoc(mdoc):
 			elif p != "":
 				x,y = p.split("=")[:2]
 				x = x.strip()
-				if x == "TiltAngle": frames[zval]["TiltAngle"]=y
-				elif x == "Magnification": frames[zval]["Magnification"] = y
-				elif x == "Intensity": frames[zval]["Intensity"]=y
-				elif x == "SpotSize": frames[zval]["SpotSize"]=y
-				elif x == "Defocus": frames[zval]["Defocus"]=y
-				elif x == "ExposureTime": frames[zval]["ExposureTime"]=y
-				elif x == "Binning": frames[zval]["Binning"]=y
-				elif x == "ExposureDose": frames[zval]["ExposureDose"]=y
-				elif x == "RotationAngle": frames[zval]["RotationAngle"]=y
-				elif x == "StageZ": frames[zval]["StageZ"]=y
-				elif x == "CameraIndex": frames[zval]["CameraIndex"]=y
-				elif x == "DividedBy2": frames[zval]["DividedBy2"]=y
-				elif x == "MagIndex": frames[zval]["MagIndex"]=y
-				elif x == "TargetDefocus": frames[zval]["TargetDefocus"]=y
-				elif x == "NumSubFrames": frames[zval]["NumSubFrames"]=y
-				elif x == "ImageShift": frames[zval]["ImageShift"]=y
-				elif x == "StagePosition": frames[zval]["StagePosition"]=y
-				elif x == "MinMaxMean": frames[zval]["MinMaxMean"]=y
+				if x == "TiltAngle": frames[zval]["tilt_angle"]=y
+				elif x == "Magnification": frames[zval]["magnification"] = y
+				elif x == "Intensity": frames[zval]["intensity"]=y
+				elif x == "SpotSize": frames[zval]["spot_size"]=y
+				elif x == "Defocus": frames[zval]["defocus"]=y
+				elif x == "ExposureTime": frames[zval]["exposure_time"]=y
+				elif x == "Binning": frames[zval]["binning"]=y
+				elif x == "ExposureDose": frames[zval]["exposure_dose"]=y
+				elif x == "RotationAngle": frames[zval]["rotation_angle"]=y
+				elif x == "StageZ": frames[zval]["stage_z"]=y
+				elif x == "CameraIndex": frames[zval]["camera_index"]=y
+				elif x == "DividedBy2": frames[zval]["divide_by_2"]=y
+				elif x == "MagIndex": frames[zval]["mag_index"]=y
+				elif x == "TargetDefocus": frames[zval]["target_defocus"]=y
+				elif x == "NumSubFrames": frames[zval]["sub_frame_count"]=y
+				elif x == "ImageShift": frames[zval]["image_shift"]=y
+				elif x == "StagePosition": frames[zval]["stage_position"]=y
+				elif x == "MinMaxMean": frames[zval]["min_max_mean"]=y
 				elif x == "SubFramePath":
 					sfp = base_name(y).split("-")[-1]
 					frames[zval]["SubFramePath"]=sfp
-				elif x == "DateTime": frames[zval]["DateTime"]=y
-				elif x == "PixelSpacing": frames["PixelSpacing"] = float(y)
-				elif x == "Voltage": frames["Voltage"] = float(y)
-				elif x == "ImageFile": frames["ImageFile"] = str(y)
-				elif x == "ImageSize": frames["ImageSize"] = y.split()
-				elif x == "DataMode": frames["DataMode"] = y
-				elif x == "PriorRecordDose": frames["PriorRecordDose"] = y
-				elif x == "FrameDosesAndNumber": frames["FrameDosesAndNumber"] = y
+				elif x == "DateTime": frames[zval]["date_time"]=y
+				elif x == "PixelSpacing": frames["global.apix"] = float(y)
+				elif x == "Voltage": frames["global.microscope_voltage"] = float(y)
+				elif x == "ImageFile": frames["image_file"] = str(y)
+				elif x == "ImageSize": frames["image_size"] = y.split()
+				elif x == "DataMode": frames["data_mode"] = y
+				elif x == "PriorRecordDose": frames["prior_record_dose"] = y
+				elif x == "FrameDosesAndNumber": frames["frame_doses_and_number"] = y
 				elif x == "[T": frames["Labels"].append(y.replace("]",""))
-				elif "PreexposureTime" in x: frames[zval]["PreexposureTime(s)"] = y
-				elif "TotalNumberOfFrames" in x: frames[zval]["TotalNumberOfFrames"] = y
-				elif "FramesPerSecond" in x: frames[zval]["FramesPerSecond"] = y
-				elif "ProtectionCoverMode" in x: frames[zval]["ProtectionCoverMode"] = y
-				elif "ProtectionCoverOpenDelay" in x: frames[zval]["ProtectionCoverOpenDelay(ms)"] = y
-				elif "TemperatureDetector" in x: frames[zval]["TemperatureDetector(C)"] = y
-				elif "FaradayPlatePeakReading" in x: frames[zval]["FaradayPlatePeakReading(pA/cm2)"] = y
-				elif "SensorModuleSerialNumber" in x: frames[zval]["SensorModuleSerialNumber"] = y
-				elif "ServerSoftwareVersion" in x: frames[zval]["ServerSoftwareVersion"] = y
-				elif "SensorReadoutDelay" in x: frames[zval]["SensorReadoutDelay(ms)"] = y
-				else: frames["Misc"].append(y) # catches any missed parameters
+				elif "PreexposureTime" in x: frames[zval]["preexposure_time"] = y
+				elif "TotalNumberOfFrames" in x: frames[zval]["frame_count"] = y
+				elif "FramesPerSecond" in x: frames[zval]["frames_per_second"] = y
+				elif "ProtectionCoverMode" in x: frames[zval]["protection_cover_mode"] = y
+				elif "ProtectionCoverOpenDelay" in x: frames[zval]["protection_cover_open_delay"] = y
+				elif "TemperatureDetector" in x: frames[zval]["detector_temperature"] = y
+				elif "FaradayPlatePeakReading" in x: frames[zval]["faraday_plate_peak_reading"] = y
+				elif "SensorModuleSerialNumber" in x: frames[zval]["sensor_module_serial_number"] = y
+				elif "ServerSoftwareVersion" in x: frames[zval]["server_software_version"] = y
+				elif "SensorReadoutDelay" in x: frames[zval]["sensor_readout_delay"] = y
+				else: frames["misc"].append(y) # catches any missed parameters
 
 	frames["zval"] = zval
 	return frames

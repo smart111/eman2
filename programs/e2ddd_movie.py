@@ -321,7 +321,7 @@ def main():
 		print("Processing {}".format(base_name(fsp)))
 
 		# write movie and preprocessing info
-		db=js_open_dict(info_name(fsp))
+		db=js_open_dict(info_name(fsp,nodor=True))
 		#db["movie_name"]=fsp
 		if gain:
 			db["gain_name"]=gainname
@@ -643,7 +643,7 @@ def process_movie(fsp,dark,gain,first,flast,step,options):
 			out.write_image(alioutname,0)
 
 		# write translations and qualities
-		db=js_open_dict(info_name(fsp))
+		db=js_open_dict(info_name(fsp,nodir=True))
 		db["movieali_trans"]=[i for i in locs]
 		db["movieali_qual"]=quals
 		db["runtime"]=runtime
