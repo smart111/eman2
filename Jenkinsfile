@@ -47,10 +47,7 @@ def isCurrentRelease() {
 }
 
 def runCronJob() {
-    if(SLAVE_OS == "win") {
-        sh 'bash ${BUILD_SCRIPTS_DIR}/cronjob.sh $STAGE_NAME $GIT_BRANCH_SHORT'
-    }
-    
+    sh 'echo ${BUILD_SCRIPTS_DIR}/cronjob.sh $STAGE_NAME $GIT_BRANCH_SHORT'
     if(isCurrentRelease())
       sh "rsync -avzh --stats ${INSTALLERS_DIR}/eman2.${STAGE_NAME}.unstable.sh ${DEPLOY_DEST}"
 }
