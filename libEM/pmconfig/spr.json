@@ -7,11 +7,18 @@
     "TABLE": "EMRawDataTable(withmodal=False,multiselect=True)",
     "NAME": "Raw Data",
     "CHILDREN": [
-     {
+      {
+        "ICON": "single_image",
+        "MODE": "movies",
+        "PROGRAM": "e2import.py",
+        "NAME": "Import DDD Movies/Refs",
+        "CHILDREN": []
+      },
+      {
         "ICON": "single_image",
         "MODE": "align",
         "PROGRAM": "e2ddd_movie.py",
-        "NAME": "Correct and Align Movies",
+        "NAME": "Movie Motion Correction",
         "CHILDREN": []
       },
       {
