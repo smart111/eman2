@@ -12,8 +12,6 @@ for f in ${@};do
     
     echo "... $fbase ..."
     
-    rm -rf ${conda_loc}
-    bash $f -bp ${conda_loc}
     source ${conda_loc}/bin/activate root
     conda info -a
     conda list
