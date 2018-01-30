@@ -23,6 +23,14 @@
       },
       {
         "ICON": "single_image",
+        "MODE": "movies",
+        "PROGRAM": "e2rawdata.py",
+        "WIZARD":"/lib/pmconfig/rawdata.json",
+        "NAME": "Import Processed Movies",
+        "CHILDREN": []
+      },
+      {
+        "ICON": "single_image",
         "MODE": "eval",
         "PROGRAM": "e2evalimage.py",
         "WIZARD":"/lib/pmconfig/evalrawdata.json",

@@ -123,49 +123,5 @@
             "CHILDREN": []
           }
       ]
-  },
-  {
-      "ICON": "green_boxes",
-      "NAME": "Subtomogram Averaging",
-      "CHILDREN": [
-          {
-            "ICON": "tomo_hunter",
-            "PROGRAM": "e2spt_boxer.py",
-            "MODE": "tomo",
-            "NAME": "Box Subtomograms",
-            "NOTELEVEL": "1",
-            "CHILDREN": []
-          },
-          {
-            "ICON": "tomo_hunter",
-            "PROGRAM": "",
-            "MODE": "alignment",
-            "NAME": "Alignment and Averaging",
-            "NOTELEVEL": "1",
-            "CHILDREN": []
-          },
-          {
-            "ICON": "tomo_hunter",
-            "MODE":"align",
-            "PROGRAM": "",
-            "NAME": "Align to Symmetry Axis",
-            "NOTELEVEL": "1",
-            "CHILDREN": []
-          },
-          {
-            "ICON": "tomo_hunter",
-            "PROGRAM": "",
-            "NAME": "Alignment with Symmetry",
-            "NOTELEVEL": "1",
-            "CHILDREN": []
-          },
-          {
-            "ICON": "resolution",
-            "PROGRAM": "",
-            "NAME": "Measure Resolution via FSC",
-            "NOTELEVEL": "1",
-            "CHILDREN": []
-          }
-      ]
   }
 ]
