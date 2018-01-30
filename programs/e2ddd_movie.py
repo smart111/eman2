@@ -284,9 +284,8 @@ def main():
 	if options.reverse_dark: dark.process_inplace("xform.reverse",{"axis":"y"})
 
 	if gain or dark:
-		if options.debug:
-			try: os.mkdir("movies")
-			except: pass
+		try: os.mkdir("movies")
+		except: pass
 
 	if gain:
 		gainname="movies/e2ddd_gainref.hdf"
