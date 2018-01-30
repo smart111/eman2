@@ -26,24 +26,31 @@
         "MODE": "movies",
         "PROGRAM": "e2rawdata.py",
         "WIZARD":"/lib/pmconfig/rawdata.json",
-        "NAME": "Import Processed Movies",
+        "NAME": "Link Avg Movies & est Defocus",
         "CHILDREN": []
       },
       {
-        "ICON": "single_image",
-        "MODE": "eval",
-        "PROGRAM": "e2evalimage.py",
-        "WIZARD":"/lib/pmconfig/evalrawdata.json",
-        "NAME": "Evaluate & Import Micrographs",
-        "CHILDREN": []
-      },
-      {
-        "ICON": "single_image",
-        "MODE": "filter",
-        "PROGRAM": "e2rawdata.py",
-        "WIZARD":"/lib/pmconfig/rawdata.json",
-        "NAME": "Import Micrographs & est Defocus",
-        "CHILDREN": []
+        "ICON": "green_boxes",
+        "TABLE": "EMParticlesTable(withmodal=False,multiselect=True)",
+        "NAME": "Import Tools",
+        "CHILDREN": [
+         {
+          "ICON": "single_image",
+          "MODE": "eval",
+          "PROGRAM": "e2evalimage.py",
+          "WIZARD":"/lib/pmconfig/evalrawdata.json",
+          "NAME": "Evaluate & Import Micrographs",
+          "CHILDREN": []
+         },
+         {
+          "ICON": "single_image",
+          "MODE": "filter",
+          "PROGRAM": "e2rawdata.py",
+          "WIZARD":"/lib/pmconfig/rawdata.json",
+          "NAME": "Import Micrographs & est Defocus",
+          "CHILDREN": []
+         }
+        ]
       }
     ]
   },

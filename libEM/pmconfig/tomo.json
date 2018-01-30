@@ -10,9 +10,32 @@
       "CHILDREN": [
          {
             "ICON": "multiple_images",
+            "WIZARD":"/lib/pmconfig/tomoimport.json",
+            "PROGRAM": "e2import.py",
+            "MODE": "tilts",
+            "NAME": "Import Tilts Series",
+            "CHILDREN": []
+         },
+         {
+            "ICON": "multiple_images",
+            "MODE": "movies",
+            "PROGRAM": "e2import.py",
+            "NAME": "Import Movies & Refs",
+            "CHILDREN": []
+         },
+         {
+            "ICON": "multiple_images",
             "MODE": "tomo",
             "PROGRAM": "e2ddd_movie.py",
             "NAME": "Process Movie Data",
+            "CHILDREN": []
+          },
+          {
+            "ICON": "multiple_images",
+            "MODE": "movies",
+            "PROGRAM": "e2rawdata.py",
+            "WIZARD":"/lib/pmconfig/rawdata.json",
+            "NAME": "Link Avg Movies & est Defocus",
             "CHILDREN": []
           },
           {
@@ -23,34 +46,13 @@
             "CHILDREN": []
           },
           {
-            "ICON": "multiple_images",
-            "WIZARD":"/lib/pmconfig/tomoimport.json",
-            "PROGRAM": "e2import.py",
-            "MODE": "tilts",
-            "NAME": "Import Tilts Series",
-            "CHILDREN": []
-          },
-          {
             "ICON": "green_boxes",
-            "NAME": "Import Tools",
-            "CHILDREN": [
-              {
-                "ICON": "green_boxes",
-                "PROGRAM": "e2import.py",
-                "MODE": "tomos",
-                "NAME": "Import 3D Tomograms",
-                "CHILDREN": []
-              },
-              {
-                "ICON": "green_boxes",
-                "PROGRAM": "e2import.py",
-                "MODE": "tomos",
-                "NAME": "Import Subtomogram Boxes",
-                "CHILDREN": []
-              }
-            ]
+            "PROGRAM": "e2import.py",
+            "MODE": "tomos",
+            "NAME": "Import 3D Tomogram",
+            "CHILDREN": []
           }
-        ]
+      ]
   },
   {
       "ICON": "multiple_images",
