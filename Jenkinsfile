@@ -152,51 +152,6 @@ pipeline {
       }
     }
     
-    stage('centos6') {
-      when {
-        anyOf {
-          expression { JOB_TYPE == "cron" }
-          expression { isRelease() }
-        }
-        expression { SLAVE_OS == "linux" }
-      }
-      
-      steps {
-        runCronJob()
-      }
-    }
-    
-    stage('centos7') {
-      when {
-        anyOf {
-          expression { JOB_TYPE == "cron" }
-          expression { isRelease() }
-        }
-        expression { SLAVE_OS == "linux" }
-      }
-      
-      steps {
-        runCronJob()
-      }
-    }
-    
-    stage('mac') {
-      when {
-        anyOf {
-          expression { JOB_TYPE == "cron" }
-          expression { isRelease() }
-        }
-        expression { SLAVE_OS == "mac" }
-      }
-      environment {
-        EMAN_TEST_SKIP=1
-      }
-      
-      steps {
-        runCronJob()
-      }
-    }
-    
     stage('win') {
       when {
         anyOf {
