@@ -404,16 +404,22 @@ with the same name, you should specify only the .hed files (no renaming is neces
 		except: pass
 		d.close()
 
-		raw = [t for t in os.listdir("rawtilts")]
-		raw.sort()
-		for j,tlt in enumerate(raw):
-			for z in range(mdoc["zval"]+1):
-				if mdoc[z]["SubFramePath"] in base_name(tlt):
-					d = js_open_dict(info_name(tlt))
-					for k in mdoc[z].keys():
-						d.setval(k,mdoc[z][k],deferupdate=True)
-					d.close()
-					break
+		# raw = sorted([t for t in os.listdir("rawtilts")])
+		# for j,tlt in enumerate(raw):
+		# 	for z in range(mdoc["zval"]+1):
+		# 		if mdoc[z]["SubFramePath"] in base_name(tlt):
+		# 			d = js_open_dict(info_name(tlt))
+		# 			for k in mdoc[z].keys():
+		# 				d.setval(k,mdoc[z][k],deferupdate=True)
+		# 			d.close()
+		# 			break
+
+		for z in range(mdoc["zval"]+1):
+			tlt = mdoc[z]["SubFramePath"].rsplit("\\")[-1]+"_RawImages"
+			d = js_open_dict(info_name(tlt))
+			for k in mdoc[z].keys():
+				d.setval(k,mdoc[z][k],deferupdate=True)
+			d.close()
 
 	# Import tilt series
 	if options.serialem:
