@@ -81,17 +81,18 @@ def main():
 
 		options.output = "{}/{}".format(stdir,options.output)
 		n=0		# number of images in output file
-		assoc = {}
 		
+		tlt_assoc = {}
 		for arg in args:
 			db=js_open_dict(info_name(arg,nodir=True))
-			assoc[float(db["TiltAngle"])] = arg 
+			tlt_assoc[float(db["tilt_angle"])] = arg
 			db.close()
-		ordered_angles = sorted([float(a) for a in assoc.keys()])
-		sorted_args = [assoc[a] for a in ordered_angles]		# order args according to tilt angle parameter
 
-		for infile in sorted_args:
-			nimg = EMUtil.get_image_count(infile)		# number of images in each input file as it is processed
+		ordered_angles = sorted([float(a) for a in tlt_assoc.keys()])
+		sorted_args = [tlt_assoc[a] for a in ordered_angles] # order args according to tilt angle parameter
+
+		for angle,infile in zip(ordered_angles,sorted_args):
+			nimg = EMUtil.get_image_count(infile) # number of images in each input file as it is processed
 			
 			if options.verbose:
 				if nimg==1: print(infile)
@@ -99,6 +100,7 @@ def main():
 
 			for i in xrange(nimg):
 				img=EMData(infile,i)
+				img["tilt_angle"] = angle
 				img.write_image(options.output,n)
 				n+=1
 

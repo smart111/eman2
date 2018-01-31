@@ -497,7 +497,7 @@ def read_mdoc(mdoc):
 				elif x == "DataMode": frames["data_mode"] = y
 				elif x == "PriorRecordDose": frames["prior_record_dose"] = y
 				elif x == "FrameDosesAndNumber": frames["frame_doses_and_number"] = y
-				elif x == "[T": frames["Labels"].append(y.replace("]",""))
+				elif x == "[T": frames["labels"].append(y.replace("]",""))
 				elif "PreexposureTime" in x: frames[zval]["preexposure_time"] = y
 				elif "TotalNumberOfFrames" in x: frames[zval]["frame_count"] = y
 				elif "FramesPerSecond" in x: frames[zval]["frames_per_second"] = y
