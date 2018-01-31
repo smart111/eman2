@@ -11,7 +11,6 @@ files = [
     'lib/pmconfig/icons.json', 
     'lib/pmconfig/spr.json', 
     'lib/pmconfig/tomo.json', 
-    'lib/pmconfig/tomosegpanel.json', 
 ]
 
 eman2dir = os.getenv("EMAN2DIR")
