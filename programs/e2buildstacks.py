@@ -85,7 +85,8 @@ def main():
 		tlt_assoc = {}
 		for arg in args:
 			db=js_open_dict(info_name(arg,nodir=True))
-			tlt_assoc[float(db["tilt_angle"])] = arg
+			ang = float(db["tilt_angle"])
+			tlt_assoc[ang] = arg
 			db.close()
 
 		ordered_angles = sorted([float(a) for a in tlt_assoc.keys()])
@@ -99,8 +100,22 @@ def main():
 				else: print(infile,nimg)
 
 			for i in xrange(nimg):
+
 				img=EMData(infile,i)
-				img["tilt_angle"] = angle
+				img["stage_tilt"] = angle
+				
+				db=js_open_dict(info_name(infile,nodir=True))
+				try: # this data may already be present
+					img["SerialEM.tilt_angle"] = db["tilt_angle"]
+					img["SerialEM.intensity"] = db["intensity"]
+					img["SerialEM.exposure_time"] = db["exposure_time"]
+					img["SerialEM.exposure_dose"] = db["exposure_dose"]
+					img["SerialEM.sub_frame_count"] = db["sub_frame_count"]
+					img["SerialEM.prior_record_dose"] = db["prior_record_dose"]
+					img["SerialEM.frames_per_second"] = db["frames_per_second"]
+				except: pass
+				db.close()
+
 				img.write_image(options.output,n)
 				n+=1
 
