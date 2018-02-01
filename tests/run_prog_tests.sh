@@ -2,7 +2,7 @@
 
 # Run e2 programs by running the commands with -h
 
-set -e
+set -xe
 
 # Gather programs from CONDA_PREFIX
 if [ -d "${CONDA_PREFIX}"/bin ];then
@@ -22,7 +22,7 @@ for f in ${progs_exclude[@]};do
 done
 echo
 
-set +e
+set +xe
 
 failed_progs=()
 for prog in ${progs[@]};do
