@@ -47,9 +47,9 @@ def isCurrentRelease() {
 }
 
 def runCronJob() {
-    sh 'bash ${BUILD_SCRIPTS_DIR}/cronjob.sh $STAGE_NAME v2.21'
+    sh 'echo ${BUILD_SCRIPTS_DIR}/cronjob.sh $STAGE_NAME v2.21'
     if(isCurrentRelease())
-      sh "scp -v ${INSTALLERS_DIR}/eman2.win64.exe ${DEPLOY_DEST}/eman2.win.unstable.exe"
+      sh "whoami && scp -v ${INSTALLERS_DIR}/eman2.win64.exe ${DEPLOY_DEST}/eman2.win.unstable.exe"
 }
 
 def setUploadFlag() {
