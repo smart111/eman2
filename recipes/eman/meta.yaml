@@ -3,7 +3,7 @@ package:
     version: 2.21
 
 source:
-    path: {{ RECIPE_DIR }}/../..
+    path: {{ USERPROFILE }}\workspace\eman2-cron\
 
 requirements:
     {% set reqs_common = [
