@@ -14,5 +14,5 @@ if errorlevel 1 exit 1
 call tests\run_tests.bat
 if errorlevel 1 exit 1
 
-"%BASH_EXE%" -c "bash tests/run_prog_tests.sh"
+"%BASH_EXE%" -c "bash ${WORKSPACE}/tests/run_prog_tests.sh"
 if errorlevel 1 exit 1
