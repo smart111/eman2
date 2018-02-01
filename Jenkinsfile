@@ -49,7 +49,7 @@ def isCurrentRelease() {
 def runCronJob() {
     sh 'echo ${BUILD_SCRIPTS_DIR}/cronjob.sh $STAGE_NAME v2.21'
     if(isCurrentRelease())
-      sh "scp -v -i ${USERPROFILE}/.ssh/id_rsa ${INSTALLERS_DIR}/eman2.win64.exe ${DEPLOY_DEST}/eman2.win.unstable.exe"
+      sh "scp -v -i /c/Users/EMAN/.ssh/id_rsa ${INSTALLERS_DIR}/eman2.win64.exe ${DEPLOY_DEST}/eman2.win.unstable.exe"
 }
 
 def setUploadFlag() {
