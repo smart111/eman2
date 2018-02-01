@@ -1,7 +1,7 @@
 set "BASH_EXE=C:\Program Files\Git\bin\bash.exe"
 set INSTALLER_DIR=C:\Users\EMAN\workspace\win-installers
-set INSTALLER_FILE=eman2.win.unstable.exe
-set INSTALLATION_DIR=eman2.win.unstable
+set INSTALLER_FILE=eman2.win64.exe
+set INSTALLATION_DIR=eman2.win64
 
 rmdir /q /s %INSTALLER_DIR%\%INSTALLATION_DIR%
 
