@@ -38,9 +38,13 @@ def isCurrentRelease() {
     return (GIT_BRANCH ==~ /origin\/release\/2.21/) && (JOB_TYPE == "push")
 }
 
+def isBuildBinary() {
+    return true
+}
+
 def runCronJob() {
     sh "bash ${HOME}/workspace/build-scripts-cron/cronjob.sh $STAGE_NAME $GIT_BRANCH_SHORT"
-    if(isCurrentRelease())
+    if(isBuildBinary())
       sh "rsync -avzh --stats ${INSTALLERS_DIR}/eman2.${STAGE_NAME}.unstable.sh ${DEPLOY_DEST}"
 }
 
@@ -49,7 +53,7 @@ def setUploadFlag() {
 }
 
 def resetBuildScripts() {
-    if(isRelease())
+    if(isBuildBinary())
         sh 'cd ${HOME}/workspace/build-scripts-cron/ && git checkout -f master'
 }
 
@@ -110,7 +114,7 @@ pipeline {
     stage('build-scripts-checkout') {
       when {
         anyOf {
-          expression { isRelease() }
+          expression { isBuildBinary() }
         }
       }
       
@@ -122,7 +126,7 @@ pipeline {
     stage('centos6') {
       when {
         anyOf {
-          expression { isRelease() }
+          expression { isBuildBinary() }
         }
         expression { SLAVE_OS == "linux" }
       }
@@ -135,7 +139,7 @@ pipeline {
     stage('centos7') {
       when {
         anyOf {
-          expression { isRelease() }
+          expression { isBuildBinary() }
         }
         expression { SLAVE_OS == "linux" }
       }
@@ -148,7 +152,7 @@ pipeline {
     stage('mac') {
       when {
         anyOf {
-          expression { isRelease() }
+          expression { isBuildBinary() }
         }
         expression { SLAVE_OS == "mac" }
       }
