@@ -28,14 +28,6 @@ def notifyEmail() {
                  attachLog: true
                  )
     }
-    
-    if(JOB_TYPE == "cron") {
-        emailext(to: '$DEFAULT_RECIPIENTS',
-                 subject: '[JenkinsCI/$PROJECT_NAME/cron] ' + "($GIT_BRANCH_SHORT - ${GIT_COMMIT_SHORT})" + ' #$BUILD_NUMBER - $BUILD_STATUS!',
-                 body: '''${SCRIPT, template="groovy-text.template"}''',
-                 attachLog: true
-                 )
-    }
 }
 
 def isRelease() {
@@ -53,15 +45,11 @@ def runCronJob() {
 }
 
 def setUploadFlag() {
-    if(getJobType() == "cron") {
-        return '0'
-    } else {
-        return '1'
-    }
+    return '1'
 }
 
 def resetBuildScripts() {
-    if(JOB_TYPE == "cron" || isRelease())
+    if(isRelease())
         sh 'cd ${HOME}/workspace/build-scripts-cron/ && git checkout -f master'
 }
 
@@ -100,7 +88,6 @@ pipeline {
     
     stage('build') {
       when {
-        not { expression { JOB_TYPE == "cron" } }
         not { expression { isRelease() } }
       }
       
@@ -123,7 +110,6 @@ pipeline {
     stage('build-scripts-checkout') {
       when {
         anyOf {
-          expression { JOB_TYPE == "cron" }
           expression { isRelease() }
         }
       }
@@ -136,7 +122,6 @@ pipeline {
     stage('centos6') {
       when {
         anyOf {
-          expression { JOB_TYPE == "cron" }
           expression { isRelease() }
         }
         expression { SLAVE_OS == "linux" }
@@ -150,7 +135,6 @@ pipeline {
     stage('centos7') {
       when {
         anyOf {
-          expression { JOB_TYPE == "cron" }
           expression { isRelease() }
         }
         expression { SLAVE_OS == "linux" }
@@ -164,7 +148,6 @@ pipeline {
     stage('mac') {
       when {
         anyOf {
-          expression { JOB_TYPE == "cron" }
           expression { isRelease() }
         }
         expression { SLAVE_OS == "mac" }
