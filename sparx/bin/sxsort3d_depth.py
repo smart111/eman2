@@ -1327,10 +1327,6 @@ def output_micrograph_number_per_cluster(orgstack, index_file, clusters, log_mai
 		mics_in_clusters[ic] = len(tmp_mics_in_cluster)
 		msg +='{:10} {:^5} {:^20}  {:^12} {}'.format('micstat', ic, mics_in_clusters[ic], round(float(mics_in_clusters[ic])/float(len(inverse_mic_dict))*100.,2), '\n')
 	log_main.add('\n', msg)
-<<<<<<< HEAD
-=======
-	
->>>>>>> 1b10f3198d9cbeea74bdd8cb9e70d0ce36ce88e6
 	return mics_in_clusters
 
 def check_3dmask(log_main):
@@ -1430,10 +1426,7 @@ def import_data(log_main):
 		if(Blockdata["myid"] == Blockdata["main_node"]):
 			msg = "input symmetry %s is altered to %s after reading refinement information! "%(Tracker["constants"]["sym"], Tracker["constants"]["symmetry"])
 			log_main.add(msg)
-<<<<<<< HEAD
-=======
-			
->>>>>>> 1b10f3198d9cbeea74bdd8cb9e70d0ce36ce88e6
+
 	## checking settings!
 	number_of_groups =  Tracker["constants"]["total_stack"]//Tracker["constants"]["img_per_grp"]
 	if number_of_groups<=1: ERROR("Your img_per_grp is too large", "sxsort3d_depth.py", 1,  Blockdata["myid"])
@@ -4329,7 +4322,7 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 	Tracker["current_iter_ratio"] = ratio_accounted
 	score_list = [ ]
 	nclass     = 0
-	msg = '{:^12} {:^5} {:^5} {:^10} {:^10} {:^20} {:^15} {:^15} {:^15}'.format('New group ID', '   ID',  '   ID', 'group size', 'random group size', 'status', 'reproducibility1', 'reproducibility2', 'reproducibility')
+	msg = '{:^12} {:^10} {:^17} {:^15} {:^15}'.format('New group ID', 'group size', 'random group size', 'status',   'reproducibility')
 	log_main.add(msg)
 	current_MGR = get_MGR_from_two_way_comparison(newindeces, ptp1, ptp2, total_data)
 	stable_clusters   = []
@@ -4348,13 +4341,13 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 			minimum_group_size = min(minimum_group_size, len(any))
 			maximum_group_size = max(maximum_group_size, len(any))
 			nclass +=1
-			msg ='{:^10d} {:^5d} {:^5d} {:^10d} {:^10d} {:^10} {:^15.3f} {:^15.3f} {:^15.3f}'.format(index_of_any, int(newindeces[index_of_any][0]), \
-			     int(newindeces[index_of_any][1]), len(any), current_MGR[index_of_any],'accepted', round(score1,3), round(score2,3), round(score3,3))
+			msg ='{:^12d} {:^10d} {:^17d} {:^15} {:^15.3f}'.format(index_of_any, \
+			      len(any), current_MGR[index_of_any],'accepted', round(score3,3))
 			log_main.add(msg)
 			selected_clusters.append(any)
 		else:
-			msg ='{:^10d} {:^5d} {:^5d} {:^10d} {:^10d} {:^10} {:^15.3f} {:^15.3f} {:^15.3f}'.format(index_of_any, int(newindeces[index_of_any][0]), \
-			     int(newindeces[index_of_any][1]), len(any), current_MGR[index_of_any], 'rejected', round(score1,3), round(score2,3), round(score3,3))
+			msg ='{:^12d} {:^10d} {:^17d} {:^15}  {:^15.3f}'.format(index_of_any, \
+			      len(any), current_MGR[index_of_any], 'rejected', round(score3,3))
 			log_main.add(msg)
 			
 	accounted_list, new_index = merge_classes_into_partition_list(selected_clusters)
@@ -4884,7 +4877,7 @@ def steptwo_mpi(tvol, tweight, treg, cfsc = None, regularized = True, color = 0)
 	#  tvol is overwritten, meaning it is also an output
 	n_iter =10
 	ifi = mpi_iterefa( vol_data.__array_interface__['data'][0] ,  we_data.__array_interface__['data'][0] , nx, ny, nz, maxr2, \
-			Tracker["constants"]["nnxo"], Blockdata["myid_on_node"], color, Blockdata["no_of_processes_per_group"],  Blockdata["shared_comm"])###3, n_iter)
+			Tracker["constants"]["nnxo"], Blockdata["myid_on_node"], color, Blockdata["no_of_processes_per_group"],  Blockdata["shared_comm"], n_iter)
 	if( Blockdata["myid_on_node"] == 0 ):
 		#  Either pad or window in F space to 2*nnxo
 		nx = tvol.get_ysize()
@@ -4953,7 +4946,7 @@ def steptwo_mpi_filter(tvol, tweight, treg, cfsc = None, cutoff_freq = 0.45, aa 
 	#  tvol is overwritten, meaning it is also an output
 	n_iter =10
 	ifi = mpi_iterefa( vol_data.__array_interface__['data'][0] ,  we_data.__array_interface__['data'][0] , nx, ny, nz, maxr2, \
-			Tracker["constants"]["nnxo"], Blockdata["myid_on_node"], color, Blockdata["no_of_processes_per_group"],  Blockdata["shared_comm"])####, n_iter)	
+			Tracker["constants"]["nnxo"], Blockdata["myid_on_node"], color, Blockdata["no_of_processes_per_group"],  Blockdata["shared_comm"], n_iter)	
 	if( Blockdata["myid_on_node"] == 0 ):
 		from filter       import  filt_tanl
 		#  Either pad or window in F space to 2*nnxo
