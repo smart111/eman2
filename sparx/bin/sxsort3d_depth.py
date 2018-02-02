@@ -2043,11 +2043,11 @@ def Kmeans_minimum_group_size_relaxing_orien_groups(original_data, partids, para
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 		if best_score > Tracker["constants"]["stop_mgskmeans_percentage"]: 
-			msg ="MGSKmeans stop with changed particles ratio %f and image size %d"%(best_score,Tracker["nxinit"])
+			#msg ="MGSKmeans stop with changed particles ratio %f and image size %d"%(best_score,Tracker["nxinit"])
 			premature  = 1
-		else: msg = "MGSKmeans stop with changed particles ratio %f within %d iterations and actually used stop percentage is %f"%(\
-		        best_score, total_iter, stopercnt)
-		log.add(msg)
+		#else: msg = "MGSKmeans stop with changed particles ratio %f within %d iterations and actually used stop percentage is %f"%(\
+		#        best_score, total_iter, stopercnt)
+		#log.add(msg)
 		Tracker["partition"], ali3d_params_list = parsing_sorting_params(partids, res_sort3d)
 		write_text_row(Tracker["partition"], os.path.join(Tracker["directory"],"list.txt"))
 		shutil.rmtree(os.path.join(Tracker["directory"], "tempdir"))
@@ -3515,21 +3515,21 @@ def refilling_global_scheme_mpi(clusters, unaccounted_list, number_of_clusters, 
 	swap_ratio /=100.
 	N  = NUACC + NACC
 	m = number_of_clusters - len(clusters)
-	if Blockdata["myid"] == Blockdata["main_node"]:
-		msg = "NACC %d NUACC %d  K %d m %d  number_of_clusters %d"%(NACC, NUACC, (len(clusters)), m, number_of_clusters)
-		log_file.add(msg)
-		#print(msg)
+	#if Blockdata["myid"] == Blockdata["main_node"]:
+	#	msg = "NACC %d NUACC %d  K %d m %d  number_of_clusters %d"%(NACC, NUACC, (len(clusters)), m, number_of_clusters)
+	#	log_file.add(msg)
+	#	#print(msg)
 	# shake
 	if swap_ratio > 0.0:
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			if int(swap_ratio*NACC) > NUACC:
-				msg = "shake_clusters_small_NUACC"
-				log_file.add(msg)
+				#msg = "shake_clusters_small_NUACC"
+				#log_file.add(msg)
 				unaccounted_list, clusters = shake_clusters_small_NUACC(\
 						 unaccounted_list, clusters, swap_ratio)
 			else:
-				msg = "shake_clusters_large_NUACC"
-				log_file.add(msg)
+				#msg = "shake_clusters_large_NUACC"
+				#log_file.add(msg)
 				unaccounted_list, clusters = shake_clusters_large_NUACC(\
 						 unaccounted_list, clusters, swap_ratio)
 		else:
@@ -3550,18 +3550,18 @@ def refilling_global_scheme_mpi(clusters, unaccounted_list, number_of_clusters, 
 	L = len(large_clusters)
 	
 	if m == 0 and L == 0:
-		if Blockdata["myid"] == Blockdata["main_node"]:
-			msg = "m %d  L %d"%(m, L)
-			log_file.add(msg)
-			msg ="assign_unaccounted_elements_mpi"
-			log_file.add(msg)
+		#if Blockdata["myid"] == Blockdata["main_node"]:
+		#	msg = "m %d  L %d"%(m, L)
+		#	log_file.add(msg)
+		#	msg ="assign_unaccounted_elements_mpi"
+		#	log_file.add(msg)
 		out_clusters = assign_unaccounted_elements_mpi(unaccounted_list, clusters, avg_size)
 	else:
 		if m !=0: empty_clusters =[[] for ie in xrange(m)]
 		else: empty_clusters = []
-		msg ="fill_no_large_groups_and_unaccounted_to_m_and_rcluster_mpi"
-		if Blockdata["myid"] == Blockdata["main_node"]:
-			log_file.add(msg)
+		#msg ="fill_no_large_groups_and_unaccounted_to_m_and_rcluster_mpi"
+		#if Blockdata["myid"] == Blockdata["main_node"]:
+		#	log_file.add(msg)
 		out_clusters = fill_no_large_groups_and_unaccounted_to_m_and_rcluster_mpi(\
 				 unaccounted_list, empty_clusters, clusters, NUACC, NACC)
 	for i in xrange(len(out_clusters)): out_clusters[i].sort()
@@ -4340,15 +4340,15 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 	ratio_accounted    = nb_tot_objs/float(total_data)*100.
 	print_matching_pairs(newindeces, log_main)
 	
-	smsg += '{} {}{} {} {}{} {} {}'.format(' accounted ratio between', 'P', 2*ipair, 'and', 'P', 2*ipair+1, 'is', round(ratio_accounted,2))
+	smsg += '{} {}{} {} {}{} {} {}'.format(' Reproducibility', 'P', 2*ipair, 'and', 'P', 2*ipair+1, 'is', round(ratio_accounted,2))
 	Tracker["current_iter_ratio"] = ratio_accounted
 	score_list = [ ]
 	nclass     = 0
-	msg = 'Cluster intersections of P0 and P1 form new clusters and are checked by MGR group size. Rejected ones will be reassigned from the unaccounted elements'
+	msg = 'If the overlapped elements between two clusters is less than random group size, the intersection will not form a new cluster.'
 	log_main.add(msg)
-	msg = '{:^10} {:^5} {:^5} {:^10} {:^10} {:^10} {:^15} {:^15} {:^15}'.format('New GID', 'P0 ID',  'P1 ID', 'GSIZE', 'MGRSIZE', 'status', 'R ratio of P0', 'R ratio of P1', 'reproducibility')
+	msg = '{:^12} {:^5} {:^5} {:^10} {:^10} {:^20} {:^15} {:^15} {:^15}'.format('New group ID', '   ID',  '   ID', 'group size', 'random group size', 'status', 'reproducibility1', 'reproducibility2', 'reproducibility')
 	log_main.add(msg)
-	
+
 	current_MGR = get_MGR_from_two_way_comparison(newindeces, ptp1, ptp2, total_data)
 	stable_clusters   = []
 	selected_clusters = []
