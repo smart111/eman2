@@ -159,7 +159,6 @@ def load_tracker(path_of_the_tracker):
 def dump_tracker(path_of_the_tracker):
 	global Tracker, Blockdata
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		else:  dump_dir = input_file1
 		fout = open(os.path.join(path_of_the_tracker, "Tracker.json"),'w')
 		json.dump(Tracker, fout)
 		fout.close()
