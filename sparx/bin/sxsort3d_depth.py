@@ -4165,10 +4165,10 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 	import numpy as np
 	## for single node only
 	log_main.add(' ')
-	log_main.add('--------------------------------------------------')
-	log_main.add(' =======    Do_withinbox_two_way_comparison    =======< ')
+	log_main.add('--------------------------------------------------------------------')
+	log_main.add('         Within-box two-way comparison')
 	log_main.add(' ')
-	msg = '==========   Withinboxrun ID  gen: %d layer: %d nbox: %d nrun: %d niter: %d ========================'%(Tracker["current_generation"], \
+	msg = '      Within box run ID  gen: %d layer: %d nbox: %d nrun: %d niter: %d%'(Tracker["current_generation"], \
 	      Tracker["depth"], nbox, nrun, niter)
 	log_main.add(msg)
 	msg = 'The two runs that are compared inside the box are only independent in the first iteration'
@@ -6852,9 +6852,9 @@ def do_final_maps(number_of_groups, minimum_size, selected_iter, refinement_dir,
 			if Blockdata["myid"] == icluster: shutil.rmtree(clusterdir)
 	mpi_barrier(MPI_COMM_WORLD)
 	if( Blockdata["myid"] == Blockdata["main_node"]):
-		log_main.add('-------------------------------------------------------')
+		log_main.add('--------------------------------------------------------------------')
 		log_main.add('                   Memory check')
-		log_main.add('-------------------------------------------------------')
+		log_main.add('--------------------------------------------------------------------')
 	basic_memory_per_cpu    = 1.0
 	total_data_in_mem       = Tracker["constants"]["nnxo"]*Tracker["constants"]["nnxo"]*Tracker["constants"]["total_stack"]*4./1.e9
 	one_volume_in_mem       = Tracker["constants"]["nnxo"]*Tracker["constants"]["nnxo"]*Tracker["constants"]["nnxo"]*4.*8./1.e9
@@ -7105,7 +7105,7 @@ def copy_results(log_file):
 				
 		NUACC = Tracker["constants"]["total_stack"] - NACC
 		do_analysis_on_identified_clusters(clusters, log_file)
-		log_file.add("                            SORT3D IN-DEPTH finished")
+		log_file.add('                            SORT3D IN-DEPTH finished')
 		
 		fout = open(os.path.join(Tracker["constants"]["masterdir"], "Tracker.json"), 'w')
 		json.dump(Tracker, fout)
@@ -7390,9 +7390,9 @@ def main():
 			log_main.prefix = Tracker["constants"]["masterdir"]+"/"
 			
 			if Blockdata["myid"] == Blockdata["main_node"]:
-				log_main.add('=====================================================')
-				log_main.add('                SORT3D IN-DEPTH')
-				log_main.add('====================================================='+'\n')
+				log_main.add('==============================================================')
+				log_file.add('                            SORT3D IN-DEPTH')
+				log_main.add('=============================================================='+'\n')
 				
 			if continue_from_interuption == 0:
 				sort3d_utils("import_data",   log_main)
@@ -7420,9 +7420,9 @@ def main():
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			if not os.path.exists(os.path.join(work_dir)):
 				os.mkdir(work_dir)
-				log_main.add('------------------------------------------------------------')
-				log_main.add('                  SORT3D IN-DEPTH generation %d'%igeng)
-				log_main.add('------------------------------------------------------------')
+				log_main.add('--------------------------------------------------------------------')
+				log_file.add('                            SORT3D IN-DEPTH generation %d'%igeng)
+				log_main.add('--------------------------------------------------------------------')
 				mark_sorting_state(work_dir, False, log_main)
 				time_generation_start = time.time()
 		while keepsorting ==1:
@@ -7448,9 +7448,9 @@ def main():
 					dump_tracker( os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen))
 					compute_final_map(log_main, work_dir)
 					if Blockdata["myid"] == Blockdata["main_node"]:
-						log_main.add('---------------------------------------------------------------')
-						log_main.add('                       SORT3D IN-DEPTH finished')
-						log_main.add('---------------------------------------------------------------')
+						log_main.add('--------------------------------------------------------------------')
+						log_file.add('                            SORT3D IN-DEPTH finished')
+						log_main.add('--------------------------------------------------------------------')
 						mark_sorting_state(work_dir, True, log_main)
 						time_of_sorting_h,  time_of_sorting_m = get_time(time_final_box_start)
 						log_main.add('SORT3D 3D reconstruction time: %d hours %d minutes'%(time_of_sorting_h, time_of_sorting_m))
@@ -7481,9 +7481,9 @@ def main():
 					Tracker["current_generation"] = igen
 					work_dir = os.path.join( Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 					if Blockdata["myid"] == Blockdata["main_node"]:
-						log_main.add('---------------------------------------------------------------')
-						log_main.add('                   SORT3D IN-DEPTH generation %d'%igen)
-						log_main.add('---------------------------------------------------------------')
+						log_main.add('--------------------------------------------------------------------')
+						log_file.add('                            SORT3D IN-DEPTH generation %d'%igen)
+						log_main.add('--------------------------------------------------------------------')
 						if not os.path.exists(os.path.join(work_dir)): os.mkdir(work_dir)
 						write_text_file(output_list[0][1], os.path.join(work_dir, "indexes.txt"))
 						mark_sorting_state(work_dir, False, log_main)
@@ -7495,9 +7495,9 @@ def main():
 				Tracker["current_generation"] = igen
 				work_dir = os.path.join( Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 				if Blockdata["myid"] == Blockdata["main_node"]:
-					log_main.add('-------------------------------------------------------------')
+					log_main.add('--------------------------------------------------------------------')
 					log_main.add('               SORT IN-DEPTH generation %d'%igen)
-					log_main.add('-------------------------------------------------------------')
+					log_main.add('--------------------------------------------------------------------')
 				mpi_barrier(MPI_COMM_WORLD)		
 		from mpi import mpi_finalize
 		mpi_finalize()
@@ -7663,7 +7663,7 @@ def main():
 			log_main.prefix = Tracker["constants"]["masterdir"]+"/"
 			if Blockdata["myid"] == Blockdata["main_node"]:
 				log_main.add('==============================================================')
-				log_main.add('               SORT3D IN-DEPTH')
+				log_file.add('                            SORT3D IN-DEPTH')
 				log_main.add('=============================================================='+'\n')
 			
 			if continue_from_interuption == 0:
@@ -7704,9 +7704,9 @@ def main():
 				keepchecking = check_sorting_state(work_dir, keepchecking, log_main)
 				time_generation_start = time.time()
 
-				log_main.add('----------------------------------------------------------' )
-				log_main.add('              SORT3D IN-DEPTH   generation %d'%igen)
-				log_main.add('----------------------------------------------------------' )
+				log_main.add('--------------------------------------------------------------------')
+				log_file.add('                            SORT3D IN-DEPTH   generation %d'%igen)
+				log_main.add('--------------------------------------------------------------------')
 				
 			else: keepchecking = 0
 			keepchecking = bcast_number_to_all(keepchecking, Blockdata["main_node"], MPI_COMM_WORLD)
@@ -7728,9 +7728,9 @@ def main():
 					compute_final_map(log_main, work_dir)
 					if Blockdata["myid"] == Blockdata["main_node"]:
 
-						log_main.add('----------------------------------------------------------' )
-						log_main.add('                  SORT3D IN-DEPTH finished')
-						log_main.add('----------------------------------------------------------' )
+						log_main.add('--------------------------------------------------------------------')
+						log_file.add('                            SORT3D IN-DEPTH finished')
+						log_main.add('--------------------------------------------------------------------')
 						mark_sorting_state(work_dir, True, log_main)
 						time_of_sorting_h,  time_of_sorting_m = get_time(time_final_box_start)
 						msg  = '{:32} {:^5} {:^10} {:^5} {:^10}'.format('sort3d reconstruction costs time', time_of_sorting_h, 'hours', time_of_sorting_m, 'minutes')
@@ -7765,9 +7765,9 @@ def main():
 					Tracker["current_generation"] = igen
 					work_dir = os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 					if Blockdata["myid"] == Blockdata["main_node"]:
-						log_main.add('-------------------------------------------------------------')
-						log_main.add('               SORT IN-DEPTH generation %d'%igen)
-						log_main.add('-------------------------------------------------------------')
+						log_main.add('--------------------------------------------------------------------')
+						log_file.add('                            SORT3D IN-DEPTH generation %d'%igen)
+						log_main.add('--------------------------------------------------------------------')
 						if not os.path.exists(os.path.join(work_dir)): os.mkdir(work_dir)
 						write_text_file(output_list[0][1], os.path.join(work_dir, "indexes.txt"))
 						mark_sorting_state(work_dir, False, log_main)
@@ -7779,9 +7779,9 @@ def main():
 				Tracker["current_generation"] = igen
 				work_dir = os.path.join( Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 				if Blockdata["myid"] == Blockdata["main_node"]:
-					log_main.add('-------------------------------------------------------------')
-					log_main.add('               SORT IN-DEPTH generation %d'%igen)
-					log_main.add('-------------------------------------------------------------')
+					log_main.add('--------------------------------------------------------------------')
+					log_file.add('                            SORT3D IN-DEPTH generation %d'%igen)
+					log_main.add('--------------------------------------------------------------------')
 				mpi_barrier(MPI_COMM_WORLD)
 		from mpi import mpi_finalize
 		mpi_finalize()
