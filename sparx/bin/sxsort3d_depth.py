@@ -949,7 +949,7 @@ def check_mpi_settings(log):
 	except:
 		mem_gib = None
 		#if( Blockdata["myid"] == Blockdata["main_node"]):print(line, "It is not an unix machine!")
-		else: pass
+		#else: pass
 	if Tracker["constants"]["memory_per_node"] == -1.:
 		if mem_gib: total_memory = mem_gib
 		else:
