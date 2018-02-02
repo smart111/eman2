@@ -997,7 +997,7 @@ def get_sorting_image_size(original_data, partids, number_of_groups, sparamstruc
 	Tracker["number_of_groups"] = number_of_groups
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-		msg = "start reconstruction with refinement window_size  %d"%Tracker["nxinit_refinement"]
+		msg = "3D reconstruction is computed using window size:  %d"%Tracker["nxinit_refinement"]
 		log.add(msg)
 		lpartids = read_text_file(partids, -1)
 		if len(lpartids) == 1:
@@ -1024,8 +1024,7 @@ def get_sorting_image_size(original_data, partids, number_of_groups, sparamstruc
 	
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-		msg = "reconstruction with refinement window_size %d finshes"%Tracker["nxinit_refinement"]
-		print(line, msg)
+		msg = "3D reconstruction using refinement window size %d is completed."%Tracker["nxinit_refinement"]
 		log.add(msg)
 		
 	if( Blockdata["myid"] == Blockdata["main_node"]):
@@ -2065,6 +2064,7 @@ def Kmeans_minimum_group_size_relaxing_orien_groups(original_data, partids, para
 	del last_iter_assignment
 	del best_assignment
 	if mask3D: del mask3D
+
 	#if best_score > 15.0: require_check_setting = True
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
@@ -2073,7 +2073,6 @@ def Kmeans_minimum_group_size_relaxing_orien_groups(original_data, partids, para
 			premature  = 1
 		else: msg = "MGSKmeans mature stop with changed particles ratio %f within %d iterations and actually used stop percentage is %f"%(\
 		        best_score, total_iter, stopercnt)
-		print(line, msg)
 		log.add(msg)
 		Tracker["partition"], ali3d_params_list = parsing_sorting_params(partids, res_sort3d)
 		write_text_row(Tracker["partition"], os.path.join(Tracker["directory"],"list.txt"))
@@ -2591,8 +2590,6 @@ def read_data_for_sorting(partids, partstack, previous_partstack):
 	from utilities      import wrap_mpi_bcast, read_text_row, get_im, set_params_proj
 	# functions:
 	# read in data
-	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-	if( Blockdata["myid"] == Blockdata["main_node"]):print(line, "read_data for sorting ")
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		lpartids = read_text_file(partids, -1)
 		if len(lpartids) == 1:
@@ -3376,7 +3373,7 @@ def assign_unaccounted_elements_mpi(glist, clusters, img_per_grp):
 	global Tracker, Blockdata
 	import random
 	import copy
-	if Blockdata["myid"]== Blockdata["main_node"]:print("refilling: assign_unaccounted_elements_mpi")	
+	#if Blockdata["myid"]== Blockdata["main_node"]:print("refilling: assign_unaccounted_elements_mpi")	
 	icut = 3*img_per_grp//2
 	if Blockdata["myid"]== Blockdata["main_node"]:
 		for ic in xrange(len(clusters)):
@@ -3533,10 +3530,10 @@ def check_unicorn_cluster(clusters, minimum_grp_size):
 
 def refilling_global_scheme_mpi(clusters, unaccounted_list, number_of_clusters, log_file, swap_ratio):
 	global Tracker, Blockdata
-	if Blockdata["myid"] == Blockdata["main_node"]:
-		msg = "refilling_global_scheme_mpi"
-		#print(msg)
-		log_file.add(msg)
+	#if Blockdata["myid"] == Blockdata["main_node"]:
+	#	msg = "refilling_global_scheme_mpi"
+	#	#print(msg)
+	#	log_file.add(msg)
 	m     = 0
 	NACC  = 0
 	NUACC = len(unaccounted_list)
@@ -4155,12 +4152,10 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			#msg ="   %3d     %8d    %6.3f    %6.3f"%(nclass, len(any), score1, score2)
 			msg ='{:^10d} {:^5d} {:^5d} {:^10d}  {:^10} {:^15.3f} {:^15.3f}'.format(index_of_any, int(newindeces[index_of_any][0]), int(newindeces[index_of_any][1]), len(any),'accepted', round(score1,3), round(score2,3))
 			log_main.add(msg)
-			print(line, msg)
 		else:
 			#msg ="group %d with size %d is rejected and sent back into unaccounted ones"%(index_of_any, len(any))
 			msg ='{:^10d} {:^5d} {:^5d} {:^10d}  {:^10} {:^15.3f} {:^15.3f}'.format(index_of_any, int(newindeces[index_of_any][0]), int(newindeces[index_of_any][1]), len(any), 'rejected', round(score1,3), round(score2,3))
 			log_main.add(msg)
-			print(line, msg)
 	
 	if nclass == 0:
 		print(line, tmsg)
