@@ -1337,7 +1337,6 @@ def output_micrograph_number_per_cluster(orgstack, index_file, clusters, log_mai
 		mics_in_clusters[ic] = len(tmp_mics_in_cluster)
 		msg +='{:10} {:^5} {:^20}  {:^12} {}'.format('micstat', ic, mics_in_clusters[ic], round(float(mics_in_clusters[ic])/float(len(inverse_mic_dict))*100.,2), '\n')
 	log_main.add('\n', msg)
-	print(msg)
 	return mics_in_clusters
 
 def check_3dmask(log_main):
@@ -1437,7 +1436,6 @@ def import_data(log_main):
 		if(Blockdata["myid"] == Blockdata["main_node"]):
 			msg = "input symmetry %s is altered to %s after reading refinement information! "%(Tracker["constants"]["sym"], Tracker["constants"]["symmetry"])
 			log_main.add(msg)
-			print(msg)
 	## checking settings!
 	number_of_groups =  Tracker["constants"]["total_stack"]//Tracker["constants"]["img_per_grp"]
 	if number_of_groups<=1: ERROR("Your img_per_grp is too large", "sxsort3d_depth.py", 1,  Blockdata["myid"])
@@ -1514,11 +1512,11 @@ def sort3d_utils(to_be_decided, log_main = None, input_file1 = None):
 	try:    Tracker["sort3d_counter"] +=1
 	except: Tracker["sort3d_counter"]  =0
 		
-	if Blockdata["myid"] == Blockdata["main_node"]:
-		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-		#msg = "sort3d_step  %d  "%Tracker["sort3d_counter"]+ to_be_decided
-		#
-		#if log_main != None: log_main.add(msg)
+	#if Blockdata["myid"] == Blockdata["main_node"]:
+	#	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
+	#	#msg = "sort3d_step  %d  "%Tracker["sort3d_counter"]+ to_be_decided
+	#	#
+	#	#if log_main != None: log_main.add(msg)
 		
 	if to_be_decided == "initialization":
 		sort3d_init(to_be_decided, log_main)
@@ -4344,11 +4342,8 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 	Tracker["current_iter_ratio"] = ratio_accounted
 	score_list = [ ]
 	nclass     = 0
-	msg = 'If the overlapped elements between two clusters is less than random group size, the intersection will not form a new cluster.'
-	log_main.add(msg)
 	msg = '{:^12} {:^5} {:^5} {:^10} {:^10} {:^20} {:^15} {:^15} {:^15}'.format('New group ID', '   ID',  '   ID', 'group size', 'random group size', 'status', 'reproducibility1', 'reproducibility2', 'reproducibility')
 	log_main.add(msg)
-
 	current_MGR = get_MGR_from_two_way_comparison(newindeces, ptp1, ptp2, total_data)
 	stable_clusters   = []
 	selected_clusters = []
