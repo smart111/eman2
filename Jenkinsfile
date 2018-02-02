@@ -88,7 +88,7 @@ pipeline {
     
     stage('build') {
       when {
-        not { expression { isRelease() } }
+        expression { false }
       }
       
       parallel {
