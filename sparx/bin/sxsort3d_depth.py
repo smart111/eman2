@@ -1419,7 +1419,7 @@ def check_3dmask(log_main):
 	Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
 	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		print_dict(Tracker["constants"],"Permanent settings of the program after update from the input options")
+		#print_dict(Tracker["constants"],"Permanent settings of the program after update from the input options")
 		fout = open(os.path.join(Tracker["constants"]["masterdir"], "Tracker.json"),'w')
 		json.dump(Tracker, fout)
 		fout.close()
@@ -1432,7 +1432,7 @@ def check_3dmask(log_main):
 			print(line, msg)
 			log_main.add(msg)
 	Tracker["shrinkage"] = float(Tracker["nxinit"])/Tracker["constants"]["nnxo"]
-	if(Blockdata["myid"] == Blockdata["main_node"]):  print_dict(Tracker,"Current settings of the sorting program")
+	#if(Blockdata["myid"] == Blockdata["main_node"]):  print_dict(Tracker,"Current settings of the sorting program")
 	return
 
 def import_data(log_main):
@@ -2069,12 +2069,12 @@ def Kmeans_minimum_group_size_relaxing_orien_groups(original_data, partids, para
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 		if best_score > Tracker["constants"]["stop_mgskmeans_percentage"]: 
-			msg ="MGSKmeans premature stop with changed particles ratio %f and image size %d"%(best_score,Tracker["nxinit"])
+			msg ="MGSKmeans stop with changed particles ratio %f and image size %d"%(best_score,Tracker["nxinit"])
 			premature  = 1
-		else: msg = "MGSKmeans mature stop with changed particles ratio %f within %d iterations and actually used stop percentage is %f"%(\
+		else: msg = "MGSKmeans stop with changed particles ratio %f within %d iterations and actually used stop percentage is %f"%(\
 		        best_score, total_iter, stopercnt)
-		print(line, msg)
-		log.add(msg)
+		#print(line, msg)
+		#log.add(msg)
 		Tracker["partition"], ali3d_params_list = parsing_sorting_params(partids, res_sort3d)
 		write_text_row(Tracker["partition"], os.path.join(Tracker["directory"],"list.txt"))
 		shutil.rmtree(os.path.join(Tracker["directory"], "tempdir"))
