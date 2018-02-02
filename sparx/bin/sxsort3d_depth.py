@@ -1402,11 +1402,6 @@ def import_data(log_main):
 	# Two typical sorting scenarios
 	# 1. import data and refinement parameters from meridien refinement;
 	# 2. given data stack and xform.projection/ctf in header(For simulated test data);
-	if(Blockdata["myid"] == Blockdata["main_node"]):
-		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-		msg = "importing data ... "
-		
-		log_main.add(msg)
 	import_from_relion_refinement = 0
 	import_from_sparx_refinement  = 0
 	import_from_data_stack		  = 0
@@ -5632,9 +5627,8 @@ def get_input_from_datastack(log_main):# Case three
 	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		msg =  "Import xform.projection paramters from data stack %s "%Tracker["constants"]["orgstack"]
-		
-		log_main.add(msg)
+		#msg =  "Import xform.projection paramters from data stack %s "%Tracker["constants"]["orgstack"]
+		#log_main.add(msg)
 		image = get_im(Tracker["constants"]["orgstack"])
 		Tracker["constants"]["nnxo"] = image.get_xsize()		
 		if( Tracker["nxinit"] > Tracker["constants"]["nnxo"]):
