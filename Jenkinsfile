@@ -44,8 +44,8 @@ def isRunCurrentStage(os_name) {
 
 def runCronJob() {
     sh 'bash ${HOME_DIR}/workspace/build-scripts-cron/cronjob.sh $STAGE_NAME $GIT_BRANCH_SHORT'
-    if(isBuildBinary())
-      sh "rsync -avzh --stats ${INSTALLERS_DIR}/eman2.${STAGE_NAME}.unstable.sh ${DEPLOY_DEST}"
+    if(isBuildBinary() && SLAVE_OS != 'win')
+      sh "rsync -avzh --stats ${INSTALLERS_DIR}/eman2.${STAGE_NAME}.sh ${DEPLOY_DEST}/eman2.${STAGE_NAME}.unstable.sh"
 }
 
 def setUploadFlag() {
