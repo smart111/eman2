@@ -921,7 +921,7 @@ def check_mpi_settings(log):
 	
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		msg_pipe  ='-----------------------------------------------------------------' 
-		msg       ='         >>>>>>>Check memory and mpi settings<<<<<               '
+		msg       ='         >>>>>>>   Check memory and mpi settings   <<<<<               '
 		msg_pipe1 ='++++++                                                     ++++++' 
 		log.add(msg_pipe)
 		log.add(msg)
@@ -1428,7 +1428,7 @@ def check_3dmask(log_main):
 	Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
 	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		print_dict(Tracker["constants"],"Permanent sorting settings from input options")
+		print_dict(Tracker["constants"],"Permanent settings of the program after update from the input options")
 		fout = open(os.path.join(Tracker["constants"]["masterdir"], "Tracker.json"),'w')
 		json.dump(Tracker, fout)
 		fout.close()
@@ -1538,7 +1538,7 @@ def print_shell_command(args_list, log_main):
 		for a in args_list: line +=(a + " ")
 		log_main.add(line)
 		log_main.add("Sort3d master directory: %s"%Tracker["constants"]["masterdir"])
-		print_dict(Tracker["constants"],"Permanent sorting settings after initialization")
+		print_dict(Tracker["constants"],"Permanent settings of the program after initialization")
 	mpi_barrier(MPI_COMM_WORLD)
 	return
 
@@ -4871,6 +4871,8 @@ def copy_refinement_tracker(tracker_refinement):
 	return
 	
 def print_dict(dict, theme):
+	print("                       ")
+	print("                       ")
 	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	print(line,theme)
 	spaces = "                    "
@@ -7632,7 +7634,7 @@ def main():
 			if Blockdata["myid"] == Blockdata["main_node"]:
 				line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 				msg_cross='==========================================' 
-				msg      = '           >>>DEPTH SORT3D<<<            '
+				msg      = '           >>>   DEPTH SORT3D   <<<            '
 				log_main.add(msg_cross)
 				log_main.add(msg)
 				log_main.add(msg_cross+'\n')
@@ -7782,7 +7784,6 @@ def main():
 		exit()
 			
 	elif initiate_from_data_stack_mode:
-		if Blockdata["myid"] == Blockdata["main_node"]: print("initiate_from_data_stack_mode")
 		parser.add_option("--nxinit",                            type   ="int",           default =-1,                     help="User provided image size")
 		parser.add_option("--output_dir",                        type   ="string",        default ='',					   help="name of the sort3d directory")
 		parser.add_option("--focus",                             type   ="string",        default ='',                     help="Focus 3D mask. File path of a binary 3D mask for focused clustering ")
