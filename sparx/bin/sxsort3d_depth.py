@@ -7519,12 +7519,9 @@ def main():
 				Tracker["current_generation"] = igen
 				work_dir = os.path.join( Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 				if Blockdata["myid"] == Blockdata["main_node"]:
-					line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-					msg_pipe =' -----------------------------------'
-					msg      =' =======   sort3d generation %d===== '%igen
-					log_main.add(msg_pipe)
-					log_main.add(msg)
-					log_main.add(msg_pipe)
+					log_main.add('-------------------------------------------------------------')
+					log_main.add('               SORT IN-DEPTH generation %d'%igen)
+					log_main.add('-------------------------------------------------------------')
 				mpi_barrier(MPI_COMM_WORLD)		
 		from mpi import mpi_finalize
 		mpi_finalize()
@@ -7691,12 +7688,9 @@ def main():
 			log_main = Logger(BaseLogger_Files())
 			log_main.prefix = Tracker["constants"]["masterdir"]+"/"
 			if Blockdata["myid"] == Blockdata["main_node"]:
-				line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-				msg_cross='==========================================' 
-				msg      = '           >>>DEPTH SORT3D=====<            '
-				log_main.add(msg_cross)
-				log_main.add(msg)
-				log_main.add(msg_cross+'\n')
+				log_main.add('==============================================================')
+				log_main.add('               SORT3D IN-DEPTH')
+				log_main.add('=============================================================='+'\n')
 			
 			if continue_from_interuption == 0:
 				sort3d_utils("import_data",   log_main)
@@ -7704,12 +7698,12 @@ def main():
 				sort3d_utils("check_mask3d",  log_main)
 				sort3d_utils("check_mpi_settings", log_main)
 				keepsorting = sort3d_utils("initialization", log_main)
-				sort3d_utils("dump_tracker", log_main = log_main)
+				sort3d_utils("dump_tracker", log_main)
 				if not keepsorting:
 					from mpi import mpi_finalize
 					mpi_finalize()
 					exit()
-			else: sort3d_utils("load_tracker", log_main = log_main) # a simple continuation, continue from the interrupted box
+			else: sort3d_utils("load_tracker", log_main) # a simple continuation, continue from the interrupted box
 		else: check_restart_from_given_depth_order(options.depth_order, options.restart_from_generation, \
 				 options.restart_from_depth_order, options.restart_from_nbox, log_main) # need a check !!!
 	
@@ -7734,12 +7728,9 @@ def main():
 			if Blockdata["myid"] == Blockdata["main_node"]:
 				keepchecking = check_sorting_state(work_dir, keepchecking, log_main)
 				time_generation_start = time.time()
-				line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-				msg_pipe ='--------------------------------------' 
-				msg      =' =======   sort3d generation %d   =======  '%igen
-				log_main.add(msg_pipe)
-				log_main.add(msg)
-				log_main.add(msg_pipe)
+				log_main.add('----------------------------------------------------------' )
+				log_main.add('              SORT3D IN-DEPTH   generation %d'%igen)
+				log_main.add('----------------------------------------------------------' )
 				
 			else: keepchecking = 0
 			keepchecking = bcast_number_to_all(keepchecking, Blockdata["main_node"], MPI_COMM_WORLD)
@@ -7759,12 +7750,9 @@ def main():
 					sort3d_utils("dump_tracker",  log_main = log_main, input_file1 = os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen))
 					compute_final_map(log_main, work_dir)
 					if Blockdata["myid"] == Blockdata["main_node"]:
-						line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-						msg_pipe ='-----------------------------------------' 
-						msg      ='  =======     sort3d depth finishes  ===== '
-						log_main.add(msg_pipe)
-						log_main.add(msg)
-						log_main.add(msg_pipe)
+						log_main.add('----------------------------------------------------------' )
+						log_main.add('                  SORT3D IN-DEPTH finished')
+						log_main.add('----------------------------------------------------------' )
 						mark_sorting_state(work_dir, True, log_main)
 						time_of_sorting_h,  time_of_sorting_m = get_time(time_final_box_start)
 						msg  = '{:32} {:^5} {:^10} {:^5} {:^10}'.format('sort3d reconstruction costs time', time_of_sorting_h, 'hours', time_of_sorting_m, 'minutes')
@@ -7773,7 +7761,6 @@ def main():
 					copy_results(log_main)# all nodes function
 				else:
 					if Blockdata["myid"] == Blockdata["main_node"]:
-						line     = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 						clusters = output_clusters(work_dir, output_list[0][0], output_list[0][1], options.not_include_unaccounted, log_main)
 						Tracker["generation"][igen] = len(clusters)
 					else: Tracker = 0
@@ -7782,8 +7769,8 @@ def main():
 			
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						time_of_sorting_h,  time_of_sorting_m = get_time(time_sorting_start)
-						line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-						msg  = '{:32} {:^5} {:^10} {:^5} {:^10}'.format('3-D sorting costs time', time_of_sorting_h, 'hours', time_of_sorting_m, 'minutes')
+
+						msg  = '{:32} {:^5} {:^10} {:^5} {:^10}'.format('Time of calculations of 3D sorting: %d hours and %d minutes '%(time_of_sorting_h, time_of_sorting_m)
 						log_main.add(msg)
 						time_rec3d_start = time.time()
 
@@ -7796,8 +7783,7 @@ def main():
 						
 						mark_sorting_state(work_dir, True, log_main)
 						time_of_generation_h,  time_of_generation_m = get_time(time_generation_start)
-						msg  = "generation%d costs time %d hours %d minutes"%(igen, time_of_generation_h, time_of_generation_m)
-						log_main.add(msg)
+						log_main.add("Time of calculations of generation%d: %d hours and %d minutes"%(igen, time_of_generation_h, time_of_generation_m))
 					
 					igen +=1
 					Tracker["current_generation"] = igen
@@ -7823,12 +7809,9 @@ def main():
 				Tracker["current_generation"] = igen
 				work_dir = os.path.join( Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 				if Blockdata["myid"] == Blockdata["main_node"]:
-					line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-					msg_pipe ='--------------------------------------' 
-					msg      =' =======   sort3d generation %d   =======  '%igen
-					log_main.add(msg_pipe)
-					log_main.add(msg)
-					log_main.add(msg_pipe)
+					log_main.add('-----------------------------------------------------------' )
+					log_main.add('                sort3d generation %d'%igen)
+					log_main.add('-----------------------------------------------------------' )
 				mpi_barrier(MPI_COMM_WORLD)
 		from mpi import mpi_finalize
 		mpi_finalize()
