@@ -1335,7 +1335,7 @@ def check_3dmask(log_main):
 		#
 		#log_main.add(msg)
 		if Tracker ["constants"]["focus3Dmask"]:
-			msg ="User provided focus mask file:  %s"%Tracker ["constants"]["focus3Dmask"]	
+			msg ="User provided focus mask file:  %s"%Tracker ["constants"]["focus3Dmask"]
 			log_main.add(msg)
 	Tracker["shrinkage"] = float(Tracker["nxinit"])/Tracker["constants"]["nnxo"]
 	#if(Blockdata["myid"] == Blockdata["main_node"]):  print_dict(Tracker,"Current settings of the sorting program")
