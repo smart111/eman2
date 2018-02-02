@@ -34,10 +34,6 @@ def isRelease() {
     return (GIT_BRANCH ==~ /.*\/release.*/) && (JOB_TYPE == "push")
 }
 
-def isCurrentRelease() {
-    return (GIT_BRANCH ==~ /origin\/release\/2.21/) && (JOB_TYPE == "push")
-}
-
 def isBuildBinary() {
     return true
 }
