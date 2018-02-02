@@ -135,6 +135,12 @@ pipeline {
         runCronJob('mac')
       }
     }
+    
+    stage('win') {
+      steps {
+        runCronJob('win')
+      }
+    }
   }
   
   post {
