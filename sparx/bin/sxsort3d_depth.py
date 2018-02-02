@@ -93,7 +93,7 @@ try:
 	_scale = {'kB': 1024.0, 'mB': 1024.0*1024.0,'KB': 1024.0, 'MB': 1024.0*1024.0}
 	is_unix_cluster = True
 except:
-	if Blockdata["myid"]==Blockdata["main_node"]:print("Not a unix machine")
+	if Blockdata["myid"]==Blockdata["main_node"]: print("Not a unix machine")
 	is_unix_cluster = False
 	
 def create_subgroup():
@@ -158,19 +158,13 @@ def check_restart_from_given_depth_order(current_depth_order,  restart_from_gene
 	log_main.prefix = Tracker["constants"]["masterdir"]+"/"
 	
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		if not os.path.exists(Tracker["constants"]["masterdir"]):
-			print("masterdir does not exist")
-			keepgoing = 0
-		
+		if not os.path.exists(Tracker["constants"]["masterdir"]): keepgoing = 0
 	keepgoing = bcast_number_to_all(keepgoing, Blockdata["main_node"], MPI_COMM_WORLD)
 	if keepgoing == 0:
 		 ERROR("masterdir does not exist", "restart from depth order", 1, Blockdata["myid"])
 	 
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		if not os.path.exists(os.path.join(Tracker["constants"]["masterdir"]), "Tracker.json"):
-			print("Tracker.json in masterdir does not exist")
-			keepgoing = 0
-		
+		if not os.path.exists(os.path.join(Tracker["constants"]["masterdir"]), "Tracker.json"): keepgoing = 0
 	keepgoing = bcast_number_to_all(keepgoing, Blockdata["main_node"], MPI_COMM_WORLD)
 	if keepgoing == 0:
 		 ERROR("Tracker does not exist", "restart from depth order", 1, Blockdata["myid"])
@@ -178,7 +172,7 @@ def check_restart_from_given_depth_order(current_depth_order,  restart_from_gene
 	sort3d_utils("load_tracker", log_main =  log_main)
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		keepchecking = 1
-		msg = "previous depth order: %d  current depth order: %d"%(Tracker["constants"]["depth_order"], current_depth_order)
+		msg = "Previous depth order: %d  current depth order: %d"%(Tracker["constants"]["depth_order"], current_depth_order)
 		log_main.add(msg)
 		
 		if current_depth_order >Tracker["constants"]["depth_order"]:
@@ -205,8 +199,7 @@ def check_restart_from_given_depth_order(current_depth_order,  restart_from_gene
 								checking_box = check_sorting_state(depth_dir, checking_box, log_file)
 								if checking_box == 0: shutil.rmtree(box_dir)
 				else:
-					msg = "%d layer has not been created"%idepth
-					print(msg)
+					msg = " %d layer was created"%idepth
 					log_main.add(msg)
 					break
 			else: continue
@@ -219,23 +212,16 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 	global Tracker, Blockdata
 	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		msg_pipe = '----------------------------------'
-		msg      = '  >>>>> depth_clustering <<<<<<<  '
-		print(line,msg_pipe)
-		print(line, msg)
-		print(line,msg_pipe)
-		log_main.add(msg_pipe)
-		log_main.add(msg)
-		log_main.add(msg_pipe)
+		log_main.add('  =======   depth_clustering    =======  ')
 	keepchecking   = 1
 	init_layer_dir = os.path.join(work_dir, "layer0")
 	
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
+		#line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 		if not os.path.exists(init_layer_dir): os.mkdir(init_layer_dir)
 		#msg = "depth_clustering starts"
 		#log_main.add(msg)
-		#print(line, msg)
+		#
 	
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		partition_per_box_per_layer_list = []
@@ -254,8 +240,7 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 		Tracker["depth"] = depth
 		if(Blockdata["myid"] == Blockdata["main_node"]):
 			line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-			msg = 'depth layer %d contains %d boxes, and each box has two MGSKmeans runs \n'%(depth,n_cluster_boxes) 
-			print(line, msg)
+			msg = 'Depth layer %d contains %d boxes, each box has two MGSKmeans runs \n'%(depth,n_cluster_boxes) 
 			log_main.add(msg)
 			if not os.path.exists(depth_dir): 
 				os.mkdir(depth_dir)
@@ -286,7 +271,6 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 						if checkingbox == 0:# found not finished box
 							line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 							msg ="box %d is not finished. Remove it and recompute..."%nbox
-							print(line, msg)
 							log_main.add(msg)
 							shutil.rmtree(nbox_dir)
 							os.mkdir(nbox_dir)
@@ -322,10 +306,9 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 			Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
 			if(Blockdata["myid"] == Blockdata["main_node"]): mark_sorting_state(depth_dir, True, log_main)
 			if bad_clustering ==1:
-				msg = "No cluster is found and sorting stops"
+				msg = "No clusters were found and sorting terminates"
 				line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 				if(Blockdata["myid"] == Blockdata["main_node"]):
-					print(line, msg)
 					log_main.add(msg)
 				from mpi import mpi_finalize
 				mpi_finalize()
@@ -335,18 +318,15 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 			if(Blockdata["myid"] == Blockdata["main_node"]):
 				line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 				msg  = "depth layer %d is done  "%depth
-				print(line, msg)
 				log_main.add(msg)
 		time_of_sorting_h,  time_of_sorting_m = get_time(time_layer_start)
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 			msg = "layer %d costs time %d hours %d minutes"%(depth, time_of_sorting_h, time_of_sorting_m)
 			log_main.add(msg +'\n')
-			print(msg +'\n')
 			
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		msg = " depth_clustering finishes \n"
-		print(msg)
 		log_main.add(msg)
 	return partition_per_box_per_layer_list
 
@@ -362,8 +342,7 @@ def depth_box_initialization(box_dir, input_list1, input_list2, log_file):
 		if number_of_groups< total_stack//img_per_grp: number_of_groups = total_stack//img_per_grp
 		minimum_grp_size = Tracker["constants"]["minimum_grp_size"]
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			msg = "intialization found %d  groups, the total possible groups  %d"%(number_of_groups, total_stack//img_per_grp)
-			print(msg)
+			msg = "Number of grous found in initialization: %d, the total possible groups: %d"%(number_of_groups, total_stack//img_per_grp)
 			log_file.add(msg)
 			write_text_row(input_list1, os.path.join(box_dir, "previous_NACC.txt"))
 			write_text_file(input_list2, os.path.join(box_dir, "previous_NUACC.txt"))
@@ -432,7 +411,6 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, minimum_grp_size, list_o
 	except: freq_cutoff_dict = {}
 	
 	msg ='+++ Save iteration results: group size smaller than %d will be set as an empty group +++'%minimum_grp_size
-	print(line, msg)
 	log_main.add(msg)
 	
 	for index_of_any in xrange(len(list_of_stable)):
@@ -443,7 +421,6 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, minimum_grp_size, list_o
 			new_list.append(any)
 			msg = 'cluster %d  with size %d is saved '%(index_of_any, len(any))
 			log_main.add(msg)
-			print(line, msg)
 			write_text_file(any, os.path.join(box_dir, "Cluster_%03d.txt"%ncluster))
 			freq_cutoff_dict["Cluster_%03d.txt"%ncluster] = Tracker["freq_fsc143_cutoff"]
 			ncluster += 1
@@ -452,7 +429,6 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, minimum_grp_size, list_o
 		else:
 			msg ='group %d with size %d is rejected because of size smaller than minimum_grp_size %d and elements are sent back into unaccounted ones'%(index_of_any, len(any), minimum_grp_size)
 			log_main.add(msg)
-			print(line, msg)
 			for element in any: unaccounted_list.append(element)
 	unaccounted_list.sort()
 	NUACC = len(unaccounted_list)
@@ -460,7 +436,6 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, minimum_grp_size, list_o
 	json.dump(freq_cutoff_dict, fout)
 	fout.close()
 	msg = '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
-	print(line, msg)
 	log_main.add(msg)
 	return ncluster, NACC, NUACC, unaccounted_list, nc
 	
@@ -536,16 +511,15 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 	identified_clusters = []
 	msg = '++++++++++++++++++++++output cluster text file++++++++++++++++++++++++++++++++++'
 	log_main.add(msg)
-	print(line,msg)
 	msg = 'write the determined clusters as Cluster*.txt on each generation directory'
 	log_main.add(msg)
-	print(line, msg)
+	
 	for ic in xrange(len(nclasses)):
 		if len(nclasses[ic])>= Tracker["constants"]["minimum_grp_size"]:
 			write_text_file(nclasses[ic], os.path.join(output_dir,"Cluster_%03d.txt"%nc))
 			msg = 'save cluster with size %d  to %s '%(len(nclasses[ic]), os.path.join(output_dir,"Cluster_%03d.txt"%nc))
 			log_main.add(msg)
-			print(line, msg)
+			
 			nc +=1
 			identified_clusters.append(nclasses[ic])
 		else: unaccounted_list +=nclasses[ic]
@@ -555,7 +529,7 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 		write_text_file(unaccounted_list, os.path.join(output_dir, "Unaccounted.txt"))
 		msg = 'save unaccounted with size %d  to %s '%(len(unaccounted_list),  os.path.join(output_dir, "Unaccounted.txt"))
 		log_main.add(msg)
-		print(line, msg)
+		
 	nclasses = copy.deepcopy(identified_clusters)
 	del identified_clusters
 	
@@ -665,7 +639,7 @@ def mark_sorting_state(current_dir, sorting_done, log_file):
 	#if sorting_done: msg = "directory %s is marked as done"%current_dir
 	#else:    msg = "directory %s is marked as not finished"%current_dir
 	#log_file.add(msg)
-	#print(line, msg)
+	#
 	return
 
 def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file, params, previous_params, nbox, log_main):
@@ -737,7 +711,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 			msg  = "before run %3d current NACC: %8d  NUACC: %8d K: %3d  total_stack: %8d identified clusters: %3d"%\
 			   (nruns, NACC, NUACC, current_number_of_groups, total_stack, ncluster)
 			log_main.add(msg)
-			print(line, msg)
+			
 			
 		#### computation starts! <<<<<<---prepare data
 		original_data, norm_per_particle  = read_data_for_sorting(iter_id_init_file, params, previous_params)
@@ -779,7 +753,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 				if Blockdata["myid"] == Blockdata["main_node"]:
 					line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 					msg =  "within_box_indep_run_iter %d"%indep_run_iter
-					print(line, msg)
+					
 					log_main.add(msg)
 					if not os.path.exists(Tracker["directory"]):os.mkdir(Tracker["directory"])
 					if not os.path.exists(os.path.join(Tracker["directory"], "tempdir")): os.mkdir(os.path.join(Tracker["directory"], "tempdir"))
@@ -837,13 +811,13 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 								os.path.join(iter_dir, "random_assignment_%03d.txt"%indep))				   
 						msg ="+++++++++++++ move to iter %d... +++++++++++++++"%iter
 						log_main.add(msg)
-						print(line, msg)
+						
 			else:
 				if Blockdata["myid"] == Blockdata["main_node"]:
 					line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 					msg =" internal loop converged "
 					log_main.add(msg)
-					print(line, msg)
+					
 			mpi_barrier(MPI_COMM_WORLD)
 			
 		if Blockdata["myid"] == Blockdata["main_node"]:
@@ -924,7 +898,7 @@ def check_mpi_settings(log):
 		log.add(msg_pipe)
 		msg_pipe  ='-----------------------------------------------------------------' 
 		log.add(msg_pipe)
-		msg       ='         >>>>>>>   Number of input images and memory information   <<<<<               '
+		msg       ='         =======      Number of input images and memory information   <<<<<               '
 		msg_pipe1 ='++++++                                                     ++++++' 
 		log.add(msg)
 		log.add(msg_pipe1)
@@ -1145,7 +1119,7 @@ def do_one_way_anova_scipy(clusters, value_list, name_of_variable="variable", su
 	NMAX = 30
 	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	msg_pipe = '-------------------------------------------' 
-	msg      = '   >>>>>> do_one_way_anova_scipy <<<<<<<   '
+	msg      = '   >>>>>> do_one_way_anova_scipy    =======   '
 	print(line, msg_pipe)
 	print(msg)
 	print(line, msg_pipe)
@@ -1424,11 +1398,11 @@ def check_3dmask(log_main):
 		fout.close()
 		#msg = "orgstack: %s  image comparison method: %s "%(Tracker["constants"]["orgstack"], \
 		#   Tracker["constants"]["comparison_method"])
-		#print(line, msg)
+		#
 		#log_main.add(msg)
 		if Tracker ["constants"]["focus3Dmask"]:
 			msg ="User provided focus mask file:  %s"%Tracker ["constants"]["focus3Dmask"]
-			print(line, msg)
+			
 			log_main.add(msg)
 	Tracker["shrinkage"] = float(Tracker["nxinit"])/Tracker["constants"]["nnxo"]
 	#if(Blockdata["myid"] == Blockdata["main_node"]):  print_dict(Tracker,"Current settings of the sorting program")
@@ -1442,7 +1416,7 @@ def import_data(log_main):
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 		msg = "importing data ... "
-		print(line, msg)
+		
 		log_main.add(msg)
 	import_from_relion_refinement = 0
 	import_from_sparx_refinement  = 0
@@ -1543,7 +1517,7 @@ def sort3d_utils(to_be_decided, log_main = None, input_file1 = None):
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 		#msg = "sort3d_step  %d  "%Tracker["sort3d_counter"]+ to_be_decided
-		#print(line, msg)
+		#
 		#if log_main != None: log_main.add(msg)
 		
 	if to_be_decided == "initialization":
@@ -1724,7 +1698,7 @@ def Kmeans_minimum_group_size_orien_groups(original_data, partids, params, param
 		   (Tracker["total_stack"], Tracker["number_of_groups"], Tracker["nxinit"],  Tracker["constants"]["CTF"], \
 		     Tracker["constants"]["symmetry"], stopercnt, Tracker["mask3D"], Tracker["focus3D"], Tracker["constants"]["comparison_method"], minimum_group_size, len(ptls_in_orien_groups))
 		log.add(msg)
-		print(line, msg)
+		
 		
 	proc_list = [[None, None] for iproc in xrange(Blockdata["nproc"])]
 	for iproc in xrange(Blockdata["nproc"]):
@@ -1864,7 +1838,7 @@ def Kmeans_minimum_group_size_orien_groups(original_data, partids, params, param
 			premature  = 1
 		else: msg = "MGSKmeans stops with changed particles ratio %f within %d iterations that is less than user provieded stop percentage %f"%(\
 		        best_score, total_iter, stopercnt)
-		print(line, msg)
+		
 		log.add(msg)
 		partition, ali3d_params_list = parsing_sorting_params(partids, res_sort3d)
 		write_text_row(partition, os.path.join(Tracker["directory"],"list.txt"))
@@ -1938,7 +1912,7 @@ def Kmeans_minimum_group_size_relaxing_orien_groups(original_data, partids, para
 		   (Tracker["total_stack"], Tracker["number_of_groups"], Tracker["nxinit"],  Tracker["constants"]["CTF"], \
 		     Tracker["constants"]["symmetry"], stopercnt, Tracker["mask3D"], Tracker["focus3D"], Tracker["constants"]["comparison_method"], minimum_group_size, len(ptls_in_orien_groups))
 		log.add(msg)
-		print(line, msg)
+		
 		print(" input value", Tracker["constants"]["minimum_grp_size"])
 	###
 	proc_list = [[None, None] for iproc in xrange(Blockdata["nproc"])]
@@ -2077,7 +2051,7 @@ def Kmeans_minimum_group_size_relaxing_orien_groups(original_data, partids, para
 		Tracker["partition"], ali3d_params_list = parsing_sorting_params(partids, res_sort3d)
 		write_text_row(Tracker["partition"], os.path.join(Tracker["directory"],"list.txt"))
 		shutil.rmtree(os.path.join(Tracker["directory"], "tempdir"))
-	else:Tracker["partition"] = 0
+	else:  Tracker["partition"] = 0
 	Tracker["partition"] = wrap_mpi_bcast(Tracker["partition"], Blockdata["main_node"])
 	premature  = wrap_mpi_bcast(premature, Blockdata["main_node"])
 	if(Blockdata["myid"] == Blockdata["last_node"]):
@@ -3990,21 +3964,21 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	import json
 	line  = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	msg_pipe  = '----------------------------------------------------------------------------' 
-	msg       = ' >>>>>>> do_boxes_two_way_comparison_new  between nbox %d and nbox %d<<<<<< '%(nbox, nbox+1)
+	msg       = ' =======    do_boxes_two_way_comparison_new  between nbox %d and nbox %d<<<<<< '%(nbox, nbox+1)
 	msg_pipe1 = '+++++++++++++                                                    ++++++++++++' 
 	stop_generation  = 0
 	print(line, msg_pipe)
-	print(line, msg)
+	
 	print(line, msg_pipe1)
 	log_main.add(msg_pipe)
 	log_main.add(msg)
 	log_main.add(msg_pipe1)
 	msg = '========================= between box two way comparison gen: %d layer: %d nbox:  %d nbox: %d ==========================='%(Tracker["current_generation"], \
 	      Tracker["depth"], nbox, nbox+1)
-	print(line, msg)
+	
 	log_main.add(msg)
 	msg = 'two box runs to be compared are entirely independent'
-	print(line, msg)
+	
 	log_main.add(msg)
 	msg = '**************** Simulation of random reproducibility estimation ******************* '
 	log_main.add(msg)
@@ -4088,11 +4062,11 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 		msg1 +='{:8d} '.format(im)
 	print(line, msg1)
 	log_main.add(msg1)
-	print(line, msg)
+	
 	log_main.add(msg)
 	msg = 'P1 '
 	for im in xrange(len(ptp2)): msg +='{:8d} '.format(len(ptp2[im]))
-	print(line, msg)
+	
 	log_main.add(msg)
 	
 	try: assert(len(core1) ==len(core2))
@@ -4128,12 +4102,12 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 		msg = 'Cluster intersections of P0 and P1 form new clusters and are checked by user provided minimum_grp_size %d. '%Tracker["constants"]["minimum_grp_size"]
 	else:
 		msg = 'Cluster intersections of P0 and P1 form new clusters and are checked by user provided minimum_grp_size %d. Rejected clusters are dismissed'%Tracker["constants"]["minimum_grp_size"]
-	print(line, msg)
+	
 	log_main.add(msg)
 	###
 	
 	msg = '{:^10} {:^5} {:^5} {:^10} {:^10} {:^15} {:^15}'.format('New GID', 'P0 ID',  'P1 ID', 'GSIZE', 'status', 'R ratio of P0', 'R ratio of P1')
-	print(line, msg)
+	
 	log_main.add(msg)
 	
 	for index_of_any in xrange(len(list_stable)):
@@ -4177,7 +4151,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			b = set(accounted_list)
 			unaccounted_list = sorted(list(a.difference(b)))
 			msg = '========================================================================================================================= \n'
-			print(line, msg)
+			
 			log_main.add(msg)
 			return minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation
 		else:
@@ -4185,9 +4159,9 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			msg = "No cluster is larger than user provided minimum_grp_size %d. This could be due to 1. Your data might be quite uniform; 2. Your minimum_grp_size is too large; 3. K is too large;"\
 			                   %Tracker["constants"]["minimum_grp_size"]
 			log_main.add(msg)
-			print(line, msg)
+			
 			msg = '========================================================================================================================= \n'
-			print(line, msg)
+			
 			log_main.add(msg)
 			return minimum_group_size, maximum_group_size, [ ], full_list, bad_clustering, stop_generation
 	elif nclass == 1: # Force to stop this generation, and output the cluster; do not do any other box comparison
@@ -4197,7 +4171,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 		b = set(accounted_list)
 		unaccounted_list = sorted(list(a.difference(b)))
 		msg ='Only one cluster is found. Output it and stop this generation.'
-		print(line, msg)
+		
 		log_main.add(msg)
 		box1_dir =  os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%Tracker["current_generation"], "layer%d"%Tracker["depth"], "nbox%d"%nbox)
 		box2_dir =  os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%Tracker["current_generation"], "layer%d"%Tracker["depth"], "nbox%d"%(nbox+1))
@@ -4226,7 +4200,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 		json.dump(freq_cutoff_dict3, fout)
 		fout.close()
 		msg = '========================================================================================================================= \n'
-		print(line, msg)
+		
 		log_main.add(msg)
 		return minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation
 	else:
@@ -4246,7 +4220,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			b = set(accounted_list)
 			unaccounted_list = sorted(list(a.difference(b)))
 			msg ='Not all non-unaccounted groups pass the size checking'
-		print(line, msg)
+		
 		log_main.add(msg)
 		mmsg =" minimum group size: %d maximum group size: %d NACC: %d NUACC: %d "%(minimum_group_size, maximum_group_size, len(accounted_list), len(unaccounted_list))
 		tmsg +=mmsg
@@ -4281,11 +4255,11 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			json.dump(freq_cutoff_dict3, fout)
 			fout.close()
 			msg = '========================================================================================================================= \n'
-			print(line, msg)
+			
 			log_main.add(msg)
 		else:
 			msg = '========================================================================================================================= \n'
-			print(line, msg)
+			
 			log_main.add(msg)
 		return minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation
 		
@@ -4321,21 +4295,14 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 	import numpy as np
 	## for single node only
 	line  = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-	msg_pipe  ='--------------------------------------------------'
-	msg       =' >>>>>>> do_withinbox_two_way_comparison <<<<<<<< '
-	msg_pipe1 ='-----++++++                          +++++--------'
-	print(line, msg_pipe)
-	print(line, msg)
-	print(line, msg_pipe1 )
-	log_main.add(msg_pipe)
-	log_main.add(msg)
-	log_main.add(msg_pipe1)
+	log_main.add(' ')
+	log_main.add('--------------------------------------------------')
+	log_main.add(' =======    do_withinbox_two_way_comparison    =======< ')
+	log_main.add(' ')
 	msg = '==========   withinboxrun ID  gen: %d layer: %d nbox: %d nrun: %d niter: %d ========================'%(Tracker["current_generation"], \
 	      Tracker["depth"], nbox, nrun, niter)
-	print(line, msg)
 	log_main.add(msg)
-	msg = 'two runs to be compared inside the box are only independent in the first iteration'
-	print(line, msg)
+	msg = 'The two runs that are compared inside the box are only independent in the first iteration'
 	log_main.add(msg)
 	smsg =' withinboxrun ID: generation %d layer %d nbox %d nrun %d niter %d freq_cutoff %f '%(Tracker["current_generation"], \
 	      Tracker["depth"], nbox, nrun, niter, round(Tracker["freq_fsc143_cutoff"], 4))
@@ -4353,17 +4320,14 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 	for im in xrange(len(ptp1)):
 		msg +='{:8d} '.format(len(ptp1[im]))
 		msg1 +='{:8d} '.format(im)
-	print(line, msg1)
 	log_main.add(msg1)
-	print(line, msg)
 	log_main.add(msg)
 	msg = 'P1 '
 	for im in xrange(len(ptp2)): msg +='{:8d} '.format(len(ptp2[im]))
-	print(line, msg)
 	log_main.add(msg)
     ####
 	try: assert(len(core1) ==len(core2))
-	except: ERROR("two partitions have non-equal length", "do_withinbox_two_way_comparison", 1, 0)
+	except: ERROR("The two partitions have different lengths", "do_withinbox_two_way_comparison", 1, 0)
 	full_list  = []
 	for a in core1: full_list.append(a[1])
 	full_list.sort()
@@ -4381,12 +4345,10 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 	score_list = [ ]
 	nclass     = 0
 	msg = 'If the overlapped elements between two clusters is less than random group size, the intersection will not form a new cluster.'
-	print(line, msg)
 	log_main.add(msg)
-	msg = '{:^12} {:^5} {:^5} {:^10} {:^10} {:^20} {:^15} {:^15} {:^15}'.format('New group id', '   ID',  '   ID', 'group size', 'random group size', 'status', 'reproducibility1', 'reproducibility2', 'reproducibility')
-	print(line, msg)
+	msg = '{:^12} {:^5} {:^5} {:^10} {:^10} {:^20} {:^15} {:^15} {:^15}'.format('New group ID', '   ID',  '   ID', 'group size', 'random group size', 'status', 'reproducibility1', 'reproducibility2', 'reproducibility')
 	log_main.add(msg)
-	
+
 	current_MGR = get_MGR_from_two_way_comparison(newindeces, ptp1, ptp2, total_data)
 	stable_clusters   = []
 	selected_clusters = []
@@ -4408,12 +4370,10 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 			     int(newindeces[index_of_any][1]), len(any), current_MGR[index_of_any],'accepted', round(score1,3), round(score2,3), round(score3,3))
 			log_main.add(msg)
 			selected_clusters.append(any)
-			print(msg)
 		else:
 			msg ='{:^10d} {:^5d} {:^5d} {:^10d} {:^10d} {:^10} {:^15.3f} {:^15.3f} {:^15.3f}'.format(index_of_any, int(newindeces[index_of_any][0]), \
 			     int(newindeces[index_of_any][1]), len(any), current_MGR[index_of_any], 'rejected', round(score1,3), round(score2,3), round(score3,3))
 			log_main.add(msg)
-			print(msg)
 			
 	accounted_list, new_index = merge_classes_into_partition_list(selected_clusters)
 	a = set(full_list)
@@ -4427,7 +4387,6 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 	smsg += min_size_msg
 	log_main.add(smsg)
 	msg = '========================================================================================================================='
-	print(line, msg+'\n')
 	log_main.add(msg+'\n')
 	return minimum_group_size, maximum_group_size, selected_clusters, unaccounted_list, ratio_accounted, len(list_stable)
 
@@ -4791,7 +4750,7 @@ def get_angle_step_from_number_of_orien_groups(orien_groups):
 	del sym_class
 	return angle_step
 	
-#####<<<<<<<<<<<--------------orientation groups	
+#####   =======<<<<--------------orientation groups	
 def compare_two_iterations(assignment1, assignment2, number_of_groups):
 	# compare two assignments during clustering, either iteratively or independently
 	import numpy as np
@@ -4882,7 +4841,7 @@ def print_dict(dict, theme):
 #   Therefore, the list of Tracker state represents the history of process.
 #
 #   This can be used to restart process from an arbitrary iteration.
-##<<<-----------rec3d for sorting------->>>>>>>>>
+##<<<-----------rec3d for sorting-------=======   >>
 def stepone(tvol, tweight):
 	global Tracker, Blockdata
 	tvol.set_attr("is_complex",1)
@@ -5434,11 +5393,11 @@ def get_input_from_sparx_ref3d(log_main):# case one
 	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		msg = "Import results from SPARX 3-D refinement"
-		print(line, msg)
+		
 		log_main.add(msg)
 		if Tracker["constants"]["niter_for_sorting"] == -1: # take the best solution to do sorting
 			msg = "Search in the directory %s ......"%Tracker["constants"]["refinement_dir"]
-			print(line, msg)
+			
 			log_main.add(msg)
 			niter_refinement = 0
 			while os.path.exists(os.path.join(Tracker["constants"]["refinement_dir"], "main%03d"%niter_refinement)) and os.path.exists(os.path.join(Tracker["constants"]["refinement_dir"],"main%03d"%niter_refinement, "Tracker_%03d.json"%niter_refinement)):
@@ -5453,7 +5412,7 @@ def get_input_from_sparx_ref3d(log_main):# case one
 		else:
 			msg = "Try to load json file ...%s"%os.path.join(Tracker["constants"]["refinement_dir"],"main%03d"%Tracker["constants"]["niter_for_sorting"],\
 			 "Tracker_%03d.json"%Tracker["constants"]["niter_for_sorting"])
-			print(line, msg)
+			
 			log_main.add(msg)
 			try:
 				fout = open(os.path.join(Tracker["constants"]["refinement_dir"],"main%03d"%Tracker["constants"]["niter_for_sorting"], \
@@ -5480,7 +5439,7 @@ def get_input_from_sparx_ref3d(log_main):# case one
 		else: refinement_stack = os.path.join(refinement_dir_path, Tracker_refinement["constants"]["stack"])
 		if not Tracker["constants"]["orgstack"]: # Use refinement stack if instack is not provided
 			msg = "refinement stack  %s"%refinement_stack
-			print(line, msg)
+			
 			log_main.add(msg)
 			Tracker["constants"]["orgstack"] = refinement_stack #Tracker_refinement["constants"]["stack"]
 			print(line, "The refinement image stack is %s"%Tracker_refinement["constants"]["stack"])
@@ -5491,7 +5450,7 @@ def get_input_from_sparx_ref3d(log_main):# case one
 		else:
 			if Tracker["constants"]["orgstack"] == Tracker_refinement["constants"]["stack"]: # instack and refinement data stack is the same
 				msg = "The sorting instack is the same refinement instack: %s"%Tracker_refinement["constants"]["stack"]
-				print(line, msg)
+				
 				log_main.add(msg)
 				if not os.path.exists(Tracker["constants"]["orgstack"]): import_from_sparx_refinement = 0
 			else: # complicated cases
@@ -5503,15 +5462,15 @@ def get_input_from_sparx_ref3d(log_main):# case one
 						Tracker["constants"]["orgstack"] = "bdb:" + Tracker["constants"]["refinement_dir"]+"/../"+old_stack[4:]
 					else: Tracker["constants"]["orgstack"] = os.path.join(option_old_refinement_dir, "../", old_stack)
 					msg = "Use refinement orgstack "
-					print(line, msg)
+					
 					log_main.add(msg)
 				else:
 					msg = "Use orgstack provided by options"
-					print(line, msg)
+					
 					log_main.add(msg)
 		if import_from_sparx_refinement:
 			msg =  "data stack for sorting is %s"%Tracker["constants"]["orgstack"]
-			print(line, msg)
+			
 			log_main.add(msg)
 		total_stack   = EMUtil.get_image_count(Tracker["constants"]["orgstack"])
 	else: total_stack = 0
@@ -5710,7 +5669,7 @@ def get_input_from_datastack(log_main):# Case three
 	
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		msg =  "Import xform.projection paramters from data stack %s "%Tracker["constants"]["orgstack"]
-		print(line, msg)
+		
 		log_main.add(msg)
 		image = get_im(Tracker["constants"]["orgstack"])
 		Tracker["constants"]["nnxo"] = image.get_xsize()		
@@ -7056,12 +7015,12 @@ def do_final_maps(number_of_groups, minimum_size, selected_iter, refinement_dir,
 	line    = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		msg_pipe = '-------------------------------------------------------'
-		msg      = "------------>>>>>>>Check memory <<<<-------------------"
+		msg      = "------------=======   Check memory <<<<-------------------"
 		log_main.add(msg_pipe)
 		log_main.add(msg)
 		log_main.add(msg_pipe)
 		print(line, msg_pipe)
-		print(line, msg)
+		
 		print(line, msg_pipe)
 	basic_memory_per_cpu    = 1.0
 	total_data_in_mem       = Tracker["constants"]["nnxo"]*Tracker["constants"]["nnxo"]*Tracker["constants"]["total_stack"]*4./1.e9
@@ -7070,7 +7029,7 @@ def do_final_maps(number_of_groups, minimum_size, selected_iter, refinement_dir,
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		msg = "total mem per node: %5.1f G"%Tracker["constants"]["memory_per_node"]
 		log_main.add(msg)
-		print(line, msg)
+		
 	nproc_do_final_per_node = int(nproc_do_final_per_node)
 	if nproc_do_final_per_node > Blockdata["nproc"] //Blockdata["no_of_groups"]:
 		nproc_do_final_per_node = Blockdata["nproc"] //Blockdata["no_of_groups"]
@@ -7080,7 +7039,7 @@ def do_final_maps(number_of_groups, minimum_size, selected_iter, refinement_dir,
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		msg = "CPUs to be used per node: %d"%ncpu_per_node
 		log_main.add(msg)
-		print(line, msg)
+		
 	Blockdata["ncpuspernode"] = ncpu_per_node
 	Blockdata["nsubset"]      = Blockdata["ncpuspernode"]*Blockdata["no_of_groups"]
 	create_subgroup()
@@ -7177,7 +7136,7 @@ def compute_final_map(log_file, work_dir):
 		msg_pipe = "-----------------------------------------"
 		msg      = "   >>> Summaries of the results <<<      "
 		print(line, msg_pipe)
-		print(line, msg)
+		
 		print(line, msg_pipe)
 		log_file.add(msg_pipe)
 		log_file.add(msg)
@@ -7295,7 +7254,7 @@ def copy_results(log_file):
 		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 		msg  ="copy clusters and the associated maps to main directory......"
 		log_file.add(msg)
-		print(line, msg)
+		
 		nclusters = 0
 		msg       ="cluster ID    size"
 		log_file.add(msg)
@@ -7321,12 +7280,12 @@ def copy_results(log_file):
 					NACC +=len(cluster)
 				except: msg ="%s and associated files are not found "%cluster_file
 				log_file.add(msg)
-				print(line, msg)
+				
 		NUACC = Tracker["constants"]["total_stack"] - NACC
 		do_analysis_on_identified_clusters(clusters, log_file)
 		msg = "sort3d finishes"
 		log_file.add(msg)
-		print(line, msg)
+		
 		fout = open(os.path.join(Tracker["constants"]["masterdir"], "Tracker.json"), 'w')
 		json.dump(Tracker, fout)
 		fout.close()
@@ -7395,7 +7354,7 @@ def print_matching_pairs(pair_list, log_file):
 	line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	msg ='P0 (GID as row index) matches P1 (GID as column index)'
 	log_file.add(msg)
-	print(line, msg)
+	
 	msg ='   '
 	for i in xrange(len(pair_list)):
 		msg += '{:^5d}'.format(i)
@@ -7625,7 +7584,7 @@ def main():
 				log_main.add(msg)
 				log_main.add(msg_cross+'\n')
 				print(line, msg_cross)
-				print(line, msg)
+				
 				print(line, msg_cross+'\n')
 				
 			if continue_from_interuption == 0: 
@@ -7656,9 +7615,9 @@ def main():
 				os.mkdir(work_dir)
 				line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 				msg_pipe =' -----------------------------------'
-				msg      =' >>>>>>>sort3d generation %d<<<<< '%igen
+				msg      =' =======   sort3d generation %d<<<<< '%igen
 				print(line, msg_pipe)
-				print(line, msg)
+				
 				print(line, msg_pipe)
 				log_main.add(msg_pipe)
 				log_main.add(msg)
@@ -7689,9 +7648,9 @@ def main():
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 						msg_pipe ='----------------------------------------'
-						msg      =" >>>>>>>  sort3d depth finishes  <<<<< "
+						msg      =" =======     sort3d depth finishes  <<<<< "
 						print(line, msg_pipe)
-						print(line, msg)
+						
 						print(line, msg_pipe)
 						log_main.add(msg_pipe)
 						log_main.add(msg)
@@ -7700,7 +7659,7 @@ def main():
 						time_of_sorting_h,  time_of_sorting_m = get_time(time_final_box_start)
 						msg  = "sort3d reconstruction costs time %d hours %d minutes"%(time_of_sorting_h, time_of_sorting_m)
 						log_main.add(msg)
-						print(line, msg)
+						
 					copy_results(log_main)# all nodes function
 				else:
 					if Blockdata["myid"] == Blockdata["main_node"]:
@@ -7716,7 +7675,7 @@ def main():
 						line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 						msg  = "3-D sorting costs time %d hours %d minutes"%(time_of_sorting_h, time_of_sorting_m)
 						log_main.add(msg)
-						print(line, msg)
+						
 						time_rec3d_start = time.time()
 						
 					compute_final_map(log_main, work_dir)
@@ -7725,21 +7684,21 @@ def main():
 						time_of_rec3d_h,  time_of_rec3d_m = get_time(time_rec3d_start)
 						msg = "3-D reconstruction costs time %d hours %d minutes"%(time_of_rec3d_h, time_of_rec3d_m)
 						log_main.add(msg)
-						print(line, msg)
+						
 						mark_sorting_state(work_dir, True, log_main)
 						time_of_generation_h,  time_of_generation_m = get_time(time_generation_start)
 						msg  = "generation%d costs time %d hours %d minutes"%(igen, time_of_generation_h, time_of_generation_m)
 						log_main.add(msg)
-						print(line, msg)
+						
 					igen    +=1
 					Tracker["current_generation"] = igen
 					work_dir = os.path.join( Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 						msg_pipe =' -----------------------------------'
-						msg      =' >>>>>>>sort3d generation %d<<<<< '%igen
+						msg      =' =======   sort3d generation %d<<<<< '%igen
 						print(line, msg_pipe)
-						print(line, msg)
+						
 						print(line, msg_pipe)
 						log_main.add(msg_pipe)
 						log_main.add(msg)
@@ -7757,9 +7716,9 @@ def main():
 				if Blockdata["myid"] == Blockdata["main_node"]:
 					line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 					msg_pipe =' -----------------------------------'
-					msg      =' >>>>>>>sort3d generation %d<<<<< '%igen
+					msg      =' =======   sort3d generation %d<<<<< '%igen
 					print(line, msg_pipe)
-					print(line, msg)
+					
 					print(line, msg_pipe)
 					log_main.add(msg_pipe)
 					log_main.add(msg)
@@ -7937,7 +7896,7 @@ def main():
 				log_main.add(msg)
 				log_main.add(msg_cross+'\n')
 				print(line, msg_cross)
-				print(line, msg)
+				
 				print(line, msg_cross+'\n')
 			
 			if continue_from_interuption == 0:
@@ -7978,9 +7937,9 @@ def main():
 				time_generation_start = time.time()
 				line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 				msg_pipe ='--------------------------------------' 
-				msg      =' >>>>>>>sort3d generation %d<<<<<<<  '%igen
+				msg      =' =======   sort3d generation %d   =======  '%igen
 				print(line, msg_pipe)
-				print(line, msg)
+				
 				print(line, msg_pipe)
 				log_main.add(msg_pipe)
 				log_main.add(msg)
@@ -8006,9 +7965,9 @@ def main():
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 						msg_pipe ='-----------------------------------------' 
-						msg      ='  >>>>>>>  sort3d depth finishes  <<<<< '
+						msg      ='  =======     sort3d depth finishes  <<<<< '
 						print(line, msg_pipe)
-						print(line, msg)
+						
 						print(line, msg_pipe)
 						log_main.add(msg_pipe)
 						log_main.add(msg)
@@ -8017,7 +7976,7 @@ def main():
 						time_of_sorting_h,  time_of_sorting_m = get_time(time_final_box_start)
 						msg  = '{:32} {:^5} {:^10} {:^5} {:^10}'.format('sort3d reconstruction costs time', time_of_sorting_h, 'hours', time_of_sorting_m, 'minutes')
 						log_main.add(msg)
-						print(line, msg)
+						
 					copy_results(log_main)# all nodes function
 				else:
 					if Blockdata["myid"] == Blockdata["main_node"]:
@@ -8041,7 +8000,7 @@ def main():
 						time_of_rec3d_h,  time_of_rec3d_m = get_time(time_rec3d_start)
 						msg  = '{:32} {:^5} {:^10} {:^5} {:^10}'.format('3-D sorting costs time', time_of_rec3d_h, 'hours', time_of_rec3d_m, 'minutes')
 						log_main.add(msg)
-						print(line, msg)
+						
 						mark_sorting_state(work_dir, True, log_main)
 						time_of_generation_h,  time_of_generation_m = get_time(time_generation_start)
 						msg  = "generation%d costs time %d hours %d minutes"%(igen, time_of_generation_h, time_of_generation_m)
@@ -8053,9 +8012,9 @@ def main():
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 						#msg_pipe =' -----------------------------------'
-						#msg      =' >>>>>>>sort3d generation %d<<<<< '%igen
+						#msg      =' =======   sort3d generation %d<<<<< '%igen
 						#print(line, msg_pipe)
-						#print(line, msg)
+						#
 						#print(line, msg_pipe)
 						#log_main.add(msg_pipe)
 						#log_main.add(msg)
@@ -8073,9 +8032,9 @@ def main():
 				if Blockdata["myid"] == Blockdata["main_node"]:
 					line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 					msg_pipe ='--------------------------------------' 
-					msg      =' >>>>>>>sort3d generation %d<<<<<<<  '%igen
+					msg      =' =======   sort3d generation %d   =======  '%igen
 					print(line, msg_pipe)
-					print(line, msg)
+					
 					print(line, msg_pipe)
 					log_main.add(msg_pipe)
 					log_main.add(msg)
