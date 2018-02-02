@@ -1512,13 +1512,6 @@ def create_masterdir(log_main):
 	if not Tracker["constants"]["masterdir"]: Tracker["constants"]["masterdir"]  = masterdir
 	Tracker["constants"]["chunk_0"]       = os.path.join(Tracker["constants"]["masterdir"],"chunk_0.txt")
 	Tracker["constants"]["chunk_1"]       = os.path.join(Tracker["constants"]["masterdir"],"chunk_1.txt")
-	if restart == 0:
-		for iproc in xrange(Blockdata["nproc"]):
-			if Blockdata["myid"] == iproc:
-				while not os.path.exists(Tracker["constants"]["masterdir"]):
-					print("Node ", Blockdata["myid"], "waiting...", Tracker["constants"]["masterdir"])
-					sleep(1)
-			mpi_barrier(MPI_COMM_WORLD)
 	return restart
 
 def sort3d_init(to_be_decided, log_main):
