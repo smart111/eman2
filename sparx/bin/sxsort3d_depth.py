@@ -873,16 +873,11 @@ def check_mpi_settings(log):
 	sys_required_mem = 1.0*Blockdata["no_of_processes_per_group"]
 	
 	if( Blockdata["myid"] == Blockdata["main_node"]):
-		msg_pipe  =' ' 
-		log.add(msg_pipe)
-		msg_pipe  ='-----------------------------------------------------------------' 
-		log.add(msg_pipe)
-		msg       ='         =======      Number of input images and memory information   =====               '
-		msg_pipe1 ='++++++                                                     ++++++' 
-		log.add(msg)
-		log.add(msg_pipe1)
-		msg ="Number of processes: %5d  node number:  %5d.  Number of processes per group:  %5d."%(Blockdata["nproc"], Blockdata["no_of_groups"], Blockdata["no_of_processes_per_group"])
-		log.add(msg)
+		log.add('\n')
+		log.add('------------------------------------------------------------------------------------------------------' )
+		log.add('              =======      Number of input images and memory information      =====')
+		log.add('------------------------------------------------------------------------------------------------------' )
+		log.add("Number of processes: %d  node number:  %d.  Number of processes per group:  %d."%(Blockdata["nproc"], Blockdata["no_of_groups"], Blockdata["no_of_processes_per_group"]))
 	try:
 		image_org_size     = Tracker["constants"]["nnxo"]
 		image_in_core_size = nxinit
@@ -892,13 +887,12 @@ def check_mpi_settings(log):
 		sorting_data_size_per_node = raw_data_size_per_node + 2.*raw_data_size_per_node*ratio**2
 		volume_size_per_node = (4.*image_in_core_size**3*8.)*Blockdata["no_of_processes_per_group"]/1.e9
 	except:  current_mpi_settings_is_bad = 1
-	if current_mpi_settings_is_bad == 1:ERROR("initial info is not provided", "check_mpi_settings", 1, Blockdata["myid"])
+	if current_mpi_settings_is_bad == 1:   ERROR("initial info is not provided", "check_mpi_settings", 1, Blockdata["myid"])
 	try:
 		mem_bytes = os.sysconf('SC_PAGE_SIZE')*os.sysconf('SC_PHYS_PAGES')# e.g. 4015976448
 		mem_gib = mem_bytes/(1024.**3) # e.g. 3.74
 		if( Blockdata["myid"] == Blockdata["main_node"]):
-			msg = "Available memory information provided by the operating system: %5.1f GB"%mem_gib
-			log.add(msg)
+			log.add("Available memory information provided by the operating system: %5.1f GB"%mem_gib)
 	except:
 		mem_gib = None
 	if Tracker["constants"]["memory_per_node"] == -1.:
@@ -906,38 +900,31 @@ def check_mpi_settings(log):
 		else:
 			total_memory =  Blockdata["no_of_processes_per_group"]*2.0 # assume each CPU has 2.0 G
 			if( Blockdata["myid"] == Blockdata["main_node"]):
-				msg ="Memory per node is not provided, sort3d assumes 2G per node"
-				log.add(msg)
+				log.add("Memory per node is not provided, sort3d assumes 2GB per node")
 		Tracker["constants"]["memory_per_node"] = total_memory
 	else:
-		msg ="Memory per node: %f"%Tracker["constants"]["memory_per_node"]
 		total_memory =  Tracker["constants"]["memory_per_node"]
 		if( Blockdata["myid"] == Blockdata["main_node"]):
-			log.add(msg)
+			log.add("Memory per node: %f"%Tracker["constants"]["memory_per_node"])
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		msg = "Total number of particles: %d.  Number of particles per group: %d."%(Tracker["constants"]["total_stack"], Tracker["constants"]["img_per_grp"])
-		log.add(msg)
+		log.add("Total number of particles: %d.  Number of particles per group: %d."%(Tracker["constants"]["total_stack"], Tracker["constants"]["img_per_grp"]))
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		msg = "The total available memory:  %5.1f GB"%total_memory
-		log.add(msg)
-		msg = "The size of input 2D stack: %5.1f GB, the amount of memory 2D data will occupy per node: %5.1f GB"%(raw_data_size, raw_data_size_per_node)
-		log.add(msg)
+		log.add("The total available memory:  %5.1f GB"%total_memory)
+		log.add("The size of input 2D stack: %5.1f GB\nThe amount of memory 2D data will occupy per node: %5.1f GB"%(raw_data_size, raw_data_size_per_node))
 	if (total_memory - sys_required_mem - raw_data_size_per_node - volume_size_per_node - sorting_data_size_per_node - 5.0) <0.0: 
 		current_mpi_settings_is_bad = 1
 		new_nproc =  raw_data_size*(2.*ratio**2+1.)*Blockdata["no_of_processes_per_group"]/(total_memory - 5. - sys_required_mem - volume_size_per_node)
 		new_nproc =  int(new_nproc)
 		if( Blockdata["myid"] == Blockdata["main_node"]):
-			msg ="Suggestion: set number of processes to: %d"%int(new_nproc)
-			log.add(msg)
+			log.add("Suggestion: set number of processes to: %d"%int(new_nproc))
 		ERROR("Insufficient memory", "check_mpi_settings", 1, Blockdata["myid"])
 	images_per_cpu = float(Tracker["constants"]["total_stack"])/float(Blockdata["nproc"])
 	images_per_cpu_for_unaccounted_data  = Tracker["constants"]["img_per_grp"]*1.5/float(Blockdata["nproc"])
 	if( Blockdata["myid"] == Blockdata["main_node"]):
-		msg="Number of images per cpu:  %d "%int(images_per_cpu)
-		log.add(msg )
+		log.add("Number of images per cpu:  %d "%int(images_per_cpu) )
 	if images_per_cpu < 5.0: ERROR("image per cpu less than 5", "check_mpi_settings", 1, Blockdata["myid"])
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		log.add(msg_pipe + '\n')
+		log.add('------------------------------------------------------------------------------------------------------' + '\n')
 	return
 	
 def get_sorting_image_size(original_data, partids, number_of_groups, sparamstructure, snorm_per_particle, log):
@@ -947,8 +934,7 @@ def get_sorting_image_size(original_data, partids, number_of_groups, sparamstruc
 	iter = 0
 	Tracker["number_of_groups"] = number_of_groups
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		msg = "3D reconstruction is computed using window size:  %d"%Tracker["nxinit_refinement"]
-		log.add(msg)
+		log.add("3D reconstruction is computed using window size:  %d"%Tracker["nxinit_refinement"])
 		lpartids = read_text_file(partids, -1)
 		if len(lpartids) == 1:
 			iter_assignment = []
@@ -973,8 +959,7 @@ def get_sorting_image_size(original_data, partids, number_of_groups, sparamstruc
 	del rdata
 	
 	if( Blockdata["myid"] == Blockdata["main_node"]):
-		msg = "3D reconstruction using refinement window size %d is completed."%Tracker["nxinit_refinement"]
-		log.add(msg)
+		log.add("3D reconstruction using refinement window size %d is completed."%Tracker["nxinit_refinement"])
 		
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		fsc_data = []
@@ -1091,11 +1076,9 @@ def do_one_way_anova_scipy(clusters, value_list, name_of_variable="variable", su
 	from scipy import stats
 	if summary == None: summary = []
 	NMAX = 30
-	msg_pipe = '-------------------------------------------' 
-	msg      = '   >>>>>> do_one_way_anova_scipy    =======   '
-	log_main.add(msg_pipe)
-	log_main.add(msg)
-	log_main.add(msg_pipe)
+	log.add('------------------------------------------------------------------------------------------------------' )
+	log.add('              =======      ANOVA analysis   =====')
+	log.add('------------------------------------------------------------------------------------------------------' )
 	if len(clusters)<=1:
 		return None, None, None
 	K = min(NMAX, len(clusters))
@@ -1232,29 +1215,21 @@ def do_one_way_anova_scipy(clusters, value_list, name_of_variable="variable", su
 	mse = sse/float(n1)
 	mst = sst/float(n1)
 	f_ratio = msa/mse
-	msg ="anova ====================>>>ANOVA on %s=====<===================== \n"%(name_of_variable)+\
-		'{:5} {:^12} {:^12} {}'.format('anova', 'f_value',  'p_value', '\n')+\
-		'{:5} {:12.5f} {:12.6f} {}'.format('anova', res[0], round(res[1],6), '\n')
+	msg ="                                ANOVA of %s\n"%(name_of_variable)+\
+		'{:5} {:^12} {:^12} {}'.format('ANOVA', 'F-value',  'p_value', '\n')+\
+		'{:5} {:12.5f} {:12.6f} {}'.format('ANOVE', res[0], round(res[1],6), '\n')
 	log_main.add("\n"+msg)
 	summary.append(msg)
-	if res[1] <=0.00001:
-		msg = "anova null hpypothesis is rejected! There is statistically significant %s difference among clusters. \n"%name_of_variable
-		log_main.add("\n"+msg)
-		summary.append(msg)
-	else: 
-		msg = "anova null hpypothesis is accepted! There is no statistically significant difference among %s of clusters \n"%name_of_variable
-		log_main.add("\n"+msg)
-		summary.append(msg)
-	msg = ("anova  ---------->>>global %s mean of all clusters: %f  \n"%(name_of_variable, global_mean/(float(nsamples))))
-	msg += "anova  ---------->>>Means per group=====<-----\n"+\
-	'{:5} {:^7} {:^8} {:^12} {:^12} {}'.format('anova', 'GID', 'N',  'mean',   'std', '\n')
+	msg = ("ANOVA:  global %s mean of all clusters: %f  \n"%(name_of_variable, global_mean/(float(nsamples))))
+	msg += "ANOVA:  Group averages:\n"+\
+	'{:5} {:^7} {:^8} {:^12} {:^12} {}'.format('ANOVA', 'GID', 'N',  'mean',   'std', '\n')
 	for i in xrange(K):
-		msg +='{:5} {:^7d} {:^8d} {:12.4f} {:12.4f} {}'.format('anova', i, len(replicas[i]), res_table_stat[i][0], res_table_stat[i][1],'\n')
+		msg +='{:5} {:^7d} {:^8d} {:12.4f} {:12.4f} {}'.format('ANOVA', i, len(replicas[i]), res_table_stat[i][0], res_table_stat[i][1],'\n')
 	summary.append(msg)
 	log_main.add("\n"+msg)
-	msg ="anova  ---------->>>pairwise anova=====<----------- \n"
-	log_main.add("\n"+msg)
-	summary.append(msg)
+
+	log_main.add("\n"+"ANOVA  Pairwise tests\n")
+	summary.append("ANOVA  Pairwise tests\n")
 	msg ='{:5} {:^3} {:^3} {:^12} {:^12} {:^12} {:^12} {:^36} {}'.format('anova', 'A', 'B', 'avgA','avgB', 'P_value', 'f-value', 'statistically significant difference', "\n") 
 	log_main.add("\n"+msg)
 	summary.append(msg)
@@ -1262,39 +1237,36 @@ def do_one_way_anova_scipy(clusters, value_list, name_of_variable="variable", su
 	for ires in xrange(K-1):
 		for jres in xrange(ires+1, K):
 			cres = stats.f_oneway(replicas[ires], replicas[jres])
-			if cres[1] <=0.00001: msg = '{:5} {:^3d} {:^3d} {:12.4f} {:12.4f} {:12.3f} {:12.6f} {:^36} {}'.format('anova', ires, jres, avgs[ires], avgs[jres], cres[0], round(cres[1],6),'Yes', '\n')
-			else:                 msg = '{:5} {:^3d} {:^3d} {:12.4f} {:12.4f} {:12.3f} {:12.6f} {:^36} {}'.format('anova', ires, jres, avgs[ires], avgs[jres], cres[0], round(cres[1], 6),'No', '\n')
+			msg = '{:5} {:^3d} {:^3d} {:12.4f} {:12.4f} {:12.3f} {:12.6f} {:^36} {}'.format('ANOVA', ires, jres, avgs[ires], avgs[jres], cres[0], round(cres[1],6),'\n')
 			tmsg +=msg
 	log_main.add("\n"+tmsg)
 	summary.append(tmsg)
-	msg = "anova ================================================================================\n \n \n"
+	msg = "ANOVA ================================================================================\n \n \n"
 	log_main.add("\n"+msg)
 	summary.append(msg)
 	return res[0], res[1], summary
-	
+
+"""	
 def output_micrograph_number_per_cluster(orgstack, index_file, clusters, log_main = None):
 	# single node job
 	mic_dict = {}
 	inverse_mic_dict = {}
 	try: mics = EMUtil.get_all_attributes(orgstack, "ptcl_source_image")
 	except:
-		msg = "No ptcl_source_image attribute are set in data headers!"
-		log_main.add(msg)
+		log_main.add("No ptcl_source_image attribute are set in data headers!")
 		try:
 			tmpmics = EMUtil.get_all_attributes(orgstack, "ctf")
 			mics = [None for i in xrange( len(tmpmics))]
 			for im in xrange(len(mics)): mics[im] = tmpmics[im].defocus
 		except:
-			msg = "CTF parameters are not found either, so sort3d skips counting micograph number per cluster..."
-			
-			log_main.add(msg)
+			log_main.add("CTF parameters are not found so sort3d will not count number of micographs per cluster...")
 			return
 	pid_list =read_text_file(index_file)
 	for im in xrange(len(pid_list)):
 		mic_dict [pid_list[im]] = mics[pid_list[im]]
 		inverse_mic_dict[mics[pid_list[im]]] =  im
 	mics_in_clusters = [None for i in xrange(len(clusters))]
-	msg = "micstat------->>>number of micrographs in clusters=====<-----------\n"
+	msg = "               number of micrographs in clusters\n"
 	msg += "micstat total number of micrographs:  %d \n"%len(inverse_mic_dict)
 	msg +='{:10} {:^5} {:^20} {:^12} {}'.format('micstat', 'GID', 'No. of micrographs', 'percentage', '\n')
 	for ic in xrange(len(clusters)):
@@ -1305,6 +1277,7 @@ def output_micrograph_number_per_cluster(orgstack, index_file, clusters, log_mai
 		msg +='{:10} {:^5} {:^20}  {:^12} {}'.format('micstat', ic, mics_in_clusters[ic], round(float(mics_in_clusters[ic])/float(len(inverse_mic_dict))*100.,2), '\n')
 	log_main.add('\n', msg)
 	return mics_in_clusters
+"""
 
 def check_3dmask(log_main):
 	global Tracker, Blockdata
@@ -7428,11 +7401,9 @@ def main():
 			log_main.prefix = Tracker["constants"]["masterdir"]+"/"
 			
 			if Blockdata["myid"] == Blockdata["main_node"]:
-				msg_cross='==========================================' 
-				msg      = '           >>>   DEPTH SORT3D   =====<            '
-				log_main.add(msg_cross)
-				log_main.add(msg)
-				log_main.add(msg_cross+'\n')
+				log_main.add('=====================================================')
+				log_main.add('                SORT3D IN-DEPTH')
+				log_main.add('====================================================='+'\n')
 				
 			if continue_from_interuption == 0: 
 				sort3d_utils("import_data",   log_main)
