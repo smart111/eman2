@@ -116,7 +116,7 @@ pipeline {
     stage('centos6') {
       when {
         expression { isBuildBinary() }
-        expression { SLAVE_OS == "linux" }
+        expression { SLAVE_OS == STAGE_NAME }
       }
       
       steps {
@@ -127,7 +127,7 @@ pipeline {
     stage('centos7') {
       when {
         expression { isBuildBinary() }
-        expression { SLAVE_OS == "linux" }
+        expression { SLAVE_OS == STAGE_NAME }
       }
       
       steps {
@@ -138,7 +138,7 @@ pipeline {
     stage('mac') {
       when {
         expression { isBuildBinary() }
-        expression { SLAVE_OS == "mac" }
+        expression { SLAVE_OS == STAGE_NAME }
       }
       environment {
         EMAN_TEST_SKIP=1
