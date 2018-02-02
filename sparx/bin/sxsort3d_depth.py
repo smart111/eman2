@@ -4318,7 +4318,7 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 	ratio_accounted    = nb_tot_objs/float(total_data)*100.
 	print_matching_pairs(newindeces, log_main)
 	
-	smsg += '{} {}{} {} {}{} {} {}'.format(' Reproducibility', 'P', 2*ipair, 'and', 'P', 2*ipair+1, 'is', round(ratio_accounted,2))
+	smsg += '{} {} {}'.format(' Reproducibility', 'is', round(ratio_accounted,2))
 	Tracker["current_iter_ratio"] = ratio_accounted
 	score_list = [ ]
 	nclass     = 0
