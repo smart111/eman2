@@ -1289,13 +1289,7 @@ def check_3dmask(log_main):
 	Tracker["shrinkage"]   = float(Tracker["nxinit"])/Tracker["constants"]["nnxo"]
 	Tracker["radius"]      = Tracker["constants"]["radius"]*Tracker["shrinkage"]
 	try: fuse_freq = Tracker["fuse_freq"]
-	except: Tracker["fuse_freq"] = int(Tracker["constants"]["pixel_size"]*Tracker["constants"]["nnxo"]/Tracker["constants"]["fuse_freq"]+0.5)	
-	if Tracker["constants"]["mask3D"]:Tracker["mask3D"] =Tracker["constants"]["mask3D"]
-	else: Tracker["mask3D"] = None
-	if Tracker["constants"]["focus3Dmask"]:Tracker["focus3D"] = Tracker["constants"]["focus3Dmask"]
-	else: Tracker["focus3D"] = None
-	if Tracker["constants"]["mask3D"]: Tracker["mask3D"] = Tracker["constants"]["mask3D"]
-	else: Tracker["mask3D"] = None
+	except: Tracker["fuse_freq"] = int(Tracker["constants"]["pixel_size"]*Tracker["constants"]["nnxo"]/Tracker["constants"]["fuse_freq"]+0.5)
 	
 	Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
 	if(Blockdata["myid"] == Blockdata["main_node"]):
@@ -1303,13 +1297,6 @@ def check_3dmask(log_main):
 		fout = open(os.path.join(Tracker["constants"]["masterdir"], "Tracker.json"),'w')
 		json.dump(Tracker, fout)
 		fout.close()
-		#msg = "orgstack: %s  image comparison method: %s "%(Tracker["constants"]["orgstack"], \
-		#   Tracker["constants"]["comparison_method"])
-		#
-		#log_main.add(msg)
-		if Tracker ["constants"]["focus3Dmask"]:
-			msg ="User provided focus mask file:  %s"%Tracker ["constants"]["focus3Dmask"]
-			log_main.add(msg)
 	Tracker["shrinkage"] = float(Tracker["nxinit"])/Tracker["constants"]["nnxo"]
 	#if(Blockdata["myid"] == Blockdata["main_node"]):  print_dict(Tracker,"Current settings of the sorting program")
 	return
@@ -1553,8 +1540,8 @@ def Kmeans_minimum_group_size_orien_groups(original_data, partids, params, param
 	###=====<------------
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		try:
-			if os.path.exists(Tracker["mask3D"]): # prepare mask
-				mask3D = get_im(Tracker["mask3D"])
+			if os.path.exists(Tracker["constant"]["mask3D"]): # prepare mask
+				mask3D = get_im(Tracker["constant"]["mask3D"])
 				if mask3D.get_xsize() != Tracker["nxinit"]: 
 					mask3D = fdecimate(mask3D, Tracker["nxinit"], Tracker["nxinit"], Tracker["nxinit"], True, False)
 		except:
@@ -1592,7 +1579,7 @@ def Kmeans_minimum_group_size_orien_groups(original_data, partids, params, param
 		log.add(msg_pipe)
 		msg = "Total_stack:  %d K = : %d  nxinit: %d  CTF:  %s  Symmetry:  %s  stop percentage: %f  3-D mask: %s focus mask: %s  Comparison method: %s  minimum_group_size: %d orien  %d"% \
 		   (Tracker["total_stack"], Tracker["number_of_groups"], Tracker["nxinit"],  Tracker["constants"]["CTF"], \
-		     Tracker["constants"]["symmetry"], stopercnt, Tracker["mask3D"], Tracker["focus3D"], Tracker["constants"]["comparison_method"], minimum_group_size, len(ptls_in_orien_groups))
+		     Tracker["constants"]["symmetry"], stopercnt, Tracker["constant"]["mask3D"], Tracker["constant"]["focus3D"], Tracker["constants"]["comparison_method"], minimum_group_size, len(ptls_in_orien_groups))
 		log.add(msg)
 		
 		
@@ -1772,8 +1759,8 @@ def Kmeans_minimum_group_size_relaxing_orien_groups(original_data, partids, para
 	best_assignment         = []
 	orien_group_relaxation  = False
 	###=====<------------
-	if Tracker["mask3D"]: # prepare mask
-		mask3D = get_im(Tracker["mask3D"])
+	if Tracker["constant"]["mask3D"]: # prepare mask
+		mask3D = get_im(Tracker["constant"]["mask3D"])
 		if mask3D.get_xsize() != Tracker["nxinit"]: mask3D = fdecimate(mask3D, Tracker["nxinit"], Tracker["nxinit"], Tracker["nxinit"], True, False)
 	else: 
 		mask3D = model_circle(Tracker["constants"]["radius"], Tracker["constants"]["nnxo"], Tracker["constants"]["nnxo"], Tracker["constants"]["nnxo"])
@@ -1804,7 +1791,7 @@ def Kmeans_minimum_group_size_relaxing_orien_groups(original_data, partids, para
 		log.add(msg)
 		msg = "total_stack:  %d K = : %d  nxinit: %d  CTF:  %s  Symmetry:  %s  stop percentage: %f  3-D mask: %s focus mask: %s  Comparison method: %s  minimum_group_size: %d orien  %d"% \
 		   (Tracker["total_stack"], Tracker["number_of_groups"], Tracker["nxinit"],  Tracker["constants"]["CTF"], \
-		     Tracker["constants"]["symmetry"], stopercnt, Tracker["mask3D"], Tracker["focus3D"], Tracker["constants"]["comparison_method"], minimum_group_size, len(ptls_in_orien_groups))
+		     Tracker["constants"]["symmetry"], stopercnt, Tracker["constant"]["mask3D"], Tracker["constant"]["focus3D"], Tracker["constants"]["comparison_method"], minimum_group_size, len(ptls_in_orien_groups))
 		log.add(msg)
 		
 	###
@@ -2229,9 +2216,9 @@ def get_data_prep_compare_rec3d(partids, partstack, return_real = False, preshif
 	else: image_start, image_end = MPI_start_end(Tracker["total_stack"], Blockdata["nproc"], Blockdata["myid"])
 	lpartids  = lpartids[image_start:image_end]
 	groupids  = groupids[image_start:image_end]
-	if Tracker["focus3D"]: # focus mask is applied
+	if Tracker["constant"]["focus3D"]: # focus mask is applied
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			focus3d     = get_im(Tracker["focus3D"])
+			focus3d     = get_im(Tracker["constant"]["focus3D"])
 			focus3d_nx  = focus3d.get_xsize()
 			if focus3d_nx != Tracker["constants"]["nnxo"]: # So the decimated focus volume can be directly used
 				focus3d = resample(focus3d, float(Tracker["constants"]["nnxo"])/float(focus3d_nx))
@@ -2316,7 +2303,7 @@ def get_data_prep_compare_rec3d(partids, partstack, return_real = False, preshif
 		if Tracker["applybckgnoise"]: 
 			rdata[im].set_attr("bckgnoise", Blockdata["bckgnoise"][particle_group_id])
 			if Tracker["constants"]["comparison_method"] == "cross": Util.mulclreal(cdata[im], Blockdata["unrolldata"][particle_group_id])                                
-		if Tracker["focus3D"]:
+		if Tracker["constant"]["focus3D"]:
 			cdata[im] = fft(binarize(prgl(focus3d, [phi, theta, psi, 0.0, 0.0], 1, True), 1)*fft(cdata[im]))
 			if Tracker["constants"]["CTF"]: cdata[im].set_attr("ctf", rdata[im].get_attr("ctf"))
 		cdata[im].set_attr("is_complex",0)
@@ -2765,9 +2752,9 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 				if(Blockdata["bckgnoise"][i][k] > 0.0): temp[k] = 1.0/sqrt(Blockdata["bckgnoise"][i][k])
 			oneover.append(temp)
 		del temp
-	if Tracker["focus3D"]: # focus mask is applied
+	if Tracker["constant"]["focus3D"]: # focus mask is applied
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			focus3d    = get_im(Tracker["focus3D"])
+			focus3d    = get_im(Tracker["constant"]["focus3D"])
 			focus3d_nx = focus3d.get_xsize()
 			if focus3d_nx != Tracker["nxinit"]: # So the decimated focus volume can be directly used
 				focus3d = resample(focus3d, float(Tracker["nxinit"])/float(focus3d_nx))
@@ -2865,7 +2852,7 @@ def downsize_data_for_sorting(original_data, return_real = False, preshift = Tru
 		else:
 			rdata[im].set_attr("bckgnoise",  Blockdata["bckgnoise"])
 			cdata[im].set_attr("bckgnoise",  Blockdata["bckgnoise"])                    
-		if Tracker["focus3D"]:
+		if Tracker["constant"]["focus3D"]:
 			focusmask = binarize(prgl(focus3d, [phi, theta, psi, 0.0, 0.0], 1, True), 1)
 			cdata[im] = fft(focusmask*fft(cdata[im]))
 			if Tracker["constants"]["CTF"]: cdata[im].set_attr("ctf", rdata[im].get_attr("ctf"))
@@ -2942,7 +2929,7 @@ def compare_two_images_eucd(data, ref_vol, fdata):
 	qt = float(Tracker["constants"]["nnxo"]*Tracker["constants"]["nnxo"])
 	for im in xrange(len(data)):
 		phi, theta, psi, s2x, s2y = get_params_proj(data[im], xform = "xform.projection")
-		if Tracker["focus3D"]:
+		if Tracker["constant"]["focus3D"]:
 			rtemp = prgl(ref_vol,[phi, theta, psi, 0.0,0.0], 1, True)
 			rtemp = fft(rtemp*fdata[im])
 		else:
@@ -2972,7 +2959,7 @@ def compare_two_images_cross(data, ref_vol):
 		ref.set_value_at(0,0,0.0)
 		nrmref = sqrt(Util.innerproduct(ref, ref, None))
 		if data[im].get_attr("is_complex") ==1: data[im].set_attr("is_complex",0)
-		if Tracker["focus3D"]: peaks[im] = Util.innerproduct(ref, data[im], None)/nrmref
+		if Tracker["constant"]["focus3D"]: peaks[im] = Util.innerproduct(ref, data[im], None)/nrmref
 		else:
 			if Tracker["applybckgnoise"]:  peaks[im] = Util.innerproduct(ref, data[im], Blockdata["unrolldata"][data[im].get_attr("particle_group")])/nrmref
 			else:                          peaks[im] = Util.innerproduct(ref, data[im], None)/nrmref
@@ -5588,7 +5575,6 @@ def get_input_from_datastack(log_main):# Case three
 	temp = model_blank(Tracker["constants"]["nnxo"], Tracker["constants"]["nnxo"])
 	nny  =  temp.get_ysize()
 	Blockdata["bckgnoise"] =  [1.0]*nny # set for initial recon3D of data from stack	
-	Tracker["focus3D"]     =  None
 	Tracker["fuse_freq"] = int(Tracker["constants"]["pixel_size"]*Tracker["constants"]["nnxo"]/Tracker["constants"]["fuse_freq"] +0.5)
 	Tracker["directory"] = Tracker["constants"]["masterdir"]
 	if Tracker["constants"]["nxinit"]< 0: Tracker["nxinit_refinement"] = Tracker["constants"]["nnxo"]
@@ -6877,7 +6863,7 @@ def do_final_maps(number_of_groups, minimum_size, selected_iter, refinement_dir,
 	Blockdata["nsubset"]      = Blockdata["ncpuspernode"]*Blockdata["no_of_groups"]
 	create_subgroup()
 	fuse_freq = Tracker["fuse_freq"] # sort does it already
-	mask3D    = Tracker["mask3D"]
+	mask3D    = Tracker["constant"]["mask3D"]
 	mtf       = Tracker["constants"]["mtf"]
 	fsc_adj   = Tracker["constants"]["fsc_adj"]
 	Bstart    = Tracker["constants"]["B_start"]
@@ -6932,7 +6918,7 @@ def do_final_maps(number_of_groups, minimum_size, selected_iter, refinement_dir,
 		Tracker["constants"]["postlowpassfilter"] = postlowpassfilter  
 		Tracker["constants"]["fsc_adj"]=fsc_adj
 		Tracker["constants"]["mtf"]    = mtf
-		Tracker["mask3D"]              = mask3D
+		Tracker["constant"]["mask3D"]              = mask3D
 		Tracker["nxinit"]              = rec3d_image_size 
 		Tracker["number_of_groups"]    = number_of_groups
 		Tracker["fuse_freq"]           = fuse_freq # reset
@@ -7332,8 +7318,6 @@ def main():
 		# Create and initialize Tracker dictionary with input options  # State Variables	
 		Tracker                     = {}
 		Tracker["constants"]	    = Constants
-		if Tracker["constants"]["mask3D"]: Tracker["mask3D"] = Tracker["constants"]["mask3D"]
-		else: Tracker["mask3D"]     = None
 		Tracker["radius"]           = Tracker["constants"]["radius"]
 		Tracker["upscale"]          = Tracker["constants"]["upscale"]
 		Tracker["applyctf"]         = False  # Should the data be premultiplied by the CTF.  Set to False for local continuous.
@@ -7621,8 +7605,6 @@ def main():
 		# Create and initialize Tracker dictionary with input options  # State Variables	
 		Tracker                     = {}
 		Tracker["constants"]	    = Constants
-		if Tracker["constants"]["mask3D"]: Tracker["mask3D"] = Tracker["constants"]["mask3D"]
-		else: Tracker["mask3D"]     = None
 		Tracker["radius"]           = Tracker["constants"]["radius"]
 		Tracker["upscale"]          = Tracker["constants"]["upscale"]
 		Tracker["applyctf"]         = False  # Should the data be premultiplied by the CTF.  Set to False for local continuous.
@@ -7734,7 +7716,6 @@ def main():
 			if Blockdata["myid"] == Blockdata["main_node"]:
 				keepchecking = check_sorting_state(work_dir, keepchecking, log_main)
 				time_generation_start = time.time()
-				line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 				msg_pipe ='--------------------------------------' 
 				msg      =' =======   sort3d generation %d   =======  '%igen
 				log_main.add(msg_pipe)
@@ -7759,7 +7740,6 @@ def main():
 					sort3d_utils("dump_tracker",  log_main = log_main, input_file1 = os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen))
 					compute_final_map(log_main, work_dir)
 					if Blockdata["myid"] == Blockdata["main_node"]:
-						line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 						msg_pipe ='-----------------------------------------' 
 						msg      ='  =======     sort3d depth finishes  ===== '
 						log_main.add(msg_pipe)
@@ -7773,7 +7753,6 @@ def main():
 					copy_results(log_main)# all nodes function
 				else:
 					if Blockdata["myid"] == Blockdata["main_node"]:
-						line     = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 						clusters = output_clusters(work_dir, output_list[0][0], output_list[0][1], options.not_include_unaccounted, log_main)
 						Tracker["generation"][igen] = len(clusters)
 					else: Tracker = 0
@@ -7782,14 +7761,12 @@ def main():
 			
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						time_of_sorting_h,  time_of_sorting_m = get_time(time_sorting_start)
-						line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 						msg  = '{:32} {:^5} {:^10} {:^5} {:^10}'.format('3-D sorting costs time', time_of_sorting_h, 'hours', time_of_sorting_m, 'minutes')
 						log_main.add(msg)
 						time_rec3d_start = time.time()
 
 					compute_final_map(log_main, work_dir)
 					if Blockdata["myid"] == Blockdata["main_node"]:
-						line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 						time_of_rec3d_h,  time_of_rec3d_m = get_time(time_rec3d_start)
 						msg  = '{:32} {:^5} {:^10} {:^5} {:^10}'.format('3-D sorting costs time', time_of_rec3d_h, 'hours', time_of_rec3d_m, 'minutes')
 						log_main.add(msg)
@@ -7803,7 +7780,6 @@ def main():
 					Tracker["current_generation"] = igen
 					work_dir = os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 					if Blockdata["myid"] == Blockdata["main_node"]:
-						line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 						#msg_pipe =' -----------------------------------'
 						#msg      =' =======   sort3d generation %d===== '%igen
 						#print(line, msg_pipe)
