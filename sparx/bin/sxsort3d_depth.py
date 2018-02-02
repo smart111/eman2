@@ -7817,8 +7817,8 @@ def main():
 	
 		if Tracker["constants"]["restart_from_generation"] == -1:
 			continue_from_interuption = sort3d_utils("create_masterdir", None)
-			if Blockdata["myid"] == Blockdata["main_node"]:
-				print("continue_from_interuption", continue_from_interuption, Blockdata["myid"])
+			#if Blockdata["myid"] == Blockdata["main_node"]:
+			#	print("continue_from_interuption", continue_from_interuption, Blockdata["myid"])
 			log_main = Logger(BaseLogger_Files())
 			log_main.prefix = Tracker["constants"]["masterdir"]+"/"
 			if Blockdata["myid"] == Blockdata["main_node"]:
