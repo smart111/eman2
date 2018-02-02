@@ -5715,8 +5715,6 @@ def get_input_from_datastack(log_main):# Case three
 	else: Tracker["nxinit_refinement"] =  Tracker["constants"]["nxinit"]
 	
 	for procid in xrange(2):
-		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-		if Blockdata["myid"] == Blockdata["main_node"]: print(line, "Reconstruction of random subset %d"%procid)
 		data = get_shrink_data_sorting(os.path.join(Tracker["constants"]["masterdir"],"chunk_%01d.txt"%procid), Tracker["constants"]["partstack"])
 		mpi_barrier(MPI_COMM_WORLD)
 		do3d_sorting(procid, data, myid = Blockdata["myid"],  mpi_comm = MPI_COMM_WORLD)# 1
