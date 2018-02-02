@@ -75,10 +75,6 @@ pipeline {
     timestamps()
   }
   
-  triggers {
-    cron('0 3 * * *')
-  }
-  
   environment {
     SKIP_UPLOAD = setUploadFlag()
     JOB_TYPE = getJobType()
