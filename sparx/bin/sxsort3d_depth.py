@@ -150,8 +150,6 @@ def load_tracker(path_of_the_tracker):
 		fout = open(os.path.join(path_of_the_tracker, "Tracker.json"),'r')
 		Tracker = convert_json_fromunicode(json.load(fout))
 		fout.close()
-		msg ="restart from interuption, load tracker files"
-		log_main.add(msg)
 	else: Tracker = 0
 	Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
 	return
