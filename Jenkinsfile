@@ -38,11 +38,14 @@ def isBuildBinary() {
     return true
 }
 
-def runCronJob(os_name) {
-    if(isBuildBinary() && SLAVE_OS == os_name) {
-        sh 'bash ${BUILD_SCRIPTS_DIR}/cronjob.sh $STAGE_NAME $GIT_BRANCH_SHORT'
-        sh "rsync -avzh --stats ${INSTALLERS_DIR}/eman2.${STAGE_NAME}.unstable.sh ${DEPLOY_DEST}"
-    }
+def isRunCurrentStage(os_name) {
+    return isBuildBinary() && SLAVE_OS == os_name
+}
+
+def runCronJob() {
+    sh 'bash ${HOME_DIR}/workspace/build-scripts-cron/cronjob.sh $STAGE_NAME $GIT_BRANCH_SHORT'
+    if(isBuildBinary())
+      sh "rsync -avzh --stats ${INSTALLERS_DIR}/eman2.${STAGE_NAME}.unstable.sh ${DEPLOY_DEST}"
 }
 
 def setUploadFlag() {
@@ -129,30 +132,45 @@ pipeline {
     }
     
     stage('centos6') {
+      when {
+        expression { isRunCurrentStage('linux') }
+      }
+      
       steps {
-        runCronJob('linux')
+        runCronJob()
       }
     }
     
     stage('centos7') {
+      when {
+        expression { isRunCurrentStage('linux') }
+      }
+      
       steps {
-        runCronJob('linux')
+        runCronJob()
       }
     }
     
     stage('mac') {
+      when {
+        expression { isRunCurrentStage('mac') }
+      }
       environment {
         EMAN_TEST_SKIP=1
       }
       
       steps {
-        runCronJob('mac')
+        runCronJob()
       }
     }
     
     stage('win') {
+      when {
+        expression { isRunCurrentStage('win') }
+      }
+      
       steps {
-        runCronJob('win')
+        runCronJob()
       }
     }
   }
