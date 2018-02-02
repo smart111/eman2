@@ -1423,10 +1423,10 @@ def check_3dmask(log_main):
 		fout = open(os.path.join(Tracker["constants"]["masterdir"], "Tracker.json"),'w')
 		json.dump(Tracker, fout)
 		fout.close()
-		msg = "orgstack: %s  image comparison method: %s "%(Tracker["constants"]["orgstack"], \
-		   Tracker["constants"]["comparison_method"])
-		print(line, msg)
-		log_main.add(msg)
+		#msg = "orgstack: %s  image comparison method: %s "%(Tracker["constants"]["orgstack"], \
+		#   Tracker["constants"]["comparison_method"])
+		#print(line, msg)
+		#log_main.add(msg)
 		if Tracker ["constants"]["focus3Dmask"]:
 			msg ="User provided focus mask file:  %s"%Tracker ["constants"]["focus3Dmask"]
 			print(line, msg)
@@ -1528,8 +1528,8 @@ def print_shell_command(args_list, log_main):
 		line = ""
 		for a in args_list: line +=(a + " ")
 		log_main.add(line)
-		log_main.add("Sort3d master directory: %s"%Tracker["constants"]["masterdir"])
-		print_dict(Tracker["constants"],"Permanent settings of the program after initialization")
+		#log_main.add("Sort3d master directory: %s"%Tracker["constants"]["masterdir"])
+		#print_dict(Tracker["constants"],"Permanent settings of the program after initialization")
 	mpi_barrier(MPI_COMM_WORLD)
 	return
 
