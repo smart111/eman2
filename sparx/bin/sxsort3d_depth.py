@@ -141,7 +141,29 @@ def create_zero_group():
 	#Blockdata["nodes"] = [Blockdata["node_volume"][0]*Blockdata["ncpuspernode"], Blockdata["node_volume"][1]*Blockdata["ncpuspernode"]]
 	mpi_barrier(MPI_COMM_WORLD)
 	return
+### utilities 
+
+def load_tracker(path_of_the_tracker):
+	# multiple processors function
+	global Tracker, Blockdata
+	if(Blockdata["myid"] == Blockdata["main_node"]):
+		fout = open(os.path.join(path_of_the_tracker, "Tracker.json"),'r')
+		Tracker = convert_json_fromunicode(json.load(fout))
+		fout.close()
+		msg ="restart from interuption, load tracker files"
+		log_main.add(msg)
+	else: Tracker = 0
+	Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
+	return
 	
+def dump_tracker(path_of_the_tracker):
+	global Tracker, Blockdata
+	if(Blockdata["myid"] == Blockdata["main_node"]):
+		fout = open(os.path.join(path_of_the_tracker, "Tracker.json"),'w')
+		json.dump(Tracker, fout)
+		fout.close()
+	mpi_barrier(MPI_COMM_WORLD)
+	return
 ### restart
 
 def check_restart_from_given_depth_order(current_depth_order,  restart_from_generation, \
@@ -425,6 +447,9 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, minimum_grp_size, list_o
 	fout = open(os.path.join(box_dir, "freq_cutoff.json"),'w')
 	json.dump(freq_cutoff_dict, fout)
 	fout.close()
+	dump_tracker(path_of_the_tracker)
+	
+	
 	msg = '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
 	log_main.add(msg)
 	return ncluster, NACC, NUACC, unaccounted_list, nc
@@ -1290,13 +1315,8 @@ def check_3dmask(log_main):
 	Tracker["radius"]      = Tracker["constants"]["radius"]*Tracker["shrinkage"]
 	try: fuse_freq = Tracker["fuse_freq"]
 	except: Tracker["fuse_freq"] = int(Tracker["constants"]["pixel_size"]*Tracker["constants"]["nnxo"]/Tracker["constants"]["fuse_freq"]+0.5)
-	
 	Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
-	if(Blockdata["myid"] == Blockdata["main_node"]):
-		#print_dict(Tracker["constants"],"Permanent settings of the program after update from the input options")
-		fout = open(os.path.join(Tracker["constants"]["masterdir"], "Tracker.json"),'w')
-		json.dump(Tracker, fout)
-		fout.close()
+	dump_tracker(Tracker["constants"]["masterdir"])
 	Tracker["shrinkage"] = float(Tracker["nxinit"])/Tracker["constants"]["nnxo"]
 	#if(Blockdata["myid"] == Blockdata["main_node"]):  print_dict(Tracker,"Current settings of the sorting program")
 	return
@@ -7366,8 +7386,6 @@ def main():
 	
 		if Tracker["constants"]["restart_from_generation"] == -1:
 			continue_from_interuption = sort3d_utils("create_masterdir", None)
-			#if Blockdata["myid"] == Blockdata["main_node"]:
-			#	print("continue_from_interuption", continue_from_interuption, Blockdata["myid"])
 			log_main = Logger(BaseLogger_Files())
 			log_main.prefix = Tracker["constants"]["masterdir"]+"/"
 			
@@ -7382,7 +7400,7 @@ def main():
 				sort3d_utils("check_mask3d",  log_main)
 				sort3d_utils("check_mpi_settings", log_main)
 				keepsorting = sort3d_utils("initialization", log_main)
-				sort3d_utils("dump_tracker", log_main = log_main)
+				dump_tracker(Tracker["constants"]["masterdir"])
 				if not keepsorting:
 					from mpi import mpi_finalize
 					mpi_finalize()
@@ -7427,6 +7445,7 @@ def main():
 					else: Tracker = 0
 					Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
 					sort3d_utils("dump_tracker",  log_main = log_main, input_file1 = os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen))
+					dump_tracker( os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen))
 					compute_final_map(log_main, work_dir)
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						log_main.add('---------------------------------------------------------------')
@@ -7443,8 +7462,7 @@ def main():
 						Tracker["generation"][igen] = len(clusters)
 					else: Tracker = 0
 					Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
-					sort3d_utils("dump_tracker", log_main =  log_main, input_file1 = work_dir)
-			
+					dump_tracker(work_dir)
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						time_of_sorting_h,  time_of_sorting_m = get_time(time_sorting_start)
 						log_main.add('SORT3D 3D sorting time: %d hours %d minutes'%(time_of_sorting_h, time_of_sorting_m))						
@@ -7655,6 +7673,7 @@ def main():
 				sort3d_utils("check_mpi_settings", log_main)
 				keepsorting = sort3d_utils("initialization", log_main)
 				sort3d_utils("dump_tracker", log_main)
+				dump_tracker(Tracker["constants"]["masterdir"])
 				if not keepsorting:
 					from mpi import mpi_finalize
 					mpi_finalize()
@@ -7705,6 +7724,7 @@ def main():
 					else: Tracker = 0
 					Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
 					sort3d_utils("dump_tracker",  log_main = log_main, input_file1 = os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen))
+					dump_tracker(os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen))
 					compute_final_map(log_main, work_dir)
 					if Blockdata["myid"] == Blockdata["main_node"]:
 
@@ -7723,8 +7743,8 @@ def main():
 						Tracker["generation"][igen] = len(clusters)
 					else: Tracker = 0
 					Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
-					sort3d_utils("dump_tracker", log_main =  log_main, input_file1 = work_dir)
-			
+					#sort3d_utils("dump_tracker", log_main =  log_main, input_file1 = work_dir)
+					dump_tracker(work_dir)
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						time_of_sorting_h,  time_of_sorting_m = get_time(time_sorting_start)
 						msg  = 'Time of calculations of 3D sorting: %d hours and %d minutes '%(time_of_sorting_h, time_of_sorting_m)
