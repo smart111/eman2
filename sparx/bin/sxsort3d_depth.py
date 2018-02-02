@@ -7081,7 +7081,7 @@ def copy_results(log_file):
 		msg       ="cluster ID    size"
 		log_file.add(msg)
 		clusters    = []
-		sorting_res = '{:^50} {}'.format('                Summary of SORT3D IN-DEPTH results, '\n')
+		sorting_res = '{:^50} {}'.format('                Summary of SORT3D IN-DEPTH results\n')
 		NACC = 0           
 		for element in Tracker["generation"].items():
 			ig    = element[0]
@@ -7421,7 +7421,7 @@ def main():
 			if not os.path.exists(os.path.join(work_dir)):
 				os.mkdir(work_dir)
 				log_main.add('------------------------------------------------------------')
-				log_main.add(ms'                  SORT3D IN-DEPTH generation %d'%igeng)
+				log_main.add('                  SORT3D IN-DEPTH generation %d'%igeng)
 				log_main.add('------------------------------------------------------------')
 				mark_sorting_state(work_dir, False, log_main)
 				time_generation_start = time.time()
