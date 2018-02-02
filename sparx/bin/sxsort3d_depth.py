@@ -419,7 +419,7 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, minimum_grp_size, list_o
 		if len(any) >= minimum_grp_size:
 			any.sort()
 			new_list.append(any)
-			msg = 'cluster %d  with size %d is saved '%(index_of_any, len(any))
+			msg = 'Cluster %d  with size %d is saved '%(index_of_any, len(any))
 			log_main.add(msg)
 			write_text_file(any, os.path.join(box_dir, "Cluster_%03d.txt"%ncluster))
 			freq_cutoff_dict["Cluster_%03d.txt"%ncluster] = Tracker["freq_fsc143_cutoff"]
@@ -427,7 +427,7 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, minimum_grp_size, list_o
 			nc       += 1
 			NACC +=len(any)
 		else:
-			msg ='group %d with size %d is rejected because of size smaller than minimum_grp_size %d and elements are sent back into unaccounted ones'%(index_of_any, len(any), minimum_grp_size)
+			msg ='Group %d with size %d is rejected because of size smaller than minimum_grp_size %d and elements are sent back into unaccounted ones'%(index_of_any, len(any), minimum_grp_size)
 			log_main.add(msg)
 			for element in any: unaccounted_list.append(element)
 	unaccounted_list.sort()
@@ -509,15 +509,15 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 	nclasses, npart = split_partition_into_ordered_clusters(partition)
 	nc = 0
 	identified_clusters = []
-	msg = '++++++++++++++++++++++output cluster text file++++++++++++++++++++++++++++++++++'
+	msg = '++++++++++++++++++++++Output cluster text file++++++++++++++++++++++++++++++++++'
 	log_main.add(msg)
-	msg = 'write the determined clusters as Cluster*.txt on each generation directory'
+	msg = 'Write the determined clusters as Cluster*.txt on each generation directory'
 	log_main.add(msg)
 	
 	for ic in xrange(len(nclasses)):
 		if len(nclasses[ic])>= Tracker["constants"]["minimum_grp_size"]:
 			write_text_file(nclasses[ic], os.path.join(output_dir,"Cluster_%03d.txt"%nc))
-			msg = 'save cluster with size %d  to %s '%(len(nclasses[ic]), os.path.join(output_dir,"Cluster_%03d.txt"%nc))
+			msg = 'Save cluster with size %d  to %s '%(len(nclasses[ic]), os.path.join(output_dir,"Cluster_%03d.txt"%nc))
 			log_main.add(msg)
 			
 			nc +=1
@@ -527,7 +527,7 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 	if len(unaccounted_list)>1: 
 		unaccounted_list.sort()
 		write_text_file(unaccounted_list, os.path.join(output_dir, "Unaccounted.txt"))
-		msg = 'save unaccounted with size %d  to %s '%(len(unaccounted_list),  os.path.join(output_dir, "Unaccounted.txt"))
+		msg = 'Save unaccounted with size %d  to %s '%(len(unaccounted_list),  os.path.join(output_dir, "Unaccounted.txt"))
 		log_main.add(msg)
 		
 	nclasses = copy.deepcopy(identified_clusters)
@@ -536,7 +536,7 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 	if len(unaccounted_list)>1:
 		if not not_include_unaccounted:
 			write_text_file(unaccounted_list, os.path.join(output_dir,"Cluster_%03d.txt"%nc))
-			msg  ="the Cluster_%03d.txt contains unaccounted ones"%nc
+			msg  ="The Cluster_%03d.txt contains unaccounted ones"%nc
 			log_main.add(msg +'\n')
 	else:
 		msg = ' '
@@ -655,7 +655,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		json.dump(freq_cutoff_dict, fout)
 		fout.close()
 		msg_pipe = '-------------------------------------------' 
-		msg      = '  >>>>>>depth_clustering_box %d=====<  '%nbox
+		msg      = '  >>>>>>Depth_clustering_box %d=====<  '%nbox
 		log_main.add(msg_pipe)
 		log_main.add(msg)
 		log_main.add(msg_pipe +'\n')
@@ -749,8 +749,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 				MGSKmeans_index_file = os.path.join(iter_dir, "random_assignment_%03d.txt"%indep_run_iter)
 				if Blockdata["myid"] == Blockdata["main_node"]:
 					line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-					msg =  "within_box_indep_run_iter %d"%indep_run_iter
-					
+					msg =  "Within_box_indep_run_iter %d"%indep_run_iter
 					log_main.add(msg)
 					if not os.path.exists(Tracker["directory"]):os.mkdir(Tracker["directory"])
 					if not os.path.exists(os.path.join(Tracker["directory"], "tempdir")): os.mkdir(os.path.join(Tracker["directory"], "tempdir"))
@@ -844,8 +843,8 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 			msg1 = "current NACC: %8d  NUACC: %8d K: %3d total identified clusters: %3d  identified clusters in this run: %3d"%\
 			  (NACC, NUACC, current_number_of_groups, ncluster, new_clusters)
 			time_of_box_h,  time_of_box_m = get_time(time_box_start)
-			msg2 = " time cost: %d hours  %d minutes"%(time_of_box_h, time_of_box_m)
-			msg  = "boxrunsummary: generation %d layer %d nbox %d run %d: "%(Tracker["current_generation"], Tracker["depth"], nbox, pnruns) + msg1 +msg2
+			msg2 = "Time cost: %d hours  %d minutes"%(time_of_box_h, time_of_box_m)
+			msg  = "Boxrunsummary: generation %d layer %d nbox %d run %d: "%(Tracker["current_generation"], Tracker["depth"], nbox, pnruns) + msg1 +msg2
 			log_main.add(msg +'\n \n')
 			if os.path.exists(os.path.join(within_box_run_dir, "tempdir")): shutil.rmtree(os.path.join(within_box_run_dir, "tempdir"))
 			
@@ -4270,14 +4269,14 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 	line  = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 	log_main.add(' ')
 	log_main.add('--------------------------------------------------')
-	log_main.add(' =======    do_withinbox_two_way_comparison    =======< ')
+	log_main.add(' =======    Do_withinbox_two_way_comparison    =======< ')
 	log_main.add(' ')
-	msg = '==========   withinboxrun ID  gen: %d layer: %d nbox: %d nrun: %d niter: %d ========================'%(Tracker["current_generation"], \
+	msg = '==========   Withinboxrun ID  gen: %d layer: %d nbox: %d nrun: %d niter: %d ========================'%(Tracker["current_generation"], \
 	      Tracker["depth"], nbox, nrun, niter)
 	log_main.add(msg)
 	msg = 'The two runs that are compared inside the box are only independent in the first iteration'
 	log_main.add(msg)
-	smsg =' withinboxrun ID: generation %d layer %d nbox %d nrun %d niter %d freq_cutoff %f '%(Tracker["current_generation"], \
+	smsg =' Withinboxrun ID: generation %d layer %d nbox %d nrun %d niter %d freq_cutoff %f '%(Tracker["current_generation"], \
 	      Tracker["depth"], nbox, nrun, niter, round(Tracker["freq_fsc143_cutoff"], 4))
 	      
 	ipair = 0
