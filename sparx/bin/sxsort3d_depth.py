@@ -7753,8 +7753,7 @@ def main():
 			
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						time_of_sorting_h,  time_of_sorting_m = get_time(time_sorting_start)
-
-						msg  = '{:32} {:^5} {:^10} {:^5} {:^10}'.format('Time of calculations of 3D sorting: %d hours and %d minutes '%(time_of_sorting_h, time_of_sorting_m)
+						msg  = 'Time of calculations of 3D sorting: %d hours and %d minutes '%(time_of_sorting_h, time_of_sorting_m)
 						log_main.add(msg)
 						time_rec3d_start = time.time()
 
