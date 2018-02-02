@@ -920,18 +920,16 @@ def check_mpi_settings(log):
 	sys_required_mem = 1.0*Blockdata["no_of_processes_per_group"]
 	
 	if( Blockdata["myid"] == Blockdata["main_node"]):
-		msg_pipe  ='-----------------------------------------------------------------' 
-		msg       ='         >>>>>>>   Check memory and mpi settings   <<<<<               '
-		msg_pipe1 ='++++++                                                     ++++++' 
+		msg_pipe  =' ' 
 		log.add(msg_pipe)
+		msg_pipe  ='-----------------------------------------------------------------' 
+		log.add(msg_pipe)
+		msg       ='         >>>>>>>   Number of input images and memory information   <<<<<               '
+		msg_pipe1 ='++++++                                                     ++++++' 
 		log.add(msg)
 		log.add(msg_pipe1)
-		print(line, msg_pipe)
-		print(line, msg)
-		print(line, msg_pipe1)
-		msg ="cpus number: %5d  node number:  %5d  cpu number per group:  %5d"%(Blockdata["nproc"], Blockdata["no_of_groups"], Blockdata["no_of_processes_per_group"])
+		msg ="Number of processes: %5d  node number:  %5d.  Number of processes per group:  %5d."%(Blockdata["nproc"], Blockdata["no_of_groups"], Blockdata["no_of_processes_per_group"])
 		log.add(msg)
-		print(line, msg)
 	try:
 		image_org_size     = Tracker["constants"]["nnxo"]
 		image_in_core_size = nxinit
@@ -945,56 +943,50 @@ def check_mpi_settings(log):
 	try:
 		mem_bytes = os.sysconf('SC_PAGE_SIZE')*os.sysconf('SC_PHYS_PAGES')# e.g. 4015976448
 		mem_gib = mem_bytes/(1024.**3) # e.g. 3.74
-		if( Blockdata["myid"] == Blockdata["main_node"]):print(line, "system mem info: %5.1f  G"%mem_gib)
+		if( Blockdata["myid"] == Blockdata["main_node"]):
+			msg = "Available memory information provided by the operating system: %5.1f GB"%mem_gib
+			log.add(msg)
 	except:
 		mem_gib = None
-		if( Blockdata["myid"] == Blockdata["main_node"]):print(line, "It is not an unix machine!")
+		#if( Blockdata["myid"] == Blockdata["main_node"]):print(line, "It is not an unix machine!")
 		else: pass
 	if Tracker["constants"]["memory_per_node"] == -1.:
 		if mem_gib: total_memory = mem_gib
 		else:
 			total_memory =  Blockdata["no_of_processes_per_group"]*2.0 # assume each CPU has 2.0 G
 			if( Blockdata["myid"] == Blockdata["main_node"]):
-				msg ="memory per node is not provided, sort3d assumes 2G per node"
+				msg ="Memory per node is not provided, sort3d assumes 2G per node"
 				log.add(msg)
-				print(line, msg)
 		Tracker["constants"]["memory_per_node"] = total_memory
 	else:
-		msg ="memory per node: %f"%Tracker["constants"]["memory_per_node"]
+		msg ="Memory per node: %f"%Tracker["constants"]["memory_per_node"]
 		total_memory =  Tracker["constants"]["memory_per_node"]
 		if( Blockdata["myid"] == Blockdata["main_node"]):
 			log.add(msg)
-			print(line, msg)
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		msg = "total number of particles:  %d  number of particles per group:  %d"%(Tracker["constants"]["total_stack"], Tracker["constants"]["img_per_grp"])
+		msg = "Total number of particles: %d.  Number of particles per group: %d."%(Tracker["constants"]["total_stack"], Tracker["constants"]["img_per_grp"])
 		log.add(msg)
-		print(line, msg)
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		msg = "the available memory:  %5.1f  G"%total_memory
+		msg = "The total available memory:  %5.1f GB"%total_memory
 		log.add(msg)
-		print(line, msg)
-		msg = "total raw data:  %5.1f G raw data per node: %5.1f G"%(raw_data_size, raw_data_size_per_node)
+		msg = "The size of input 2D stack: %5.1f GB, the amount of memory 2D data will occupy per node: %5.1f GB"%(raw_data_size, raw_data_size_per_node)
 		log.add(msg)
-		print(line, msg)
 	if (total_memory - sys_required_mem - raw_data_size_per_node - volume_size_per_node - sorting_data_size_per_node - 5.0) <0.0: 
 		current_mpi_settings_is_bad = 1
 		new_nproc =  raw_data_size*(2.*ratio**2+1.)*Blockdata["no_of_processes_per_group"]/(total_memory - 5. - sys_required_mem - volume_size_per_node)
 		new_nproc =  int(new_nproc)
 		if( Blockdata["myid"] == Blockdata["main_node"]):
-			msg ="Suggestion: use  number of processes %d"%int(new_nproc)
-			print(line, msg)
+			msg ="Suggestion: set number of processes to: %d"%int(new_nproc)
 			log.add(msg)
 		ERROR("Insufficient memory", "check_mpi_settings", 1, Blockdata["myid"])
 	images_per_cpu = float(Tracker["constants"]["total_stack"])/float(Blockdata["nproc"])
 	images_per_cpu_for_unaccounted_data  = Tracker["constants"]["img_per_grp"]*1.5/float(Blockdata["nproc"])
 	if( Blockdata["myid"] == Blockdata["main_node"]):
-		msg="current images per cpu:  %d "%int(images_per_cpu)
+		msg="Number of images per cpu:  %d "%int(images_per_cpu)
 		log.add(msg )
-		print(line, msg)
 	if images_per_cpu < 5.0: ERROR("image per cpu less than 5", "check_mpi_settings", 1, Blockdata["myid"])
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		log.add(msg_pipe + '\n')
-		print(line, msg_pipe +'\n')
 	return
 	
 def get_sorting_image_size(original_data, partids, number_of_groups, sparamstructure, snorm_per_particle, log):
@@ -1006,7 +998,6 @@ def get_sorting_image_size(original_data, partids, number_of_groups, sparamstruc
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 		msg = "start reconstruction with refinement window_size  %d"%Tracker["nxinit_refinement"]
-		print(line, msg)
 		log.add(msg)
 		lpartids = read_text_file(partids, -1)
 		if len(lpartids) == 1:
@@ -1441,7 +1432,7 @@ def check_3dmask(log_main):
 			print(line, msg)
 			log_main.add(msg)
 	Tracker["shrinkage"] = float(Tracker["nxinit"])/Tracker["constants"]["nnxo"]
-	if(Blockdata["myid"] == Blockdata["main_node"]):print_dict(Tracker,"Current sorting settings")
+	if(Blockdata["myid"] == Blockdata["main_node"]):  print_dict(Tracker,"Current settings of the sorting program")
 	return
 
 def import_data(log_main):
