@@ -1552,9 +1552,9 @@ def sort3d_utils(to_be_decided, log_main = None, input_file1 = None):
 		
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-		msg = "sort3d_step  %d  "%Tracker["sort3d_counter"]+ to_be_decided
-		print(line, msg)
-		if log_main != None: log_main.add(msg)
+		#msg = "sort3d_step  %d  "%Tracker["sort3d_counter"]+ to_be_decided
+		#print(line, msg)
+		#if log_main != None: log_main.add(msg)
 		
 	if to_be_decided == "initialization":
 		sort3d_init(to_be_decided, log_main)
