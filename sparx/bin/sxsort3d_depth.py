@@ -1052,7 +1052,7 @@ def do_one_way_anova_scipy(clusters, value_list, name_of_variable="variable", su
 	if summary == None: summary = []
 	NMAX = 30
 	log_main.add('----------------------------------------------------------------------------------------------------------------' )
-	log_main.add('              =======      ANOVA analysis   =====')
+	log_main.add('              =======>  ANOVA analysis  <=====')
 	log_main.add('----------------------------------------------------------------------------------------------------------------' )
 	if len(clusters)<=1:
 		return None, None, None
@@ -1190,7 +1190,7 @@ def do_one_way_anova_scipy(clusters, value_list, name_of_variable="variable", su
 	mse = sse/float(n1)
 	mst = sst/float(n1)
 	f_ratio = msa/mse
-	msg ="                                ANOVA of %s\n"%(name_of_variable)+\
+	msg ="                  ----------> ANOVA of %s <------------ \n"%(name_of_variable)+\
 		'{:5} {:^12} {:^12} {}'.format('ANOVA', 'F-value',  'p_value', '\n')+\
 		'{:5} {:12.5f} {:12.6f} {}'.format('ANOVE', res[0], round(res[1],6), '\n')
 	log_main.add("\n"+msg)
@@ -3728,14 +3728,14 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	import json
 	stop_generation  = 0
 	log_main.add('----------------------------------------------------------------------------------------------------------------' )
-	log_main.add(' =======    do_boxes_two_way_comparison_new  between nbox %d and nbox %d=====< '%(nbox, nbox+1))
+	log_main.add(' >=======    Two-way comparison  between nbox %d and nbox %d=====<  '%(nbox, nbox+1))
 	log_main.add('----------------------------------------------------------------------------------------------------------------' )
-	msg = '========================= between box two way comparison gen: %d layer: %d nbox:  %d nbox: %d ==========================='%(Tracker["current_generation"], \
+	msg = '----------------> Between box two way comparison gen: %d layer: %d nbox:  %d nbox: %d <-------------'%(Tracker["current_generation"], \
 	      Tracker["depth"], nbox, nbox+1)
 	
 	log_main.add(msg)
 	
-	log_main.add('two box runs to be compared are entirely independent')
+	log_main.add('Two box runs to be compared are entirely independent')
 	msg = '**************** Simulation of random reproducibility estimation ******************* '
 	log_main.add(msg)
 	## used by single node only
