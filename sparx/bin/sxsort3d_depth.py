@@ -7437,9 +7437,9 @@ def main():
 		dump_tracker( os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen))
 		compute_final_map(log_main, work_dir)
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			log_main.add('----------------------------------------------------------------------------------------------------------------')
-			log_main.add('                        SORT IN-DEPTH generation %d'%igen)
-			log_main.add('----------------------------------------------------------------------------------------------------------------')
+			log_main.add('----------------------------------------------------------------------------------------------------------------' )
+			log_main.add('                                 SORT3D IN-DEPTH finished')
+			log_main.add('----------------------------------------------------------------------------------------------------------------' )
 			mark_sorting_state(work_dir, True, log_main)
 			time_of_sorting_h,  time_of_sorting_m = get_time(time_final_box_start)
 			log_main.add('SORT3D 3D reconstruction time: %d hours %d minutes'%(time_of_sorting_h, time_of_sorting_m))
