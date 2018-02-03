@@ -243,8 +243,7 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 		depth_dir        = os.path.join(work_dir, "layer%d"%depth)
 		Tracker["depth"] = depth
 		if(Blockdata["myid"] == Blockdata["main_node"]):
-			msg = 'Depth layer %d has %d pairs of independent sorting runs'%(depth,n_cluster_boxes) 
-			log_main.add(msg)
+			log_main.add('Layer %d has %d pairs of independent sorting runs'%(depth,n_cluster_boxes) )
 			if not os.path.exists(depth_dir): 
 				os.mkdir(depth_dir)
 				keepchecking = 0
@@ -291,11 +290,12 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 					input_box_parti2 = os.path.join(depth_dir, "nbox%d"%(nbox+1), "partition.txt")
 					minimum_grp_size, maximum_grp_size, accounted_list, unaccounted_list, bad_clustering, stop_generation = \
 					do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, depth_order - depth, log_main)
-					if stop_generation ==1:
+					if( stop_generation ==1 ):
 						partition_per_box_per_layer_list = []
 						partition_per_box_per_layer_list.append([accounted_list, unaccounted_list])
 						break
-					else:partition_per_box_per_layer_list.append([accounted_list, unaccounted_list])
+					else:
+						partition_per_box_per_layer_list.append([accounted_list, unaccounted_list])
 			else: 
 				partition_per_box_per_layer_list = 0
 				bad_clustering   = 0
@@ -306,26 +306,20 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 			stop_generation = bcast_number_to_all(stop_generation, Blockdata["main_node"], MPI_COMM_WORLD)
 			Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
 			if(Blockdata["myid"] == Blockdata["main_node"]): mark_sorting_state(depth_dir, True, log_main)
-			if bad_clustering ==1:
-				msg = "No clusters were found and sorting terminates"
+			if( bad_clustering == 1):
 				if(Blockdata["myid"] == Blockdata["main_node"]):
-					log_main.add(msg)
+					log_main.add('No clusters were found and sorting terminates')
 				from mpi import mpi_finalize
 				mpi_finalize()
 				exit()
-			if stop_generation == 1: break ### only one cluster survives 
+			if( stop_generation == 1 ): break ### only one cluster survives
 		else:
 			if(Blockdata["myid"] == Blockdata["main_node"]):
-				msg  = "depth layer %d is done  "%depth
-				log_main.add(msg)
+				log_main.add('Layer %d comleted'%depth)
 		time_of_sorting_h,  time_of_sorting_m = get_time(time_layer_start)
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			msg = "Layer %d costs time %d hours %d minutes"%(depth, time_of_sorting_h, time_of_sorting_m)
-			log_main.add(msg +'\n')
+			log_main.add("Execution of layer %d took %d hours %d minutes\n"%(depth, time_of_sorting_h, time_of_sorting_m))
 			
-	if(Blockdata["myid"] == Blockdata["main_node"]):
-		msg = " Depth_clustering finishes \n"
-		log_main.add(msg)
 	return partition_per_box_per_layer_list
 
 def depth_box_initialization(box_dir, input_list1, input_list2, log_file):
@@ -383,8 +377,7 @@ def depth_box_initialization(box_dir, input_list1, input_list2, log_file):
 		minimum_grp_size = Tracker["constants"]["minimum_grp_size"]
 	
 	if Blockdata["myid"] == Blockdata["main_node"]:
-		msg = "Depth_box_initialization  total_stack  %d number_of_groups  %d  minimum_grp_size  %d"%(total_stack, number_of_groups, minimum_grp_size)
-		log_file.add(msg)
+		log_file.add('Pair of independent sortings.  Number of images: %d. Number of groups: %d.  Minimum group size: %d.'%(total_stack, number_of_groups, minimum_grp_size))
 	mpi_barrier(MPI_COMM_WORLD)		
 	
 	return img_per_grp, number_of_groups, total_stack, minimum_grp_size, new_assignment
@@ -671,8 +664,8 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		time_box_start = time.time()
 	total_stack      = total_stack_init
 	number_of_groups = number_of_groups_init
-	while keepgoing ==1:
-		######=====----iter initialization
+	while( keepgoing ==1 ):
+		#   iter initialization
 		iter                = 0
 		previous_iter_ratio = 0.0
 		current_iter_ratio  = 0.0
@@ -735,7 +728,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		minimum_grp_size = minimum_grp_size_init
 		iter_previous_iter_ratio = 0.0
 		iter_current_iter_ratio  = 0.0
-		while iter <= box_niter and converged == 0:
+		while( (iter <= box_niter) and (converged == 0) ):
 			for indep_run_iter in xrange(2):
 				Tracker["directory"] = os.path.join(iter_dir, "MGSKmeans_%03d"%indep_run_iter)
 				MGSKmeans_index_file = os.path.join(iter_dir, "random_assignment_%03d.txt"%indep_run_iter)
@@ -755,7 +748,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 				if Blockdata["myid"] == Blockdata["main_node"]:
 					write_text_row(tmp_final_list, os.path.join(iter_dir, "partition_%03d.txt"%indep_run_iter))
 				mpi_barrier(MPI_COMM_WORLD)
-				
+	
 			if Blockdata["myid"] == Blockdata["main_node"]:
 				minimum_grp_size1, maximum_grp_size1, list_of_stable, unaccounted_list, iter_current_iter_ratio, selected_number_of_groups = \
 				do_withinbox_two_way_comparison(iter_dir, nbox, nruns, iter, log_main) # two partitions are written in partition_dir as partition_%03d.txt
@@ -780,23 +773,20 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 				tmp_list = swap_accounted_with_unaccounted_elements_mpi(accounted_file, unaccounted_file, \
 					log_main, current_number_of_groups, swap_ratio)
 				new_assignment_list.append(tmp_list)
-				
+
 			if Blockdata["myid"] == Blockdata["main_node"]:
 				if abs(iter_current_iter_ratio - iter_previous_iter_ratio< 1.0) and iter_current_iter_ratio > 90.: converged = 1
 			converged = bcast_number_to_all(converged, Blockdata["main_node"], MPI_COMM_WORLD)
-			
-			if converged == 0:
-				iter_previous_iter_ratio = iter_current_iter_ratio
-				iter +=1
-				if (iter <= box_niter):
-					iter_dir = os.path.join(within_box_run_dir, "iter%d"%iter)
-					if Blockdata["myid"] == Blockdata["main_node"]:
-						if not os.path.exists(iter_dir):os.mkdir(iter_dir)
-						for indep in xrange(2):
-							write_text_file(new_assignment_list[indep], \
-								os.path.join(iter_dir, "random_assignment_%03d.txt"%indep))				   
-					
-			mpi_barrier(MPI_COMM_WORLD)
+
+			iter_previous_iter_ratio = iter_current_iter_ratio
+			iter += 1
+
+		iter_dir = os.path.join(within_box_run_dir, "iter%d"%iter)
+		if Blockdata["myid"] == Blockdata["main_node"]:
+			if not os.path.exists(iter_dir): os.mkdir(iter_dir)
+			for indep in xrange(2):
+				write_text_file(new_assignment_list[indep], \
+					os.path.join(iter_dir, "random_assignment_%03d.txt"%indep))				   
 			
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			ncluster, NACC, NUACC, unaccounted_list, new_clusters = output_iter_results(\
@@ -817,7 +807,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		else:               no_cluster = True
 		keepgoing, nruns, total_stack, current_number_of_groups = \
 		   check_state_within_box_run(keepgoing, nruns, img_per_grp, minimum_grp_size, unaccounted_list, no_cluster)
-		   
+
 		if Blockdata["myid"] == Blockdata["main_node"]:# report current state
 			if keepgoing ==1: pnruns =nruns-1
 			else: 			  pnruns =nruns
@@ -828,25 +818,27 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 			msg  = "Boxrunsummary: generation %d layer %d nbox %d run %d: "%(Tracker["current_generation"], Tracker["depth"], nbox, pnruns) + msg1 +msg2
 			log_main.add(msg +'\n \n')
 			if os.path.exists(os.path.join(within_box_run_dir, "tempdir")): shutil.rmtree(os.path.join(within_box_run_dir, "tempdir"))
-			
-		if keepgoing == 1:
-			within_box_run_dir = os.path.join(work_dir, "run%d"%nruns)
-			unaccounted_file = os.path.join(within_box_run_dir, "Unaccounted_from_previous_run.txt")
-			if(Blockdata["myid"] == Blockdata["main_node"]):
-				if not os.path.exists(within_box_run_dir):os.mkdir(within_box_run_dir)
-				write_text_file(unaccounted_list, unaccounted_file)# new starting point
-			nreassign_list  = []
-			assignment_list = create_nrandom_lists(unaccounted_file, current_number_of_groups, 2)
-			
-			if(Blockdata["myid"] == Blockdata["main_node"]):
-				for indep in xrange(2):
-					write_text_row(assignment_list[indep], os.path.join(within_box_run_dir,\
-				     "independent_index_%03d.txt"%indep))
-			run_id_file = os.path.join(within_box_run_dir, "independent_index_000.txt")
-		else:
-			partition = get_box_partition(work_dir, ncluster, unaccounted_list)
-			if(Blockdata["myid"] == Blockdata["main_node"]): write_text_row(partition, os.path.join(work_dir, "partition.txt"))
+
+		partition = get_box_partition(work_dir, ncluster, unaccounted_list)
+		if(Blockdata["myid"] == Blockdata["main_node"]): write_text_row(partition, os.path.join(work_dir, "partition.txt"))
 		mpi_barrier(MPI_COMM_WORLD)
+
+
+	within_box_run_dir = os.path.join(work_dir, "run%d"%nruns)
+	unaccounted_file = os.path.join(within_box_run_dir, "Unaccounted_from_previous_run.txt")
+	if(Blockdata["myid"] == Blockdata["main_node"]):
+		if not os.path.exists(within_box_run_dir):os.mkdir(within_box_run_dir)
+		write_text_file(unaccounted_list, unaccounted_file)# new starting point
+	nreassign_list  = []
+	assignment_list = create_nrandom_lists(unaccounted_file, current_number_of_groups, 2)
+
+	if(Blockdata["myid"] == Blockdata["main_node"]):
+		for indep in xrange(2):
+			write_text_row(assignment_list[indep], os.path.join(within_box_run_dir,\
+			 "independent_index_%03d.txt"%indep))
+	run_id_file = os.path.join(within_box_run_dir, "independent_index_000.txt")
+
+
 	return
 
 def check_mpi_settings(log_main):
@@ -4051,19 +4043,20 @@ def split_partition_into_ordered_clusters_split_ucluster(partition):
 	# create a partition list:
 	return clusters, ucluster[0]
 
-def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
+def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	global Tracker, Blockdata
 	import numpy as np
+	log_list = []
 	## for single node only
-	#log_main.add(' ')
-	#log_main.add('--------------------------------------------------')
-	#log_main.add(' =======    Do_withinbox_two_way_comparison    =======< ')
-	#log_main.add(' ')
+	#log_list.add(' ')
+	#log_list.add('--------------------------------------------------')
+	#log_list.add(' =======    Do_withinbox_two_way_comparison    =======< ')
+	#log_list.add(' ')
 	msg = '==========   Withinboxrun ID  gen: %d layer: %d nbox: %d nrun: %d niter: %d ========================'%(Tracker["current_generation"], \
 	      Tracker["depth"], nbox, nrun, niter)
-	#log_main.add(msg)
+	#log_list.add(msg)
 	msg = 'The two runs that are compared inside the box are only independent in the first iteration'
-	#log_main.add(msg)
+	#log_list.add(msg)
 	smsg =' Withinboxrun ID: generation %d layer %d nbox %d nrun %d niter %d freq_cutoff %f.'%(Tracker["current_generation"], \
 	      Tracker["depth"], nbox, nrun, niter, round(Tracker["freq_fsc143_cutoff"], 4))
 	      
@@ -4079,11 +4072,11 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 	for im in xrange(len(ptp1)):
 		msg +='{:8d} '.format(len(ptp1[im]))
 		msg1 +='{:8d} '.format(im)
-	#log_main.add(msg1)
-	#log_main.add(msg)
+	#log_list.add(msg1)
+	#log_list.add(msg)
 	msg = 'P1      '
 	for im in xrange(len(ptp2)): msg +='{:8d} '.format(len(ptp2[im]))
-	#log_main.add(msg)
+	#log_list.add(msg)
     ####
 	try: assert(len(core1) ==len(core2))
 	except: ERROR("The two partitions have different lengths", "do_withinbox_two_way_comparison", 1, 0)
@@ -4097,14 +4090,14 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 	newindeces, list_stable, nb_tot_objs, patch_elements = patch_to_do_k_means_match_clusters_asg_new(ptp1, ptp2)
 	ratio_unaccounted  = 100.-nb_tot_objs/float(total_data)*100.
 	ratio_accounted    = nb_tot_objs/float(total_data)*100.
-	print_matching_pairs(newindeces, log_main)
+	print_matching_pairs(newindeces, log_list)
 	
 	smsg += '{} {} {}'.format(' Total reproducibility', 'is', round(ratio_accounted,2))
 	Tracker["current_iter_ratio"] = ratio_accounted
 	score_list = [ ]
 	nclass     = 0
 	msg = '{:^12} {:^10} {:^17} {:^15} {:^15}'.format('New group ID', 'group size', 'random group size', 'status',   'reproducibility')
-	#log_main.add(msg)
+	#log_list.add(msg)
 	current_MGR = get_MGR_from_two_way_comparison(newindeces, ptp1, ptp2, total_data)
 	stable_clusters   = []
 	selected_clusters = []
@@ -4124,12 +4117,12 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 			nclass +=1
 			msg ='{:^12d} {:^10d} {:^17d} {:^15} {:^15.3f}'.format(index_of_any, \
 			      len(any), current_MGR[index_of_any],'accepted', round(score3,3))
-			#log_main.add(msg)
+			#log_list.add(msg)
 			selected_clusters.append(any)
 		else:
 			msg ='{:^12d} {:^10d} {:^17d} {:^15}  {:^15.3f}'.format(index_of_any, \
 			      len(any), current_MGR[index_of_any], 'rejected', round(score3,3))
-			#log_main.add(msg)
+			#log_list.add(msg)
 			
 	accounted_list, new_index = merge_classes_into_partition_list(selected_clusters)
 	a = set(full_list)
@@ -4140,10 +4133,10 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter, log_main):
 	min_size_msg =" current minimum group size: %d maximum group size: %d"%(minimum_group_size, maximum_group_size)
 	smsg +=' {} {} {} {}'.format('NACC:', len(accounted_list), 'NUACC:', len(unaccounted_list))
 	smsg += min_size_msg
-	#log_main.add(smsg)
+	#log_list.add(smsg)
 	msg = '========================================================================================================================='
-	#log_main.add(msg+'\n')
-	return minimum_group_size, maximum_group_size, selected_clusters, unaccounted_list, ratio_accounted, len(list_stable)
+	#log_list.add(msg+'\n')
+	return minimum_group_size, maximum_group_size, selected_clusters, unaccounted_list, ratio_accounted, len(list_stable), log_list
 
 #####	
 def split_partition_into_clusters(sorting_res):
