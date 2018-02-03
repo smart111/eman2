@@ -3893,7 +3893,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	log_main.add(msg1)
 	
 	log_main.add(msg)
-	msg = 'P1       '
+	msg = 'P1      '
 	for im in xrange(len(ptp2)): msg +='{:8d} '.format(len(ptp2[im]))
 	
 	log_main.add(msg)
@@ -5196,11 +5196,9 @@ def get_input_from_sparx_ref3d(log_main):# case one
 	if checking_flag: ERROR("SPARX refinement dir does not exist", "get_input_from_sparx_ref3d", 1, Blockdata["myid"])
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		msg = "Import results from SPARX 3-D refinement"
-		
 		log_main.add(msg)
 		if Tracker["constants"]["niter_for_sorting"] == -1: # take the best solution to do sorting
 			msg = "Search in the directory %s ......"%Tracker["constants"]["refinement_dir"]
-			
 			log_main.add(msg)
 			niter_refinement = 0
 			while os.path.exists(os.path.join(Tracker["constants"]["refinement_dir"], "main%03d"%niter_refinement)) and os.path.exists(os.path.join(Tracker["constants"]["refinement_dir"],"main%03d"%niter_refinement, "Tracker_%03d.json"%niter_refinement)):
@@ -5240,8 +5238,7 @@ def get_input_from_sparx_ref3d(log_main):# case one
 		if Tracker_refinement["constants"]["stack"][0:4]=="bdb:": refinement_stack = "bdb:"+os.path.join(refinement_dir_path, Tracker_refinement["constants"]["stack"][4:])
 		else: refinement_stack = os.path.join(refinement_dir_path, Tracker_refinement["constants"]["stack"])
 		if not Tracker["constants"]["orgstack"]: # Use refinement stack if instack is not provided
-			msg = "refinement stack  %s"%refinement_stack
-			
+			msg = "refinement stack  %s"%refinement_stack			
 			log_main.add(msg)
 			Tracker["constants"]["orgstack"] = refinement_stack #Tracker_refinement["constants"]["stack"]
 			try: image = get_im(Tracker["constants"]["orgstack"], 0)
@@ -5249,8 +5246,7 @@ def get_input_from_sparx_ref3d(log_main):# case one
 				import_from_sparx_refinement = 0
 		else:
 			if Tracker["constants"]["orgstack"] == Tracker_refinement["constants"]["stack"]: # instack and refinement data stack is the same
-				msg = "The sorting instack is the same refinement instack: %s"%Tracker_refinement["constants"]["stack"]
-				
+				msg = "The sorting instack is the same refinement instack: %s"%Tracker_refinement["constants"]["stack"]				
 				log_main.add(msg)
 				if not os.path.exists(Tracker["constants"]["orgstack"]): import_from_sparx_refinement = 0
 			else: # complicated cases
@@ -5262,15 +5258,12 @@ def get_input_from_sparx_ref3d(log_main):# case one
 						Tracker["constants"]["orgstack"] = "bdb:" + Tracker["constants"]["refinement_dir"]+"/../"+old_stack[4:]
 					else: Tracker["constants"]["orgstack"] = os.path.join(option_old_refinement_dir, "../", old_stack)
 					msg = "Use refinement orgstack "
-					
 					log_main.add(msg)
 				else:
-					msg = "Use orgstack provided by options"
-					
+					msg = "Use orgstack provided by options"					
 					log_main.add(msg)
 		if import_from_sparx_refinement:
-			msg =  "data stack for sorting is %s"%Tracker["constants"]["orgstack"]
-			
+			msg =  "data stack for sorting is %s"%Tracker["constants"]["orgstack"]			
 			log_main.add(msg)
 		total_stack   = EMUtil.get_image_count(Tracker["constants"]["orgstack"])
 	else: total_stack = 0
@@ -5278,8 +5271,7 @@ def get_input_from_sparx_ref3d(log_main):# case one
 	
 	if import_from_sparx_refinement == 0:ERROR("The data stack is not accessible","get_input_from_sparx_ref3d",1, Blockdata["myid"])
 	total_stack = bcast_number_to_all(total_stack, source_node = Blockdata["main_node"])			
-	Tracker["constants"]["total_stack"] = total_stack
-	
+	Tracker["constants"]["total_stack"] = total_stack	
 	# Now copy relevant refinement files to sorting directory:
 	if Blockdata["myid"] == Blockdata["main_node"]:
 		if os.path.exists(os.path.join(Tracker["constants"]["refinement_dir"], "main%03d"%selected_iter, "params_%03d.txt"%selected_iter)):
@@ -5625,131 +5617,7 @@ def get_input_from_datastack(log_main):# Case three
 	return import_from_data_stack
 	
 ####	
-def out_fsc(f):
-	global Tracker, Blockdata
-	print(" ")
-	print("  driver FSC  after  iteration#%3d"%Tracker["mainiteration"])
-	print("  %4d        %7.2f         %5.3f"%(0,1000.00,f[0]))
-	for i in xrange(1,len(f)): print("  %4d        %7.2f         %5.3f"%(i,Tracker["constants"]["pixel_size"]*Tracker["constants"]["nnxo"]/float(i),f[i]))
-	print(" ")
-	
 ### functions for faked rec3d from subsets
-
-def compute_sigma(projdata, params, first_procid, dryrun = False, myid = -1, mpi_comm = -1):
-	global Tracker, Blockdata
-	# Input stack of particles with all params in header
-	# Output: 1/sigma^2 and a dictionary
-	#  It could be a parameter
-	if( mpi_comm < 0 ): mpi_comm = MPI_COMM_WORLD
-	npad = 1
-	if  dryrun:
-		#tsd = model_blank(nv + nv//2,len(sd), 1, 1.0)
-		#tocp = model_blank(len(sd), 1, 1, 1.0)
-		if( myid == Blockdata["main_node"] ):
-			tsd = get_im(os.path.join(Tracker["previousoutputdir"],"bckgnoise.hdf"))
-			tsd.write_image(os.path.join(Tracker["directory"],"bckgnoise.hdf"))
-			nnx = tsd.get_xsize()
-			nny = tsd.get_ysize()
-		else:
-			nnx = 0
-			nny = 0
-		nnx = bcast_number_to_all(nnx, source_node = Blockdata["main_node"], mpi_comm = mpi_comm)
-		nny = bcast_number_to_all(nny, source_node = Blockdata["main_node"], mpi_comm = mpi_comm)
-		if( myid != Blockdata["main_node"] ): tsd = model_blank(nnx,nny, 1, 1.0)
-		bcast_EMData_to_all(tsd, myid, source_node = Blockdata["main_node"], comm = mpi_comm)
-	else:
-		if( myid == Blockdata["main_node"] ): ngroups = len(read_text_file(os.path.join(Tracker["constants"]["masterdir"],"main000", "groupids.txt")))
-		else: ngroups = 0
-		ngroups = bcast_number_to_all(ngroups, source_node = Blockdata["main_node"], mpi_comm = mpi_comm)
-		ndata = len(projdata)
-		nx = Tracker["constants"]["nnxo"]
-		mx = npad*nx
-		nv = mx//2+1
-		"""
-		#  Inverted Gaussian mask
-		invg = model_gauss(Tracker["constants"]["radius"],nx,nx)
-		invg /= invg[nx//2,nx//2]
-		invg = model_blank(nx,nx,1,1.0) - invg
-		"""
-
-		mask = model_circle(Tracker["constants"]["radius"],nx,nx)
-		tsd = model_blank(nv + nv//2, ngroups)
-
-		#projdata, params = getalldata(partstack, params, myid, Blockdata["nproc"])
-		'''
-		if(myid == 0):  ndata = EMUtil.get_image_count(partstack)
-		else:           ndata = 0
-		ndata = bcast_number_to_all(ndata)
-		if( ndata < Blockdata["nproc"]):
-			if(myid<ndata):
-				image_start = myid
-				image_end   = myid+1
-			else:
-				image_start = 0
-				image_end   = 1
-		else:
-			image_start, image_end = MPI_start_end(ndata, Blockdata["nproc"], myid)
-		#data = EMData.read_images(stack, range(image_start, image_end))
-		if(myid == 0):
-			params = read_text_row( paramsname )
-			params = [params[i][j]  for i in xrange(len(params))   for j in xrange(5)]
-		else:           params = [0.0]*(5*ndata)
-		params = bcast_list_to_all(params, myid, source_node=Blockdata["main_node"])
-		params = [[params[i*5+j] for j in xrange(5)] for i in xrange(ndata)]
-		'''
-		if(Blockdata["accumulatepw"] == None):
-			Blockdata["accumulatepw"] = [[],[]]
-			doac = True
-		else:  doac = False
-		tocp = model_blank(ngroups)
-		tavg = model_blank(nx,nx)
-		for i in xrange(ndata):  # apply_shift; info_mask; norm consistent with get_shrink_data
-			indx = projdata[i].get_attr("particle_group")
-			phi,theta,psi,sx,sy = params[i][0],params[i][1],params[i][2],params[i][3],params[i][4]
-			stmp = cyclic_shift( projdata[i], int(round(sx)), int(round(sy)))
-			st = Util.infomask(stmp, mask, False)
-			stmp -=st[0]
-			stmp /=st[1]
-			temp = cosinemask(stmp, radius = Tracker["constants"]["radius"], s = 0.0)
-			Util.add_img(tavg, temp)
-			sig = Util.rotavg_fourier( temp )
-			#sig = rops(pad(((cyclic_shift( projdata[i], int(sx), int(round(sy)) ) - st[0])/st[1]), mx,mx,1,0.0))
-			#sig = rops(pad(((cyclic_shift(projdata, int(round(params[i][-2])), int(round(params[i][-1])) ) - st[0])/st[1])*invg, mx,mx,1,0.0))
-			for k in xrange(nv):tsd.set_value_at(k,indx,tsd.get_value_at(k,indx)+sig[k])
-			tocp[indx] += 1
-		####for lll in xrange(len(Blockdata["accumulatepw"])):  print(myid,ndata,lll,len(Blockdata["accumulatepw"][lll]))
-		reduce_EMData_to_root(tsd,  myid, Blockdata["main_node"],  mpi_comm)
-		reduce_EMData_to_root(tocp, myid, Blockdata["main_node"], mpi_comm)
-		reduce_EMData_to_root(tavg, myid, Blockdata["main_node"], mpi_comm)
-		if( myid == Blockdata["main_node"]):
-			Util.mul_scalar(tavg, 1.0/float(sum(Tracker["nima_per_chunk"])))
-			sig = Util.rotavg_fourier( tavg )
-			#for k in xrange(1,nv):  print("  BACKG  ",k,tsd.get_value_at(k,0)/tocp[0] ,sig[k],tsd.get_value_at(k,0)/tocp[0] - sig[k])
-			tmp1 = [0.0]*nv
-			tmp2 = [0.0]*nv
-			for i in xrange(ngroups):
-				for k in xrange(1,nv):
-					qt = tsd.get_value_at(k,i)/tocp[i] - sig[k]
-					if( qt > 0.0 ):	tmp1[k] = 2.0/qt
-				#smooth
-				tmp1[0] = tmp1[1]
-				tmp1[-1] = tmp1[-2]
-				for ism in xrange(0):  #2
-					for k in xrange(1,nv-1):  tmp2[k] = (tmp1[k-1]+tmp1[k]+tmp1[k+1])/3.0
-					for k in xrange(1,nv-1):  tmp1[k] = tmp2[k]
-				#  We will keep 0-element the same as first tsd.set_value_at(0,i,1.0)
-				for k in xrange(1,nv):tsd.set_value_at(k,i,tmp1[k])
-				tsd.set_value_at(0,i,1.0)
-			tsd.write_image(os.path.join(Tracker["directory"],"bckgnoise.hdf"))
-		bcast_EMData_to_all(tsd, myid, source_node = 0, comm = mpi_comm)
-	nnx = tsd.get_xsize()
-	nny = tsd.get_ysize()
-	Blockdata["bckgnoise"] = []
-	for i in xrange(nny):
-		prj = model_blank(nnx)
-		for k in xrange(nnx): prj[k] = tsd.get_value_at(k,i)
-		Blockdata["bckgnoise"].append(prj)  #  1.0/sigma^2
-	return
 ###
 def do3d(procid, data, newparams, refang, rshifts, norm_per_particle, myid, mpi_comm = -1):
 	global Tracker, Blockdata
@@ -5771,59 +5639,6 @@ def do3d(procid, data, newparams, refang, rshifts, norm_per_particle, myid, mpi_
 		trol.write_image(os.path.join(Tracker["directory"], "tempdir", "trol_%01d_%03d.hdf"%(procid,Tracker["mainiteration"])))
 	mpi_barrier(mpi_comm)
 	return
-##
-def getindexdata(partids, partstack, particle_groups, original_data = None, small_memory= True, nproc =-1, myid = -1, mpi_comm = -1):
-	global Tracker, Blockdata
-	# The function will read from stack a subset of images specified in partids
-	#   and assign to them parameters from partstack
-	# So, the lengths of partids and partstack are the same.
-	#  The read data is properly distributed among MPI threads.
-	if( mpi_comm < 0 ):  mpi_comm = MPI_COMM_WORLD
-	from applications import MPI_start_end
-	#  parameters
-	if( myid == 0 ):  partstack = read_text_row(partstack)
-	else:  			  partstack = 0
-	partstack = wrap_mpi_bcast(partstack, 0, mpi_comm)
-	#  particles IDs
-	if( myid == 0 ):  partids = read_text_file(partids)
-	else:          	  partids = 0
-	partids = wrap_mpi_bcast(partids, 0, mpi_comm)
-	#  Group assignments
-	if( myid == 0 ):	group_reference = read_text_file(particle_groups)
-	else:          		group_reference = 0
-	group_reference = wrap_mpi_bcast(group_reference, 0, mpi_comm)
-
-	im_start, im_end = MPI_start_end(len(partstack), nproc, myid)
-	partstack = partstack[im_start:im_end]
-	partids   = partids[im_start:im_end]
-	group_reference = group_reference[im_start:im_end]
-	'''
-	particles_on_node = []
-	parms_on_node     = []
-	for i in xrange( group_start, group_end ):
-		particles_on_node += lpartids[group_reference[i][2]:group_reference[i][3]+1]  #  +1 is on account of python idiosyncrasies
-		parms_on_node     += partstack[group_reference[i][2]:group_reference[i][3]+1]
-
-
-	Blockdata["nima_per_cpu"][procid] = len(particles_on_node)
-	#ZZprint("groups_on_thread  ",Blockdata["myid"],procid, Tracker["groups_on_thread"][procid])
-	#ZZprint("  particles  ",Blockdata["myid"],Blockdata["nima_per_cpu"][procid],len(parms_on_node))
-	'''
-	"""
-            17            28            57            84    5
-            18            14            85            98    6
-            19            15            99           113    7
-            25            20           114           133    8
-            29             9           134           142    9
-
-	"""
-	#print("getindexdata", Tracker["constants"]["orgstack"])
-	#print(len(partids), Blockdata["myid"])
-	if( original_data == None or small_memory):
-		original_data = EMData.read_images(Tracker["constants"]["orgstack"], partids)
-		for im in xrange( len(original_data) ): 
-			original_data[im].set_attr("particle_group", group_reference[im])
-	return original_data, partstack
 #######
 def do3d_sorting_groups_rec3d(iteration, masterdir, log_main):
 	global Tracker, Blockdata
@@ -7372,7 +7187,7 @@ def main():
 			if not os.path.exists(os.path.join(work_dir)):
 				os.mkdir(work_dir)
 				log_main.add('------------------------------------------------------------')
-				log_main.add('                  SORT3D IN-DEPTH generation %d'%igeng)
+				log_main.add('                  SORT3D IN-DEPTH generation %d'%igen)
 				log_main.add('------------------------------------------------------------')
 				mark_sorting_state(work_dir, False, log_main)
 				time_generation_start = time.time()
