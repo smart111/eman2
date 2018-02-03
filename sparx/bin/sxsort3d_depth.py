@@ -822,6 +822,8 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 	partition = get_box_partition(work_dir, ncluster, unaccounted_list)
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		log_main.add('In box%d, %d groups are determined'%(nbox, ncluster))
+		msg = '========================================================================================================================='
+		log_main.add(msg+'\n')
 		write_text_row(partition, os.path.join(work_dir, "partition.txt"))
 	return
 
@@ -4033,10 +4035,10 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	log_list = []
 	## for single node only
 	log_list.append(' ')
-	log_list.append('--------------------------------------------------')
-	log_list.append(' =======    Do_withinbox_two_way_comparison    =======< ')
+	log_list.append('--------------------------------------------------------')
+	log_list.append(' >======= Do_withinbox_two_way_comparison =======< ')
 	log_list.append(' ')
-	msg = '==========   Withinboxrun ID  gen: %d layer: %d nbox: %d nrun: %d niter: %d ========================'%(Tracker["current_generation"], \
+	msg = '==========>   Withinboxrun ID  gen: %d layer: %d nbox: %d nrun: %d niter: %d <========================'%(Tracker["current_generation"], \
 	      Tracker["depth"], nbox, nrun, niter)
 	log_list.append(msg)
 	msg = 'The two runs that are compared inside the box are only independent in the first iteration'
@@ -4137,8 +4139,8 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	smsg +=' {} {} {} {}'.format('NACC:', len(accounted_list), 'NUACC:', len(unaccounted_list))
 	smsg += min_size_msg
 	log_list.append(smsg)
-	msg = '========================================================================================================================='
-	log_list.append(msg+'\n')
+	msg = '-----------------------------------------------------------------------------------------------------------------------'
+	log_list.append(msg)
 	return minimum_group_size, maximum_group_size, selected_clusters, unaccounted_list, ratio_accounted, len(list_stable), log_list
 
 #####	
