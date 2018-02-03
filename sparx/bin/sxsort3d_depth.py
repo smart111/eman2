@@ -817,10 +817,12 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 			run_id_file = os.path.join(within_box_run_dir, "independent_index_000.txt")
 	
 		if Blockdata["myid"] == Blockdata["main_node"]:# report current state
-			log_main.add("In RUN  %d:"%nruns)
+			log_main.add("In RUN  %d, %d groups are determined."%(nruns, new_clusters))
 			for itable in xrange(len(info_table)): log_main.add(info_table[itable])
 	partition = get_box_partition(work_dir, ncluster, unaccounted_list)
-	if(Blockdata["myid"] == Blockdata["main_node"]): write_text_row(partition, os.path.join(work_dir, "partition.txt"))
+	if(Blockdata["myid"] == Blockdata["main_node"]):
+		log_main.add('In box%d, %d groups are determined'%(nbox, ncluster))
+		write_text_row(partition, os.path.join(work_dir, "partition.txt"))
 	return
 
 def check_mpi_settings(log_main):
