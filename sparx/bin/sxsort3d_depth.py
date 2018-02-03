@@ -7115,10 +7115,6 @@ def main():
 		my_pids      = os.path.join(Tracker["constants"]["masterdir"], "indexes.txt")
 		work_dir     = os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 		Tracker["current_generation"] = igen
-		if Blockdata["myid"] == Blockdata["main_node"]:
-			if not os.path.exists(os.path.join(work_dir)):
-				os.mkdir(work_dir)
-				mark_sorting_state(work_dir, False, log_main)
 		while keepsorting ==1:
 			if Blockdata["myid"] == Blockdata["main_node"]:
 				keepchecking = check_sorting_state(work_dir, keepchecking, log_main)
@@ -7126,9 +7122,12 @@ def main():
 			else: keepchecking = 0
 			keepchecking = bcast_number_to_all(keepchecking, Blockdata["main_node"], MPI_COMM_WORLD)
 			if keepchecking == 0: # new, do it
-				log_main.add('----------------------------------------------------------------------------------------------------------------' )
-				log_main.add('                                    SORT3D IN-DEPTH generation %d'%igen)
-				log_main.add('----------------------------------------------------------------------------------------------------------------' )
+				if Blockdata["myid"] == Blockdata["main_node"]:
+					os.mkdir(work_dir)
+					mark_sorting_state(work_dir, False, log_main)
+					log_main.add('----------------------------------------------------------------------------------------------------------------' )
+					log_main.add('                                    SORT3D IN-DEPTH generation %d'%igen)
+					log_main.add('----------------------------------------------------------------------------------------------------------------' )
 				params          = os.path.join(Tracker["constants"]["masterdir"],"refinement_parameters.txt")
 				previous_params = Tracker["previous_parstack"]
 				output_list     = depth_clustering(work_dir, options.depth_order, my_pids, params, previous_params, log_main)
