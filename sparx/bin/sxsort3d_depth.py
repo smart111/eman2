@@ -1855,8 +1855,7 @@ def Kmeans_minimum_group_size_relaxing_orien_groups(original_data, partids, para
 					dummy = wrap_mpi_recv(iproc, MPI_COMM_WORLD)
 					for iptl in xrange(len(dummy)):
 						if dummy[iptl] !=-1:iter_assignment[iptl] = dummy[iptl]
-						else: pass
-			#iter_assignment = shake_assignment(iter_assignment, randomness_rate = 1.-Tracker["constants"]["eqk_shake"]/200.)#						
+						else: pass				
 		mpi_barrier(MPI_COMM_WORLD)	
 		iter_assignment = wrap_mpi_bcast(iter_assignment, Blockdata["main_node"], MPI_COMM_WORLD)
 		ratio, newindices, stable_clusters = compare_two_iterations(iter_assignment, last_iter_assignment, number_of_groups)
@@ -3362,18 +3361,13 @@ def refilling_global_scheme_mpi(clusters, unaccounted_list, number_of_clusters, 
 	#	msg = "NACC %d NUACC %d  K %d m %d  number_of_clusters %d"%(NACC, NUACC, (len(clusters)), m, number_of_clusters)
 	#	log_file.add(msg)
 	#	#
-	# shake
 	if swap_ratio > 0.0:
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			if int(swap_ratio*NACC) > NUACC:
-				#msg = "shake_clusters_small_NUACC"
-				#log_file.add(msg)
-				unaccounted_list, clusters = shake_clusters_small_NUACC(\
+				unaccounted_list, clusters = swap_clusters_small_NUACC(\
 						 unaccounted_list, clusters, swap_ratio)
 			else:
-				#msg = "shake_clusters_large_NUACC"
-				#log_file.add(msg)
-				unaccounted_list, clusters = shake_clusters_large_NUACC(\
+				unaccounted_list, clusters = swap_clusters_large_NUACC(\
 						 unaccounted_list, clusters, swap_ratio)
 		else:
 			unaccounted_list = 0
@@ -3417,12 +3411,11 @@ def select_fixed_size_cluster_from_alist(ulist, img_per_grp):
 	del ulist[0:img_per_grp]
 	return cluster, ulist
 
-def shake_clusters_small_NUACC(glist, clusters, shake_ratio):
+def swap_clusters_small_NUACC(glist, clusters, swap_ratio):
 	slist = [None for i in xrange(len(clusters))]
 	temp_list = []
 	for ic in xrange(len(clusters)):
-		slist[ic] = int(shake_ratio*len(clusters[ic]))
-		#print("ZZZZ   %d"%slist[ic])
+		slist[ic] = int(swap_ratio*len(clusters[ic]))
 		shuffle(clusters[ic])
 		temp_list +=clusters[ic][0:slist[ic]]
 		del clusters[ic][0:slist[ic]]
@@ -3433,14 +3426,13 @@ def shake_clusters_small_NUACC(glist, clusters, shake_ratio):
 		del temp_list[0:slist[ic]]
 	return temp_list, clusters
 		
-def shake_clusters_large_NUACC(glist, clusters, shake_ratio):
+def swap_clusters_large_NUACC(glist, clusters, swap_ratio):
 	import copy
 	slist = [None for i in xrange(len(clusters))]
 	temp_list = []
 	ulist = copy.deepcopy(glist)
 	for ic in xrange(len(clusters)):
-		#print("cluster ID %d  size %d"%(ic, len(clusters[ic])))
-		slist[ic] = int(shake_ratio*len(clusters[ic]))
+		slist[ic] = int(swap_ratio*len(clusters[ic]))
 		shuffle(clusters[ic])
 		temp_list +=clusters[ic][0:slist[ic]]
 		del clusters[ic][0:slist[ic]]
@@ -3914,13 +3906,6 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	print_matching_pairs(newindeces, log_main)
 	
 	###
-	"""
-	if Tracker["current_generation"] == 0:
-		faked_list = sorted(list_stable, key=len, reverse=True)
-		minimum_grp_size_cut = len(faked_list[0])- 2 # reset
-	else:
-		minimum_grp_size_cut = Tracker["constants"]["minimum_grp_size"]
-	"""
 	
 	tmsg ="Betweenboxes_comparison: box%d   box%d generation%d layer%d percentage accounted:  %f "%(nbox, nbox+1, Tracker["current_generation"], Tracker["depth"], round(ratio_accounted,3))
 	Tracker["current_iter_ratio"] = ratio_accounted
@@ -4479,11 +4464,6 @@ def get_orien_assignment_mpi(angle_step, partids, params, log_main):
 		orien_group_assignment = [None for im in xrange(Tracker["total_stack"])]
 	else:  orien_group_assignment = 0
 	refa = sym_class.even_angles(angle_step, theta1 = Tracker["tilt1"], theta2 = Tracker["tilt2"])
-	
-	shakenumber = uniform( -Tracker["constants"]["shake"], Tracker["constants"]["shake"])
-	shakenumber = round(shakenumber, 5)
-	rangle = angle_step*shakenumber
-	refa = Blockdata["symclass"].reduce_anglesets(rotate_params(refa, [-rangle,-rangle,-rangle]))
 	
 	refa_vecs = []
 	for i in xrange(len(refa)):
@@ -6799,12 +6779,6 @@ def compute_final_map(log_file, work_dir):
 	mpi_barrier(MPI_COMM_WORLD)
 	return
 #####==========----various utilities
-def shake_assignment(assignment, randomness_rate = 1.0):
-	import random
-	number_of_group = max(assignment)
-	for im in xrange(len(assignment)):
-		if (random.uniform(0.0, 1.0) > randomness_rate): assignment[im] = random.randint(0, number_of_groups)
-	return assignment
 
 def get_time(time_start):
 	current_time   = time.time() - time_start
@@ -7012,7 +6986,6 @@ def main():
 		#parser.add_option("--restart_from_generation",		     type   ="int",           default =-1,					   help="restart from this geneartion,  the defalut value implies there is no restart")
 		#parser.add_option("--restart_from_depth_order",		 type   ="int",           default =-1,					   help="restart from this depth order, the defalut value implies there is no restart")
 		#parser.add_option("--restart_from_nbox",				 type   ="int",           default = 0,					   help="restart from the nubmer of box in the specified depth level")
-		parser.add_option("--shake",                             type   ="float",         default = 0.0,                   help="perturbation factor applied to orientation groups")
 		(options, args) = parser.parse_args(sys.argv[1:])
 		from utilities import bcast_number_to_all
 		### Sanity check
@@ -7063,7 +7036,6 @@ def main():
 		Constants["restart_from_nbox"]           =  0 #options.restart_from_nbox
 		Constants["restart_from_depth_order"]    = -1 #options.restart_from_depth_order
 		Constants["restart_from_generation"]     = -1 #options.restart_from_generation
-		Constants["shake"]                       = options.shake
 	
 		#### options for advanced users
 		Constants["relax_oriens"]                = False 
@@ -7290,7 +7262,6 @@ def main():
 		#parser.add_option("--restart_from_generation",		     type   ="int",           default =-1,					   help="restart from this geneartion,  the defalut value implies there is no restart")
 		#parser.add_option("--restart_from_depth_order",		 type   ="int",           default =-1,					   help="restart from this depth order, the defalut value implies there is no restart")
 		#parser.add_option("--restart_from_nbox",				 type   ="int",           default = 0,					   help="restart from the nubmer of box in the specified depth level")
-		parser.add_option("--shake",                             type   ="float",         default = 0.0,                   help="perturbation factor applied to orientation groups")
 		(options, args) = parser.parse_args(sys.argv[1:])
 		from utilities import bcast_number_to_all
 		### Sanity check
@@ -7333,7 +7304,6 @@ def main():
 		Constants["restart_from_nbox"]           = 0  #options.restart_from_nbox
 		Constants["restart_from_depth_order"]    = -1 #options.restart_from_depth_order
 		Constants["restart_from_generation"]     = -1 #options.restart_from_generation
-		Constants["shake"]                       = options.shake
 	
 		#### options for advanced users
 		Constants["relax_oriens"]                = False 
