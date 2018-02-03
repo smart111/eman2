@@ -54,7 +54,7 @@ def setUploadFlag() {
 
 def resetBuildScripts() {
     if(isBuildBinary())
-        sh 'cd ${BUILD_SCRIPTS_DIR} && git checkout -f master'
+        sh 'cd ${BUILD_SCRIPTS_DIR} && git checkout -f master && git branch -D $BUILD_SCRIPTS_BRANCH'
 }
 
 def getHomeDir() {
