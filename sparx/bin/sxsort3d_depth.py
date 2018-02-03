@@ -3927,16 +3927,8 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	score_list = [ ]
 	nclass = 0
 	###
-	if depth >1:
-		msg = 'Cluster intersections of P0 and P1 form new clusters and are checked by user provided minimum_grp_size %d. '%Tracker["constants"]["minimum_grp_size"]
-	else:
-		msg = 'Cluster intersections of P0 and P1 form new clusters and are checked by user provided minimum_grp_size %d. Rejected clusters are dismissed'%Tracker["constants"]["minimum_grp_size"]
 	
-	log_main.add(msg)
-	###
-	
-	msg = '{:^10} {:^5} {:^5} {:^10} {:^10} {:^15} {:^15}'.format('New GID', 'P0 ID',  'P1 ID', 'GSIZE', 'status', 'R ratio of P0', 'R ratio of P1')
-	
+	msg = '{:^12}  {:^10} {:^10} {:^15}'.format('New group ID',  'group size', 'status', 'reproducibility')
 	log_main.add(msg)
 	
 	for index_of_any in xrange(len(list_stable)):
@@ -3945,7 +3937,8 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 		any.sort()
 		score1 = float(len(any))*100./float(len(ptp1[newindeces[index_of_any][0]]))
 		score2 = float(len(any))*100./float(len(ptp2[newindeces[index_of_any][1]]))
-		
+		score3 = float((np.intersect1d(ptp1[newindeces[index_of_any][0]], ptp2[newindeces[index_of_any][1]])).size)\
+			  /float((np.union1d(ptp1[newindeces[index_of_any][0]], ptp2[newindeces[index_of_any][1]])).size)*100.
 		if len(any) >= Tracker["constants"]["minimum_grp_size"]:
 			score_list.append([score1, score2])
 			minimum_group_size = min(minimum_group_size, len(any))
@@ -3953,11 +3946,11 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			new_list.append(any)
 			nclass +=1
 			#msg ="   %3d     %8d    %6.3f    %6.3f"%(nclass, len(any), score1, score2)
-			msg ='{:^10d} {:^5d} {:^5d} {:^10d}  {:^10} {:^15.3f} {:^15.3f}'.format(index_of_any, int(newindeces[index_of_any][0]), int(newindeces[index_of_any][1]), len(any),'accepted', round(score1,3), round(score2,3))
+			msg ='{:^12d} {:^10d}  {:^10} {:^15.3f}'.format(index_of_any, len(any),'accepted', round(score3,3))
 			log_main.add(msg)
 		else:
 			#msg ="group %d with size %d is rejected and sent back into unaccounted ones"%(index_of_any, len(any))
-			msg ='{:^10d} {:^5d} {:^5d} {:^10d}  {:^10} {:^15.3f} {:^15.3f}'.format(index_of_any, int(newindeces[index_of_any][0]), int(newindeces[index_of_any][1]), len(any), 'rejected', round(score1,3), round(score2,3))
+			msg ='{:^12d} {:^10d}  {:^10} {:^15.3f}'.format(index_of_any, len(any), 'rejected', round(score3,3))
 			log_main.add(msg)
 	
 	if nclass == 0:
