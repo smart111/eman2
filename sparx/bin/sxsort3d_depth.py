@@ -218,8 +218,6 @@ def check_restart_from_given_depth_order(current_depth_order,  restart_from_gene
 ######### depth clustering functions
 def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_params, log_main):
 	global Tracker, Blockdata
-	if(Blockdata["myid"] == Blockdata["main_node"]):
-		log_main.add('  =======   depth_clustering    =======  ')
 	keepchecking   = 1
 	init_layer_dir = os.path.join(work_dir, "layer0")
 	
@@ -245,7 +243,7 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 		depth_dir        = os.path.join(work_dir, "layer%d"%depth)
 		Tracker["depth"] = depth
 		if(Blockdata["myid"] == Blockdata["main_node"]):
-			msg = 'Depth layer %d contains %d boxes, each box has two MGSKmeans runs \n'%(depth,n_cluster_boxes) 
+			msg = 'Depth layer %d has %d pairs of independent sorting runs'%(depth,n_cluster_boxes) 
 			log_main.add(msg)
 			if not os.path.exists(depth_dir): 
 				os.mkdir(depth_dir)
@@ -874,7 +872,7 @@ def check_mpi_settings(log):
 	if( Blockdata["myid"] == Blockdata["main_node"]):
 		log.add('\n')
 		log.add('----------------------------------------------------------------------------------------------------------------' )
-		log.add('                 =======      Number of input images and memory information      =====')
+		log.add('                     =======      Number of input images and memory information      =======')
 		log.add('----------------------------------------------------------------------------------------------------------------' )
 		log.add("Number of processes: %d  node number:  %d.  Number of processes per group:  %d."%(Blockdata["nproc"], Blockdata["no_of_groups"], Blockdata["no_of_processes_per_group"]))
 	try:
@@ -909,7 +907,8 @@ def check_mpi_settings(log):
 		log.add("Total number of particles: %d.  Number of particles per group: %d."%(Tracker["constants"]["total_stack"], Tracker["constants"]["img_per_grp"]))
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		log.add("The total available memory:  %5.1f GB"%total_memory)
-		log.add("The size of input 2D stack: %5.1f GB\nThe amount of memory 2D data will occupy per node: %5.1f GB"%(raw_data_size, raw_data_size_per_node))
+		log.add("The size of input 2D stack: %5.1f GB"%(raw_data_size))
+		log.add("The amount of memory 2D data will occupy per node: %5.1f GB"%(raw_data_size_per_node))
 	if (total_memory - sys_required_mem - raw_data_size_per_node - volume_size_per_node - sorting_data_size_per_node - 5.0) <0.0: 
 		current_mpi_settings_is_bad = 1
 		new_nproc =  raw_data_size*(2.*ratio**2+1.)*Blockdata["no_of_processes_per_group"]/(total_memory - 5. - sys_required_mem - volume_size_per_node)
