@@ -816,9 +816,9 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 						 "independent_index_%03d.txt"%indep))
 			run_id_file = os.path.join(within_box_run_dir, "independent_index_000.txt")
 	
-	if Blockdata["myid"] == Blockdata["main_node"]:# report current state
-		time_of_box_h,  time_of_box_m = get_time(time_box_start)
-		for itable in xrange(len(info_table)): log_main.add(info_table[itable])
+		if Blockdata["myid"] == Blockdata["main_node"]:# report current state
+			log_main.add("In RUN  %d:"%nruns)
+			for itable in xrange(len(info_table)): log_main.add(info_table[itable])
 	partition = get_box_partition(work_dir, ncluster, unaccounted_list)
 	if(Blockdata["myid"] == Blockdata["main_node"]): write_text_row(partition, os.path.join(work_dir, "partition.txt"))
 	return
