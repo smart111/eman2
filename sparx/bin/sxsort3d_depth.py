@@ -643,7 +643,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		json.dump(freq_cutoff_dict, fout)
 		fout.close()
 		log_main.add('----------------------------------------------------------------------------------------------------------------' )
-		log_main.add('  >=====Depth_clustering_box %d=====<  '%nbox)
+		log_main.add(' >=====Depth_clustering_box %d=====<  '%nbox)
 		log_main.add('----------------------------------------------------------------------------------------------------------------' )
 		
 	### ------- Initialization
