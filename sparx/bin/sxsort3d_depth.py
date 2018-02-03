@@ -399,8 +399,8 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, minimum_grp_size, list_o
 		fout.close()
 	except: freq_cutoff_dict = {}
 	
-	msg ='--- Save iteration results: group size smaller than %d will be set as an empty group ---'%minimum_grp_size
-	log_main.add(msg)
+	#msg ='--- Save iteration results: group size smaller than %d will be set as an empty group ---'%minimum_grp_size
+	#log_main.add(msg)
 	
 	for index_of_any in xrange(len(list_of_stable)):
 		any = list_of_stable[index_of_any]
@@ -408,24 +408,24 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, minimum_grp_size, list_o
 		if len(any) >= minimum_grp_size:
 			any.sort()
 			new_list.append(any)
-			msg = 'Cluster %d  with size %d is saved '%(index_of_any, len(any))
-			log_main.add(msg)
+			#msg = 'Cluster %d  with size %d is saved '%(index_of_any, len(any))
+			#log_main.add(msg)
 			write_text_file(any, os.path.join(box_dir, "Cluster_%03d.txt"%ncluster))
 			freq_cutoff_dict["Cluster_%03d.txt"%ncluster] = Tracker["freq_fsc143_cutoff"]
 			ncluster += 1
 			nc       += 1
 			NACC +=len(any)
 		else:
-			msg ='Group %d with size %d is rejected because of size smaller than minimum_grp_size %d and elements are sent back into unaccounted ones'%(index_of_any, len(any), minimum_grp_size)
-			log_main.add(msg)
+			#msg ='Group %d with size %d is rejected because of size smaller than minimum_grp_size %d and elements are sent back into unaccounted ones'%(index_of_any, len(any), minimum_grp_size)
+			#log_main.add(msg)
 			for element in any: unaccounted_list.append(element)
 	unaccounted_list.sort()
 	NUACC = len(unaccounted_list)
 	fout = open(os.path.join(box_dir, "freq_cutoff.json"),'w')
 	json.dump(freq_cutoff_dict, fout)
 	fout.close()
-	msg = '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
-	log_main.add(msg)
+	#msg = '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
+	#log_main.add(msg)
 	return ncluster, NACC, NUACC, unaccounted_list, nc
 	
 def check_state_within_box_run(keepgoing, nruns, img_per_grp, minimum_grp_size, unaccounted_list, no_cluster_last_run):
@@ -642,9 +642,9 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		fout = open(os.path.join(work_dir, "freq_cutoff.json"),'w')
 		json.dump(freq_cutoff_dict, fout)
 		fout.close()
-		log.add('----------------------------------------------------------------------------------------------------------------' )
+		log_main.add('----------------------------------------------------------------------------------------------------------------' )
 		log_main.add('  >=====Depth_clustering_box %d=====<  '%nbox)
-		log.add('----------------------------------------------------------------------------------------------------------------' )
+		log_main.add('----------------------------------------------------------------------------------------------------------------' )
 		
 	### ------- Initialization
 	ncluster  = 0
@@ -658,20 +658,20 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 	NACC  = 0
 	####==========--------------------------
 	assignment_list = new_assignment[:]
-	within_box_run_dir = os.path.join(work_dir, "run%d"%nruns)
-	if Blockdata["myid"] == Blockdata["main_node"]:
-		if not os.path.exists(within_box_run_dir):os.mkdir(within_box_run_dir)
-		time_box_start = time.time()
 	total_stack      = total_stack_init
 	number_of_groups = number_of_groups_init
 	while( keepgoing ==1 ):
+		within_box_run_dir = os.path.join(work_dir, "run%d"%nruns)
+		if Blockdata["myid"] == Blockdata["main_node"]:
+			os.mkdir(within_box_run_dir)
+			time_box_start = time.time()
 		#   iter initialization
 		iter                = 0
 		previous_iter_ratio = 0.0
 		current_iter_ratio  = 0.0
 		iter_dir = os.path.join(within_box_run_dir, "iter%d"%iter)
 		if Blockdata["myid"] == Blockdata["main_node"]:
-			if not os.path.exists(iter_dir):os.mkdir(iter_dir)
+			os.mkdir(iter_dir)
 			for indep in xrange(2):
 				write_text_row(assignment_list[indep], \
 				    os.path.join(iter_dir, "random_assignment_%03d.txt"%indep))
@@ -693,7 +693,6 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 			msg  = "Before run %3d current NACC: %8d  NUACC: %8d K: %3d  total_stack: %8d identified clusters: %3d"%\
 			   (nruns, NACC, NUACC, current_number_of_groups, total_stack, ncluster)
 			log_main.add(msg)
-			
 			
 		#### computation starts! =====<---prepare data
 		original_data, norm_per_particle  = read_data_for_sorting(iter_id_init_file, params, previous_params)
@@ -728,7 +727,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		minimum_grp_size = minimum_grp_size_init
 		iter_previous_iter_ratio = 0.0
 		iter_current_iter_ratio  = 0.0
-		while( (iter <= box_niter) and (converged == 0) ):
+		while((iter <= box_niter) and (converged == 0) ):
 			for indep_run_iter in xrange(2):
 				Tracker["directory"] = os.path.join(iter_dir, "MGSKmeans_%03d"%indep_run_iter)
 				MGSKmeans_index_file = os.path.join(iter_dir, "random_assignment_%03d.txt"%indep_run_iter)
@@ -750,8 +749,8 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 				mpi_barrier(MPI_COMM_WORLD)
 	
 			if Blockdata["myid"] == Blockdata["main_node"]:
-				minimum_grp_size1, maximum_grp_size1, list_of_stable, unaccounted_list, iter_current_iter_ratio, selected_number_of_groups = \
-				do_withinbox_two_way_comparison(iter_dir, nbox, nruns, iter, log_main) # two partitions are written in partition_dir as partition_%03d.txt
+				minimum_grp_size1, maximum_grp_size1, list_of_stable, unaccounted_list, iter_current_iter_ratio, selected_number_of_groups, info_table = \
+				do_withinbox_two_way_comparison(iter_dir, nbox, nruns, iter) # two partitions are written in partition_dir as partition_%03d.txt
 			else: 
 				unaccounted_list =  0
 				list_of_stable   =  0
@@ -767,26 +766,23 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 			
 			if Tracker["constants"]["do_swap_au"]: swap_ratio = Tracker["constants"]["swap_ratio"]
 			else: swap_ratio = 0.0
-			new_assignment_list = []
-			
-			for indep in xrange(2):
-				tmp_list = swap_accounted_with_unaccounted_elements_mpi(accounted_file, unaccounted_file, \
-					log_main, current_number_of_groups, swap_ratio)
-				new_assignment_list.append(tmp_list)
-
 			if Blockdata["myid"] == Blockdata["main_node"]:
 				if abs(iter_current_iter_ratio - iter_previous_iter_ratio< 1.0) and iter_current_iter_ratio > 90.: converged = 1
 			converged = bcast_number_to_all(converged, Blockdata["main_node"], MPI_COMM_WORLD)
-
-			iter_previous_iter_ratio = iter_current_iter_ratio
-			iter += 1
-
-		iter_dir = os.path.join(within_box_run_dir, "iter%d"%iter)
-		if Blockdata["myid"] == Blockdata["main_node"]:
-			if not os.path.exists(iter_dir): os.mkdir(iter_dir)
-			for indep in xrange(2):
-				write_text_file(new_assignment_list[indep], \
-					os.path.join(iter_dir, "random_assignment_%03d.txt"%indep))				   
+			if (converged == 0) and (iter < box_niter):
+				new_assignment_list = []
+				for indep in xrange(2):
+					tmp_list = swap_accounted_with_unaccounted_elements_mpi(accounted_file, unaccounted_file, \
+						log_main, current_number_of_groups, swap_ratio)
+					new_assignment_list.append(tmp_list)
+				iter_previous_iter_ratio = iter_current_iter_ratio
+				iter +=1
+				iter_dir = os.path.join(within_box_run_dir, "iter%d"%iter)
+				if Blockdata["myid"] == Blockdata["main_node"]:
+					os.mkdir(iter_dir)
+					for indep in xrange(2):
+						write_text_file(new_assignment_list[indep], \
+								os.path.join(iter_dir, "random_assignment_%03d.txt"%indep))	   
 			
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			ncluster, NACC, NUACC, unaccounted_list, new_clusters = output_iter_results(\
@@ -807,38 +803,26 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		else:               no_cluster = True
 		keepgoing, nruns, total_stack, current_number_of_groups = \
 		   check_state_within_box_run(keepgoing, nruns, img_per_grp, minimum_grp_size, unaccounted_list, no_cluster)
-
-		if Blockdata["myid"] == Blockdata["main_node"]:# report current state
-			if keepgoing ==1: pnruns =nruns-1
-			else: 			  pnruns =nruns
-			msg1 = "Current NACC: %8d  NUACC: %8d K: %3d total identified clusters: %3d  identified clusters in this run: %3d"%\
-			  (NACC, NUACC, current_number_of_groups, ncluster, new_clusters)
-			time_of_box_h,  time_of_box_m = get_time(time_box_start)
-			msg2 = "Time cost: %d hours  %d minutes"%(time_of_box_h, time_of_box_m)
-			msg  = "Boxrunsummary: generation %d layer %d nbox %d run %d: "%(Tracker["current_generation"], Tracker["depth"], nbox, pnruns) + msg1 +msg2
-			log_main.add(msg +'\n \n')
-			if os.path.exists(os.path.join(within_box_run_dir, "tempdir")): shutil.rmtree(os.path.join(within_box_run_dir, "tempdir"))
-
-		partition = get_box_partition(work_dir, ncluster, unaccounted_list)
-		if(Blockdata["myid"] == Blockdata["main_node"]): write_text_row(partition, os.path.join(work_dir, "partition.txt"))
-		mpi_barrier(MPI_COMM_WORLD)
-
-
-	within_box_run_dir = os.path.join(work_dir, "run%d"%nruns)
-	unaccounted_file = os.path.join(within_box_run_dir, "Unaccounted_from_previous_run.txt")
-	if(Blockdata["myid"] == Blockdata["main_node"]):
-		if not os.path.exists(within_box_run_dir):os.mkdir(within_box_run_dir)
-		write_text_file(unaccounted_list, unaccounted_file)# new starting point
-	nreassign_list  = []
-	assignment_list = create_nrandom_lists(unaccounted_file, current_number_of_groups, 2)
-
-	if(Blockdata["myid"] == Blockdata["main_node"]):
-		for indep in xrange(2):
-			write_text_row(assignment_list[indep], os.path.join(within_box_run_dir,\
-			 "independent_index_%03d.txt"%indep))
-	run_id_file = os.path.join(within_box_run_dir, "independent_index_000.txt")
-
-
+		
+		if keepgoing == 1:
+			within_box_run_dir = os.path.join(work_dir, "run%d"%nruns)
+			unaccounted_file = os.path.join(within_box_run_dir, "Unaccounted_from_previous_run.txt")
+			if(Blockdata["myid"] == Blockdata["main_node"]):
+				os.mkdir(within_box_run_dir)
+				write_text_file(unaccounted_list, unaccounted_file)# new starting point
+			nreassign_list  = []
+			assignment_list = create_nrandom_lists(unaccounted_file, current_number_of_groups, 2)
+			if(Blockdata["myid"] == Blockdata["main_node"]):
+				for indep in xrange(2):
+						write_text_row(assignment_list[indep], os.path.join(within_box_run_dir,\
+						 "independent_index_%03d.txt"%indep))
+			run_id_file = os.path.join(within_box_run_dir, "independent_index_000.txt")
+	
+	if Blockdata["myid"] == Blockdata["main_node"]:# report current state
+		time_of_box_h,  time_of_box_m = get_time(time_box_start)
+		for itable in xrange(len(info_table)): log_main.add(info_table[itable])
+	partition = get_box_partition(work_dir, ncluster, unaccounted_list)
+	if(Blockdata["myid"] == Blockdata["main_node"]): write_text_row(partition, os.path.join(work_dir, "partition.txt"))
 	return
 
 def check_mpi_settings(log_main):
@@ -1451,9 +1435,9 @@ def Kmeans_minimum_group_size_orien_groups(original_data, partids, params, param
 	import shutil
 	import numpy as np
 	#==========---------- >>>>EQKmeans starts==========------------ 
-	log	                     = Logger()
-	log                      = Logger(BaseLogger_Files())
-	log.prefix               = Tracker["directory"]+"/"
+	log_main	             = Logger()
+	log_main                 = Logger(BaseLogger_Files())
+	log_main.prefix          = Tracker["directory"]+"/"
 	premature                = 0
 	changed_nptls            = 100.0
 	number_of_groups         = Tracker["number_of_groups"]
@@ -3741,9 +3725,9 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	global Tracker, Blockdata
 	import json
 	stop_generation  = 0
-	log.add('----------------------------------------------------------------------------------------------------------------' )
+	log_main.add('----------------------------------------------------------------------------------------------------------------' )
 	log_main.add(' =======    do_boxes_two_way_comparison_new  between nbox %d and nbox %d=====< '%(nbox, nbox+1))
-	log.add('----------------------------------------------------------------------------------------------------------------' )
+	log_main.add('----------------------------------------------------------------------------------------------------------------' )
 	msg = '========================= between box two way comparison gen: %d layer: %d nbox:  %d nbox: %d ==========================='%(Tracker["current_generation"], \
 	      Tracker["depth"], nbox, nbox+1)
 	
@@ -4048,15 +4032,15 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	import numpy as np
 	log_list = []
 	## for single node only
-	#log_list.add(' ')
-	#log_list.add('--------------------------------------------------')
-	#log_list.add(' =======    Do_withinbox_two_way_comparison    =======< ')
-	#log_list.add(' ')
+	log_list.append(' ')
+	log_list.append('--------------------------------------------------')
+	log_list.append(' =======    Do_withinbox_two_way_comparison    =======< ')
+	log_list.append(' ')
 	msg = '==========   Withinboxrun ID  gen: %d layer: %d nbox: %d nrun: %d niter: %d ========================'%(Tracker["current_generation"], \
 	      Tracker["depth"], nbox, nrun, niter)
-	#log_list.add(msg)
+	log_list.append(msg)
 	msg = 'The two runs that are compared inside the box are only independent in the first iteration'
-	#log_list.add(msg)
+	log_list.append(msg)
 	smsg =' Withinboxrun ID: generation %d layer %d nbox %d nrun %d niter %d freq_cutoff %f.'%(Tracker["current_generation"], \
 	      Tracker["depth"], nbox, nrun, niter, round(Tracker["freq_fsc143_cutoff"], 4))
 	      
@@ -4067,16 +4051,16 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	ptp2, tmp2 = split_partition_into_ordered_clusters( core2)
 	
 	## before comparison
-	#msg = 'P0      '
-	#msg1 ='Group ID'
+	msg = 'P0      '
+	msg1 ='Group ID'
 	for im in xrange(len(ptp1)):
 		msg +='{:8d} '.format(len(ptp1[im]))
 		msg1 +='{:8d} '.format(im)
-	#log_list.add(msg1)
-	#log_list.add(msg)
+	log_list.append(msg1)
+	log_list.append(msg)
 	msg = 'P1      '
 	for im in xrange(len(ptp2)): msg +='{:8d} '.format(len(ptp2[im]))
-	#log_list.add(msg)
+	log_list.append(msg)
     ####
 	try: assert(len(core1) ==len(core2))
 	except: ERROR("The two partitions have different lengths", "do_withinbox_two_way_comparison", 1, 0)
@@ -4090,14 +4074,33 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	newindeces, list_stable, nb_tot_objs, patch_elements = patch_to_do_k_means_match_clusters_asg_new(ptp1, ptp2)
 	ratio_unaccounted  = 100.-nb_tot_objs/float(total_data)*100.
 	ratio_accounted    = nb_tot_objs/float(total_data)*100.
-	print_matching_pairs(newindeces, log_list)
+	
+	####
+	msg ='P0 (group ID as row index) matches P1 (group ID as column index)'
+	log_list.append(msg)
+	msg ='   '
+	for i in xrange(len(newindeces)):
+		msg += '{:^3d}'.format(i)
+	log_list.append(msg)
+	for im in xrange(len(newindeces)):
+		msg ='{:^3d}'.format(im)
+		for jm in xrange(len(newindeces)):
+			not_found = True
+			for km in xrange(len(newindeces)):
+				if newindeces[km][0] == im and newindeces[km][1] == jm:
+					msg +='{:^3s}'.format(' M' )
+					not_found = False
+			if not_found: msg +='{:^3s}'.format('   ')
+		log_list.append(msg)
+	####
+	
 	
 	smsg += '{} {} {}'.format(' Total reproducibility', 'is', round(ratio_accounted,2))
 	Tracker["current_iter_ratio"] = ratio_accounted
 	score_list = [ ]
 	nclass     = 0
-	msg = '{:^12} {:^10} {:^17} {:^15} {:^15}'.format('New group ID', 'group size', 'random group size', 'status',   'reproducibility')
-	#log_list.add(msg)
+	msg = '{:^12} {:^10} {:^17} {:^8} {:^15}'.format('New group ID', 'group size', 'random group size', ' status ',   'reproducibility')
+	log_list.append(msg)
 	current_MGR = get_MGR_from_two_way_comparison(newindeces, ptp1, ptp2, total_data)
 	stable_clusters   = []
 	selected_clusters = []
@@ -4115,14 +4118,14 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 			minimum_group_size = min(minimum_group_size, len(any))
 			maximum_group_size = max(maximum_group_size, len(any))
 			nclass +=1
-			msg ='{:^12d} {:^10d} {:^17d} {:^15} {:^15.3f}'.format(index_of_any, \
+			msg ='{:^12d} {:^10d} {:^17d} {:^8} {:^15.3f}'.format(index_of_any, \
 			      len(any), current_MGR[index_of_any],'accepted', round(score3,3))
-			#log_list.add(msg)
+			log_list.append(msg)
 			selected_clusters.append(any)
 		else:
-			msg ='{:^12d} {:^10d} {:^17d} {:^15}  {:^15.3f}'.format(index_of_any, \
+			msg ='{:^12d} {:^10d} {:^17d} {:^8}  {:^15.3f}'.format(index_of_any, \
 			      len(any), current_MGR[index_of_any], 'rejected', round(score3,3))
-			#log_list.add(msg)
+			log_list.append(msg)
 			
 	accounted_list, new_index = merge_classes_into_partition_list(selected_clusters)
 	a = set(full_list)
@@ -4133,9 +4136,9 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	min_size_msg =" current minimum group size: %d maximum group size: %d"%(minimum_group_size, maximum_group_size)
 	smsg +=' {} {} {} {}'.format('NACC:', len(accounted_list), 'NUACC:', len(unaccounted_list))
 	smsg += min_size_msg
-	#log_list.add(smsg)
+	log_list.append(smsg)
 	msg = '========================================================================================================================='
-	#log_list.add(msg+'\n')
+	log_list.append(msg+'\n')
 	return minimum_group_size, maximum_group_size, selected_clusters, unaccounted_list, ratio_accounted, len(list_stable), log_list
 
 #####	
@@ -7354,26 +7357,21 @@ def main():
 	
 		Tracker["generation"]         = {}
 		Tracker["current_generation"] = 0
-		igen         = 0
 		keepsorting  = 1
 		keepchecking = 1
-
-		if Blockdata["myid"] == Blockdata["main_node"]:
-			if not os.path.exists(os.path.join(work_dir)):
-				os.mkdir(work_dir)
-				freq_cutoff_dict = {}
-				fout = open(os.path.join(work_dir, "freq_cutoff.json"),'w')
-				json.dump(freq_cutoff_dict, fout)
-				fout.close()
-				mark_sorting_state(work_dir, False, log_main)
-				time_generation_start = time.time()
-		
+		Tracker["current_generation"] = -1
+		igen  = -1
 		while keepsorting == 1:
 			Tracker["current_generation"] +=1
 			igen +=1
 			my_pids   = os.path.join(Tracker["constants"]["masterdir"], "indexes.txt")
 			work_dir  = os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 			if Blockdata["myid"] == Blockdata["main_node"]:
+				os.mkdir(work_dir)
+				freq_cutoff_dict = {}
+				fout = open(os.path.join(work_dir, "freq_cutoff.json"),'w')
+				json.dump(freq_cutoff_dict, fout)
+				fout.close()
 				keepchecking = check_sorting_state(work_dir, keepchecking, log_main)
 				time_generation_start = time.time()		
 			else: keepchecking = 0
