@@ -409,7 +409,7 @@ def output_iter_results(box_dir, ncluster, NACC, NUACC, minimum_grp_size, list_o
 		fout.close()
 	except: freq_cutoff_dict = {}
 	
-	msg ='+++ Save iteration results: group size smaller than %d will be set as an empty group +++'%minimum_grp_size
+	msg ='--- Save iteration results: group size smaller than %d will be set as an empty group ---'%minimum_grp_size
 	log_main.add(msg)
 	
 	for index_of_any in xrange(len(list_of_stable)):
@@ -653,7 +653,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		json.dump(freq_cutoff_dict, fout)
 		fout.close()
 		msg_pipe = '-------------------------------------------' 
-		msg      = '  >>>>>>Depth_clustering_box %d=====<  '%nbox
+		msg      = '  >=====Depth_clustering_box %d=====<  '%nbox
 		log_main.add(msg_pipe)
 		log_main.add(msg)
 		log_main.add(msg_pipe +'\n')
@@ -1286,7 +1286,7 @@ def check_3dmask(log_main):
 	###########################################################################	
 	Tracker["nxinit"]     = Tracker["nxinit_refinement"]
 	Tracker["currentres"] = float(Tracker["constants"]["fsc05"])/float(Tracker["nxinit"])
-	##################--------------->>>>>> shrinkage, current resolution, fuse_freq =====<------------------------------------------
+	##################---------------=======> shrinkage, current resolution, fuse_freq =====<------------------------------------------
 	Tracker["total_stack"] = Tracker["constants"]["total_stack"]
 	Tracker["shrinkage"]   = float(Tracker["nxinit"])/Tracker["constants"]["nnxo"]
 	Tracker["radius"]      = Tracker["constants"]["radius"]*Tracker["shrinkage"]
@@ -1317,7 +1317,7 @@ def import_data(log_main):
 		Tracker["applymask"]             = True
 		Tracker["smearing"]              = False
 	Tracker["total_stack"] = Tracker["constants"]["total_stack"]
-	###=====<------------------------>>>>>>checks=====-------------
+	###=====<----------------====>checks=====-------------
 	if Tracker["constants"]["symmetry"] != Tracker["constants"]["sym"]:
 		if(Blockdata["myid"] == Blockdata["main_node"]):
 			msg = "input symmetry %s is altered to %s after reading refinement information! "%(Tracker["constants"]["sym"], Tracker["constants"]["symmetry"])
@@ -3798,7 +3798,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	import json
 	msg_pipe  = '----------------------------------------------------------------------------' 
 	msg       = ' =======    do_boxes_two_way_comparison_new  between nbox %d and nbox %d=====< '%(nbox, nbox+1)
-	msg_pipe1 = '+++++++++++++                                                    ++++++++++++' 
+	msg_pipe1 = '-----------                                                   ------------' 
 	stop_generation  = 0
 	log_main.add(msg_pipe)
 	log_main.add(msg)
