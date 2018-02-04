@@ -3788,12 +3788,10 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 				clist[j].append(float((np.intersect1d(new_clusters1[newindeces[j][0]], new_clusters2[newindeces[j][1]])).size)\
 				  /float((np.union1d(new_clusters1[newindeces[j][0]], new_clusters2[newindeces[j][1]])).size)*100.)
 	t = table_stat(tlist)
-	msg = 'The overall random reproducibility: %5.3f'%(round(t[0], 4))
-	log_main.add(msg)
+	log_main.add('The overall random reproducibility: %5.1f'%(t[0]))
 	for l in xrange(len(clist)):
 		if len(clist[l])>0:
-			msg = 'Group random reproducibility: %5.3f   %8d '%(round(table_stat(clist[l])[0], 4), (plist1[l][1]-plist1[l][0]))
-			log_main.add(msg)
+			log_main.add('Group random reproducibility: %5.1f   %8d '%(table_stat(clist[l])[0], (plist1[l][1]-plist1[l][0])))
 	msg = '***********************************************************************************'
 	log_main.add(msg)
 	## before comparison
