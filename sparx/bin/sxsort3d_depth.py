@@ -655,11 +655,21 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 	assignment_list = new_assignment[:]
 	total_stack      = total_stack_init
 	number_of_groups = number_of_groups_init
+	unaccounted_list = new_assignment[:]
 	while( keepgoing ==1 ):
 		within_box_run_dir = os.path.join(work_dir, "run%d"%nruns)
-		if Blockdata["myid"] == Blockdata["main_node"]:
-			os.mkdir(within_box_run_dir)
+		unaccounted_file = os.path.join(within_box_run_dir, "Unaccounted_from_previous_run.txt")
+		if(Blockdata["myid"] == Blockdata["main_node"]):
 			time_box_start = time.time()
+			os.mkdir(within_box_run_dir)
+			write_text_file(unaccounted_list, unaccounted_file)# new starting point
+		nreassign_list  = []
+		if nruns>0:assignment_list = create_nrandom_lists(unaccounted_file, current_number_of_groups, 2)
+		if(Blockdata["myid"] == Blockdata["main_node"]):
+			for indep in xrange(2):
+					write_text_row(assignment_list[indep], os.path.join(within_box_run_dir,\
+					 "independent_index_%03d.txt"%indep))
+		run_id_file = os.path.join(within_box_run_dir, "independent_index_000.txt")    
 		#   iter initialization
 		iter                = 0
 		previous_iter_ratio = 0.0
@@ -727,8 +737,8 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 				Tracker["directory"] = os.path.join(iter_dir, "MGSKmeans_%03d"%indep_run_iter)
 				MGSKmeans_index_file = os.path.join(iter_dir, "random_assignment_%03d.txt"%indep_run_iter)
 				if Blockdata["myid"] == Blockdata["main_node"]:
-					if not os.path.exists(Tracker["directory"]): os.mkdir(Tracker["directory"])
-					if not os.path.exists(os.path.join(Tracker["directory"], "tempdir")): os.mkdir(os.path.join(Tracker["directory"], "tempdir"))
+					os.mkdir(Tracker["directory"])
+					os.mkdir(os.path.join(Tracker["directory"], "tempdir"))
 				mpi_barrier(MPI_COMM_WORLD)
 				if Tracker["constants"]["relax_oriens"]:
 					tmp_final_list, premature =  Kmeans_minimum_group_size_relaxing_orien_groups(original_data, MGSKmeans_index_file, \
@@ -796,7 +806,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		else:               no_cluster = True
 		keepgoing, nruns, total_stack, current_number_of_groups = \
 		   check_state_within_box_run(keepgoing, nruns, img_per_grp, minimum_grp_size, unaccounted_list, no_cluster)
-		
+		'''
 		if keepgoing == 1:
 			within_box_run_dir = os.path.join(work_dir, "run%d"%nruns)
 			unaccounted_file = os.path.join(within_box_run_dir, "Unaccounted_from_previous_run.txt")
@@ -810,7 +820,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 						write_text_row(assignment_list[indep], os.path.join(within_box_run_dir,\
 						 "independent_index_%03d.txt"%indep))
 			run_id_file = os.path.join(within_box_run_dir, "independent_index_000.txt")
-	
+		'''
 		if Blockdata["myid"] == Blockdata["main_node"]:# report current state
 			if new_clusters>0:
 				log_main.add("In RUN  %d, %d groups are determined."%(nruns, new_clusters))
