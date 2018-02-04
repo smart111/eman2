@@ -508,7 +508,7 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 	if len(unaccounted_list)>1: 
 		unaccounted_list.sort()
 		write_text_file(unaccounted_list, os.path.join(output_dir, "Unaccounted.txt"))
-		log_main.add('Group %d has size %d.  Written to %s'%(len(nclasses[ic]), os.path.join(output_dir,"Cluster_%03d.txt"%(ic,nc))))
+		#log_main.add('Group %d has size %d.  Written to %s'%(len(nclasses[ic]), os.path.join(output_dir,"Cluster_%03d.txt"%(ic,nc))))
 		
 	nclasses = copy.deepcopy(identified_clusters)
 	del identified_clusters
