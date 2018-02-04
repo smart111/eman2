@@ -5173,16 +5173,16 @@ def get_input_from_sparx_ref3d(log_main):# case one
 		if Tracker_refinement["constants"]["stack"][0:4]=="bdb:": refinement_stack = "bdb:"+os.path.join(refinement_dir_path, Tracker_refinement["constants"]["stack"][4:])
 		else: refinement_stack = os.path.join(refinement_dir_path, Tracker_refinement["constants"]["stack"])
 		if not Tracker["constants"]["orgstack"]: # Use refinement stack if instack is not provided
-			msg = "refinement stack  %s"%refinement_stack			
-			log_main.add(msg)
+			#msg = "refinement stack  %s"%refinement_stack			
+			#log_main.add(msg)
 			Tracker["constants"]["orgstack"] = refinement_stack #Tracker_refinement["constants"]["stack"]
 			try: image = get_im(Tracker["constants"]["orgstack"], 0)
 			except:
 				import_from_sparx_refinement = 0
 		else:
 			if Tracker["constants"]["orgstack"] == Tracker_refinement["constants"]["stack"]: # instack and refinement data stack is the same
-				msg = "The sorting instack is the same refinement instack: %s"%Tracker_refinement["constants"]["stack"]				
-				log_main.add(msg)
+				#msg = "The sorting instack is the same refinement instack: %s"%Tracker_refinement["constants"]["stack"]				
+				#log_main.add(msg)
 				if not os.path.exists(Tracker["constants"]["orgstack"]): import_from_sparx_refinement = 0
 			else: # complicated cases
 				if (not os.path.exists(Tracker["constants"]["orgstack"])) and (not os.path.exists(Tracker_refinement["constants"]["stack"])): 
@@ -5192,11 +5192,8 @@ def get_input_from_sparx_ref3d(log_main):# case one
 					if old_stack[0:3] == "bdb":
 						Tracker["constants"]["orgstack"] = "bdb:" + Tracker["constants"]["refinement_dir"]+"/../"+old_stack[4:]
 					else: Tracker["constants"]["orgstack"] = os.path.join(option_old_refinement_dir, "../", old_stack)
-					msg = "Use refinement orgstack "
-					log_main.add(msg)
-				else:
-					msg = "Use orgstack provided by options"					
-					log_main.add(msg)
+					#msg = "Use refinement orgstack "
+					#log_main.add(msg)
 		#if import_from_sparx_refinement:
 		#msg =  "data stack for sorting is %s"%Tracker["constants"]["orgstack"]			
 		#log_main.add(msg)
