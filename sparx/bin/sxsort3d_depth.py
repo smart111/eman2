@@ -2557,9 +2557,8 @@ def copy_oldparamstructure_from_meridien_MPI(selected_iteration, log_main):
 		all_smearing = [None]*len(tchunk)
 		for im in xrange(len(tchunk)): all_smearing[im] = smearing_dict[tchunk[im]]
 		write_text_file(all_smearing, os.path.join(Tracker["constants"]["masterdir"], "all_smearing.txt"))
-		msg =" averaged smearing:  %f"%(sum(all_smearing)/float(len(all_smearing)))
-		
-		log_main.add(msg)
+		#msg =" averaged smearing:  %f"%(sum(all_smearing)/float(len(all_smearing)))
+		#log_main.add(msg)
 		full_dict_list = [ None for im in xrange(Tracker["constants"]["total_stack"])]
 		for key, value in local_dict.iteritems():full_dict_list[key] = value
 	mpi_barrier(MPI_COMM_WORLD)
@@ -5132,11 +5131,11 @@ def get_input_from_sparx_ref3d(log_main):# case one
 	checking_flag = bcast_number_to_all(checking_flag, Blockdata["main_node"], MPI_COMM_WORLD)
 	if checking_flag: ERROR("SPARX refinement dir does not exist", "get_input_from_sparx_ref3d", 1, Blockdata["myid"])
 	if Blockdata["myid"] == Blockdata["main_node"]:
-		msg = "Import results from SPARX 3-D refinement"
-		log_main.add(msg)
+		#msg = "Import results from SPARX 3-D refinement"
+		#log_main.add(msg)
 		if Tracker["constants"]["niter_for_sorting"] == -1: # take the best solution to do sorting
-			msg = "Search in the directory %s ......"%Tracker["constants"]["refinement_dir"]
-			log_main.add(msg)
+			#msg = "Search in the directory %s ......"%Tracker["constants"]["refinement_dir"]
+			#log_main.add(msg)
 			niter_refinement = 0
 			while os.path.exists(os.path.join(Tracker["constants"]["refinement_dir"], "main%03d"%niter_refinement)) and os.path.exists(os.path.join(Tracker["constants"]["refinement_dir"],"main%03d"%niter_refinement, "Tracker_%03d.json"%niter_refinement)):
 				niter_refinement +=1
@@ -5148,10 +5147,9 @@ def get_input_from_sparx_ref3d(log_main):# case one
 				selected_iter = Tracker_refinement["constants"]["best"]
 			else: import_from_sparx_refinement = 0
 		else:
-			msg = "Try to load json file ...%s"%os.path.join(Tracker["constants"]["refinement_dir"],"main%03d"%Tracker["constants"]["niter_for_sorting"],\
-			 "Tracker_%03d.json"%Tracker["constants"]["niter_for_sorting"])
-			
-			log_main.add(msg)
+			#msg = "Try to load json file ...%s"%os.path.join(Tracker["constants"]["refinement_dir"],"main%03d"%Tracker["constants"]["niter_for_sorting"],\
+			# "Tracker_%03d.json"%Tracker["constants"]["niter_for_sorting"])
+			#log_main.add(msg)
 			try:
 				fout = open(os.path.join(Tracker["constants"]["refinement_dir"],"main%03d"%Tracker["constants"]["niter_for_sorting"], \
 				"Tracker_%03d.json"%Tracker["constants"]["niter_for_sorting"]),'r')
@@ -5199,9 +5197,9 @@ def get_input_from_sparx_ref3d(log_main):# case one
 				else:
 					msg = "Use orgstack provided by options"					
 					log_main.add(msg)
-		if import_from_sparx_refinement:
-			msg =  "data stack for sorting is %s"%Tracker["constants"]["orgstack"]			
-			log_main.add(msg)
+		#if import_from_sparx_refinement:
+		#msg =  "data stack for sorting is %s"%Tracker["constants"]["orgstack"]			
+		#log_main.add(msg)
 		total_stack   = EMUtil.get_image_count(Tracker["constants"]["orgstack"])
 	else: total_stack = 0
 	import_from_sparx_refinement = bcast_number_to_all(import_from_sparx_refinement, source_node = Blockdata["main_node"])
