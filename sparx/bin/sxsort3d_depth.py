@@ -243,7 +243,9 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 		depth_dir        = os.path.join(work_dir, "layer%d"%depth)
 		Tracker["depth"] = depth
 		if(Blockdata["myid"] == Blockdata["main_node"]):
-			log_main.add('Layer %d has %d pairs of independent sorting runs'%(depth,n_cluster_boxes) )
+			log_main.add('                        Layer %d has %d pairs of independent sorting runs'%(depth,n_cluster_boxes) )
+			log_main.add(' ')
+			log_main.add(' ')
 			if not os.path.exists(depth_dir): 
 				os.mkdir(depth_dir)
 				keepchecking = 0
@@ -492,15 +494,13 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 	nclasses, npart = split_partition_into_ordered_clusters(partition)
 	nc = 0
 	identified_clusters = []
-	msg = '++++++++++++++++++++++Output cluster text file++++++++++++++++++++++++++++++++++'
-	log_main.add(msg)
-	msg = 'Write the determined clusters as Cluster*.txt on each generation directory'
-	log_main.add(msg)
+	log_main.add('================================================================================================================')
+	log_main.add('              Output group membership files Cluster*.txt are saved in respective generation directory')
 	
 	for ic in xrange(len(nclasses)):
 		if len(nclasses[ic])>= Tracker["constants"]["minimum_grp_size"]:
 			write_text_file(nclasses[ic], os.path.join(output_dir,"Cluster_%03d.txt"%nc))
-			msg = 'Save cluster with size %d  to %s '%(len(nclasses[ic]), os.path.join(output_dir,"Cluster_%03d.txt"%nc))
+			msg = 
 			log_main.add(msg)
 			
 			nc +=1
@@ -510,8 +510,7 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 	if len(unaccounted_list)>1: 
 		unaccounted_list.sort()
 		write_text_file(unaccounted_list, os.path.join(output_dir, "Unaccounted.txt"))
-		msg = 'Save unaccounted with size %d  to %s '%(len(unaccounted_list),  os.path.join(output_dir, "Unaccounted.txt"))
-		log_main.add(msg)
+		log_main.add('Group %d has size %d.  Written to %s'%(len(nclasses[ic]), os.path.join(output_dir,"Cluster_%03d.txt"%(ic,nc))))
 		
 	nclasses = copy.deepcopy(identified_clusters)
 	del identified_clusters
@@ -519,11 +518,9 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 	if len(unaccounted_list)>1:
 		if not not_include_unaccounted:
 			write_text_file(unaccounted_list, os.path.join(output_dir,"Cluster_%03d.txt"%nc))
-			msg  ="The Cluster_%03d.txt contains unaccounted ones"%nc
-			log_main.add(msg +'\n')
+			log_main.add('Membership file Cluster_%03d.txt contains unaccounted for images'%nc +'\n')
 	else:
-		msg = ' '
-		log_main.add(msg +'\n')
+		log_main.add('\n')
 		
 	do_analysis_on_identified_clusters(nclasses, log_main)
 	
@@ -535,8 +532,7 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 		del unclasses
 	else: alist, partition = merge_classes_into_partition_list(nclasses)
 	write_text_row(partition, os.path.join(output_dir, "final_partition.txt"))
-	msg = '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'
-	log_main.add(msg)
+	log_main.add('================================================================================================================')
 	return nclasses
 	
 def do_analysis_on_identified_clusters(clusters, log_main):
@@ -819,18 +815,18 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		if Blockdata["myid"] == Blockdata["main_node"]:# report current state
 			if new_clusters>0:
 				log_main.add(' ')
-				log_main.add('In phase %d, the program found %d reproducible groups.'%(nruns, new_clusters))
+				log_main.add('In phase %d, the program found %d groups.'%(nruns, new_clusters))
 				for itable in xrange(len(info_table)): log_main.add(info_table[itable])
 	partition = get_box_partition(work_dir, ncluster, unaccounted_list)
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		if ncluster>0:
-			if(ncluster == 1):  log_main.add(' %d, the program found %d reproducible group'%(nbox, ncluster))
-			else: log_main.add(' %d, the program found %d reproducible groups'%(nbox, ncluster))
+			if(ncluster == 1):  log_main.add('In phase  %d, the program found %d group'%(nbox, ncluster))
+			else: log_main.add('In phase  %d, the program found %d groups'%(nbox, ncluster))
 			bad_clustering = 0
 		else:
 			log_main.add('No reproducible groups were found '%nbox)
 			bad_clustering = 1
-		log_main.add('=======================================================================================================================\n')
+		log_main.add('----------------------------------------------------------------------------------------------------------------\n')
 		write_text_row(partition, os.path.join(work_dir, "partition.txt"))
 	else: bad_clustering = 0
 	bad_clustering = bcast_number_to_all(bad_clustering, Blockdata["main_node"], MPI_COMM_WORLD)
@@ -1056,9 +1052,9 @@ def do_one_way_anova_scipy(clusters, value_list, name_of_variable="variable", su
 	from scipy import stats
 	if summary == None: summary = []
 	NMAX = 30
-	log_main.add('----------------------------------------------------------------------------------------------------------------' )
-	log_main.add('              =======>  ANOVA analysis  <=====')
-	log_main.add('----------------------------------------------------------------------------------------------------------------' )
+	log_main.add('----------------------------------------------------------------------------------------------------------------')
+	log_main.add('                                       ANOVA analysis')
+	log_main.add('----------------------------------------------------------------------------------------------------------------')
 	if len(clusters)<=1:
 		return None, None, None
 	K = min(NMAX, len(clusters))
@@ -1221,8 +1217,7 @@ def do_one_way_anova_scipy(clusters, value_list, name_of_variable="variable", su
 			tmsg +=msg
 	log_main.add("\n"+tmsg)
 	summary.append(tmsg)
-	msg = "ANOVA ================================================================================\n \n \n"
-	log_main.add("\n"+msg)
+	log_main.add('================================================================================================================\n')
 	summary.append(msg)
 	return res[0], res[1], summary
 
@@ -3731,18 +3726,9 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	global Tracker, Blockdata
 	import json
 	stop_generation  = 0
-	log_main.add('----------------------------------------------------------------------------------------------------------------' )
-	log_main.add(' >=======    Two-way comparison  between nbox %d and nbox %d=====<  '%(nbox, nbox+1))
-	log_main.add('----------------------------------------------------------------------------------------------------------------' )
-	msg = '----------------> Between box two way comparison gen: %d layer: %d nbox:  %d nbox: %d <-------------'%(Tracker["current_generation"], \
-	      Tracker["depth"], nbox, nbox+1)
-	
-	log_main.add(msg)
-	
-	log_main.add('Two box runs to be compared are entirely independent')
-	msg = '**************** Simulation of random reproducibility estimation ******************* '
-	log_main.add(msg)
-	## used by single node only
+	log_main.add('================================================================================================================')
+	log_main.add('            Two-way comparison of generation %d, layer %d, between results of two pairs of independent runs: %d and %d'%(,Tracker["current_generation"],Tracker["depth"],nbox, nbox+1))
+	log_main.add('----------------------------------------------------------------------------------------------------------------')
 	bad_clustering =  0
 	ipair = 0
 	core1 = read_text_row(input_box_parti1)
@@ -3842,13 +3828,11 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	new_list           = []
 	print_matching_pairs(newindeces, log_main)
 	
-	###
-	
-	tmsg = 'Betweenboxes_comparison: box%d   box%d generation%d layer%d percentage accounted:  %f '%(nbox, nbox+1, Tracker["current_generation"], Tracker["depth"], round(ratio_accounted,3))
 	Tracker["current_iter_ratio"] = ratio_accounted
 	score_list = [ ]
 	nclass = 0
-	log_main.add('{:^12}  {:^10} {:^10} {:^15}'.format('New group ID',  'group size', 'status', 'reproducibility'))
+	log_list.append('   Post-matching results.')
+	log_list.append('{:^12} {:^10} {:^17} {:^8} {:^15}'.format('    Group', '   size', 'min random size', ' status ',   'reproducibility'))
 	
 	for index_of_any in xrange(len(list_stable)):
 		any = list_stable[index_of_any]
@@ -3873,12 +3857,11 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			log_main.add(msg)
 	
 	if nclass == 0:
-		log_main.add(tmsg)
 		### redo two way comparison
 		if depth >1:
-			msg = "No cluster is larger than user provided minimum_grp_size %d. However sorting keeps the old results, eliminates the samllest one, and continues"%Tracker["constants"]["minimum_grp_size"]
-			log_main.add(msg)
-			
+			log_main.add('There are no clusters larger than the user provided minimum group size %d.'%Tracker["constants"]["minimum_grp_size"])
+			log_main.add('However, sorting keeps the old results, eliminates the smallest one, and continues')
+
 			ptp1, ucluster1 = split_partition_into_ordered_clusters_split_ucluster(core1)
 			ptp2, ucluster2 = split_partition_into_ordered_clusters_split_ucluster(core2)
 			newindeces, list_stable, nb_tot_objs, patch_elements = patch_to_do_k_means_match_clusters_asg_new(ptp1, ptp2)
@@ -3890,19 +3873,13 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			a = set(full_list)
 			b = set(accounted_list)
 			unaccounted_list = sorted(list(a.difference(b)))
-			msg = '========================================================================================================================= \n'
-			
-			log_main.add(msg)
+			log_main.add('================================================================================================================\n')
 			return minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation
 		else:
 			bad_clustering = 1
-			msg = "No cluster is larger than user provided minimum_grp_size %d. This could be due to 1. Your data might be quite uniform; 2. Your minimum_grp_size is too large; 3. K is too large;"\
-			                   %Tracker["constants"]["minimum_grp_size"]
-			log_main.add(msg)
-			
-			msg = '========================================================================================================================= \n'
-			
-			log_main.add(msg)
+			log_main.add('There are no clusters larger than the user provided minimum group size %d.'%Tracker["constants"]["minimum_grp_size"]
+			log_main.add('The reason can be: (1) There are no groups in the data set. 2. Minimum group size set is too large. (3) Desired number of groups K is too large.')
+			log_main.add('================================================================================================================\n')
 			return minimum_group_size, maximum_group_size, [ ], full_list, bad_clustering, stop_generation
 	elif nclass == 1: # Force to stop this generation, and output the cluster; do not do any other box comparison
 		stop_generation  = 1
@@ -3910,7 +3887,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 		a = set(full_list)
 		b = set(accounted_list)
 		unaccounted_list = sorted(list(a.difference(b)))
-		log_main.add('Only one group found. The program will output it and stop this generation.')
+		log_main.add('Only one group found. The program will output it and stop executing this generation.')
 
 		box1_dir =  os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%Tracker["current_generation"], "layer%d"%Tracker["depth"], "nbox%d"%nbox)
 		box2_dir =  os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%Tracker["current_generation"], "layer%d"%Tracker["depth"], "nbox%d"%(nbox+1))
@@ -3938,9 +3915,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 		fout = open(os.path.join(gendir,"freq_cutoff.json"),'w')
 		json.dump(freq_cutoff_dict3, fout)
 		fout.close()
-		msg = '========================================================================================================================= \n'
-		
-		log_main.add(msg)
+		log_main.add('================================================================================================================\n')
 		return minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation
 	else:
 		if len(new_list) >= len(list_stable)-1: # all passes size checking, even the outliers group
@@ -3959,9 +3934,8 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			b = set(accounted_list)
 			unaccounted_list = sorted(list(a.difference(b)))
 
-		mmsg ="Minimum group size: %d maximum group size: %d NACC: %d NUACC: %d "%(minimum_group_size, maximum_group_size, len(accounted_list), len(unaccounted_list))
-		tmsg +=mmsg
-		log_main.add(tmsg)
+		log_main.append(' {} {} {} {}'.format('  The number of accounted for images:', len(accounted_list),'  The number of unaccounted for images:', len(unaccounted_list)))
+		log_main.append('  The current minimum group size: %d and the maximum group size: %d'%(minimum_group_size, maximum_group_size))
 		
 		if depth <= 1: # the last layer
 			box1_dir =  os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%Tracker["current_generation"], "layer%d"%Tracker["depth"], "nbox%d"%nbox)
@@ -3990,13 +3964,9 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			fout = open(os.path.join(gendir,"freq_cutoff.json"),'w')
 			json.dump(freq_cutoff_dict3, fout)
 			fout.close()
-			msg = '=========================================================================================================================\n'
-			
-			log_main.add(msg)
+			log_main.add('================================================================================================================\n')
 		else:
-			msg = '=========================================================================================================================\n'
-			
-			log_main.add(msg)
+			log_main.add('================================================================================================================\n')
 		return minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation
 		
 def split_partition_into_ordered_clusters_split_ucluster(partition):
@@ -4063,8 +4033,9 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	ratio_unaccounted  = 100.-nb_tot_objs/float(total_data)*100.
 	ratio_accounted    = nb_tot_objs/float(total_data)*100.
 
-	msg ='Two-way matching of sorting results. M indicates that respective group P0 sorting (row number) matches respective group of P1 sorting (column number)'
-	log_list.append(msg)
+	log_list.append((' ')
+	log_list.append('                        Two-way matching of sorting results.')
+	log_list.append('M indicates that respective group P0 sorting (row number) matches respective group of P1 sorting (column number)')
 	msg ='   '
 	for i in xrange(len(newindeces)):
 		msg += '{:^3d}'.format(i)
@@ -4084,7 +4055,8 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	Tracker["current_iter_ratio"] = ratio_accounted
 	score_list = [ ]
 	nclass     = 0
-	log_list.append('{:^12} {:^10} {:^17} {:^8} {:^15}'.format('Post-matching group', '   size', 'min random size', ' status ',   'reproducibility'))
+	log_list.append('   Post-matching results.')
+	log_list.append('{:^12} {:^10} {:^17} {:^8} {:^15}'.format('    Group', '   size', 'min random size', ' status ',   'reproducibility'))
 	current_MGR = get_MGR_from_two_way_comparison(newindeces, ptp1, ptp2, total_data)
 	stable_clusters   = []
 	selected_clusters = []
@@ -4102,12 +4074,10 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 			minimum_group_size = min(minimum_group_size, len(any))
 			maximum_group_size = max(maximum_group_size, len(any))
 			nclass +=1
-			log_list.append('{:^12d} {:^10d} {:^17d} {:^8} {:^15.3f}'.format(index_of_any, len(any), current_MGR[index_of_any],'accepted', round(score3,3)))
+			log_list.append('{:^12d} {:^10d} {:^17d} {:^8} {:^15.1f}'.format(index_of_any, len(any), current_MGR[index_of_any],'accepted', score3))
 			selected_clusters.append(any)
 		else:
-			msg ='{:^12d} {:^10d} {:^17d} {:^8}  {:^15.3f}'.format(index_of_any, \
-			      len(any), current_MGR[index_of_any], 'rejected', round(score3,3))
-			log_list.append(msg)
+			log_list.append('{:^12d} {:^10d} {:^17d} {:^8}  {:^15.1f}'.format(index_of_any, len(any), current_MGR[index_of_any], 'rejected', score3))
 			
 	accounted_list, new_index = merge_classes_into_partition_list(selected_clusters)
 	a = set(full_list)
@@ -4116,8 +4086,8 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	write_text_row(new_index, os.path.join(partition_dir, "Accounted.txt"))
 	write_text_file(unaccounted_list, os.path.join(partition_dir, "Unaccounted.txt"))
 	log_list.append(' {} {} {}'.format(' The overall reproducibility is', round(ratio_accounted,2),'%'))
-	log_list.append(' {} {} {} {}'.format('Number of accounted for images:', len(accounted_list), 'Number of unaccounted for images:', len(unaccounted_list)))
-	log_list.append(' The current minimum group size: %d mand the aximum group size: %d'%(minimum_group_size, maximum_group_size))
+	log_list.append(' {} {} {} {}'.format('  The number of accounted for images:', len(accounted_list),'  The number of unaccounted for images:', len(unaccounted_list)))
+	log_list.append('  The current minimum group size: %d and the maximum group size: %d'%(minimum_group_size, maximum_group_size))
 	log_list.append('----------------------------------------------------------------------------------------------------------------')
 	return minimum_group_size, maximum_group_size, selected_clusters, unaccounted_list, ratio_accounted, len(list_stable), log_list
 
@@ -6636,11 +6606,9 @@ def compute_final_map(log_file, work_dir):
 		final_accounted_ptl = 0
 		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
 		log_file.add('----------------------------------------------------------------------------------------------------------------' )
-		log_file.add("   >>> Summaries of the results =====<      ")
+		log_file.add('   Final results')
 		log_file.add('----------------------------------------------------------------------------------------------------------------' )
-		msg = "cluster ID  cluster size  \n"
-		log_file.add(msg)
-		res_msg +=msg
+		log_file.add('Group       size')
 		fout = open(os.path.join(work_dir, "Tracker.json"),'w')
 		json.dump(Tracker, fout)
 		fout.close()
@@ -6666,10 +6634,10 @@ def compute_final_map(log_file, work_dir):
 		Tracker["number_of_groups"] = number_of_groups
 		Tracker["nxinit"]           = Tracker["nxinit_refinement"]
 	else: Tracker = 0
-	
+
 	number_of_groups = bcast_number_to_all(number_of_groups, Blockdata["main_node"], MPI_COMM_WORLD)
 	Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
-	if number_of_groups == 0: ERROR("No clusters are found, the program terminates.", "do_final_maps", 1, Blockdata["myid"])
+	if( number_of_groups == 0 ): ERROR("No clusters  found, the program terminates.", "do_final_maps", 1, Blockdata["myid"])
 	compute_noise( Tracker["nxinit"])
 	
 	if(Blockdata["myid"] == Blockdata["main_node"]):
@@ -6835,8 +6803,9 @@ def estimate_tanhl_params(cutoff, taa, image_size):
 	return cutoff1, taa
 
 def print_matching_pairs(pair_list, log_file):
-	msg ='P0 (group ID as row index) matches P1 (group ID as column index)'
-	log_file.add(msg)
+	log_file.add((' ')
+	log_file.add('                        Two-way matching of sorting results.')
+	log_file.add('M indicates that respective group P0 sorting (row number) matches respective group of P1 sorting (column number)')
 	
 	msg ='   '
 	for i in xrange(len(pair_list)):
@@ -7315,9 +7284,9 @@ def main():
 			#if Blockdata["myid"] == Blockdata["main_node"]:
 			#	print("continue_from_interuption", continue_from_interuption, Blockdata["myid"])
 			if Blockdata["myid"] == Blockdata["main_node"]:
-				log_main.add('==============================================================')
+				log_main.add('================================================================================================================')
 				log_main.add('                                  SORT3D IN-DEPTH v1.0')
-				log_main.add('=============================================================='+'\n')
+				log_main.add('================================================================================================================\n')
 			
 			if continue_from_interuption == 0:
 				sort3d_utils("import_data",   log_main)
