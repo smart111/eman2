@@ -7079,10 +7079,10 @@ def main():
 		keepchecking = 1
 		Tracker["current_generation"] = -1
 		igen  = -1
+		my_pids      = os.path.join(Tracker["constants"]["masterdir"], "indexes.txt")
 		while keepsorting ==1:
 			Tracker["current_generation"] +=1
 			igen +=1
-			my_pids      = os.path.join(Tracker["constants"]["masterdir"], "indexes.txt")
 			work_dir     = os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 			if Blockdata["myid"] == Blockdata["main_node"]:
 				os.mkdir(work_dir)
@@ -7128,7 +7128,7 @@ def main():
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						write_text_file(output_list[0][1], os.path.join(work_dir, "indexes.txt"))
 						mark_sorting_state(work_dir, False, log_main)
-						my_pids = os.path.join(work_dir, "indexes.txt")
+					my_pids = os.path.join(work_dir, "indexes.txt")
 					mpi_barrier(MPI_COMM_WORLD)
 			else:
 				read_tracker_mpi(work_dir)
@@ -7340,10 +7340,10 @@ def main():
 		keepchecking = 1
 		Tracker["current_generation"] = -1
 		igen  = -1
+		my_pids   = os.path.join(Tracker["constants"]["masterdir"], "indexes.txt")
 		while keepsorting == 1:
 			Tracker["current_generation"] +=1
 			igen +=1
-			my_pids   = os.path.join(Tracker["constants"]["masterdir"], "indexes.txt")
 			work_dir  = os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 			if Blockdata["myid"] == Blockdata["main_node"]:
 				os.mkdir(work_dir)
@@ -7391,7 +7391,7 @@ def main():
 					if Blockdata["myid"] == Blockdata["main_node"]:
 						write_text_file(output_list[0][1], os.path.join(work_dir, "indexes.txt"))
 						mark_sorting_state(work_dir, False, log_main)
-						my_pids = os.path.join(work_dir, "indexes.txt")
+					my_pids = os.path.join(work_dir, "indexes.txt")
 					mpi_barrier(MPI_COMM_WORLD)
 			else:
 				read_tracker_mpi(work_dir, log_main)
