@@ -279,7 +279,7 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 				checkingbox = bcast_number_to_all(checkingbox, Blockdata["main_node"], MPI_COMM_WORLD)
 				# Code structure of the box
 				if checkingbox == 0:
-					depth_clustering_box(nbox_dir, input_accounted_file, input_unaccounted_file, params, previous_params, nbox, log_main)
+					bad_box = depth_clustering_box(nbox_dir, input_accounted_file, input_unaccounted_file, params, previous_params, nbox, log_main)
 					if(Blockdata["myid"] == Blockdata["main_node"]): mark_sorting_state(nbox_dir, True, log_main)
 				else: continue
 			partition_per_box_per_layer_list = []
@@ -306,12 +306,7 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 			stop_generation = bcast_number_to_all(stop_generation, Blockdata["main_node"], MPI_COMM_WORLD)
 			Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
 			if(Blockdata["myid"] == Blockdata["main_node"]): mark_sorting_state(depth_dir, True, log_main)
-			if( bad_clustering == 1):
-				if(Blockdata["myid"] == Blockdata["main_node"]):
-					log_main.add('No clusters were found and sorting terminates')
-				from mpi import mpi_finalize
-				mpi_finalize()
-				exit()
+			if( bad_clustering == 1): break
 			if( stop_generation == 1 ): break ### only one cluster survives
 		else:
 			if(Blockdata["myid"] == Blockdata["main_node"]):
@@ -320,7 +315,7 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			log_main.add("Execution of layer %d took %d hours %d minutes\n"%(depth, time_of_sorting_h, time_of_sorting_m))
 			
-	return partition_per_box_per_layer_list
+	return partition_per_box_per_layer_list, bad_clustering
 
 def depth_box_initialization(box_dir, input_list1, input_list2, log_file):
 	global Tracker, Blockdata
@@ -817,15 +812,21 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 			run_id_file = os.path.join(within_box_run_dir, "independent_index_000.txt")
 	
 		if Blockdata["myid"] == Blockdata["main_node"]:# report current state
-			log_main.add("In RUN  %d, %d groups are determined."%(nruns, new_clusters))
-			for itable in xrange(len(info_table)): log_main.add(info_table[itable])
+			if new_clusters>0:
+				log_main.add("In RUN  %d, %d groups are determined."%(nruns, new_clusters))
+				for itable in xrange(len(info_table)): log_main.add(info_table[itable])
 	partition = get_box_partition(work_dir, ncluster, unaccounted_list)
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		log_main.add('In box%d, %d groups are determined'%(nbox, ncluster))
+		if ncluster>0:
+			log_main.add('In box%d, %d groups are determined'%(nbox, ncluster))
+			bad_clustering = 0
+		else:
+			log_main.add('No groups are found in box'%nbox)
+			bad_clustering = 1
 		msg = '========================================================================================================================='
 		log_main.add(msg+'\n')
 		write_text_row(partition, os.path.join(work_dir, "partition.txt"))
-	return
+	return bad_clustering
 
 def check_mpi_settings(log_main):
 	global Tracker, Blockdata
