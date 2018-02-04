@@ -899,7 +899,7 @@ def check_mpi_settings(log_main):
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		log_main.add("The total available memory:  %5.1f GB"%total_memory)
 		log_main.add("The size of input 2D stack: %5.1f GB"%(raw_data_size))
-		log_main.add("The per-node amount of memory 2D data will occupy\: %5.1f GB"%(raw_data_size_per_node))
+		log_main.add("The per-node amount of memory 2D data will occupy: %5.1f GB"%(raw_data_size_per_node))
 	if (total_memory - sys_required_mem - raw_data_size_per_node - volume_size_per_node - sorting_data_size_per_node - 5.0) <0.0: 
 		current_mpi_settings_is_bad = 1
 		new_nproc =  raw_data_size*(2.*ratio**2+1.)*Blockdata["no_of_processes_per_group"]/(total_memory - 5. - sys_required_mem - volume_size_per_node)
