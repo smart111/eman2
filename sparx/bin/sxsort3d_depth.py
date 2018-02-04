@@ -7316,7 +7316,7 @@ def main():
 			#	print("continue_from_interuption", continue_from_interuption, Blockdata["myid"])
 			if Blockdata["myid"] == Blockdata["main_node"]:
 				log_main.add('==============================================================')
-				log_main.add('                                 SORT3D IN-DEPTH')
+				log_main.add('                                  SORT3D IN-DEPTH v1.0')
 				log_main.add('=============================================================='+'\n')
 			
 			if continue_from_interuption == 0:
