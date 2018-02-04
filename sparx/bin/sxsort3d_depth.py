@@ -7124,7 +7124,7 @@ def main():
 					log_main.add('----------------------------------------------------------------------------------------------------------------' )
 				params          = os.path.join(Tracker["constants"]["masterdir"],"refinement_parameters.txt")
 				previous_params = Tracker["previous_parstack"]
-				output_list     = depth_clustering(work_dir, options.depth_order, my_pids, params, previous_params, log_main)
+				output_list, bad_clustering = depth_clustering(work_dir, options.depth_order, my_pids, params, previous_params, log_main)
 				keepsorting     = check_sorting(len(output_list[0][1]), keepsorting, log_main)
 				if(keepsorting ==1):
 					if Blockdata["myid"] == Blockdata["main_node"]:
@@ -7386,7 +7386,7 @@ def main():
 					log_main.add('----------------------------------------------------------------------------------------------------------------')
 				params          = os.path.join(Tracker["constants"]["masterdir"],"refinement_parameters.txt")
 				previous_params = Tracker["previous_parstack"]
-				output_list     = depth_clustering(work_dir, options.depth_order, my_pids, params, previous_params, log_main)
+				output_list, bad_clustering  = depth_clustering(work_dir, options.depth_order, my_pids, params, previous_params, log_main)
 				keepsorting     = check_sorting(len(output_list[0][1]), keepsorting, log_main)
 				if keepsorting == 1:# do final box refilling
 					if Blockdata["myid"] == Blockdata["main_node"]:
