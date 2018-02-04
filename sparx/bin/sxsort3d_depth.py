@@ -520,7 +520,7 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 	else:
 		log_main.add('\n')
 
-	do_analysis_on_identified_clusters(nclasses, log_main)
+	#do_analysis_on_identified_clusters(nclasses, log_main)
 	
 	if not not_include_unaccounted:
 		import copy
@@ -6707,7 +6707,7 @@ def copy_results(log_file):
 		msg       ="cluster ID    size"
 		log_file.add(msg)
 		clusters    = []
-		sorting_res = '{:^50}'.format('                Summary of SORT3D IN-DEPTH results\n')
+		#sorting_res = '{:^50}'.format('                Summary of SORT3D IN-DEPTH results\n')
 		NACC = 0           
 		for element in Tracker["generation"].items():
 			ig    = element[0]
@@ -6723,7 +6723,7 @@ def copy_results(log_file):
 					cluster = read_text_file(os.path.join(Tracker["constants"]["masterdir"], \
 					   "generation_%03d"%ig, "Cluster_%03d.txt"%ic))
 					msg = "%5d    %10d"%(nclusters, len(cluster))
-					sorting_res += '{:^8} {:^8} {}'.format(nclusters, len(cluster), '\n')
+					#sorting_res += '{:^8} {:^8} {}'.format(nclusters, len(cluster), '\n')
 					nclusters +=1
 					NACC +=len(cluster)
 				except: msg ="%s and associated files are not found "%cluster_file
@@ -6731,16 +6731,15 @@ def copy_results(log_file):
 				
 		NUACC = Tracker["constants"]["total_stack"] - NACC
 		do_analysis_on_identified_clusters(clusters, log_file)
-		#log_file.add("                                 SORT3D IN-DEPTH finished")
 
 		fout = open(os.path.join(Tracker["constants"]["masterdir"], "Tracker.json"), 'w')
 		json.dump(Tracker, fout)
 		fout.close()
-		sorting_res +='{:^12} {:^8} {:^12} {:^8} {:^12} {:^8} {}'.format(' Images', Tracker["constants"]["total_stack"], 'accounted for: ', NACC, 'unaccounted for', NUACC, '\n')
-		sorting_res +='the last cluster of the last generation contains unaccounted for images \n'
-		fout = open(os.path.join(Tracker["constants"]["masterdir"], "sorting_summary.txt"),"w")
-		fout.writelines(sorting_res)
-		fout.close()
+		#sorting_res +='{:^12} {:^8} {:^12} {:^8} {:^12} {:^8} {}'.format(' Images', Tracker["constants"]["total_stack"], 'accounted for: ', NACC, 'unaccounted for', NUACC, '\n')
+		#sorting_res +='the last cluster of the last generation contains unaccounted for images \n'
+		#fout = open(os.path.join(Tracker["constants"]["masterdir"], "sorting_summary.txt"),"w")
+		#fout.writelines(sorting_res)
+		#fout.close()
 	mpi_barrier(MPI_COMM_WORLD)
 
 def get_MGR_from_two_way_comparison(newindeces, clusters1, clusters2, N):
@@ -7360,7 +7359,6 @@ def main():
 				read_tracker_mpi(work_dir, log_main)
 				work_dir = os.path.join( Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 		time_final_box_start = time.time()	
-		'''
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			clusters = output_clusters(os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen), \
 				output_list[0][0], output_list[0][1], options.not_include_unaccounted, log_main)
@@ -7369,7 +7367,6 @@ def main():
 		Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
 		dump_tracker( os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen))
 		compute_final_map(log_main, work_dir)
-		'''
 		copy_results(log_main)# all nodes function
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			log_main.add('----------------------------------------------------------------------------------------------------------------' )
