@@ -3928,8 +3928,8 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			b = set(accounted_list)
 			unaccounted_list = sorted(list(a.difference(b)))
 
-		log_main.append(' {} {} {} {}'.format('  The number of accounted for images:', len(accounted_list),'  The number of unaccounted for images:', len(unaccounted_list)))
-		log_main.append('  The current minimum group size: %d and the maximum group size: %d'%(minimum_group_size, maximum_group_size))
+		log_main.add(' {} {} {} {}'.format('  The number of accounted for images:', len(accounted_list),'  The number of unaccounted for images:', len(unaccounted_list)))
+		log_main.add('  The current minimum group size: %d and the maximum group size: %d'%(minimum_group_size, maximum_group_size))
 		
 		if depth <= 1: # the last layer
 			box1_dir =  os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%Tracker["current_generation"], "layer%d"%Tracker["depth"], "nbox%d"%nbox)
