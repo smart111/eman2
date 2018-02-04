@@ -6731,7 +6731,7 @@ def copy_results(log_file):
 				
 		NUACC = Tracker["constants"]["total_stack"] - NACC
 		do_analysis_on_identified_clusters(clusters, log_file)
-		log_file.add("                                 SORT3D IN-DEPTH finished")
+		#log_file.add("                                 SORT3D IN-DEPTH finished")
 
 		fout = open(os.path.join(Tracker["constants"]["masterdir"], "Tracker.json"), 'w')
 		json.dump(Tracker, fout)
@@ -7359,7 +7359,7 @@ def main():
 			else:
 				read_tracker_mpi(work_dir, log_main)
 				work_dir = os.path.join( Tracker["constants"]["masterdir"], "generation_%03d"%igen)
-				
+		time_final_box_start = time.time()	
 		'''
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			clusters = output_clusters(os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen), \
@@ -7370,13 +7370,13 @@ def main():
 		dump_tracker( os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen))
 		compute_final_map(log_main, work_dir)
 		'''
+		copy_results(log_main)# all nodes function
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			log_main.add('----------------------------------------------------------------------------------------------------------------' )
 			log_main.add('                                 SORT3D IN-DEPTH finished')
 			log_main.add('----------------------------------------------------------------------------------------------------------------' )
 			time_of_sorting_h,  time_of_sorting_m = get_time(time_final_box_start)
-			log_main.add('SORT3D 3D reconstruction time: %d hours %d minutes'%(time_of_sorting_h, time_of_sorting_m))
-		copy_results(log_main)# all nodes function
+			#log_main.add('SORT3D 3D reconstruction time: %d hours %d minutes'%(time_of_sorting_h, time_of_sorting_m))
 		from mpi import mpi_finalize
 		mpi_finalize()
 		exit()
