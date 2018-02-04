@@ -830,7 +830,7 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		else:
 			log_main.add('No reproducible groups were found '%nbox)
 			bad_clustering = 1
-		log_main.add('======================================================================================================================='\n')
+		log_main.add('=======================================================================================================================\n')
 		write_text_row(partition, os.path.join(work_dir, "partition.txt"))
 	else: bad_clustering = 0
 	bad_clustering = bcast_number_to_all(bad_clustering, Blockdata["main_node"], MPI_COMM_WORLD)
@@ -4115,10 +4115,10 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	unaccounted_list = sorted(list(a.difference(b)))
 	write_text_row(new_index, os.path.join(partition_dir, "Accounted.txt"))
 	write_text_file(unaccounted_list, os.path.join(partition_dir, "Unaccounted.txt"))
-	log_list.append('{} {} {}'.format(' The overall reproducibility is', round(ratio_accounted,2),'%'))
+	log_list.append(' {} {} {}'.format(' The overall reproducibility is', round(ratio_accounted,2),'%'))
 	log_list.append(' {} {} {} {}'.format('Number of accounted for images:', len(accounted_list), 'Number of unaccounted for images:', len(unaccounted_list)))
-	log_list.append(' The current minimum group size: %d mand the aximum group size: %d'%(minimum_group_size, maximum_group_size)
-	log_list.append('----------------------------------------------------------------------------------------------------------------' )
+	log_list.append(' The current minimum group size: %d mand the aximum group size: %d'%(minimum_group_size, maximum_group_size))
+	log_list.append('----------------------------------------------------------------------------------------------------------------')
 	return minimum_group_size, maximum_group_size, selected_clusters, unaccounted_list, ratio_accounted, len(list_stable), log_list
 
 def split_partition_into_clusters(sorting_res):
