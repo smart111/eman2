@@ -888,21 +888,20 @@ def check_mpi_settings(log_main):
 		log_main.add("Total number of images: %d.  Number of images per group: %d."%(Tracker["constants"]["total_stack"], Tracker["constants"]["img_per_grp"]))
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		log_main.add("The total available memory:  %5.1f GB"%total_memory)
-		log_main.add("The size of input 2D stack: %5.1f GB\nThe amount of memory 2D data will occupy per node: %5.1f GB"%(raw_data_size, raw_data_size_per_node))
+		log_main.add("The size of input 2D stack: %5.1f GB"%(raw_data_size))
+		log_main.add("The per-node amount of memory 2D data will occupy\: %5.1f GB"%(raw_data_size_per_node))
 	if (total_memory - sys_required_mem - raw_data_size_per_node - volume_size_per_node - sorting_data_size_per_node - 5.0) <0.0: 
 		current_mpi_settings_is_bad = 1
 		new_nproc =  raw_data_size*(2.*ratio**2+1.)*Blockdata["no_of_processes_per_group"]/(total_memory - 5. - sys_required_mem - volume_size_per_node)
 		new_nproc =  int(new_nproc)
-		if( Blockdata["myid"] == Blockdata["main_node"]):
-			log_main.add("Suggestion: set number of processes to: %d"%int(new_nproc))
-		ERROR("Insufficient memory", "check_mpi_settings", 1, Blockdata["myid"])
-	images_per_cpu = float(Tracker["constants"]["total_stack"])/float(Blockdata["nproc"])
+		ERROR("Insufficient memory", "Suggestion: set number of processes to: %d"%new_nproc, 1, Blockdata["myid"])
+	images_per_cpu = int(float(Tracker["constants"]["total_stack"])/Blockdata["nproc"])
 	images_per_cpu_for_unaccounted_data  = Tracker["constants"]["img_per_grp"]*1.5/float(Blockdata["nproc"])
 	if( Blockdata["myid"] == Blockdata["main_node"]):
-		log_main.add("Number of images per cpu:  %d "%int(images_per_cpu) )
-	if images_per_cpu < 5.0: ERROR("image per cpu less than 5", "check_mpi_settings", 1, Blockdata["myid"])
+		log_main.add("Number of images per processor: %d "%images_per_cpu )
+	if( images_per_cpu < 5) : ERROR("Number of images per processor is less than 5", "one may want to consider decreasing the number of processors used in MPI setting", 0, Blockdata["myid"])
 	if(Blockdata["myid"] == Blockdata["main_node"]):
-		log_main.add('----------------------------------------------------------------------------------------------------------------' + '\n')
+		log_main.add('----------------------------------------------------------------------------------------------------------------\n')
 	return
 	
 def get_sorting_image_size(original_data, partids, number_of_groups, sparamstructure, snorm_per_particle, log_main):
@@ -7077,9 +7076,9 @@ def main():
 			log_main.prefix = Tracker["constants"]["masterdir"]+"/"
 			
 			if Blockdata["myid"] == Blockdata["main_node"]:
-				log_main.add('=====================================================')
-				log_main.add('                                 SORT3D IN-DEPTH')
-				log_main.add('====================================================='+'\n')
+				log_main.add('================================================================================================================')
+				log_main.add('                                 SORT3D IN-DEPTH v1.0')
+				log_main.add('================================================================================================================')
 				
 			if continue_from_interuption == 0:
 				sort3d_utils("import_data",   log_main)
