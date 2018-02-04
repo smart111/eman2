@@ -826,6 +826,8 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		msg = '========================================================================================================================='
 		log_main.add(msg+'\n')
 		write_text_row(partition, os.path.join(work_dir, "partition.txt"))
+	else: bad_clustering = 0
+	bad_clustering = bcast_number_to_all(bad_clustering, Blockdata["main_node"], MPI_COMM_WORLD)
 	return bad_clustering
 
 def check_mpi_settings(log_main):
@@ -7104,6 +7106,7 @@ def main():
 		Tracker["current_generation"] = 0
 		igen         = 0
 		keepsorting  = 1
+		keepchecking = 1
 		Tracker["current_generation"] = -1
 		igen  = -1
 		while keepsorting ==1:
