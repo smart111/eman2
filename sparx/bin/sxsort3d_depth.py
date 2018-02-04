@@ -3995,11 +3995,11 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			fout = open(os.path.join(gendir,"freq_cutoff.json"),'w')
 			json.dump(freq_cutoff_dict3, fout)
 			fout.close()
-			msg = '========================================================================================================================= \n'
+			msg = '=========================================================================================================================\n'
 			
 			log_main.add(msg)
 		else:
-			msg = '========================================================================================================================= \n'
+			msg = '=========================================================================================================================\n'
 			
 			log_main.add(msg)
 		return minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation
