@@ -7360,7 +7360,7 @@ def main():
 				read_tracker_mpi(work_dir, log_main)
 				work_dir = os.path.join( Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 				
-		time_final_box_start = time.time()
+		'''
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			clusters = output_clusters(os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen), \
 				output_list[0][0], output_list[0][1], options.not_include_unaccounted, log_main)
@@ -7369,11 +7369,11 @@ def main():
 		Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
 		dump_tracker( os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen))
 		compute_final_map(log_main, work_dir)
+		'''
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			log_main.add('----------------------------------------------------------------------------------------------------------------' )
 			log_main.add('                                 SORT3D IN-DEPTH finished')
 			log_main.add('----------------------------------------------------------------------------------------------------------------' )
-			mark_sorting_state(work_dir, True, log_main)
 			time_of_sorting_h,  time_of_sorting_m = get_time(time_final_box_start)
 			log_main.add('SORT3D 3D reconstruction time: %d hours %d minutes'%(time_of_sorting_h, time_of_sorting_m))
 		copy_results(log_main)# all nodes function
