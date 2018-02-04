@@ -3829,8 +3829,8 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	Tracker["current_iter_ratio"] = ratio_accounted
 	score_list = [ ]
 	nclass = 0
-	log_list.append('   Post-matching results.')
-	log_list.append('{:^12} {:^10} {:^17} {:^8} {:^15}'.format('    Group', '   size', 'min random size', ' status ',   'reproducibility'))
+	log_main.add('   Post-matching results.')
+	log_main.add('{:^12} {:^10} {:^17} {:^8} {:^15}'.format('    Group', '   size', 'min random size', ' status ',   'reproducibility'))
 	
 	for index_of_any in xrange(len(list_stable)):
 		any = list_stable[index_of_any]
