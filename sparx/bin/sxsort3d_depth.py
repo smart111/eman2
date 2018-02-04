@@ -500,9 +500,7 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 	for ic in xrange(len(nclasses)):
 		if len(nclasses[ic])>= Tracker["constants"]["minimum_grp_size"]:
 			write_text_file(nclasses[ic], os.path.join(output_dir,"Cluster_%03d.txt"%nc))
-			msg = 
-			log_main.add(msg)
-			
+			log_main.add('Membership file Cluster_%03d.txt contains accounted for images'%nc +'\n')
 			nc +=1
 			identified_clusters.append(nclasses[ic])
 		else: unaccounted_list +=nclasses[ic]
@@ -521,7 +519,7 @@ def output_clusters(output_dir, partition, unaccounted_list, not_include_unaccou
 			log_main.add('Membership file Cluster_%03d.txt contains unaccounted for images'%nc +'\n')
 	else:
 		log_main.add('\n')
-		
+
 	do_analysis_on_identified_clusters(nclasses, log_main)
 	
 	if not not_include_unaccounted:
@@ -3727,7 +3725,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	import json
 	stop_generation  = 0
 	log_main.add('================================================================================================================')
-	log_main.add('            Two-way comparison of generation %d, layer %d, between results of two pairs of independent runs: %d and %d'%(,Tracker["current_generation"],Tracker["depth"],nbox, nbox+1))
+	log_main.add('            Two-way comparison of generation %d, layer %d, between results of two pairs of independent runs: %d and %d'%(Tracker["current_generation"],Tracker["depth"],nbox, nbox+1))
 	log_main.add('----------------------------------------------------------------------------------------------------------------')
 	bad_clustering =  0
 	ipair = 0
@@ -3848,13 +3846,9 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			maximum_group_size = max(maximum_group_size, len(any))
 			new_list.append(any)
 			nclass +=1
-			#msg ="   %3d     %8d    %6.3f    %6.3f"%(nclass, len(any), score1, score2)
-			msg ='{:^12d} {:^10d}  {:^10} {:^15.3f}'.format(index_of_any, len(any),'accepted', round(score3,3))
-			log_main.add(msg)
+			log_main.add('{:^12d} {:^10d}  {:^10} {:^15.3f}'.format(index_of_any, len(any),'accepted', score3))
 		else:
-			#msg ="group %d with size %d is rejected and sent back into unaccounted ones"%(index_of_any, len(any))
-			msg ='{:^12d} {:^10d}  {:^10} {:^15.3f}'.format(index_of_any, len(any), 'rejected', round(score3,3))
-			log_main.add(msg)
+			log_main.add('{:^12d} {:^10d}  {:^10} {:^15.1f}'.format(index_of_any, len(any), 'rejected', score3))
 	
 	if nclass == 0:
 		### redo two way comparison
@@ -3877,7 +3871,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			return minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation
 		else:
 			bad_clustering = 1
-			log_main.add('There are no clusters larger than the user provided minimum group size %d.'%Tracker["constants"]["minimum_grp_size"]
+			log_main.add('There are no clusters larger than the user provided minimum group size %d.'%Tracker["constants"]["minimum_grp_size"])
 			log_main.add('The reason can be: (1) There are no groups in the data set. 2. Minimum group size set is too large. (3) Desired number of groups K is too large.')
 			log_main.add('================================================================================================================\n')
 			return minimum_group_size, maximum_group_size, [ ], full_list, bad_clustering, stop_generation
@@ -4033,7 +4027,7 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	ratio_unaccounted  = 100.-nb_tot_objs/float(total_data)*100.
 	ratio_accounted    = nb_tot_objs/float(total_data)*100.
 
-	log_list.append((' ')
+	log_list.append(' ')
 	log_list.append('                        Two-way matching of sorting results.')
 	log_list.append('M indicates that respective group P0 sorting (row number) matches respective group of P1 sorting (column number)')
 	msg ='   '
@@ -6803,7 +6797,7 @@ def estimate_tanhl_params(cutoff, taa, image_size):
 	return cutoff1, taa
 
 def print_matching_pairs(pair_list, log_file):
-	log_file.add((' ')
+	log_file.add(' ')
 	log_file.add('                        Two-way matching of sorting results.')
 	log_file.add('M indicates that respective group P0 sorting (row number) matches respective group of P1 sorting (column number)')
 	
