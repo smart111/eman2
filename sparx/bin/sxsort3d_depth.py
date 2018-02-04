@@ -722,13 +722,13 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		minimum_grp_size = minimum_grp_size_init
 		iter_previous_iter_ratio = 0.0
 		iter_current_iter_ratio  = 0.0
-		while((iter <= box_niter) and (converged == 0) ):
+		while((iter < box_niter) and (converged == 0) ):
 			for indep_run_iter in xrange(2):
 				Tracker["directory"] = os.path.join(iter_dir, "MGSKmeans_%03d"%indep_run_iter)
 				MGSKmeans_index_file = os.path.join(iter_dir, "random_assignment_%03d.txt"%indep_run_iter)
 				if Blockdata["myid"] == Blockdata["main_node"]:
-					os.mkdir(Tracker["directory"])
-					os.mkdir(os.path.join(Tracker["directory"], "tempdir"))
+					if not os.path.exists(Tracker["directory"]): os.mkdir(Tracker["directory"])
+					if not os.path.exists(os.path.join(Tracker["directory"], "tempdir")): os.mkdir(os.path.join(Tracker["directory"], "tempdir"))
 				mpi_barrier(MPI_COMM_WORLD)
 				if Tracker["constants"]["relax_oriens"]:
 					tmp_final_list, premature =  Kmeans_minimum_group_size_relaxing_orien_groups(original_data, MGSKmeans_index_file, \
