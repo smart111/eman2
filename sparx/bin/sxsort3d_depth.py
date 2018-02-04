@@ -722,13 +722,13 @@ def depth_clustering_box(work_dir, input_accounted_file, input_unaccounted_file,
 		minimum_grp_size = minimum_grp_size_init
 		iter_previous_iter_ratio = 0.0
 		iter_current_iter_ratio  = 0.0
-		while((iter <= box_niter) and (converged == 0) ):
+		while((iter < box_niter) and (converged == 0) ):
 			for indep_run_iter in xrange(2):
 				Tracker["directory"] = os.path.join(iter_dir, "MGSKmeans_%03d"%indep_run_iter)
 				MGSKmeans_index_file = os.path.join(iter_dir, "random_assignment_%03d.txt"%indep_run_iter)
 				if Blockdata["myid"] == Blockdata["main_node"]:
-					os.mkdir(Tracker["directory"])
-					os.mkdir(os.path.join(Tracker["directory"], "tempdir"))
+					if not os.path.exists(Tracker["directory"]): os.mkdir(Tracker["directory"])
+					if not os.path.exists(os.path.join(Tracker["directory"], "tempdir")): os.mkdir(os.path.join(Tracker["directory"], "tempdir"))
 				mpi_barrier(MPI_COMM_WORLD)
 				if Tracker["constants"]["relax_oriens"]:
 					tmp_final_list, premature =  Kmeans_minimum_group_size_relaxing_orien_groups(original_data, MGSKmeans_index_file, \
@@ -5173,16 +5173,16 @@ def get_input_from_sparx_ref3d(log_main):# case one
 		if Tracker_refinement["constants"]["stack"][0:4]=="bdb:": refinement_stack = "bdb:"+os.path.join(refinement_dir_path, Tracker_refinement["constants"]["stack"][4:])
 		else: refinement_stack = os.path.join(refinement_dir_path, Tracker_refinement["constants"]["stack"])
 		if not Tracker["constants"]["orgstack"]: # Use refinement stack if instack is not provided
-			msg = "refinement stack  %s"%refinement_stack			
-			log_main.add(msg)
+			#msg = "refinement stack  %s"%refinement_stack			
+			#log_main.add(msg)
 			Tracker["constants"]["orgstack"] = refinement_stack #Tracker_refinement["constants"]["stack"]
 			try: image = get_im(Tracker["constants"]["orgstack"], 0)
 			except:
 				import_from_sparx_refinement = 0
 		else:
 			if Tracker["constants"]["orgstack"] == Tracker_refinement["constants"]["stack"]: # instack and refinement data stack is the same
-				msg = "The sorting instack is the same refinement instack: %s"%Tracker_refinement["constants"]["stack"]				
-				log_main.add(msg)
+				#msg = "The sorting instack is the same refinement instack: %s"%Tracker_refinement["constants"]["stack"]				
+				#log_main.add(msg)
 				if not os.path.exists(Tracker["constants"]["orgstack"]): import_from_sparx_refinement = 0
 			else: # complicated cases
 				if (not os.path.exists(Tracker["constants"]["orgstack"])) and (not os.path.exists(Tracker_refinement["constants"]["stack"])): 
@@ -5192,11 +5192,8 @@ def get_input_from_sparx_ref3d(log_main):# case one
 					if old_stack[0:3] == "bdb":
 						Tracker["constants"]["orgstack"] = "bdb:" + Tracker["constants"]["refinement_dir"]+"/../"+old_stack[4:]
 					else: Tracker["constants"]["orgstack"] = os.path.join(option_old_refinement_dir, "../", old_stack)
-					msg = "Use refinement orgstack "
-					log_main.add(msg)
-				else:
-					msg = "Use orgstack provided by options"					
-					log_main.add(msg)
+					#msg = "Use refinement orgstack "
+					#log_main.add(msg)
 		#if import_from_sparx_refinement:
 		#msg =  "data stack for sorting is %s"%Tracker["constants"]["orgstack"]			
 		#log_main.add(msg)
@@ -7127,7 +7124,7 @@ def main():
 					log_main.add('----------------------------------------------------------------------------------------------------------------' )
 				params          = os.path.join(Tracker["constants"]["masterdir"],"refinement_parameters.txt")
 				previous_params = Tracker["previous_parstack"]
-				output_list     = depth_clustering(work_dir, options.depth_order, my_pids, params, previous_params, log_main)
+				output_list, bad_clustering = depth_clustering(work_dir, options.depth_order, my_pids, params, previous_params, log_main)
 				keepsorting     = check_sorting(len(output_list[0][1]), keepsorting, log_main)
 				if(keepsorting ==1):
 					if Blockdata["myid"] == Blockdata["main_node"]:
@@ -7389,7 +7386,7 @@ def main():
 					log_main.add('----------------------------------------------------------------------------------------------------------------')
 				params          = os.path.join(Tracker["constants"]["masterdir"],"refinement_parameters.txt")
 				previous_params = Tracker["previous_parstack"]
-				output_list     = depth_clustering(work_dir, options.depth_order, my_pids, params, previous_params, log_main)
+				output_list, bad_clustering  = depth_clustering(work_dir, options.depth_order, my_pids, params, previous_params, log_main)
 				keepsorting     = check_sorting(len(output_list[0][1]), keepsorting, log_main)
 				if keepsorting == 1:# do final box refilling
 					if Blockdata["myid"] == Blockdata["main_node"]:
