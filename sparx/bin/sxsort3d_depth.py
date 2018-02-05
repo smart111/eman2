@@ -3742,9 +3742,10 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	for i1 in xrange(len(ptp1)):
 		plist1.append([nsize1, nsize1 + int(float(len(ptp1[i1]))/tsize*100.)])
 		nsize1 += int(float(len(ptp1[i1]))/tsize*100.)
+		
 	nsize2 = 0
 	for i1 in xrange(len(ptp2)):
-		plist2.append([nsize2, nsize + int(float(len(ptp2[i1]))/tsize*100.)])
+		plist2.append([nsize2, nsize2 + int(float(len(ptp2[i1]))/tsize*100.)])
 		nsize2 += int(float(len(ptp2[i1]))/tsize*100.)
 		
 	alist = range(100)
@@ -3769,12 +3770,12 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 				clist[j].append(float((np.intersect1d(new_clusters1[newindeces[j][0]], new_clusters2[newindeces[j][1]])).size)\
 				  /float((np.union1d(new_clusters1[newindeces[j][0]], new_clusters2[newindeces[j][1]])).size)*100.)
 	t = table_stat(tlist)
-	log_main.add('The overall random reproducibility: %5.1f%%'%(t[0]))
+	'''
 	for l in xrange(len(clist)):
 		if len(clist[l])>0:
 			log_main.add('Group random reproducibility: %5.1f%%   %8d '%(table_stat(clist[l])[0], (plist1[l][1]-plist1[l][0])))
 	msg = '***********************************************************************************'
-	log_main.add(msg)
+	'''
 	#
 	msg = 'P0      '
 	msg1 ='Group ID'
@@ -3808,7 +3809,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	score_list = [ ]
 	nclass = 0
 	log_main.add('               Post-matching results.')
-	log_main.add('{:^12} {:^10} {:^17} {:^8} {:^15}'.format('    Group', '   size', 'min random size', ' status ',   'reproducibility'))
+	log_main.add('{:^12} {:^10} {:^17} {:^8} {:^15} {:^22}'.format('    Group', '   size', 'min random size', ' status ',   'reproducibility', 'random reproducibility'))
 	
 	for index_of_any in xrange(len(list_stable)):
 		any = list_stable[index_of_any]
@@ -3824,9 +3825,9 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			maximum_group_size = max(maximum_group_size, len(any))
 			new_list.append(any)
 			nclass +=1
-			log_main.add('{:^14d} {:^10d}  {:^10} {:^15.1f}'.format(index_of_any, len(any),'accepted', score3))
+			log_main.add('{:^14d} {:^10d}  {:^10} {:^15.1f} {:^22.1f}'.format(index_of_any, len(any),'accepted', score3, table_stat(clist[index_of_any])[0]))
 		else:
-			log_main.add('{:^124} {:^10d}  {:^10} {:^15.1f}'.format(index_of_any, len(any), 'rejected', score3))
+			log_main.add('{:^124} {:^10d}  {:^10} {:^15.1f} {:^22.1f}'.format(index_of_any, len(any), 'rejected', score3), table_stat(clist[index_of_any])[0])
 	
 	if nclass == 0:
 		### redo two way comparison
