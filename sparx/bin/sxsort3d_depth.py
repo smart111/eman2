@@ -4002,7 +4002,7 @@ def do_boxes_two_way_comparison_mpi(nbox, input_box_parti1, input_box_parti2, de
 		score_list = [ ]
 		nclass = 0
 		log_main.add('   Post-matching results.')
-		log_main.add('{:^12} {:^10} {:^17} {:^8} {:^15} {:^28}  {:5.1}'.format('    Group  ', '   size   ', ' min random size ', ' status ',   'reproducibility', 'group random reproducibility', ' std '))
+		log_main.add('{:^12} {:^10} {:^17} {:^15} {:^28}  {:6}'.format('    Group  ', '   size   ', ' min random size ', '  status  ',   'reproducibility', 'group random reproducibility', ' std '))
 	
 		for index_of_any in xrange(len(newindeces)):
 			any = list_stable[index_of_any]
@@ -4018,9 +4018,9 @@ def do_boxes_two_way_comparison_mpi(nbox, input_box_parti1, input_box_parti2, de
 				maximum_group_size = max(maximum_group_size, len(any))
 				new_list.append(any)
 				nclass +=1
-				log_main.add('{:^12d} {:^10d}  {:^10} {:^15.3f}'.format(index_of_any, len(any),'accepted', score3, gave[index_of_any], gvar[index_of_any]))
+				log_main.add('{:^12d} {:^10d}  {:^17} {:^15.1f} {:^28.1f} {:^6.1f}'.format(index_of_any, len(any),'accepted', score3, gave[index_of_any], gvar[index_of_any]))
 			else:
-				log_main.add('{:^12d} {:^10d}  {:^10} {:^15.1f}'.format(index_of_any, len(any), 'rejected', score3, gave[index_of_any], gvar[index_of_any]))
+				log_main.add('{:^12d} {:^10d}  {:^17} {:^15.1f} {:^29.1f} {:^6.1f}'.format(index_of_any, len(any), 'rejected', score3, gave[index_of_any], gvar[index_of_any]))
 	else:
 		 nclass == 0
 	nclass = bcast_number_to_all(nclass, Blockdata["main_node"], MPI_COMM_WORLD)
@@ -7026,6 +7026,7 @@ def print_matching_pairs(pair_list, log_file):
 	
 def do_random_groups_simulation_mpi(ptp1, ptp2):
 	global Tracker, Blockdata
+	import numpy  as np
 	# return two lists: group avgs and group stds. The last one of two lists are the total avg and std.
 	if (len(ptp1)>=50) or (len(ptp2)>=50):
 		if(Blockdata["myid"] == Blockdata["main_node"]):
