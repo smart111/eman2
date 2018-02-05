@@ -285,19 +285,20 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 					if(Blockdata["myid"] == Blockdata["main_node"]): mark_sorting_state(nbox_dir, True, log_main)
 				else: continue
 			partition_per_box_per_layer_list = []
-			if(Blockdata["myid"] == Blockdata["main_node"]):
-				stop_generation = 0
-				for nbox in xrange(0,n_cluster_boxes,2):
-					input_box_parti1 = os.path.join(depth_dir, "nbox%d"%nbox,     "partition.txt")
-					input_box_parti2 = os.path.join(depth_dir, "nbox%d"%(nbox+1), "partition.txt")
-					minimum_grp_size, maximum_grp_size, accounted_list, unaccounted_list, bad_clustering, stop_generation = \
-					do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, depth_order - depth, log_main)
-					if( stop_generation ==1 ):
-						partition_per_box_per_layer_list = []
-						partition_per_box_per_layer_list.append([accounted_list, unaccounted_list])
-						break
-					else:
-						partition_per_box_per_layer_list.append([accounted_list, unaccounted_list])
+			#if(Blockdata["myid"] == Blockdata["main_node"]):
+			stop_generation = 0
+			for nbox in xrange(0,n_cluster_boxes,2):
+				input_box_parti1 = os.path.join(depth_dir, "nbox%d"%nbox,     "partition.txt")
+				input_box_parti2 = os.path.join(depth_dir, "nbox%d"%(nbox+1), "partition.txt")
+				minimum_grp_size, maximum_grp_size, accounted_list, unaccounted_list, bad_clustering, stop_generation = \
+				 do_boxes_two_way_comparison_mpi(nbox, input_box_parti1, input_box_parti2, depth_order - depth, log_main)
+				if( stop_generation ==1 ):
+					partition_per_box_per_layer_list = []
+					partition_per_box_per_layer_list.append([accounted_list, unaccounted_list])
+					break
+				else:
+					partition_per_box_per_layer_list.append([accounted_list, unaccounted_list])
+			'''
 			else: 
 				partition_per_box_per_layer_list = 0
 				bad_clustering   = 0
@@ -306,6 +307,7 @@ def depth_clustering(work_dir, depth_order, initial_id_file, params, previous_pa
 			partition_per_box_per_layer_list = wrap_mpi_bcast(partition_per_box_per_layer_list, Blockdata["main_node"], MPI_COMM_WORLD)
 			bad_clustering = bcast_number_to_all(bad_clustering, Blockdata["main_node"], MPI_COMM_WORLD)
 			stop_generation = bcast_number_to_all(stop_generation, Blockdata["main_node"], MPI_COMM_WORLD)
+			'''
 			Tracker = wrap_mpi_bcast(Tracker, Blockdata["main_node"], MPI_COMM_WORLD)
 			if(Blockdata["myid"] == Blockdata["main_node"]): mark_sorting_state(depth_dir, True, log_main)
 			if( bad_clustering == 1): break
@@ -7359,6 +7361,8 @@ def main():
 		Tracker["current_generation"] = -1
 		igen  = -1
 		my_pids      = os.path.join(Tracker["constants"]["masterdir"], "indexes.txt")
+		if Blockdata["myid"] == Blockdata["main_node"]:
+			particle_list = read_text_file(my_pids)
 		while keepsorting ==1:
 			Tracker["current_generation"] +=1
 			igen +=1
@@ -7369,6 +7373,8 @@ def main():
 				fout = open(os.path.join(work_dir, "freq_cutoff.json"),'w')
 				json.dump(freq_cutoff_dict, fout)
 				fout.close()
+				my_pids = os.path.join(work_dir, "indexes.txt")
+				write_text_file(particle_list, my_pids)
 				keepchecking = check_sorting_state(work_dir, keepchecking, log_main)
 				time_generation_start = time.time()
 			else: keepchecking = 0
@@ -7405,14 +7411,15 @@ def main():
 						log_main.add('SORT3D generation%d time: %d hours %d minutes'%(igen, time_of_generation_h, time_of_generation_m))
 					work_dir = os.path.join( Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 					if Blockdata["myid"] == Blockdata["main_node"]:
-						write_text_file(output_list[0][1], os.path.join(work_dir, "indexes.txt"))
-						mark_sorting_state(work_dir, False, log_main)
-					my_pids = os.path.join(work_dir, "indexes.txt")
-					mpi_barrier(MPI_COMM_WORLD)
+						mark_sorting_state(work_dir, True, log_main)
+						partitcle_list = copy.deepcopy(output_list[0][1])
+					else:
+						partitcle_list = 0
+					partitcle_list = wrap_mpi_bcast(partitcle_list, Blockdata["main_node"], MPI_COMM_WORLD)
 			else:
 				read_tracker_mpi(work_dir)
 				work_dir = os.path.join( Tracker["constants"]["masterdir"], "generation_%03d"%igen)
-
+				
 		time_final_box_start = time.time()
 		if Blockdata["myid"] == Blockdata["main_node"]:
 			clusters = output_clusters(os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen), \
@@ -7429,10 +7436,7 @@ def main():
 			mark_sorting_state(work_dir, True, log_main)
 			time_of_sorting_h,  time_of_sorting_m = get_time(time_final_box_start)
 			log_main.add('SORT3D 3D reconstruction time: %d hours %d minutes'%(time_of_sorting_h, time_of_sorting_m))
-		
 		copy_results(log_main)# all nodes function
-
-
 		from mpi import mpi_finalize
 		mpi_finalize()
 		exit()
@@ -7620,12 +7624,16 @@ def main():
 		Tracker["current_generation"] = -1
 		igen  = -1
 		my_pids   = os.path.join(Tracker["constants"]["masterdir"], "indexes.txt")
+		if Blockdata["myid"] == Blockdata["main_node"]:
+			particle_list = read_text_file(my_pids)
 		while keepsorting == 1:
 			Tracker["current_generation"] +=1
 			igen +=1
 			work_dir  = os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 			if Blockdata["myid"] == Blockdata["main_node"]:
 				os.mkdir(work_dir)
+				my_pids = os.path.join(work_dir, "indexes.txt")
+				write_text_file(particle_list, my_pids)
 				freq_cutoff_dict = {}
 				fout = open(os.path.join(work_dir, "freq_cutoff.json"),'w')
 				json.dump(freq_cutoff_dict, fout)
@@ -7668,10 +7676,11 @@ def main():
 						
 					work_dir = os.path.join( Tracker["constants"]["masterdir"], "generation_%03d"%igen)
 					if Blockdata["myid"] == Blockdata["main_node"]:
-						write_text_file(output_list[0][1], os.path.join(work_dir, "indexes.txt"))
-						mark_sorting_state(work_dir, False, log_main)
-					my_pids = os.path.join(work_dir, "indexes.txt")
-					mpi_barrier(MPI_COMM_WORLD)
+						mark_sorting_state(work_dir, True, log_main)
+						partitcle_list = copy.deepcopy(output_list[0][1])
+					else:
+						partitcle_list = 0
+					partitcle_list = wrap_mpi_bcast(partitcle_list, Blockdata["main_node"], MPI_COMM_WORLD)
 			else:
 				read_tracker_mpi(work_dir, log_main)
 				work_dir = os.path.join( Tracker["constants"]["masterdir"], "generation_%03d"%igen)
