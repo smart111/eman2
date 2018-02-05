@@ -6817,7 +6817,8 @@ def print_matching_pairs(pair_list, log_file):
 	
 def do_random_groups_simulation_mpi(ptp1, ptp2):
 	global Tracker, Blockdata
-	if (len(ptp1)>50) or (len(ptp2)>50):
+	# return two lists: group avgs and group stds. The last one of two lists are the total avg and std.
+	if (len(ptp1)>=50) or (len(ptp2)>=50):
 		if(Blockdata["myid"] == Blockdata["main_node"]):
 			print('Warning: the number of groups is too large for simuliaton')	
 	Nloop = 200
