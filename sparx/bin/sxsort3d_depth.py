@@ -6596,11 +6596,7 @@ def compute_final_map(log_file, work_dir):
 	if(Blockdata["myid"] == Blockdata["main_node"]):
 		res_msg = ""
 		final_accounted_ptl = 0
-		line = strftime("%Y-%m-%d_%H:%M:%S", localtime()) + " =>"
-		log_file.add('----------------------------------------------------------------------------------------------------------------' )
-		log_file.add('   Final results')
-		log_file.add('----------------------------------------------------------------------------------------------------------------' )
-		log_file.add('Group       size')
+		#log_file.add('Group       size')
 		fout = open(os.path.join(work_dir, "Tracker.json"),'w')
 		json.dump(Tracker, fout)
 		fout.close()
@@ -6608,7 +6604,7 @@ def compute_final_map(log_file, work_dir):
 		while os.path.exists(os.path.join(work_dir, "Cluster_%03d.txt"%number_of_groups)):
 			class_in = read_text_file(os.path.join(work_dir, "Cluster_%03d.txt"%number_of_groups))
 			minimum_size = min(len(class_in), minimum_size)
-			msg = "%10d    %10d   \n"%(number_of_groups, len(class_in))
+			#msg = "%10d    %10d   \n"%(number_of_groups, len(class_in))
 			log_file.add(msg)
 			res_msg +=msg
 			number_of_groups += 1
@@ -6622,7 +6618,7 @@ def compute_final_map(log_file, work_dir):
 		#fout = open(os.path.join(work_dir, "generation_clusters_summary.txt"),"w")
 		#fout.writelines(res_msg)
 		#fout.close()
-		log_file.add(res_msg)
+		#log_file.add(res_msg)
 		Tracker["total_stack"]      = final_accounted_ptl
 		Tracker["number_of_groups"] = number_of_groups
 		Tracker["nxinit"]           = Tracker["nxinit_refinement"]
@@ -6701,12 +6697,14 @@ def copy_results(log_file):
 	import json
 	from   shutil import copyfile
 	from   string import atoi
-	if Blockdata["myid"] == Blockdata["main_node"]:		
+	if Blockdata["myid"] == Blockdata["main_node"]:
+		log_file.add('----------------------------------------------------------------------------------------------------------------' )
+		log_file.add('              Final results')
+		log_file.add('----------------------------------------------------------------------------------------------------------------' )
 		nclusters = 0
-		#msg       ="cluster ID    size"
-		#log_file.add(msg)
+		msg       ="Group ID    size"
+		log_file.add(msg)
 		clusters    = []
-		#sorting_res = '{:^50}'.format('                Summary of SORT3D IN-DEPTH results\n')
 		NACC = 0           
 		for element in Tracker["generation"].items():
 			ig    = element[0]
@@ -6730,16 +6728,13 @@ def copy_results(log_file):
 				
 		NUACC = Tracker["constants"]["total_stack"] - NACC
 		do_analysis_on_identified_clusters(clusters, log_file)
-
 		fout = open(os.path.join(Tracker["constants"]["masterdir"], "Tracker.json"), 'w')
 		json.dump(Tracker, fout)
 		fout.close()
-		#sorting_res +='{:^12} {:^8} {:^12} {:^8} {:^12} {:^8} {}'.format(' Images', Tracker["constants"]["total_stack"], 'accounted for: ', NACC, 'unaccounted for', NUACC, '\n')
-		#sorting_res +='the last cluster of the last generation contains unaccounted for images \n'
-		#fout = open(os.path.join(Tracker["constants"]["masterdir"], "sorting_summary.txt"),"w")
-		#fout.writelines(sorting_res)
-		#fout.close()
+		log_file.add('{:^12} {:^8} {:^12} {:^8} {:^12} {:^8} {}'.format(' Images', Tracker["constants"]["total_stack"], 'accounted for: ', NACC, 'unaccounted for', NUACC, '\n'))
+		log_file.add('The last cluster of the last generation contains unaccounted for images \n')
 	mpi_barrier(MPI_COMM_WORLD)
+	return
 
 def get_MGR_from_two_way_comparison(newindeces, clusters1, clusters2, N):
 	rnd_grp_sizes = {}
