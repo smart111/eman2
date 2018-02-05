@@ -3747,14 +3747,14 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 		plist2.append([nsize2, nsize2 + max(int(float(len(ptp2[i1]))/tsize*100.), 1)])
 		nsize2 += max(int(float(len(ptp2[i1]))/tsize*100.), 1)
 	
-	print('XXXX', plist1, plist2)	
+	print('XXXX', k, plist1, plist2)	
 	alist = range(100)
 	blist = range(100)
 	
 	alist = np.array(alist, "int32")
 	blist = np.array(blist, "int32")
 	
-	k = len(alist)
+	k =len(ptp1)
 	tlist = []
 	clist = [[] for i in xrange(k)]
 	
