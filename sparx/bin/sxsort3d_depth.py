@@ -3733,8 +3733,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	
 		
 	tsize = float(len(set(alist+blist)))
-	alist = np.array(alist, "int32")
-	blist = np.array(blist, "int32")
+	
 	
 	k = min(len(ptp1), len(ptp2))
 
@@ -3751,6 +3750,10 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	print('XXXX', plist1, plist2)	
 	alist = range(100)
 	blist = range(100)
+	
+	alist = np.array(alist, "int32")
+	blist = np.array(blist, "int32")
+	
 	k = len(alist)
 	tlist = []
 	clist = [[] for i in xrange(k)]
