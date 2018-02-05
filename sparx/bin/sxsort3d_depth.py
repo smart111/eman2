@@ -3747,7 +3747,6 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 		plist2.append([nsize2, nsize2 + max(int(float(len(ptp2[i1]))/tsize*100.), 1)])
 		nsize2 += max(int(float(len(ptp2[i1]))/tsize*100.), 1)
 	
-	print('XXXX', k, plist1, plist2)	
 	alist = range(100)
 	blist = range(100)
 	
@@ -3813,7 +3812,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	score_list = [ ]
 	nclass = 0
 	log_main.add('               Post-matching results.')
-	log_main.add('{:^12} {:^10} {:^17} {:^8} {:^15} {:^22}'.format('    Group', '   size', 'min random size', ' status ',   'reproducibility', 'random reproducibility'))
+	log_main.add('{:^14} {:^10}  {:^8} {:^15} {:^22}'.format('    Group', '   size',  ' status ',   'reproducibility', 'random reproducibility'))
 	
 	for index_of_any in xrange(len(list_stable)):
 		any = list_stable[index_of_any]
@@ -3829,9 +3828,9 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			maximum_group_size = max(maximum_group_size, len(any))
 			new_list.append(any)
 			nclass +=1
-			log_main.add('{:^14d} {:^10d}  {:^10} {:^15.1f} {:^22.1f}'.format(index_of_any, len(any),'accepted', score3, table_stat(clist[index_of_any])[0]))
+			log_main.add('{:^14d} {:^10d} {:^8} {:^15.1f} {:^22.1f}'.format(index_of_any, len(any),'accepted', score3, table_stat(clist[index_of_any])[0]))
 		else:
-			log_main.add('{:^124} {:^10d}  {:^10} {:^15.1f} {:^22.1f}'.format(index_of_any, len(any), 'rejected', score3), table_stat(clist[index_of_any])[0])
+			log_main.add('{:^124} {:^10d} {:^8} {:^15.1f} {:^22.1f}'.format(index_of_any, len(any), 'rejected', score3, table_stat(clist[index_of_any])[0])
 	
 	if nclass == 0:
 		### redo two way comparison
