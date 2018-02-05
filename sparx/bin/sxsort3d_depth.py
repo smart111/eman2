@@ -3961,6 +3961,237 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			log_main.add('================================================================================================================\n')
 		return minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation
 		
+def do_boxes_two_way_comparison_mpi(nbox, input_box_parti1, input_box_parti2, depth, log_main):
+	global Tracker, Blockdata
+	import json
+	if Blockdata["myid"] == Blockdata["main_node"]:
+		stop_generation  = 0
+		log_main.add('================================================================================================================')
+		log_main.add('            Two-way comparison of generation %d, layer %d, between results of two pairs of independent runs: %d and %d'%(Tracker["current_generation"],Tracker["depth"],nbox, nbox+1))
+		log_main.add('----------------------------------------------------------------------------------------------------------------')
+		bad_clustering =  0
+		ipair = 0
+		core1 = read_text_row(input_box_parti1)
+		ptp1, tmp1 = split_partition_into_ordered_clusters(core1)
+		core2 = read_text_row(input_box_parti2)
+		ptp2, tmp2 = split_partition_into_ordered_clusters(core2)
+	else:
+		ptp1 = 0
+		ptp2 = 0
+	ptp1 = wrap_mpi_bcast(ptp1, Blockdata["main_node"], MPI_COMM_WORLD)
+	ptp2 = wrap_mpi_bcast(ptp2, Blockdata["main_node"], MPI_COMM_WORLD)
+	
+	gave, gvar = do_random_groups_simulation_mpi(ptp1, ptp2)
+	
+	if Blockdata["myid"] == Blockdata["main_node"]:
+		## before comparison
+		msg = 'P0      '
+		msg1 ='Group ID'
+		length = max(len(ptp1), len(ptp2))
+		for im in xrange(length):
+			try:    msg +='{:8d} '.format(len(ptp1[im]))
+			except: pass
+			msg1 +='{:8d} '.format(im)
+		log_main.add(msg1)
+	
+		log_main.add(msg)
+		msg = 'P1      '
+		for im in xrange(len(ptp2)): msg +='{:8d} '.format(len(ptp2[im]))
+	
+		log_main.add(msg)
+	
+		if(len(core1) !=len(core2)):  ERROR("Two partitions have different lengths", "do_boxes_two_way_comparison", 1, 0)
+		full_list  = []
+		for a in core1: full_list.append(a[1])
+		full_list.sort()
+		total_data = len(full_list)
+		minimum_group_size = total_data
+		maximum_group_size = 0
+	
+		newindeces, list_stable, nb_tot_objs, patch_elements = patch_to_do_k_means_match_clusters_asg_new(ptp1, ptp2)
+		ratio_unaccounted  = 100. - nb_tot_objs/float(total_data)*100.
+		ratio_accounted    = nb_tot_objs/float(total_data)*100.
+		new_list           = []
+		print_matching_pairs(newindeces, log_main)
+	
+		Tracker["current_iter_ratio"] = ratio_accounted
+		score_list = [ ]
+		nclass = 0
+		log_main.add('   Post-matching results.')
+		log_main.add('{:^12} {:^10} {:^17} {:^8} {:^15} {:^28}  {:5.1}'.format('    Group  ', '   size   ', ' min random size ', ' status ',   'reproducibility', 'group random reproducibility', ' std '))
+	
+		for index_of_any in xrange(len(newindeces)):
+			any = list_stable[index_of_any]
+			any.tolist()
+			any.sort()
+			score1 = float(len(any))*100./float(len(ptp1[newindeces[index_of_any][0]]))
+			score2 = float(len(any))*100./float(len(ptp2[newindeces[index_of_any][1]]))
+			score3 = float((np.intersect1d(ptp1[newindeces[index_of_any][0]], ptp2[newindeces[index_of_any][1]])).size)\
+				  /float((np.union1d(ptp1[newindeces[index_of_any][0]], ptp2[newindeces[index_of_any][1]])).size)*100.
+			if len(any) >= Tracker["constants"]["minimum_grp_size"]:
+				score_list.append([score1, score2])
+				minimum_group_size = min(minimum_group_size, len(any))
+				maximum_group_size = max(maximum_group_size, len(any))
+				new_list.append(any)
+				nclass +=1
+				log_main.add('{:^12d} {:^10d}  {:^10} {:^15.3f}'.format(index_of_any, len(any),'accepted', score3, gave[index_of_any], gvar[index_of_any]))
+			else:
+				log_main.add('{:^12d} {:^10d}  {:^10} {:^15.1f}'.format(index_of_any, len(any), 'rejected', score3, gave[index_of_any], gvar[index_of_any]))
+	else:
+		 nclass == 0
+	nclass = bcast_number_to_all(nclass, Blockdata["main_node"], MPI_COMM_WORLD)
+	
+	if nclass == 0:
+		### redo two way comparison
+		if depth >1:
+			if Blockdata["myid"] == Blockdata["main_node"]:
+				log_main.add('There are no clusters larger than the user provided minimum group size %d.'%Tracker["constants"]["minimum_grp_size"])
+				log_main.add('However, sorting keeps the old results, eliminates the smallest one, and continues')
+
+				ptp1, ucluster1 = split_partition_into_ordered_clusters_split_ucluster(core1)
+				ptp2, ucluster2 = split_partition_into_ordered_clusters_split_ucluster(core2)
+				newindeces, list_stable, nb_tot_objs, patch_elements = patch_to_do_k_means_match_clusters_asg_new(ptp1, ptp2)
+				if len(list_stable)>3:# No change for two groups
+					fake_list = sorted(list_stable, key=len)
+					list_stable.remove(fake_list[0])
+				list_stable = sorted(list_stable, key=len, reverse=True)
+				accounted_list, new_index = merge_classes_into_partition_list(list_stable)
+				a = set(full_list)
+				b = set(accounted_list)
+				unaccounted_list = sorted(list(a.difference(b)))
+				log_main.add('================================================================================================================\n')
+			else:
+				 minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation = 0, 0, 0, 0, 0, 0
+			minimum_group_size = bcast_number_to_all(minimum_group_size, Blockdata["main_node"], MPI_COMM_WORLD)
+			maximum_group_size = bcast_number_to_all(maximum_group_size, Blockdata["main_node"], MPI_COMM_WORLD)
+			bad_clustering = bcast_number_to_all(bad_clustering, Blockdata["main_node"], MPI_COMM_WORLD)
+			stop_generation = bcast_number_to_all(stop_generation, Blockdata["main_node"], MPI_COMM_WORLD)
+			new_index = wrap_mpi_bcast(new_index, Blockdata["main_node"], MPI_COMM_WORLD)
+			unaccounted_list = wrap_mpi_bcast(unaccounted_list, Blockdata["main_node"], MPI_COMM_WORLD)
+			return minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation
+		else:
+			if Blockdata["myid"] == Blockdata["main_node"]:
+				bad_clustering = 1
+				log_main.add('There are no clusters larger than the user provided minimum group size %d.'%Tracker["constants"]["minimum_grp_size"])
+				log_main.add('The reason can be: (1) There are no groups in the data set. 2. Minimum group size set is too large. (3) Desired number of groups K is too large.')
+				log_main.add('================================================================================================================\n')
+			else:
+				minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation = 0, 0, 0, 0, 0, 0
+		minimum_group_size = bcast_number_to_all(minimum_group_size, Blockdata["main_node"], MPI_COMM_WORLD)
+		maximum_group_size = bcast_number_to_all(maximum_group_size, Blockdata["main_node"], MPI_COMM_WORLD)
+		bad_clustering = bcast_number_to_all(bad_clustering, Blockdata["main_node"], MPI_COMM_WORLD)
+		stop_generation = bcast_number_to_all(stop_generation, Blockdata["main_node"], MPI_COMM_WORLD)
+		new_index = wrap_mpi_bcast(new_index, Blockdata["main_node"], MPI_COMM_WORLD)
+		unaccounted_list = wrap_mpi_bcast(unaccounted_list, Blockdata["main_node"], MPI_COMM_WORLD)		
+		return minimum_group_size, maximum_group_size, [ ], full_list, bad_clustering, stop_generation
+		
+	elif nclass == 1: # Force to stop this generation, and output the cluster; do not do any other box comparison
+		if Blockdata["myid"] == Blockdata["main_node"]:
+			stop_generation  = 1
+			accounted_list, new_index = merge_classes_into_partition_list(new_list)
+			a = set(full_list)
+			b = set(accounted_list)
+			unaccounted_list = sorted(list(a.difference(b)))
+			log_main.add('Only one group found. The program will output it and stop executing this generation.')
+
+			box1_dir =  os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%Tracker["current_generation"], "layer%d"%Tracker["depth"], "nbox%d"%nbox)
+			box2_dir =  os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%Tracker["current_generation"], "layer%d"%Tracker["depth"], "nbox%d"%(nbox+1))
+			gendir   =  os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%Tracker["current_generation"])
+			fout = open(os.path.join(box1_dir,"freq_cutoff.json"),'r')
+			freq_cutoff_dict1 = convert_json_fromunicode(json.load(fout))
+			fout.close()
+			fout = open(os.path.join(box2_dir,"freq_cutoff.json"),'r')
+			freq_cutoff_dict2 = convert_json_fromunicode(json.load(fout))
+			fout.close()
+			try:
+				fout = open(os.path.join(gendir,"freq_cutoff.json"),'r')
+				freq_cutoff_dict3 = convert_json_fromunicode(json.load(fout))
+				fout.close()
+				freq_cutoff_dict3 = {}
+			except: freq_cutoff_dict3 = {}
+			ncluster = 0
+			for im in xrange(len(newindeces)):
+				try:
+					f1 = freq_cutoff_dict1["Cluster_%03d.txt"%newindeces[im][0]] 
+					f2 = freq_cutoff_dict2["Cluster_%03d.txt"%newindeces[im][1]]
+					freq_cutoff_dict3["Cluster_%03d.txt"%ncluster] = min(f1, f2)
+					ncluster +=1
+				except: pass
+			fout = open(os.path.join(gendir,"freq_cutoff.json"),'w')
+			json.dump(freq_cutoff_dict3, fout)
+			fout.close()
+			log_main.add('================================================================================================================\n')
+		
+		else:
+			minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation = 0, 0, 0, 0, 0, 0
+		minimum_group_size = bcast_number_to_all(minimum_group_size, Blockdata["main_node"], MPI_COMM_WORLD)
+		maximum_group_size = bcast_number_to_all(maximum_group_size, Blockdata["main_node"], MPI_COMM_WORLD)
+		bad_clustering = bcast_number_to_all(bad_clustering, Blockdata["main_node"], MPI_COMM_WORLD)
+		stop_generation = bcast_number_to_all(stop_generation, Blockdata["main_node"], MPI_COMM_WORLD)
+		new_index = wrap_mpi_bcast(new_index, Blockdata["main_node"], MPI_COMM_WORLD)
+		unaccounted_list = wrap_mpi_bcast(unaccounted_list, Blockdata["main_node"], MPI_COMM_WORLD)
+		return minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation
+	else:
+		if Blockdata["myid"] == Blockdata["main_node"]:
+			if len(new_list) >= len(list_stable)-1: # all passes size checking, even the outliers group
+				accounted_list, new_index = merge_classes_into_partition_list(new_list)
+				a = set(full_list)
+				b = set(accounted_list)
+				unaccounted_list = sorted(list(a.difference(b)))
+				#msg ='all non-unaccounted groups pass the size checking'
+			else:#drop off the smallest one, and decrease K by one
+				if len(list_stable) >3:
+					fake_list = sorted(list_stable, key=len)
+					list_stable.remove(fake_list[0])
+				list_stable = sorted(list_stable, key=len, reverse=True)
+				accounted_list, new_index = merge_classes_into_partition_list(list_stable)
+				a = set(full_list)
+				b = set(accounted_list)
+				unaccounted_list = sorted(list(a.difference(b)))
+
+			log_main.add(' {} {} {} {}'.format('  The number of accounted for images:', len(accounted_list),'  The number of unaccounted for images:', len(unaccounted_list)))
+			log_main.add('  The current minimum group size: %d and the maximum group size: %d'%(minimum_group_size, maximum_group_size))
+	
+			if depth <= 1: # the last layer
+			
+				box1_dir =  os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%Tracker["current_generation"], "layer%d"%Tracker["depth"], "nbox%d"%nbox)
+				box2_dir =  os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%Tracker["current_generation"], "layer%d"%Tracker["depth"], "nbox%d"%(nbox+1))
+				gendir   =  os.path.join(Tracker["constants"]["masterdir"], "generation_%03d"%Tracker["current_generation"])
+				fout = open(os.path.join(box1_dir,"freq_cutoff.json"),'r')
+				freq_cutoff_dict1 = convert_json_fromunicode(json.load(fout))
+				fout.close()
+				fout = open(os.path.join(box2_dir,"freq_cutoff.json"),'r')
+				freq_cutoff_dict2 = convert_json_fromunicode(json.load(fout))
+				fout.close()
+				try:
+					fout = open(os.path.join(gendir,"freq_cutoff.json"),'r')
+					freq_cutoff_dict3 = convert_json_fromunicode(json.load(fout))
+					fout.close()
+					freq_cutoff_dict3 = {}
+				except: freq_cutoff_dict3 = {}
+				ncluster = 0
+				for im in xrange(len(newindeces)):
+					try:
+						f1 = freq_cutoff_dict1["Cluster_%03d.txt"%newindeces[im][0]] 
+						f2 = freq_cutoff_dict2["Cluster_%03d.txt"%newindeces[im][1]]
+						freq_cutoff_dict3["Cluster_%03d.txt"%ncluster] = min(f1, f2)
+						ncluster +=1
+					except: pass
+				fout = open(os.path.join(gendir,"freq_cutoff.json"),'w')
+				json.dump(freq_cutoff_dict3, fout)
+				fout.close()
+				log_main.add('================================================================================================================\n')
+			else:
+				log_main.add('================================================================================================================\n')
+		minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation = 0, 0, 0, 0, 0, 0
+		minimum_group_size = bcast_number_to_all(minimum_group_size, Blockdata["main_node"], MPI_COMM_WORLD)
+		maximum_group_size = bcast_number_to_all(maximum_group_size, Blockdata["main_node"], MPI_COMM_WORLD)
+		bad_clustering = bcast_number_to_all(bad_clustering, Blockdata["main_node"], MPI_COMM_WORLD)
+		stop_generation = bcast_number_to_all(stop_generation, Blockdata["main_node"], MPI_COMM_WORLD)
+		new_index = wrap_mpi_bcast(new_index, Blockdata["main_node"], MPI_COMM_WORLD)
+		unaccounted_list = wrap_mpi_bcast(unaccounted_list, Blockdata["main_node"], MPI_COMM_WORLD)
+		return minimum_group_size, maximum_group_size, new_index, unaccounted_list, bad_clustering, stop_generation		
+		
 def split_partition_into_ordered_clusters_split_ucluster(partition):
 	# split groupids from indexes of images
 	# reindex groups
@@ -6605,7 +6836,7 @@ def compute_final_map(log_file, work_dir):
 			class_in = read_text_file(os.path.join(work_dir, "Cluster_%03d.txt"%number_of_groups))
 			minimum_size = min(len(class_in), minimum_size)
 			#msg = "%10d    %10d   \n"%(number_of_groups, len(class_in))
-			log_file.add(msg)
+			#log_file.add(msg)
 			res_msg +=msg
 			number_of_groups += 1
 			final_accounted_ptl +=len(class_in)
@@ -6916,6 +7147,8 @@ def do_random_groups_simulation_mpi(ptp1, ptp2):
 	else:
 		gave = 0
 		gvar = 0
+	wrap_mpi_bcast(gave, Blockdata["main_node"], MPI_COMM_WORLD)
+	wrap_mpi_bcast(gvar, Blockdata["main_node"], MPI_COMM_WORLD)
 	return gave, gvar
 
 #                     End of various utilities	
