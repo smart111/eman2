@@ -3830,7 +3830,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			nclass +=1
 			log_main.add('{:^14d} {:^10d} {:^8} {:^15.1f} {:^22.1f}'.format(index_of_any, len(any),'accepted', score3, table_stat(clist[index_of_any])[0]))
 		else:
-			log_main.add('{:^124} {:^10d} {:^8} {:^15.1f} {:^22.1f}'.format(index_of_any, len(any), 'rejected', score3, table_stat(clist[index_of_any])[0])
+			log_main.add('{:^124} {:^10d} {:^8} {:^15.1f} {:^22.1f}'.format(index_of_any, len(any), 'rejected', score3, table_stat(clist[index_of_any])[0]))
 	
 	if nclass == 0:
 		### redo two way comparison
