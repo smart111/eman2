@@ -4057,7 +4057,7 @@ def do_withinbox_two_way_comparison(partition_dir, nbox, nrun, niter):
 	unaccounted_list = sorted(list(a.difference(b)))
 	write_text_row(new_index, os.path.join(partition_dir, "Accounted.txt"))
 	write_text_file(unaccounted_list, os.path.join(partition_dir, "Unaccounted.txt"))
-	log_list.append('  The overall reproducibility is %5.1f%'%ratio_accounted)
+	log_list.append('  The overall reproducibility is %5.1f%%'%ratio_accounted)
 	log_list.append('  The number of accounted for images: %d.  The number of unaccounted for images: %d.'%(len(accounted_list), len(unaccounted_list)))
 	log_list.append('  The current minimum group size: %d and the maximum group size: %d.'%(minimum_group_size, maximum_group_size))
 	log_list.append('----------------------------------------------------------------------------------------------------------------')
