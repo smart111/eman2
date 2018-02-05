@@ -6617,11 +6617,12 @@ def compute_final_map(log_file, work_dir):
 			del class_in
 		msg = "Total number of images: %d;  number of groups: %d\n"%(final_accounted_ptl, number_of_groups)
 		res_msg +=msg
-		msg = "the last group contains unaccounted for images of this generation\n"
+		msg = "The last group contains unaccounted for images of this generation\n"
 		res_msg +=msg
-		fout = open(os.path.join(work_dir, "generation_clusters_summary.txt"),"w")
-		fout.writelines(res_msg)
-		fout.close()
+		#fout = open(os.path.join(work_dir, "generation_clusters_summary.txt"),"w")
+		#fout.writelines(res_msg)
+		#fout.close()
+		log_file.add(res_msg)
 		Tracker["total_stack"]      = final_accounted_ptl
 		Tracker["number_of_groups"] = number_of_groups
 		Tracker["nxinit"]           = Tracker["nxinit_refinement"]
@@ -6702,8 +6703,8 @@ def copy_results(log_file):
 	from   string import atoi
 	if Blockdata["myid"] == Blockdata["main_node"]:		
 		nclusters = 0
-		msg       ="cluster ID    size"
-		log_file.add(msg)
+		#msg       ="cluster ID    size"
+		#log_file.add(msg)
 		clusters    = []
 		#sorting_res = '{:^50}'.format('                Summary of SORT3D IN-DEPTH results\n')
 		NACC = 0           
@@ -6813,6 +6814,114 @@ def print_matching_pairs(pair_list, log_file):
 			if not_found: msg +='{:^5s}'.format(' ')
 		log_file.add(msg)
 	return
+	
+def do_random_groups_simulation_mpi(ptp1, ptp2):
+	global Tracker, Blockdata
+	if (len(ptp1)>50) or (len(ptp2)>50):
+		if(Blockdata["myid"] == Blockdata["main_node"]):
+			print('Warning: the number of groups is too large for simuliaton')	
+	Nloop = 200
+	NT    = 1000
+	a     = []
+	b     = []
+	for ic in xrange(len(ptp1)): a+=ptp1[ic]
+	for ic in xrange(len(ptp2)): b+=ptp2[ic]
+	tsize = len(set(a+b))
+	
+	nsize1   = 0
+	plist1   = [ None for i in xrange(len(ptp1))]
+	for i in xrange(len(ptp1)):
+		plist1[i] = [nsize1, nsize1+ int(len(ptp1[i])/float(tsize)*100.)]
+		nsize1 += int(len(ptp1[i])/float(tsize)*100.)
+		
+	nsize2   = 0
+	plist2   = [ None for i in xrange(len(ptp2))]
+	
+	for i in xrange(len(ptp2)):
+		plist2[i] = [nsize2, nsize2+ int(len(ptp2[i])/float(tsize)*100.)]
+		nsize2 += int(len(ptp2[i])/float(tsize)*100.)
+		
+	if len(ptp1)>len(ptp2):
+		for j in xrange(len(len(ptp1)-len(ptp2))):
+			plist2.append([nsize2, nsize2+ 1])
+			nsize2 += 1
+			
+	elif len(ptp2)>len(ptp1):
+		for j in xrange(len(len(ptp2)-len(ptp1))):
+			plist1.append([nsize1, nsize1+1]
+			nsize1 += 1
+				
+	alist = range(100)
+	blist = range(100)
+	k = len(plist1)
+	gave  = [ 0.0 for i in xrange(k)]
+	gvar  = [ 0.0 for i in xrange(k)]
+	
+	for iloop in xrange(Nloop):
+		tlist = []
+		clist = [[] for i in xrange(k)]
+		for i in xrange(NT):
+			new_clusters1 = []
+			new_clusters2 = []
+			np.random.shuffle(alist)
+			np.random.shuffle(blist)	
+			for j in xrange(k):new_clusters1.append(alist[plist1[j][0]:plist1[j][1]])
+			for j in xrange(k):new_clusters2.append(blist[plist2[j][0]:plist2[j][1]])
+			for j in xrange(k): new_clusters1[j] = np.sort(new_clusters1[j])
+			for j in xrange(k): new_clusters2[j] = np.sort(new_clusters2[j])
+			newindeces, list_stable, nb_tot_objs = k_means_match_clusters_asg_new(new_clusters1,new_clusters2)
+			ts = []
+			for ii in xrange(len(newindeces)):
+				ts += list(set(new_clusters1[newindeces[ii][0]].tolist() + new_clusters2[newindeces[ii][1]].tolist()))
+			tlist.append(nb_tot_objs/float(len(set(ts)))*100.)
+			for j in xrange(k):
+				try:
+					clist[j].append(float((np.intersect1d(new_clusters1[newindeces[j][0]], new_clusters2[newindeces[j][1]])).size)\
+						  /float((np.union1d(new_clusters1[newindeces[j][0]], new_clusters2[newindeces[j][1]])).size)*100.)
+				except: pass		
+		svar +=table_stat(tlist)[0]
+		save +=table_stat(tlist)[1]
+		for j in xrange(k):
+			gvar[j] +=table_stat(clist[j])[1]
+			gave[j] +=table_stat(clist[j])[0]
+			
+	save = mpi_reduce(save, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD)
+	svar = mpi_reduce(svar, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD)
+	
+	for iproc in xrange(1, Blockdata["nproc"]):
+		if Blockdata["myid"] == iproc:
+			wrap_mpi_send(gvar,  Blockdata["main_node"], MPI_COMM_WORLD)
+			
+		elif Blockdata["myid"] == Blockdata["main_node"]:
+			dummy = wrap_mpi_recv(iproc, MPI_COMM_WORLD)
+			for im  in  xrange(len(dummy)): gvar[im]+=dummy[im]
+			
+		mpi_barrier(MPI_COMM_WORLD)
+
+	for iproc in xrange(1, Blockdata["nproc"]):
+		if Blockdata["myid"] == iproc:
+			wrap_mpi_send(gave,  Blockdata["main_node"], MPI_COMM_WORLD)
+			
+		elif Blockdata["myid"] == Blockdata["main_node"]:
+			dummy = wrap_mpi_recv(iproc, MPI_COMM_WORLD)
+			for im  in  xrange(len(dummy)): gave[im]+=dummy[im]
+		mpi_barrier(MPI_COMM_WORLD)
+
+	from math import sqrt
+	if(Blockdata["myid"] == Blockdata["main_node"]):
+		svar = sqrt(svar/float(Blockdata["nproc"]*Nloop))
+		save = save/float(Blockdata["nproc"]*Nloop)
+		print (svar, save)
+		for i in xrange(k):
+			gave[i] = gave/float(Blockdata["nproc"]*Nloop)
+			gvar[i] = sqrt(gvar[i]/float(Blockdata["nproc"]*Nloop))
+		gave.append(save)
+		gvar.append(svar)
+	else:
+		gave = 0
+		gvar = 0
+	return gave, gvar
+
 #                     End of various utilities	
 def main():
 	from optparse   import OptionParser
