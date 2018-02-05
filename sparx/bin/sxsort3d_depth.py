@@ -3773,6 +3773,8 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 				clist[j].append(float((np.intersect1d(new_clusters1[newindeces[j][0]], new_clusters2[newindeces[j][1]])).size)\
 				  /float((np.union1d(new_clusters1[newindeces[j][0]], new_clusters2[newindeces[j][1]])).size)*100.)
 	t = table_stat(tlist)
+	for ii in xrange(len(clist)):
+		print ('XXXX', table_stat(clist[ii]))
 	'''
 	for l in xrange(len(clist)):
 		if len(clist[l])>0:
@@ -6716,7 +6718,7 @@ def copy_results(log_file):
 		fout = open(os.path.join(Tracker["constants"]["masterdir"], "Tracker.json"), 'w')
 		json.dump(Tracker, fout)
 		fout.close()
-		log_file.add('{:^12} {:^8} {:^12} {:^8} {:^12} {:^8} {}'.format(' Images', Tracker["constants"]["total_stack"], 'accounted for images: ', NACC, 'unaccounted for images', NUACC))
+		log_file.add('{:^12} {:^8} {:^22} {:^8} {:^24} {:^8} '.format(' Images', Tracker["constants"]["total_stack"], 'accounted for images: ', NACC, 'unaccounted for images: ', NUACC))
 		log_file.add('The last cluster of the last generation contains unaccounted for images\n')
 	mpi_barrier(MPI_COMM_WORLD)
 	return
