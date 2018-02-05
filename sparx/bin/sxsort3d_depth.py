@@ -3830,7 +3830,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			nclass +=1
 			log_main.add('{:^14d} {:^10d} {:^8} {:^15.1f} {:^22.1f}'.format(index_of_any, len(any),'accepted', score3, table_stat(clist[index_of_any])[0]))
 		else:
-			log_main.add('{:^124} {:^10d} {:^8} {:^15.1f} {:^22.1f}'.format(index_of_any, len(any), 'rejected', score3, table_stat(clist[index_of_any])[0]))
+			log_main.add('{:^14d} {:^10d} {:^8} {:^15.1f} {:^22.1f}'.format(index_of_any, len(any), 'rejected', score3, table_stat(clist[index_of_any])[0]))
 	
 	if nclass == 0:
 		### redo two way comparison
@@ -6590,15 +6590,15 @@ def compute_final_map(log_file, work_dir):
 			minimum_size = min(len(class_in), minimum_size)
 			#msg = "%10d    %10d   \n"%(number_of_groups, len(class_in))
 			#log_file.add(msg)
-			res_msg +=msg
+			#res_msg +=msg
 			number_of_groups += 1
 			final_accounted_ptl +=len(class_in)
 			clusters.append(class_in)
 			del class_in
-		msg = "Total number of images: %d;  number of groups: %d\n"%(final_accounted_ptl, number_of_groups)
-		res_msg +=msg
-		msg = "The last group contains unaccounted for images of this generation\n"
-		res_msg +=msg
+		#msg = "Total number of images: %d;  number of groups: %d\n"%(final_accounted_ptl, number_of_groups)
+		#res_msg +=msg
+		#msg = "The last group contains unaccounted for images of this generation\n"
+		#res_msg +=msg
 		#fout = open(os.path.join(work_dir, "generation_clusters_summary.txt"),"w")
 		#fout.writelines(res_msg)
 		#fout.close()
