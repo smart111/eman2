@@ -3828,9 +3828,11 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			maximum_group_size = max(maximum_group_size, len(any))
 			new_list.append(any)
 			nclass +=1
-			log_main.add('{:^14d} {:^10d} {:^8} {:^15.1f} {:^22.1f} {:^5.1f}'.format(index_of_any, len(any),'accepted', score3, table_stat(clist[index_of_any])[0]), table_stat(clist[index_of_any])[1]))
+			log_main.add('{:^14d} {:^10d} {:^8} {:^15.1f} {:^22.1f} {:^5.1f}'.format(index_of_any, len(any),'accepted', score3, \
+			       table_stat(clist[index_of_any])[0], table_stat(clist[index_of_any])[1]))
 		else:
-			log_main.add('{:^14d} {:^10d} {:^8} {:^15.1f} {:^22.1f} {:^5.1f}'.format(index_of_any, len(any), 'rejected', score3, table_stat(clist[index_of_any])[0]), table_stat(clist[index_of_any])[1]))
+			log_main.add('{:^14d} {:^10d} {:^8} {:^15.1f} {:^22.1f} {:^5.1f}'.format(index_of_any, len(any), 'rejected', score3, \
+			       table_stat(clist[index_of_any])[0], table_stat(clist[index_of_any])[1]))
 	
 	if nclass == 0:
 		### redo two way comparison
