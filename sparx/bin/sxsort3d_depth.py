@@ -6848,7 +6848,7 @@ def do_random_groups_simulation_mpi(ptp1, ptp2):
 			
 	elif len(ptp2)>len(ptp1):
 		for j in xrange(len(len(ptp2)-len(ptp1))):
-			plist1.append([nsize1, nsize1+1]
+			plist1.append([nsize1, nsize1+1])
 			nsize1 += 1
 				
 	alist = range(100)
