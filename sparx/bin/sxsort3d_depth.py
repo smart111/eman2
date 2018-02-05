@@ -3815,7 +3815,7 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 	nclass = 0
 	log_main.add('               Post-matching results.')
 	log_main.add('{:^14} {:^10}  {:^8} {:^15} {:^22}  {:^5}'.format('    Group', '   size',  ' status ',   'reproducibility', 'random reproducibility', ' std '))
-	
+	from math import sqrt
 	for index_of_any in xrange(len(list_stable)):
 		any = list_stable[index_of_any]
 		any.tolist()
@@ -3831,10 +3831,10 @@ def do_boxes_two_way_comparison_new(nbox, input_box_parti1, input_box_parti2, de
 			new_list.append(any)
 			nclass +=1
 			log_main.add('{:^14d} {:^10d} {:^8} {:^15.1f} {:^22.1f} {:^5.1f}'.format(index_of_any, len(any),'accepted', score3, \
-			       table_stat(clist[index_of_any])[0], table_stat(clist[index_of_any])[1]))
+			       table_stat(clist[index_of_any])[0], sqrt(table_stat(clist[index_of_any])[1])))
 		else:
 			log_main.add('{:^14d} {:^10d} {:^8} {:^15.1f} {:^22.1f} {:^5.1f}'.format(index_of_any, len(any), 'rejected', score3, \
-			       table_stat(clist[index_of_any])[0], table_stat(clist[index_of_any])[1]))
+			       table_stat(clist[index_of_any])[0], sqrt(table_stat(clist[index_of_any])[1])))
 	
 	if nclass == 0:
 		### redo two way comparison
